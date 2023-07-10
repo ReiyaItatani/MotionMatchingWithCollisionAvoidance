@@ -213,8 +213,10 @@ MonoBehaviour:
   agentManager: {fileID: 151487187}
   agentCollider: {fileID: 1288300699}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
+  currentAvoidanceTarget: {fileID: 0}
   goalRadius: 0.5
   slowingRadius: 2
+  potentialAvoidanceTarget: {fileID: 0}
 --- !u!1001 &68469138
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -467,8 +469,10 @@ MonoBehaviour:
   agentManager: {fileID: 151487187}
   agentCollider: {fileID: 1090823237}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
+  currentAvoidanceTarget: {fileID: 0}
   goalRadius: 0.5
   slowingRadius: 2
+  potentialAvoidanceTarget: {fileID: 0}
 --- !u!4 &90112972
 Transform:
   m_ObjectHideFlags: 0
@@ -895,8 +899,10 @@ MonoBehaviour:
   agentManager: {fileID: 151487187}
   agentCollider: {fileID: 783082595}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
+  currentAvoidanceTarget: {fileID: 0}
   goalRadius: 0.5
   slowingRadius: 2
+  potentialAvoidanceTarget: {fileID: 0}
 --- !u!1 &302328117
 GameObject:
   m_ObjectHideFlags: 0
@@ -1730,8 +1736,10 @@ MonoBehaviour:
   agentManager: {fileID: 151487187}
   agentCollider: {fileID: 251955679}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
-  goalRadius: 0.5
-  slowingRadius: 2
+  currentAvoidanceTarget: {fileID: 0}
+  goalRadius: 1
+  slowingRadius: 3
+  potentialAvoidanceTarget: {fileID: 0}
 --- !u!4 &906927582
 Transform:
   m_ObjectHideFlags: 0
@@ -1906,8 +1914,10 @@ MonoBehaviour:
   agentManager: {fileID: 151487187}
   agentCollider: {fileID: 1938952731}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
+  currentAvoidanceTarget: {fileID: 0}
   goalRadius: 0.5
   slowingRadius: 2
+  potentialAvoidanceTarget: {fileID: 0}
 --- !u!4 &1012472076
 Transform:
   m_ObjectHideFlags: 0
@@ -2914,8 +2924,10 @@ MonoBehaviour:
   agentManager: {fileID: 151487187}
   agentCollider: {fileID: 101781429}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
+  currentAvoidanceTarget: {fileID: 0}
   goalRadius: 0.5
   slowingRadius: 2
+  potentialAvoidanceTarget: {fileID: 0}
 --- !u!4 &1492377445
 Transform:
   m_ObjectHideFlags: 0
@@ -3211,8 +3223,10 @@ MonoBehaviour:
   agentManager: {fileID: 151487187}
   agentCollider: {fileID: 1165114767}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
+  currentAvoidanceTarget: {fileID: 0}
   goalRadius: 0.5
   slowingRadius: 2
+  potentialAvoidanceTarget: {fileID: 0}
 --- !u!4 &1749407123
 Transform:
   m_ObjectHideFlags: 0
@@ -3385,8 +3399,10 @@ MonoBehaviour:
   agentManager: {fileID: 151487187}
   agentCollider: {fileID: 1130924115}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
+  currentAvoidanceTarget: {fileID: 0}
   goalRadius: 0.5
   slowingRadius: 2
+  potentialAvoidanceTarget: {fileID: 0}
 --- !u!4 &1826635287
 Transform:
   m_ObjectHideFlags: 0
@@ -3475,8 +3491,10 @@ MonoBehaviour:
   agentManager: {fileID: 151487187}
   agentCollider: {fileID: 68469142}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
+  currentAvoidanceTarget: {fileID: 0}
   goalRadius: 0.5
   slowingRadius: 2
+  potentialAvoidanceTarget: {fileID: 0}
 --- !u!4 &1886199140
 Transform:
   m_ObjectHideFlags: 0
@@ -3675,8 +3693,10 @@ MonoBehaviour:
   agentManager: {fileID: 151487187}
   agentCollider: {fileID: 448742786}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
+  currentAvoidanceTarget: {fileID: 0}
   goalRadius: 0.5
   slowingRadius: 2
+  potentialAvoidanceTarget: {fileID: 0}
 --- !u!4 &1945981608
 Transform:
   m_ObjectHideFlags: 0
