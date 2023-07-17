@@ -12,16 +12,23 @@ namespace MotionMatching{
         public string TrajectoryPositionFeatureName = "FuturePosition";
         public string TrajectoryDirectionFeatureName = "FutureDirection";
         public Vector3[] Path;
+        //Warning:current position is not the current position of the agent itself when the parent transform is not (0.0f, 0.0f, 0.0f);
+        //To get current position of the agent you have to use GetCurrentPosition()
         private Vector3 CurrentPosition;
         private Vector3 CurrentDirection;
         private Vector3[] PredictedPositions;
         private Vector3[] PredictedDirections;
+        // Speed Of Agents -----------------------------------------------------------------
         [Range (0.5f, 1.5f)]
-        public float CurrentSpeed = 1.0f;
+        private float CurrentSpeed = 1.0f;
         private float initialSpeed;
         private float MinSpeed = 0.5f;
-        public AgentManager agentManager;
+        // --------------------------------------------------------------------------
+        // To Mange Agents -----------------------------------------------------------------
+        [Tooltip("Agent Manager is a script to manage agents")] public AgentManager agentManager;
+        // --------------------------------------------------------------------------
         // Features -----------------------------------------------------------------
+        [Header("Features For Motion Matching")]
         private int TrajectoryPosFeatureIndex;
         private int TrajectoryRotFeatureIndex;
         private int[] TrajectoryPosPredictionFrames;
@@ -30,6 +37,7 @@ namespace MotionMatching{
         private int NumberPredictionRot { get { return TrajectoryRotPredictionFrames.Length; } }
         // --------------------------------------------------------------------------
         // Collision Avoidance ------------------------------------------------------
+        [Header("Parameters For Basic Collision Avoidance")]
         public CapsuleCollider agentCollider;
         private BoxCollider avoidanceCollider;
         private GameObject avoidanceColliderObject;
@@ -44,6 +52,7 @@ namespace MotionMatching{
         }
         // --------------------------------------------------------------------------
         // To Goal Direction --------------------------------------------------------
+        [Header("Parameters For Goal Direction")]
         private Vector3 toGoalVector = Vector3.zero;
         private float toGoalWeight = 1.7f;
         private Vector3 CurrentGoal;
@@ -53,7 +62,8 @@ namespace MotionMatching{
         [SerializeField]
         private float slowingRadius = 2.0f;
         // --------------------------------------------------------------------------
-        // Unalligned Collision Avoidance -------------------------------------------
+        // Unaligned Collision Avoidance -------------------------------------------
+        [Header("Parameters For Unaligned Collision Avoidance")]
         private Vector3 avoidNeighborsVector = Vector3.zero;
         private float avoidNeighborWeight = 1.0f;
         private float minTimeToCollision =5.0f;
@@ -121,14 +131,15 @@ namespace MotionMatching{
 
         private void SimulatePath(float time, Vector3 currentPosition, out Vector3 nextPosition, out Vector3 direction)
         {
-            //Update To Goal Vector
+            //Update ToGoalVector
             toGoalVector = (CurrentGoal - currentPosition).normalized;
-            direction = (toGoalWeight*toGoalVector + avoidanceWeight*avoidanceVector + avoidNeighborWeight*avoidNeighborsVector).normalized;
+
             //gradually decrease speed of the agent if it is close to the goal:
             float distanceToGoal = Vector3.Distance(currentPosition, CurrentGoal);
-
-            //if you wanna slow down the avatar's speed based on distance between goal and agent
             CurrentSpeed = distanceToGoal < slowingRadius ? Mathf.Lerp(MinSpeed, CurrentSpeed, distanceToGoal / slowingRadius) : CurrentSpeed;
+
+            //Move Agent
+            direction = (toGoalWeight*toGoalVector + avoidanceWeight*avoidanceVector + avoidNeighborWeight*avoidNeighborsVector).normalized;
             nextPosition = currentPosition + direction * CurrentSpeed * time;
         }
 
@@ -144,7 +155,7 @@ namespace MotionMatching{
         private void SelectRandomGoal(){
             CurrentGoalIndex++;
             CurrentGoal = Path[(CurrentGoalIndex + 1) % Path.Length];
-            StartCoroutine(GradualSpeedUp(0.1f, CurrentSpeed, initialSpeed));
+            StartCoroutine(GradualSpeedUp(1.0f, CurrentSpeed, initialSpeed));
         }
 
         private IEnumerator GradualSpeedUp(float duration, float currentSpeed, float targetSpeed){
