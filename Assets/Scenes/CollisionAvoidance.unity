@@ -149,7 +149,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8296665}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 4.09}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -209,14 +209,12 @@ MonoBehaviour:
   Path:
   - {x: 10, y: 0, z: 0}
   - {x: -10, y: 0, z: 0}
-  CurrentSpeed: 1
+  initialSpeed: 1
   agentManager: {fileID: 151487187}
   agentCollider: {fileID: 1288300699}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
-  currentAvoidanceTarget: {fileID: 0}
   goalRadius: 0.5
   slowingRadius: 2
-  potentialAvoidanceTarget: {fileID: 0}
 --- !u!1001 &68469138
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -465,14 +463,12 @@ MonoBehaviour:
   Path:
   - {x: 7, y: 0, z: 0}
   - {x: -10, y: 0, z: 0}
-  CurrentSpeed: 0.6
+  initialSpeed: 1
   agentManager: {fileID: 151487187}
   agentCollider: {fileID: 1090823237}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
-  currentAvoidanceTarget: {fileID: 0}
   goalRadius: 0.5
   slowingRadius: 2
-  potentialAvoidanceTarget: {fileID: 0}
 --- !u!4 &90112972
 Transform:
   m_ObjectHideFlags: 0
@@ -656,7 +652,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 115598949}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 4.09}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -989,14 +985,12 @@ MonoBehaviour:
   Path:
   - {x: -12, y: 0, z: 0}
   - {x: 10, y: 0, z: 0}
-  CurrentSpeed: 0.9
+  initialSpeed: 1
   agentManager: {fileID: 151487187}
   agentCollider: {fileID: 783082595}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
-  currentAvoidanceTarget: {fileID: 0}
   goalRadius: 0.5
   slowingRadius: 2
-  potentialAvoidanceTarget: {fileID: 0}
 --- !u!1 &302328117
 GameObject:
   m_ObjectHideFlags: 0
@@ -1021,7 +1015,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 302328117}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 4.09}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1055,7 +1049,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 305442559}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 4.09}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1072,6 +1066,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 611814047}
     m_Modifications:
+    - target: {fileID: 1052061812, guid: 09860aa1d7ab2b542b5e3fe113c2dda1, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3267206955219765814, guid: 09860aa1d7ab2b542b5e3fe113c2dda1,
         type: 3}
       propertyPath: m_Controller
@@ -1441,7 +1439,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 534331996}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 4.09}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1535,7 +1533,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &611814047
 Transform:
   m_ObjectHideFlags: 0
@@ -1544,7 +1542,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 611814046}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.24, y: 0, z: 4.09}
+  m_LocalPosition: {x: 0, y: 0, z: -9.93}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1792,7 +1790,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 839583032}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 4.09}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1906,14 +1904,12 @@ MonoBehaviour:
   Path:
   - {x: -14, y: 0, z: 0}
   - {x: 10, y: 0, z: 0}
-  CurrentSpeed: 0.8
+  initialSpeed: 1
   agentManager: {fileID: 151487187}
   agentCollider: {fileID: 251955679}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
-  currentAvoidanceTarget: {fileID: 0}
   goalRadius: 0.5
   slowingRadius: 2
-  potentialAvoidanceTarget: {fileID: 0}
 --- !u!4 &906927582
 Transform:
   m_ObjectHideFlags: 0
@@ -2052,14 +2048,12 @@ MonoBehaviour:
   Path:
   - {x: 8, y: 0, z: 0}
   - {x: -10, y: 0, z: 0}
-  CurrentSpeed: 0.5
+  initialSpeed: 1
   agentManager: {fileID: 151487187}
   agentCollider: {fileID: 1938952731}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
-  currentAvoidanceTarget: {fileID: 0}
   goalRadius: 0.5
   slowingRadius: 2
-  potentialAvoidanceTarget: {fileID: 0}
 --- !u!4 &1012472076
 Transform:
   m_ObjectHideFlags: 0
@@ -2370,6 +2364,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 839583033}
     m_Modifications:
+    - target: {fileID: 469515505234092066, guid: 17d2ceb469f508a47ade33a62a335e9d,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 469515505234092066, guid: 17d2ceb469f508a47ade33a62a335e9d,
         type: 3}
       propertyPath: MotionMatching
@@ -2948,7 +2947,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1402722333}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 4.09}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3062,14 +3061,12 @@ MonoBehaviour:
   Path:
   - {x: -5, y: 0, z: 0}
   - {x: 7, y: 0, z: 0}
-  CurrentSpeed: 0.8
+  initialSpeed: 1
   agentManager: {fileID: 151487187}
   agentCollider: {fileID: 101781429}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
-  currentAvoidanceTarget: {fileID: 0}
   goalRadius: 0.5
   slowingRadius: 2
-  potentialAvoidanceTarget: {fileID: 0}
 --- !u!4 &1492377445
 Transform:
   m_ObjectHideFlags: 0
@@ -3178,7 +3175,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1531064593}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 4.09}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3319,7 +3316,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1627104965}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ecd50a3b5b2877946b0977a3fa908fe7, type: 3}
   m_Name: 
@@ -3329,6 +3326,99 @@ MonoBehaviour:
   UpLocalVector: {x: 0, y: 1, z: 0}
   AvoidToesFloorPenetration: 1
   ToesSoleOffset: {x: 0, y: 0, z: -0.02}
+--- !u!114 &1627104972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1627104965}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a422e7081b4c4514892c5ac5063fc5b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MotionMatching: {fileID: 562914023}
+  ForwardLocalVector: {x: 0, y: 0, z: 1}
+  UpLocalVector: {x: 0, y: 1, z: 0}
+  AvoidToesFloorPenetration: 1
+  ToesSoleOffset: {x: 0, y: 0, z: -0.02}
+  mult_top: 1
+  mult_bottom: 1
+  mult_side: 1
+  mult_center: 1
+  mult_front: 1
+  mult_back: 1
+  LE_MODE: 0
+  USE_ANCHORS: 0
+  FLUC_ADD: 0
+  OnlyOneHand: 0
+  IK_MAIN_FACTOR_TARGET: 1
+  IK_MAIN_FACTOR_BASE: 1
+  IK_MAIN_FACTOR_CURRENT: 1
+  TransitionFactor: 0
+  AnimationNoTransition: 0
+  CurrentState: -1
+  Freeze: 0
+  ExpFreeze: 0
+  C_MainSwitchForPhoto: 0
+  C_LabanRotation: 1
+  C_LabanIK: 1
+  C_Fluctuation: 1
+  C_SpeedAdjust: 1
+  C_LookIK: 0
+  C_LookShift: 0
+  C_EmotionsOn: 1
+  IKWeightByPass: 0
+  IKALLBYPASS: 0
+  Map_OCEAN_to_LabanShape: 1
+  Map_OCEAN_to_LabanEffort: 1
+  Map_OCEAN_to_Additional: 1
+  openness: 0
+  conscientiousness: 0
+  extraversion: 0
+  agreeableness: 0
+  neuroticism: 0
+  space: 0
+  weight: 0
+  time: 0
+  flow: 0
+  e_happy: 0
+  e_sad: 0
+  e_angry: 0
+  e_disgust: 0
+  e_fear: 0
+  e_shock: 0
+  base_happy: 0
+  base_sad: 0
+  base_angry: 0
+  base_shock: 0
+  base_disgust: 0
+  base_fear: 0
+  IKFAC_forward: 0
+  IKFAC_up: 0
+  IKFAC_side: 0
+  ls_hor: 0
+  ls_ver: 0
+  ls_hor_speed: 0
+  ls_ver_speed: 0
+  spine_bend: 0
+  sink_bend: 0
+  head_bend: 0
+  finger_bend_open: 0
+  finger_bend_close: 0
+  lookObject: {fileID: 0}
+  text_O: 
+  text_C: 
+  text_E: 
+  text_A: 
+  text_N: 
+  faceController: {fileID: 0}
+  ikRatioArray: []
+  ikRatioArray_target: []
+  fingerRotationL: 0
+  fingerRotationR: 0
+  probs: []
 --- !u!1 &1724071840
 GameObject:
   m_ObjectHideFlags: 0
@@ -3433,14 +3523,12 @@ MonoBehaviour:
   Path:
   - {x: 6, y: 0, z: 0}
   - {x: -9, y: 0, z: 0}
-  CurrentSpeed: 0.8
+  initialSpeed: 1
   agentManager: {fileID: 151487187}
   agentCollider: {fileID: 1165114767}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
-  currentAvoidanceTarget: {fileID: 0}
   goalRadius: 0.5
   slowingRadius: 2
-  potentialAvoidanceTarget: {fileID: 0}
 --- !u!4 &1749407123
 Transform:
   m_ObjectHideFlags: 0
@@ -3609,14 +3697,12 @@ MonoBehaviour:
   Path:
   - {x: 11, y: 0, z: 0}
   - {x: -10, y: 0, z: 0}
-  CurrentSpeed: 1
+  initialSpeed: 1
   agentManager: {fileID: 151487187}
   agentCollider: {fileID: 1130924115}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
-  currentAvoidanceTarget: {fileID: 0}
   goalRadius: 0.5
   slowingRadius: 2
-  potentialAvoidanceTarget: {fileID: 0}
 --- !u!4 &1826635287
 Transform:
   m_ObjectHideFlags: 0
@@ -3656,7 +3742,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1869981666}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 4.09}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3701,14 +3787,12 @@ MonoBehaviour:
   Path:
   - {x: -6, y: 0, z: 0}
   - {x: 10, y: 0, z: 0}
-  CurrentSpeed: 0.8
+  initialSpeed: 1
   agentManager: {fileID: 151487187}
   agentCollider: {fileID: 68469142}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
-  currentAvoidanceTarget: {fileID: 0}
   goalRadius: 0.5
   slowingRadius: 2
-  potentialAvoidanceTarget: {fileID: 0}
 --- !u!4 &1886199140
 Transform:
   m_ObjectHideFlags: 0
@@ -3759,14 +3843,12 @@ MonoBehaviour:
   Path:
   - {x: 10, y: 0, z: 0}
   - {x: -10, y: 0, z: 0}
-  CurrentSpeed: 1
+  initialSpeed: 0.5
   agentManager: {fileID: 151487187}
   agentCollider: {fileID: 1627104969}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
-  currentAvoidanceTarget: {fileID: 0}
   goalRadius: 0.5
   slowingRadius: 2
-  potentialAvoidanceTarget: {fileID: 0}
 --- !u!4 &1933235968
 Transform:
   m_ObjectHideFlags: 0
@@ -3961,14 +4043,12 @@ MonoBehaviour:
   Path:
   - {x: -8, y: 0, z: 0}
   - {x: 10, y: 0, z: 0}
-  CurrentSpeed: 0.8
+  initialSpeed: 1
   agentManager: {fileID: 151487187}
   agentCollider: {fileID: 448742786}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
-  currentAvoidanceTarget: {fileID: 0}
   goalRadius: 0.5
   slowingRadius: 2
-  potentialAvoidanceTarget: {fileID: 0}
 --- !u!4 &1945981608
 Transform:
   m_ObjectHideFlags: 0
@@ -4063,7 +4143,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2051640766}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 4.09}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

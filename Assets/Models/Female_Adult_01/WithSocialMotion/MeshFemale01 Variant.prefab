@@ -1,54 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &836578018
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 836578019}
-  - component: {fileID: 836578020}
-  m_Layer: 0
-  m_Name: AnimatorInspector
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &836578019
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 836578018}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.0836126, y: 2.011015, z: -1.9465966}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 8914699260557168716}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &836578020
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 836578018}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e7774a0b967f17e44b866d598da5ffc3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  anim: {fileID: 3267206955219765814}
-  InspectOn: 0
-  minTargetSpeed: 0.75
-  maxTargetSpeed: 1.25
-  gapsPerSecond: 1
 --- !u!1001 &8952565362399901607
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -147,7 +98,7 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: b77b9464211985d4c917efd186e8964c,
         type: 3}
       propertyPath: m_Name
-      value: MeshFemale01
+      value: MeshFemale01 Variant
       objectReference: {fileID: 0}
     - target: {fileID: 3397826966216260623, guid: b77b9464211985d4c917efd186e8964c,
         type: 3}
@@ -161,12 +112,6 @@ PrefabInstance:
       objectReference: {fileID: 9100000, guid: bc2e643f0c1d60445b20abdcd0afa29f, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b77b9464211985d4c917efd186e8964c, type: 3}
---- !u!95 &3267206955219765814 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: b77b9464211985d4c917efd186e8964c,
-    type: 3}
-  m_PrefabInstance: {fileID: 8952565362399901607}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &8141539535097088758 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: b77b9464211985d4c917efd186e8964c,
@@ -267,18 +212,9 @@ MonoBehaviour:
   lineColor2: {r: 1, g: 0, b: 0, a: 1}
   orbColor1: {r: 0.168, g: 0.478, b: 0.749, a: 1}
   orbColor2: {r: 1, g: 0, b: 0, a: 1}
-  _animatorInspector: {fileID: 836578020}
+  _animatorInspector: {fileID: 0}
   ikRatioArray: []
   ikRatioArray_target: []
-  playAnimationWithoutTalk: 0
-  armUp: {x: 0, y: 0, z: 0}
-  armDown: {x: 0, y: 0, z: 0}
   fingerRotationL: 0
   fingerRotationR: 0
   probs: []
---- !u!4 &8914699260557168716 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: b77b9464211985d4c917efd186e8964c,
-    type: 3}
-  m_PrefabInstance: {fileID: 8952565362399901607}
-  m_PrefabAsset: {fileID: 0}

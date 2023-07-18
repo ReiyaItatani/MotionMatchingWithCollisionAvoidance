@@ -164,9 +164,6 @@ public class AgentController : MonoBehaviour {
     private readonly float spine_min = -14;
     [Range(-1f, 1f)] public float sink_bend;
     //private readonly float sink_max = 13;
-    private readonly float sink_max = 18;
-    // private readonly float sink_min = -13;
-    private readonly float sink_min = -19;
     [Range(-1f, 1f)] public float head_bend;
     //private readonly float head_max = 2f;
     private readonly float head_max = 5f;
@@ -188,8 +185,8 @@ public class AgentController : MonoBehaviour {
     // public bool feetOnGround_left;
     // public bool feetOnGround_right;
 
-    Vector3 footDiff_left;
-    Vector3 footDiff_right;
+    // Vector3 footDiff_left;
+    // Vector3 footDiff_right;
 
     [HideInInspector] public String text_O;
     [HideInInspector] public String text_C;
@@ -198,7 +195,7 @@ public class AgentController : MonoBehaviour {
     [HideInInspector] public String text_N;
 
     // distances of body parts
-    float d_upperArm, d_lowerArm, d_hand;
+    // float d_upperArm, d_lowerArm, d_hand;
 
     // IK Targets
     private GameObject LeftHandIK;
@@ -263,25 +260,25 @@ public class AgentController : MonoBehaviour {
         ikRatioArray = new float[12];
 
         // width and color for line renderer of laban shape anchors
-        lineWidthLow = 0.015f;
-        lineWidthHigh = 0.025f;
-        lineColor1 = Color.blue;
-        lineColor2 = Color.red;
-        orbColor1 = new Color(0.168f, 0.478f, 0.749f);
-        orbColor2 = Color.red;
+        // lineWidthLow = 0.015f;
+        // lineWidthHigh = 0.025f;
+        // lineColor1 = Color.blue;
+        // lineColor2 = Color.red;
+        // orbColor1 = new Color(0.168f, 0.478f, 0.749f);
+        // orbColor2 = Color.red;
         
         // find body part distances
-        d_upperArm = (anim.GetBoneTransform(HumanBodyBones.LeftUpperArm).position - anim.GetBoneTransform(HumanBodyBones.LeftLowerArm).position).magnitude;
-        d_lowerArm = (anim.GetBoneTransform(HumanBodyBones.LeftLowerArm).position - anim.GetBoneTransform(HumanBodyBones.LeftHand).position).magnitude;
-        d_hand = (anim.GetBoneTransform(HumanBodyBones.LeftHand).position - anim.GetBoneTransform(HumanBodyBones.LeftIndexDistal).position).magnitude;
+        // d_upperArm = (anim.GetBoneTransform(HumanBodyBones.LeftUpperArm).position - anim.GetBoneTransform(HumanBodyBones.LeftLowerArm).position).magnitude;
+        // d_lowerArm = (anim.GetBoneTransform(HumanBodyBones.LeftLowerArm).position - anim.GetBoneTransform(HumanBodyBones.LeftHand).position).magnitude;
+        // d_hand = (anim.GetBoneTransform(HumanBodyBones.LeftHand).position - anim.GetBoneTransform(HumanBodyBones.LeftIndexDistal).position).magnitude;
 
-        footDiff_left = anim.GetBoneTransform(HumanBodyBones.LeftFoot).position - anim.GetBoneTransform(HumanBodyBones.LeftToes).position;
+        // footDiff_left = anim.GetBoneTransform(HumanBodyBones.LeftFoot).position - anim.GetBoneTransform(HumanBodyBones.LeftToes).position;
 
-        footDiff_left = new Vector3(0, footDiff_left.y, 0);
+        // footDiff_left = new Vector3(0, footDiff_left.y, 0);
 
-        footDiff_right = anim.GetBoneTransform(HumanBodyBones.RightFoot).position - anim.GetBoneTransform(HumanBodyBones.RightToes).position;
+        // footDiff_right = anim.GetBoneTransform(HumanBodyBones.RightFoot).position - anim.GetBoneTransform(HumanBodyBones.RightToes).position;
 
-        footDiff_right = new Vector3(0, footDiff_right.y, 0);
+        // footDiff_right = new Vector3(0, footDiff_right.y, 0);
 
         // face script part
         GameObject body = GetChildGameObject(gameObject, "Body");
@@ -307,7 +304,8 @@ public class AgentController : MonoBehaviour {
         // }
         faceController.InitShapeKeys();
 
-        SinkPassInit();
+        // SinkPassInit();
+        GetBodyTransforms();
         FluctuatePassInit();
         
         // Create IK Targets
@@ -752,13 +750,13 @@ public class AgentController : MonoBehaviour {
         //     sv_upknee_r.SetActive(false); //new GameObject("sv_upknee_r");
         // }
 
-        AddSelfLR(Color.black);
-        AddSelfLR(Color.blue);
-        AddSelfLR(Color.red);
+        // AddSelfLR(Color.black);
+        // AddSelfLR(Color.blue);
+        // AddSelfLR(Color.red);
 
-        ShowSelfLR(0, false);
-        ShowSelfLR(1, false);
-        ShowSelfLR(2, false);
+        // ShowSelfLR(0, false);
+        // ShowSelfLR(1, false);
+        // ShowSelfLR(2, false);
     }
     #endregion
 
@@ -793,29 +791,29 @@ public class AgentController : MonoBehaviour {
     public float[] ikRatioArray;
     public float[] ikRatioArray_target;
 
-    private Renderer ren_target_top;
-    private Renderer ren_target_bottom;
-    private Renderer ren_target_forward;
-    private Renderer ren_target_back;
-    private Renderer ren_target_left;
-    private Renderer ren_target_right;
-    private Renderer ren_target_center;
+    // private Renderer ren_target_top;
+    // private Renderer ren_target_bottom;
+    // private Renderer ren_target_forward;
+    // private Renderer ren_target_back;
+    // private Renderer ren_target_left;
+    // private Renderer ren_target_right;
+    // private Renderer ren_target_center;
 
-    private LineRenderer lr_target_top;
-    private LineRenderer lr_target_bottom;
-    private LineRenderer lr_target_forward;
-    private LineRenderer lr_target_back;
-    private LineRenderer lr_target_left;
-    private LineRenderer lr_target_right;
-    private LineRenderer lr_target_center;
+    // private LineRenderer lr_target_top;
+    // private LineRenderer lr_target_bottom;
+    // private LineRenderer lr_target_forward;
+    // private LineRenderer lr_target_back;
+    // private LineRenderer lr_target_left;
+    // private LineRenderer lr_target_right;
+    // private LineRenderer lr_target_center;
 
-    private GameObject o_target_top;
-    private GameObject o_target_bottom;
-    private GameObject o_target_forward;
-    private GameObject o_target_back;
-    private GameObject o_target_left;
-    private GameObject o_target_right;
-    private GameObject o_target_center;
+    // private GameObject o_target_top;
+    // private GameObject o_target_bottom;
+    // private GameObject o_target_forward;
+    // private GameObject o_target_back;
+    // private GameObject o_target_left;
+    // private GameObject o_target_right;
+    // private GameObject o_target_center;
 
     private Vector3 target_top;
     private Vector3 target_bottom;
@@ -825,49 +823,49 @@ public class AgentController : MonoBehaviour {
     private Vector3 target_right;
     private Vector3 target_center;
 
-    private GameObject sv_head_top;
-    private GameObject sv_head;
-    private GameObject sv_neck;
-    private GameObject sv_shoulder_l;
-    private GameObject sv_shoulder_r;
-    private GameObject sv_arm_l;
-    private GameObject sv_arm_r;
-    private GameObject sv_uparm_l;
-    private GameObject sv_uparm_r;
-    private GameObject sv_hand_l;
-    private GameObject sv_hand_r;
-    private GameObject sv_spine;
-    private GameObject sv_hip;
+    // private GameObject sv_head_top;
+    // private GameObject sv_head;
+    // private GameObject sv_neck;
+    // private GameObject sv_shoulder_l;
+    // private GameObject sv_shoulder_r;
+    // private GameObject sv_arm_l;
+    // private GameObject sv_arm_r;
+    // private GameObject sv_uparm_l;
+    // private GameObject sv_uparm_r;
+    // private GameObject sv_hand_l;
+    // private GameObject sv_hand_r;
+    // private GameObject sv_spine;
+    // private GameObject sv_hip;
 
-    private GameObject sv_leg_l;
-    private GameObject sv_leg_r;
-    private GameObject sv_knee_l;
-    private GameObject sv_knee_r;
-    private GameObject sv_upknee_l;
-    private GameObject sv_upknee_r;
-    private GameObject sv_foot_l;
-    private GameObject sv_foot_r;
+    // private GameObject sv_leg_l;
+    // private GameObject sv_leg_r;
+    // private GameObject sv_knee_l;
+    // private GameObject sv_knee_r;
+    // private GameObject sv_upknee_l;
+    // private GameObject sv_upknee_r;
+    // private GameObject sv_foot_l;
+    // private GameObject sv_foot_r;
 
-    private LineRenderer sv_lr_head;
-    private LineRenderer sv_lr_neck;
-    private LineRenderer sv_lr_shoulder_l;
-    private LineRenderer sv_lr_shoulder_r;
-    private LineRenderer sv_lr_arm_l;
-    private LineRenderer sv_lr_arm_r;
-    private LineRenderer sv_lr_uparm_l;
-    private LineRenderer sv_lr_uparm_r;
-    private LineRenderer sv_lr_hand_l;
-    private LineRenderer sv_lr_hand_r;
-    private LineRenderer sv_lr_spine;
-    private LineRenderer sv_lr_hip;
-    private LineRenderer sv_lr_leg_l;
-    private LineRenderer sv_lr_leg_r;
-    private LineRenderer sv_lr_knee_l;
-    private LineRenderer sv_lr_knee_r;
-    private LineRenderer sv_lr_foot_l;
-    private LineRenderer sv_lr_foot_r;
-    private LineRenderer sv_lr_upknee_l;
-    private LineRenderer sv_lr_upknee_r;
+    // private LineRenderer sv_lr_head;
+    // private LineRenderer sv_lr_neck;
+    // private LineRenderer sv_lr_shoulder_l;
+    // private LineRenderer sv_lr_shoulder_r;
+    // private LineRenderer sv_lr_arm_l;
+    // private LineRenderer sv_lr_arm_r;
+    // private LineRenderer sv_lr_uparm_l;
+    // private LineRenderer sv_lr_uparm_r;
+    // private LineRenderer sv_lr_hand_l;
+    // private LineRenderer sv_lr_hand_r;
+    // private LineRenderer sv_lr_spine;
+    // private LineRenderer sv_lr_hip;
+    // private LineRenderer sv_lr_leg_l;
+    // private LineRenderer sv_lr_leg_r;
+    // private LineRenderer sv_lr_knee_l;
+    // private LineRenderer sv_lr_knee_r;
+    // private LineRenderer sv_lr_foot_l;
+    // private LineRenderer sv_lr_foot_r;
+    // private LineRenderer sv_lr_upknee_l;
+    // private LineRenderer sv_lr_upknee_r;
 
     private Vector3 pppl, pppr;
 
@@ -1043,13 +1041,13 @@ public class AgentController : MonoBehaviour {
     }
 
     // animator timers & flags
-    public bool playAnimationWithoutTalk;
+    // public bool playAnimationWithoutTalk;
 
-    private Vector3 prePositionLeftHand;
-    private Vector3 prePositionRightHand;
+    // private Vector3 prePositionLeftHand;
+    // private Vector3 prePositionRightHand;
 
-    public Vector3 armUp;
-    public Vector3 armDown;
+    // public Vector3 armUp;
+    // public Vector3 armDown;
 
     private int AnimationNo;
 
@@ -1735,7 +1733,7 @@ public class AgentController : MonoBehaviour {
         nrp_upperChest.x = ScaleBetween(spine_bend, spine_min, spine_max, -1f, 1f);
 
         // sink bend
-        sinkAngle = ScaleBetween(sink_bend, sink_min, sink_max, -1f, 1f);
+        // sinkAngle = ScaleBetween(sink_bend, sink_min, sink_max, -1f, 1f);
 
         // head bend
         nrp_neck.x = ScaleBetween(head_bend, head_min, head_max, -1f, 1f);
@@ -1869,62 +1867,62 @@ public class AgentController : MonoBehaviour {
     #endregion
     
     #region SINK
-    private float sinkAngle;
-    private Vector3 bodyOriginal;
-    private Vector3 body_legDisplacement;
-    private bool sinkFirstPass;
-    private float body_legDistance;
-    private float body_legDistance_original_l;
-    private float body_legDistance_original_r;
-    private float body_legDistance_original_avg;
+    // private float sinkAngle;
+    // private Vector3 bodyOriginal;
+    // private Vector3 body_legDisplacement;
+    // private bool sinkFirstPass;
+    // private float body_legDistance;
+    // private float body_legDistance_original_l;
+    // private float body_legDistance_original_r;
+    // private float body_legDistance_original_avg;
 
-    private void SinkPassInit()
-    {
-        GetBodyTransforms();
-        sinkFirstPass = true;
-        body_legDistance_original_l = (t_LeftUpperLeg.position.y - t_LeftToes.position.y);
-        body_legDistance_original_r = (t_RightUpperLeg.position.y - t_RightToes.position.y);
-        body_legDistance_original_avg = (body_legDistance_original_l + body_legDistance_original_r) / 2;
-    }
+    // private void SinkPassInit()
+    // {
+    //     GetBodyTransforms();
+    //     sinkFirstPass = true;
+    //     body_legDistance_original_l = (t_LeftUpperLeg.position.y - t_LeftToes.position.y);
+    //     body_legDistance_original_r = (t_RightUpperLeg.position.y - t_RightToes.position.y);
+    //     body_legDistance_original_avg = (body_legDistance_original_l + body_legDistance_original_r) / 2;
+    // }
 
-    private void SinkPass()
-    {
-        if (sinkFirstPass)
-        {
-            bodyOriginal = anim.bodyPosition;
-            sinkFirstPass = false;
-            return;
-        }
+    // private void SinkPass()
+    // {
+    //     if (sinkFirstPass)
+    //     {
+    //         bodyOriginal = anim.bodyPosition;
+    //         sinkFirstPass = false;
+    //         return;
+    //     }
 
-        Quaternion q = Quaternion.Euler(new Vector3(sinkAngle / 2, 0, 0));
-        Quaternion qt = Quaternion.Euler(new Vector3(-sinkAngle, 0, 0));
+    //     Quaternion q = Quaternion.Euler(new Vector3(sinkAngle / 2, 0, 0));
+    //     Quaternion qt = Quaternion.Euler(new Vector3(-sinkAngle, 0, 0));
 
-        t_LeftUpperLeg.localRotation *= q;
-        t_RightUpperLeg.localRotation *= q;
-        t_LeftLowerLeg.localRotation *= qt;
-        t_RightLowerLeg.localRotation *= qt;
-        t_LeftFoot.localRotation *= q;
-        t_RightFoot.localRotation *= q;
+    //     t_LeftUpperLeg.localRotation *= q;
+    //     t_RightUpperLeg.localRotation *= q;
+    //     t_LeftLowerLeg.localRotation *= qt;
+    //     t_RightLowerLeg.localRotation *= qt;
+    //     t_LeftFoot.localRotation *= q;
+    //     t_RightFoot.localRotation *= q;
 
-        body_legDistance = ((t_LeftUpperLeg.position.y - t_LeftToes.position.y) + (t_RightUpperLeg.position.y - t_RightToes.position.y)) / 2;
-        body_legDisplacement.y = body_legDistance_original_avg - body_legDistance; // body_legDistance * Mathf.Sin(Mathf.Deg2Rad * sinkAngle);
+    //     body_legDistance = ((t_LeftUpperLeg.position.y - t_LeftToes.position.y) + (t_RightUpperLeg.position.y - t_RightToes.position.y)) / 2;
+    //     body_legDisplacement.y = body_legDistance_original_avg - body_legDistance; // body_legDistance * Mathf.Sin(Mathf.Deg2Rad * sinkAngle);
 
-        anim.bodyPosition = anim.bodyPosition - body_legDisplacement;
-    }
+    //     anim.bodyPosition = anim.bodyPosition - body_legDisplacement;
+    // }
     #endregion
 
-    private Vector3 bodyOriginal_old;
+    // private Vector3 bodyOriginal_old;
 
-    public void ShiftBodyOriginalVec3(Vector3 v)
-    {
-        bodyOriginal_old = bodyOriginal;
-        bodyOriginal += new Vector3(v.x, v.y, v.z);
-    }
+    // public void ShiftBodyOriginalVec3(Vector3 v)
+    // {
+    //     bodyOriginal_old = bodyOriginal;
+    //     bodyOriginal += new Vector3(v.x, v.y, v.z);
+    // }
 
-    public void ResetBodyOriginalVec3()
-    {
-        bodyOriginal = bodyOriginal_old;
-    }
+    // public void ResetBodyOriginalVec3()
+    // {
+    //     bodyOriginal = bodyOriginal_old;
+    // }
 
     // Vector3 v_red;
     // Vector3 v_blue;
@@ -2140,7 +2138,7 @@ public class AgentController : MonoBehaviour {
         if (C_LabanRotation)
         {
             NewRotatePass();
-            SinkPass();
+            // SinkPass();
         }
 
         if (!Freeze)
@@ -2765,41 +2763,41 @@ public class AgentController : MonoBehaviour {
         }
     }
 
-    int markT = 0;
-    public void WaweTestTick()
-    {
-        markT++;
+    // int markT = 0;
+    // public void WaweTestTick()
+    // {
+    //     markT++;
 
-        if(markT == 1)
-        {
-            IKFAC_side = 1;
-            PutMarks = true;
-        }
-        if (markT == 2)
-        {
-            PutMarks = false;
-        }
-        if (markT == 3)
-        {
-            C_LabanIK = true;
-            PutMarks = true;
-        }
-        if (markT == 4)
-        {
-            PutMarks = false;
-        }
-        if (markT == 5)
-        {
-            PutMarks = true;
-            IKWeightByPass = true;
-        }
-        if (markT == 6)
-        {
-            PutMarks = false;
-            IKWeightByPass = false;
+    //     if(markT == 1)
+    //     {
+    //         IKFAC_side = 1;
+    //         PutMarks = true;
+    //     }
+    //     if (markT == 2)
+    //     {
+    //         PutMarks = false;
+    //     }
+    //     if (markT == 3)
+    //     {
+    //         C_LabanIK = true;
+    //         PutMarks = true;
+    //     }
+    //     if (markT == 4)
+    //     {
+    //         PutMarks = false;
+    //     }
+    //     if (markT == 5)
+    //     {
+    //         PutMarks = true;
+    //         IKWeightByPass = true;
+    //     }
+    //     if (markT == 6)
+    //     {
+    //         PutMarks = false;
+    //         IKWeightByPass = false;
 
-        }
-    }
+    //     }
+    // }
 
     /* * *
     * 
@@ -2953,55 +2951,55 @@ public class AgentController : MonoBehaviour {
         return oceans[9];
     }
 
-    public void SetAnimation(int i)
-    {
-        if(anim != null)
-        {
-            Debug.Log("Agent anim set to " + i);
-            anim.SetInteger("AnimationNo", i);
-        }
-    }
+    // public void SetAnimation(int i)
+    // {
+    //     if(anim != null)
+    //     {
+    //         Debug.Log("Agent anim set to " + i);
+    //         anim.SetInteger("AnimationNo", i);
+    //     }
+    // }
 
-    public int GetAnimationNo()
-    {
-        if (anim != null)
-        {
-            return anim.GetInteger("AnimationNo");
-        }
-        else
-        {
-            return 0;
-        }
-    }
+    // public int GetAnimationNo()
+    // {
+    //     if (anim != null)
+    //     {
+    //         return anim.GetInteger("AnimationNo");
+    //     }
+    //     else
+    //     {
+    //         return 0;
+    //     }
+    // }
 
-    public void ResetEmotion()
-    {
-        e_happy = 0f;
-        e_sad = 0f;
-        e_angry = 0f;
-        e_disgust = 0f;
-        e_fear = 0f;
-        e_shock = 0f;
+    // public void ResetEmotion()
+    // {
+    //     e_happy = 0f;
+    //     e_sad = 0f;
+    //     e_angry = 0f;
+    //     e_disgust = 0f;
+    //     e_fear = 0f;
+    //     e_shock = 0f;
 
-        EmotionPass();
+    //     EmotionPass();
 
-        if(faceController!=null) faceController.SetTargetsImmediate();
-    }
+    //     if(faceController!=null) faceController.SetTargetsImmediate();
+    // }
 
-    public void DeltaHandsToLines()
-    {
-        //mainLogic.aniIns.DeltaHandsToLines(anim);
-    }
+    // public void DeltaHandsToLines()
+    // {
+    //     //mainLogic.aniIns.DeltaHandsToLines(anim);
+    // }
 
-    public void RemoveDeltaHandsToLines()
-    {
-        //mainLogic.aniIns.RemoveDeltaHandsToLines();
-    }
+    // public void RemoveDeltaHandsToLines()
+    // {
+    //     //mainLogic.aniIns.RemoveDeltaHandsToLines();
+    // }
 
-    public Transform GetHeadPosition()
-    {
-        return t_Head;
-    }
+    // public Transform GetHeadPosition()
+    // {
+    //     return t_Head;
+    // }
 
     /* * *
      * 
@@ -3009,250 +3007,250 @@ public class AgentController : MonoBehaviour {
      * 
      * * */
     #region LINE VISUALIZATION
-    private bool RegularLines = true;
-    private void ShowLinesForRightHand()
-    {
-        o_target_top.transform.position = target_top;
-        o_target_bottom.transform.position = target_bottom;
-        o_target_forward.transform.position = target_forward;
-        o_target_back.transform.position = target_back;
-        o_target_left.transform.position = target_left;
-        o_target_right.transform.position = target_right;
-        o_target_center.transform.position = target_center;
+    // private bool RegularLines = true;
+    // private void ShowLinesForRightHand()
+    // {
+    //     o_target_top.transform.position = target_top;
+    //     o_target_bottom.transform.position = target_bottom;
+    //     o_target_forward.transform.position = target_forward;
+    //     o_target_back.transform.position = target_back;
+    //     o_target_left.transform.position = target_left;
+    //     o_target_right.transform.position = target_right;
+    //     o_target_center.transform.position = target_center;
 
-        if(RegularLines)
-        {
-            lr_target_top.startColor = Color.Lerp(lineColor1, lineColor2, ikRatioArray[6]);
-            lr_target_top.endColor = lr_target_top.startColor;
-            lr_target_top.startWidth = Mathf.Lerp(lineWidthLow, lineWidthHigh, ikRatioArray[6]);
-            lr_target_top.endWidth = lr_target_top.startWidth;
-            lr_target_top.SetPosition(0, lr_target_top.transform.position);
-            lr_target_top.SetPosition(1, RightHandIK.transform.position);
+    //     if(RegularLines)
+    //     {
+    //         lr_target_top.startColor = Color.Lerp(lineColor1, lineColor2, ikRatioArray[6]);
+    //         lr_target_top.endColor = lr_target_top.startColor;
+    //         lr_target_top.startWidth = Mathf.Lerp(lineWidthLow, lineWidthHigh, ikRatioArray[6]);
+    //         lr_target_top.endWidth = lr_target_top.startWidth;
+    //         lr_target_top.SetPosition(0, lr_target_top.transform.position);
+    //         lr_target_top.SetPosition(1, RightHandIK.transform.position);
 
-            lr_target_bottom.startColor = Color.Lerp(lineColor1, lineColor2, ikRatioArray[7]);
-            lr_target_bottom.endColor = lr_target_bottom.startColor;
-            lr_target_bottom.startWidth = Mathf.Lerp(lineWidthLow, lineWidthHigh, ikRatioArray[7]);
-            lr_target_bottom.endWidth = lr_target_bottom.startWidth;
-            lr_target_bottom.SetPosition(0, lr_target_bottom.transform.position);
-            lr_target_bottom.SetPosition(1, RightHandIK.transform.position);
+    //         lr_target_bottom.startColor = Color.Lerp(lineColor1, lineColor2, ikRatioArray[7]);
+    //         lr_target_bottom.endColor = lr_target_bottom.startColor;
+    //         lr_target_bottom.startWidth = Mathf.Lerp(lineWidthLow, lineWidthHigh, ikRatioArray[7]);
+    //         lr_target_bottom.endWidth = lr_target_bottom.startWidth;
+    //         lr_target_bottom.SetPosition(0, lr_target_bottom.transform.position);
+    //         lr_target_bottom.SetPosition(1, RightHandIK.transform.position);
 
-            lr_target_right.startColor = Color.Lerp(lineColor1, lineColor2, ikRatioArray[8]);
-            lr_target_right.endColor = lr_target_right.startColor;
-            lr_target_right.startWidth = Mathf.Lerp(lineWidthLow, lineWidthHigh, ikRatioArray[8]);
-            lr_target_right.endWidth = lr_target_right.startWidth;
-            lr_target_right.SetPosition(0, lr_target_right.transform.position);
-            lr_target_right.SetPosition(1, RightHandIK.transform.position);
+    //         lr_target_right.startColor = Color.Lerp(lineColor1, lineColor2, ikRatioArray[8]);
+    //         lr_target_right.endColor = lr_target_right.startColor;
+    //         lr_target_right.startWidth = Mathf.Lerp(lineWidthLow, lineWidthHigh, ikRatioArray[8]);
+    //         lr_target_right.endWidth = lr_target_right.startWidth;
+    //         lr_target_right.SetPosition(0, lr_target_right.transform.position);
+    //         lr_target_right.SetPosition(1, RightHandIK.transform.position);
 
-            lr_target_center.startColor = Color.Lerp(lineColor1, lineColor2, ikRatioArray[9]);
-            lr_target_center.endColor = lr_target_center.startColor;
-            lr_target_center.startWidth = Mathf.Lerp(lineWidthLow, lineWidthHigh, ikRatioArray[9]);
-            lr_target_center.endWidth = lr_target_center.startWidth;
-            lr_target_center.SetPosition(0, lr_target_center.transform.position);
-            lr_target_center.SetPosition(1, RightHandIK.transform.position);
+    //         lr_target_center.startColor = Color.Lerp(lineColor1, lineColor2, ikRatioArray[9]);
+    //         lr_target_center.endColor = lr_target_center.startColor;
+    //         lr_target_center.startWidth = Mathf.Lerp(lineWidthLow, lineWidthHigh, ikRatioArray[9]);
+    //         lr_target_center.endWidth = lr_target_center.startWidth;
+    //         lr_target_center.SetPosition(0, lr_target_center.transform.position);
+    //         lr_target_center.SetPosition(1, RightHandIK.transform.position);
 
-            lr_target_forward.startColor = Color.Lerp(lineColor1, lineColor2, ikRatioArray[10]);
-            lr_target_forward.endColor = lr_target_forward.startColor;
-            lr_target_forward.startWidth = Mathf.Lerp(lineWidthLow, lineWidthHigh, ikRatioArray[10]);
-            lr_target_forward.endWidth = lr_target_forward.startWidth;
-            lr_target_forward.SetPosition(0, lr_target_forward.transform.position);
-            lr_target_forward.SetPosition(1, RightHandIK.transform.position);
+    //         lr_target_forward.startColor = Color.Lerp(lineColor1, lineColor2, ikRatioArray[10]);
+    //         lr_target_forward.endColor = lr_target_forward.startColor;
+    //         lr_target_forward.startWidth = Mathf.Lerp(lineWidthLow, lineWidthHigh, ikRatioArray[10]);
+    //         lr_target_forward.endWidth = lr_target_forward.startWidth;
+    //         lr_target_forward.SetPosition(0, lr_target_forward.transform.position);
+    //         lr_target_forward.SetPosition(1, RightHandIK.transform.position);
 
-            lr_target_back.startColor = Color.Lerp(lineColor1, lineColor2, ikRatioArray[11]);
-            lr_target_back.endColor = lr_target_back.startColor;
-            lr_target_back.startWidth = Mathf.Lerp(lineWidthLow, lineWidthHigh, ikRatioArray[11]);
-            lr_target_back.endWidth = lr_target_back.startWidth;
-            lr_target_back.SetPosition(0, lr_target_back.transform.position);
-            lr_target_back.SetPosition(1, RightHandIK.transform.position);
+    //         lr_target_back.startColor = Color.Lerp(lineColor1, lineColor2, ikRatioArray[11]);
+    //         lr_target_back.endColor = lr_target_back.startColor;
+    //         lr_target_back.startWidth = Mathf.Lerp(lineWidthLow, lineWidthHigh, ikRatioArray[11]);
+    //         lr_target_back.endWidth = lr_target_back.startWidth;
+    //         lr_target_back.SetPosition(0, lr_target_back.transform.position);
+    //         lr_target_back.SetPosition(1, RightHandIK.transform.position);
 
-            ren_target_top.material.SetColor("_TintColor", Color.Lerp(orbColor1, orbColor2, IKFAC_up));
-            ren_target_bottom.material.SetColor("_TintColor", Color.Lerp(orbColor1, orbColor2, -IKFAC_up));
-            ren_target_right.material.SetColor("_TintColor", Color.Lerp(orbColor1, orbColor2, IKFAC_side));
-            ren_target_center.material.SetColor("_TintColor", Color.Lerp(orbColor1, orbColor2, -IKFAC_side));
-            ren_target_forward.material.SetColor("_TintColor", Color.Lerp(orbColor1, orbColor2, IKFAC_forward));
-            ren_target_back.material.SetColor("_TintColor", Color.Lerp(orbColor1, orbColor2, -IKFAC_forward));
-        }
-        else
-        {
-            lr_target_top.startColor = lineColor1;
-            lr_target_top.endColor = lineColor1;
-            lr_target_top.startWidth = lineWidthLow;
-            lr_target_top.endWidth = lineWidthLow;
-            lr_target_top.SetPosition(0, lr_target_top.transform.position);
-            lr_target_top.SetPosition(1, t_Hips.position);
+    //         ren_target_top.material.SetColor("_TintColor", Color.Lerp(orbColor1, orbColor2, IKFAC_up));
+    //         ren_target_bottom.material.SetColor("_TintColor", Color.Lerp(orbColor1, orbColor2, -IKFAC_up));
+    //         ren_target_right.material.SetColor("_TintColor", Color.Lerp(orbColor1, orbColor2, IKFAC_side));
+    //         ren_target_center.material.SetColor("_TintColor", Color.Lerp(orbColor1, orbColor2, -IKFAC_side));
+    //         ren_target_forward.material.SetColor("_TintColor", Color.Lerp(orbColor1, orbColor2, IKFAC_forward));
+    //         ren_target_back.material.SetColor("_TintColor", Color.Lerp(orbColor1, orbColor2, -IKFAC_forward));
+    //     }
+    //     else
+    //     {
+    //         lr_target_top.startColor = lineColor1;
+    //         lr_target_top.endColor = lineColor1;
+    //         lr_target_top.startWidth = lineWidthLow;
+    //         lr_target_top.endWidth = lineWidthLow;
+    //         lr_target_top.SetPosition(0, lr_target_top.transform.position);
+    //         lr_target_top.SetPosition(1, t_Hips.position);
 
-            lr_target_bottom.startColor = lineColor1;
-            lr_target_bottom.endColor = lineColor1;
-            lr_target_bottom.startWidth = lineWidthLow;
-            lr_target_bottom.endWidth = lineWidthLow;
-            lr_target_bottom.SetPosition(0, lr_target_bottom.transform.position);
-            lr_target_bottom.SetPosition(1, t_Hips.position);
+    //         lr_target_bottom.startColor = lineColor1;
+    //         lr_target_bottom.endColor = lineColor1;
+    //         lr_target_bottom.startWidth = lineWidthLow;
+    //         lr_target_bottom.endWidth = lineWidthLow;
+    //         lr_target_bottom.SetPosition(0, lr_target_bottom.transform.position);
+    //         lr_target_bottom.SetPosition(1, t_Hips.position);
 
-            lr_target_right.startColor = Color.red;
-            lr_target_right.endColor = Color.red;
-            lr_target_right.startWidth = lineWidthLow;
-            lr_target_right.endWidth = lineWidthLow;
-            lr_target_right.SetPosition(0, lr_target_right.transform.position);
-            lr_target_right.SetPosition(1, t_Hips.position);
+    //         lr_target_right.startColor = Color.red;
+    //         lr_target_right.endColor = Color.red;
+    //         lr_target_right.startWidth = lineWidthLow;
+    //         lr_target_right.endWidth = lineWidthLow;
+    //         lr_target_right.SetPosition(0, lr_target_right.transform.position);
+    //         lr_target_right.SetPosition(1, t_Hips.position);
 
-            lr_target_center.startColor = Color.red;
-            lr_target_center.endColor = Color.red;
-            lr_target_center.startWidth = lineWidthLow;
-            lr_target_center.endWidth = lineWidthLow;
-            lr_target_center.SetPosition(0, lr_target_center.transform.position);
-            lr_target_center.SetPosition(1, t_Hips.position);
+    //         lr_target_center.startColor = Color.red;
+    //         lr_target_center.endColor = Color.red;
+    //         lr_target_center.startWidth = lineWidthLow;
+    //         lr_target_center.endWidth = lineWidthLow;
+    //         lr_target_center.SetPosition(0, lr_target_center.transform.position);
+    //         lr_target_center.SetPosition(1, t_Hips.position);
 
-            lr_target_forward.startColor = Color.green;
-            lr_target_forward.endColor = Color.green;
-            lr_target_forward.startWidth = lineWidthLow;
-            lr_target_forward.endWidth = lineWidthLow;
-            lr_target_forward.SetPosition(0, lr_target_forward.transform.position);
-            lr_target_forward.SetPosition(1, t_Hips.position);
+    //         lr_target_forward.startColor = Color.green;
+    //         lr_target_forward.endColor = Color.green;
+    //         lr_target_forward.startWidth = lineWidthLow;
+    //         lr_target_forward.endWidth = lineWidthLow;
+    //         lr_target_forward.SetPosition(0, lr_target_forward.transform.position);
+    //         lr_target_forward.SetPosition(1, t_Hips.position);
 
-            lr_target_back.startColor = Color.green;
-            lr_target_back.endColor = Color.green;
-            lr_target_back.startWidth = lineWidthLow;
-            lr_target_back.endWidth = lineWidthLow;
-            lr_target_back.SetPosition(0, lr_target_back.transform.position);
-            lr_target_back.SetPosition(1, t_Hips.position);
+    //         lr_target_back.startColor = Color.green;
+    //         lr_target_back.endColor = Color.green;
+    //         lr_target_back.startWidth = lineWidthLow;
+    //         lr_target_back.endWidth = lineWidthLow;
+    //         lr_target_back.SetPosition(0, lr_target_back.transform.position);
+    //         lr_target_back.SetPosition(1, t_Hips.position);
 
-            ren_target_top.material.SetColor("_TintColor", orbColor1);
-            ren_target_bottom.material.SetColor("_TintColor", orbColor1);
-            ren_target_right.material.SetColor("_TintColor", orbColor1);
-            ren_target_center.material.SetColor("_TintColor", orbColor1);
-            ren_target_forward.material.SetColor("_TintColor", orbColor1);
-            ren_target_back.material.SetColor("_TintColor", orbColor1);
-        }
-    }
+    //         ren_target_top.material.SetColor("_TintColor", orbColor1);
+    //         ren_target_bottom.material.SetColor("_TintColor", orbColor1);
+    //         ren_target_right.material.SetColor("_TintColor", orbColor1);
+    //         ren_target_center.material.SetColor("_TintColor", orbColor1);
+    //         ren_target_forward.material.SetColor("_TintColor", orbColor1);
+    //         ren_target_back.material.SetColor("_TintColor", orbColor1);
+    //     }
+    // }
 
-    private void ShowLinesForLeftHand()
-    {
-        o_target_top.transform.position = target_top;
-        o_target_bottom.transform.position = target_bottom;
-        o_target_forward.transform.position = target_forward;
-        o_target_back.transform.position = target_back;
-        o_target_left.transform.position = target_left;
-        o_target_right.transform.position = target_right;
-        o_target_center.transform.position = target_center;
+    // private void ShowLinesForLeftHand()
+    // {
+    //     o_target_top.transform.position = target_top;
+    //     o_target_bottom.transform.position = target_bottom;
+    //     o_target_forward.transform.position = target_forward;
+    //     o_target_back.transform.position = target_back;
+    //     o_target_left.transform.position = target_left;
+    //     o_target_right.transform.position = target_right;
+    //     o_target_center.transform.position = target_center;
 
-        if (RegularLines)
-        {
-            lr_target_top.startColor = Color.Lerp(lineColor1, lineColor2, ikRatioArray[0] * IKFAC_up);
-            lr_target_top.endColor = lr_target_top.startColor;
-            lr_target_top.startWidth = Mathf.Lerp(lineWidthLow, lineWidthHigh, ikRatioArray[0] * IKFAC_up);
-            lr_target_top.endWidth = lr_target_top.startWidth;
-            lr_target_top.SetPosition(0, lr_target_top.transform.position);
-            lr_target_top.SetPosition(1, LeftHandIK.transform.position);
+    //     if (RegularLines)
+    //     {
+    //         lr_target_top.startColor = Color.Lerp(lineColor1, lineColor2, ikRatioArray[0] * IKFAC_up);
+    //         lr_target_top.endColor = lr_target_top.startColor;
+    //         lr_target_top.startWidth = Mathf.Lerp(lineWidthLow, lineWidthHigh, ikRatioArray[0] * IKFAC_up);
+    //         lr_target_top.endWidth = lr_target_top.startWidth;
+    //         lr_target_top.SetPosition(0, lr_target_top.transform.position);
+    //         lr_target_top.SetPosition(1, LeftHandIK.transform.position);
 
-            lr_target_bottom.startColor = Color.Lerp(lineColor1, lineColor2, ikRatioArray[1] * -IKFAC_up);
-            lr_target_bottom.endColor = lr_target_bottom.startColor;
-            lr_target_bottom.startWidth = Mathf.Lerp(lineWidthLow, lineWidthHigh, ikRatioArray[1] * -IKFAC_up);
-            lr_target_bottom.endWidth = lr_target_bottom.startWidth;
-            lr_target_bottom.SetPosition(0, lr_target_bottom.transform.position);
-            lr_target_bottom.SetPosition(1, LeftHandIK.transform.position);
+    //         lr_target_bottom.startColor = Color.Lerp(lineColor1, lineColor2, ikRatioArray[1] * -IKFAC_up);
+    //         lr_target_bottom.endColor = lr_target_bottom.startColor;
+    //         lr_target_bottom.startWidth = Mathf.Lerp(lineWidthLow, lineWidthHigh, ikRatioArray[1] * -IKFAC_up);
+    //         lr_target_bottom.endWidth = lr_target_bottom.startWidth;
+    //         lr_target_bottom.SetPosition(0, lr_target_bottom.transform.position);
+    //         lr_target_bottom.SetPosition(1, LeftHandIK.transform.position);
 
-            lr_target_left.startColor = Color.Lerp(lineColor1, lineColor2, ikRatioArray[2] * IKFAC_side);
-            lr_target_left.endColor = lr_target_left.startColor;
-            lr_target_left.startWidth = Mathf.Lerp(lineWidthLow, lineWidthHigh, ikRatioArray[2] * IKFAC_side);
-            lr_target_left.endWidth = lr_target_left.startWidth;
-            lr_target_left.SetPosition(0, lr_target_left.transform.position);
-            lr_target_left.SetPosition(1, LeftHandIK.transform.position);
+    //         lr_target_left.startColor = Color.Lerp(lineColor1, lineColor2, ikRatioArray[2] * IKFAC_side);
+    //         lr_target_left.endColor = lr_target_left.startColor;
+    //         lr_target_left.startWidth = Mathf.Lerp(lineWidthLow, lineWidthHigh, ikRatioArray[2] * IKFAC_side);
+    //         lr_target_left.endWidth = lr_target_left.startWidth;
+    //         lr_target_left.SetPosition(0, lr_target_left.transform.position);
+    //         lr_target_left.SetPosition(1, LeftHandIK.transform.position);
 
-            lr_target_center.startColor = Color.Lerp(lineColor1, lineColor2, ikRatioArray[3] * -IKFAC_side);
-            lr_target_center.endColor = lr_target_center.startColor;
-            lr_target_center.startWidth = Mathf.Lerp(lineWidthLow, lineWidthHigh, ikRatioArray[3] * -IKFAC_side);
-            lr_target_center.endWidth = lr_target_center.startWidth;
-            lr_target_center.SetPosition(0, lr_target_center.transform.position);
-            lr_target_center.SetPosition(1, LeftHandIK.transform.position);
+    //         lr_target_center.startColor = Color.Lerp(lineColor1, lineColor2, ikRatioArray[3] * -IKFAC_side);
+    //         lr_target_center.endColor = lr_target_center.startColor;
+    //         lr_target_center.startWidth = Mathf.Lerp(lineWidthLow, lineWidthHigh, ikRatioArray[3] * -IKFAC_side);
+    //         lr_target_center.endWidth = lr_target_center.startWidth;
+    //         lr_target_center.SetPosition(0, lr_target_center.transform.position);
+    //         lr_target_center.SetPosition(1, LeftHandIK.transform.position);
 
-            lr_target_forward.startColor = Color.Lerp(lineColor1, lineColor2, ikRatioArray[4] * IKFAC_forward);
-            lr_target_forward.endColor = lr_target_forward.startColor;
-            lr_target_forward.startWidth = Mathf.Lerp(lineWidthLow, lineWidthHigh, ikRatioArray[4] * IKFAC_forward);
-            lr_target_forward.endWidth = lr_target_forward.startWidth;
-            lr_target_forward.SetPosition(0, lr_target_forward.transform.position);
-            lr_target_forward.SetPosition(1, LeftHandIK.transform.position);
+    //         lr_target_forward.startColor = Color.Lerp(lineColor1, lineColor2, ikRatioArray[4] * IKFAC_forward);
+    //         lr_target_forward.endColor = lr_target_forward.startColor;
+    //         lr_target_forward.startWidth = Mathf.Lerp(lineWidthLow, lineWidthHigh, ikRatioArray[4] * IKFAC_forward);
+    //         lr_target_forward.endWidth = lr_target_forward.startWidth;
+    //         lr_target_forward.SetPosition(0, lr_target_forward.transform.position);
+    //         lr_target_forward.SetPosition(1, LeftHandIK.transform.position);
 
-            lr_target_back.startColor = Color.Lerp(lineColor1, lineColor2, ikRatioArray[5] *-IKFAC_forward);
-            lr_target_back.endColor = lr_target_back.startColor;
-            lr_target_back.startWidth = Mathf.Lerp(lineWidthLow, lineWidthHigh, ikRatioArray[5] * -IKFAC_forward);
-            lr_target_back.endWidth = lr_target_back.startWidth;
-            lr_target_back.SetPosition(0, lr_target_back.transform.position);
-            lr_target_back.SetPosition(1, LeftHandIK.transform.position);
+    //         lr_target_back.startColor = Color.Lerp(lineColor1, lineColor2, ikRatioArray[5] *-IKFAC_forward);
+    //         lr_target_back.endColor = lr_target_back.startColor;
+    //         lr_target_back.startWidth = Mathf.Lerp(lineWidthLow, lineWidthHigh, ikRatioArray[5] * -IKFAC_forward);
+    //         lr_target_back.endWidth = lr_target_back.startWidth;
+    //         lr_target_back.SetPosition(0, lr_target_back.transform.position);
+    //         lr_target_back.SetPosition(1, LeftHandIK.transform.position);
 
-            ren_target_top.material.SetColor("_TintColor", Color.Lerp(orbColor1, orbColor2, IKFAC_up));
-            ren_target_bottom.material.SetColor("_TintColor", Color.Lerp(orbColor1, orbColor2, -IKFAC_up));
-            ren_target_left.material.SetColor("_TintColor", Color.Lerp(orbColor1, orbColor2, IKFAC_side));
-            ren_target_center.material.SetColor("_TintColor", Color.Lerp(orbColor1, orbColor2, -IKFAC_side));
-            ren_target_forward.material.SetColor("_TintColor", Color.Lerp(orbColor1, orbColor2, IKFAC_forward));
-            ren_target_back.material.SetColor("_TintColor", Color.Lerp(orbColor1, orbColor2, -IKFAC_forward));
-        }
-        else
-        {
-            lr_target_top.startColor = lineColor1;
-            lr_target_top.endColor = lineColor1;
-            lr_target_top.startWidth = lineWidthLow;
-            lr_target_top.endWidth = lineWidthLow;
-            lr_target_top.SetPosition(0, lr_target_top.transform.position);
-            lr_target_top.SetPosition(1, t_Hips.position);
+    //         ren_target_top.material.SetColor("_TintColor", Color.Lerp(orbColor1, orbColor2, IKFAC_up));
+    //         ren_target_bottom.material.SetColor("_TintColor", Color.Lerp(orbColor1, orbColor2, -IKFAC_up));
+    //         ren_target_left.material.SetColor("_TintColor", Color.Lerp(orbColor1, orbColor2, IKFAC_side));
+    //         ren_target_center.material.SetColor("_TintColor", Color.Lerp(orbColor1, orbColor2, -IKFAC_side));
+    //         ren_target_forward.material.SetColor("_TintColor", Color.Lerp(orbColor1, orbColor2, IKFAC_forward));
+    //         ren_target_back.material.SetColor("_TintColor", Color.Lerp(orbColor1, orbColor2, -IKFAC_forward));
+    //     }
+    //     else
+    //     {
+    //         lr_target_top.startColor = lineColor1;
+    //         lr_target_top.endColor = lineColor1;
+    //         lr_target_top.startWidth = lineWidthLow;
+    //         lr_target_top.endWidth = lineWidthLow;
+    //         lr_target_top.SetPosition(0, lr_target_top.transform.position);
+    //         lr_target_top.SetPosition(1, t_Hips.position);
 
-            lr_target_bottom.startColor = lineColor1;
-            lr_target_bottom.endColor = lineColor1;
-            lr_target_bottom.startWidth = lineWidthLow;
-            lr_target_bottom.endWidth = lineWidthLow;
-            lr_target_bottom.SetPosition(0, lr_target_bottom.transform.position);
-            lr_target_bottom.SetPosition(1, t_Hips.position);
+    //         lr_target_bottom.startColor = lineColor1;
+    //         lr_target_bottom.endColor = lineColor1;
+    //         lr_target_bottom.startWidth = lineWidthLow;
+    //         lr_target_bottom.endWidth = lineWidthLow;
+    //         lr_target_bottom.SetPosition(0, lr_target_bottom.transform.position);
+    //         lr_target_bottom.SetPosition(1, t_Hips.position);
 
-            lr_target_left.startColor = Color.red;
-            lr_target_left.endColor = Color.red;
-            lr_target_left.startWidth = lineWidthLow;
-            lr_target_left.endWidth = lineWidthLow;
-            lr_target_left.SetPosition(0, lr_target_left.transform.position);
-            lr_target_left.SetPosition(1, t_Hips.position);
+    //         lr_target_left.startColor = Color.red;
+    //         lr_target_left.endColor = Color.red;
+    //         lr_target_left.startWidth = lineWidthLow;
+    //         lr_target_left.endWidth = lineWidthLow;
+    //         lr_target_left.SetPosition(0, lr_target_left.transform.position);
+    //         lr_target_left.SetPosition(1, t_Hips.position);
 
-            lr_target_center.startColor = Color.red;
-            lr_target_center.endColor = Color.red;
-            lr_target_center.startWidth = lineWidthLow;
-            lr_target_center.endWidth = lineWidthLow;
-            lr_target_center.SetPosition(0, lr_target_center.transform.position);
-            lr_target_center.SetPosition(1, t_Hips.position);
+    //         lr_target_center.startColor = Color.red;
+    //         lr_target_center.endColor = Color.red;
+    //         lr_target_center.startWidth = lineWidthLow;
+    //         lr_target_center.endWidth = lineWidthLow;
+    //         lr_target_center.SetPosition(0, lr_target_center.transform.position);
+    //         lr_target_center.SetPosition(1, t_Hips.position);
 
-            lr_target_forward.startColor = Color.green;
-            lr_target_forward.endColor = Color.green;
-            lr_target_forward.startWidth = lineWidthLow;
-            lr_target_forward.endWidth = lineWidthLow;
-            lr_target_forward.SetPosition(0, lr_target_forward.transform.position);
-            lr_target_forward.SetPosition(1, t_Hips.position);
+    //         lr_target_forward.startColor = Color.green;
+    //         lr_target_forward.endColor = Color.green;
+    //         lr_target_forward.startWidth = lineWidthLow;
+    //         lr_target_forward.endWidth = lineWidthLow;
+    //         lr_target_forward.SetPosition(0, lr_target_forward.transform.position);
+    //         lr_target_forward.SetPosition(1, t_Hips.position);
 
-            lr_target_back.startColor = Color.green;
-            lr_target_back.endColor = Color.green;
-            lr_target_back.startWidth = lineWidthLow;
-            lr_target_back.endWidth = lineWidthLow;
-            lr_target_back.SetPosition(0, lr_target_back.transform.position);
-            lr_target_back.SetPosition(1, t_Hips.position);
+    //         lr_target_back.startColor = Color.green;
+    //         lr_target_back.endColor = Color.green;
+    //         lr_target_back.startWidth = lineWidthLow;
+    //         lr_target_back.endWidth = lineWidthLow;
+    //         lr_target_back.SetPosition(0, lr_target_back.transform.position);
+    //         lr_target_back.SetPosition(1, t_Hips.position);
 
-            ren_target_top.material.SetColor("_TintColor", orbColor1);
-            ren_target_bottom.material.SetColor("_TintColor", orbColor1);
-            ren_target_right.material.SetColor("_TintColor", orbColor1);
-            ren_target_center.material.SetColor("_TintColor", orbColor1);
-            ren_target_forward.material.SetColor("_TintColor", orbColor1);
-            ren_target_back.material.SetColor("_TintColor", orbColor1);
-        }
-    }
+    //         ren_target_top.material.SetColor("_TintColor", orbColor1);
+    //         ren_target_bottom.material.SetColor("_TintColor", orbColor1);
+    //         ren_target_right.material.SetColor("_TintColor", orbColor1);
+    //         ren_target_center.material.SetColor("_TintColor", orbColor1);
+    //         ren_target_forward.material.SetColor("_TintColor", orbColor1);
+    //         ren_target_back.material.SetColor("_TintColor", orbColor1);
+    //     }
+    // }
 
-    private void ShowOneLineLeft()
-    {
-        o_target_left.transform.position = target_left;
+    // private void ShowOneLineLeft()
+    // {
+    //     o_target_left.transform.position = target_left;
 
-        lr_target_left.startColor = Color.Lerp(lineColor1, lineColor2, ikRatioArray[2] * IKFAC_side);
-        lr_target_left.endColor = lr_target_left.startColor;
-        lr_target_left.startWidth = Mathf.Lerp(lineWidthLow, lineWidthHigh, ikRatioArray[2] * IKFAC_side);
-        lr_target_left.endWidth = lr_target_left.startWidth;
-        lr_target_left.SetPosition(0, lr_target_left.transform.position);
-        lr_target_left.SetPosition(1, anim.GetBoneTransform(HumanBodyBones.LeftHand).position);
+    //     lr_target_left.startColor = Color.Lerp(lineColor1, lineColor2, ikRatioArray[2] * IKFAC_side);
+    //     lr_target_left.endColor = lr_target_left.startColor;
+    //     lr_target_left.startWidth = Mathf.Lerp(lineWidthLow, lineWidthHigh, ikRatioArray[2] * IKFAC_side);
+    //     lr_target_left.endWidth = lr_target_left.startWidth;
+    //     lr_target_left.SetPosition(0, lr_target_left.transform.position);
+    //     lr_target_left.SetPosition(1, anim.GetBoneTransform(HumanBodyBones.LeftHand).position);
         
-        ren_target_left.material.SetColor("_TintColor", orbColor1);
+    //     ren_target_left.material.SetColor("_TintColor", orbColor1);
 
-        o_target_center.transform.position = anim.GetBoneTransform(HumanBodyBones.LeftHand).position;
-    }
+    //     o_target_center.transform.position = anim.GetBoneTransform(HumanBodyBones.LeftHand).position;
+    // }
 
     // private void SetLinesFor()
     // {
@@ -3348,38 +3346,38 @@ public class AgentController : MonoBehaviour {
     //     e_disgust = 0f;
     // }
 
-    private List<GameObject> self_lr_obj = new List<GameObject>();
-    private List<LineRenderer> self_lrs = new List<LineRenderer>();
+    // private List<GameObject> self_lr_obj = new List<GameObject>();
+    // private List<LineRenderer> self_lrs = new List<LineRenderer>();
 
-    private void AddSelfLR(Color c)
-    {
-        GameObject obj = new GameObject("LR");
-        self_lr_obj.Add(obj);
+    // private void AddSelfLR(Color c)
+    // {
+    //     GameObject obj = new GameObject("LR");
+    //     self_lr_obj.Add(obj);
 
-        LineRenderer self_lr = obj.AddComponent<LineRenderer>();
-        self_lr.material = new Material(Shader.Find("Particles/Standard Unlit"));
-        self_lr.startColor = c;
-        self_lr.endColor = c;
-        self_lr.startWidth = lineWidthLow;
-        self_lr.endWidth = lineWidthLow;
+    //     LineRenderer self_lr = obj.AddComponent<LineRenderer>();
+    //     self_lr.material = new Material(Shader.Find("Particles/Standard Unlit"));
+    //     self_lr.startColor = c;
+    //     self_lr.endColor = c;
+    //     self_lr.startWidth = lineWidthLow;
+    //     self_lr.endWidth = lineWidthLow;
 
-        self_lrs.Add(self_lr);
-    }
+    //     self_lrs.Add(self_lr);
+    // }
 
-    private void MoveSelfLR(int ind, Vector3 st, Vector3 en)
-    {
-        self_lrs[ind].SetPosition(0, st);
-        self_lrs[ind].SetPosition(1, en);
-    }
+    // private void MoveSelfLR(int ind, Vector3 st, Vector3 en)
+    // {
+    //     self_lrs[ind].SetPosition(0, st);
+    //     self_lrs[ind].SetPosition(1, en);
+    // }
 
-    private void ShowSelfLR(int ind, bool st)
-    {
-        self_lr_obj[ind].SetActive(st);
-    }
+    // private void ShowSelfLR(int ind, bool st)
+    // {
+    //     self_lr_obj[ind].SetActive(st);
+    // }
 
-    public void FreezeNow()
-    {
-        Freeze = true;
-        anim.speed = 0;
-    }
+    // public void FreezeNow()
+    // {
+    //     Freeze = true;
+    //     anim.speed = 0;
+    // }
 }

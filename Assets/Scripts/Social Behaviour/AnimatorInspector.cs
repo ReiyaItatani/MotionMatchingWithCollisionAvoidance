@@ -71,21 +71,21 @@ public class AnimatorInspector : MonoBehaviour
 
     private int tmpAnimIndex;
 
-    // public float GetCurrentSpeed(Animator a, float minSpeed, float maxSpeed)
-    // {
-    //     tmpAnimIndex = -1;
+    public float GetCurrentSpeed(Animator a, float minSpeed, float maxSpeed)
+    {
+        tmpAnimIndex = -1;
 
-    //     animClipDict.TryGetValue(a.GetCurrentAnimatorClipInfo(0)[0].clip.name, out tmpAnimIndex);
-    //     if (tmpAnimIndex != -1)
-    //     {
-    //         return aniInfos[tmpAnimIndex].GetCurrentSpeed(a,minSpeed,maxSpeed);
-    //     }
-    //     else
-    //     {
-    //         Debug.Log("Ow");
-    //         return 1f;
-    //     }
-    // }
+        animClipDict.TryGetValue(a.GetCurrentAnimatorClipInfo(0)[0].clip.name, out tmpAnimIndex);
+        if (tmpAnimIndex != -1)
+        {
+            return aniInfos[tmpAnimIndex].GetCurrentSpeed(a,minSpeed,maxSpeed);
+        }
+        else
+        {
+            Debug.Log("Ow");
+            return 1f;
+        }
+    }
 
     private AnimatorClipInfo[] tmp_clipInfo;
 

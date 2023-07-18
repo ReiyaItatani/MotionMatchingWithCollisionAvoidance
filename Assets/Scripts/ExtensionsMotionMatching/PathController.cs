@@ -19,9 +19,9 @@ namespace MotionMatching{
         private Vector3[] PredictedPositions;
         private Vector3[] PredictedDirections;
         // Speed Of Agents -----------------------------------------------------------------
-        [Range (0.5f, 1.5f)]
         private float CurrentSpeed = 1.0f;
-        private float initialSpeed;
+        [Range (0.5f, 1.5f)]
+        public float initialSpeed = 1.0f;
         private float MinSpeed = 0.5f;
         // --------------------------------------------------------------------------
         // To Mange Agents -----------------------------------------------------------------
@@ -45,7 +45,7 @@ namespace MotionMatching{
         private float agentRadius;
         private float avoidanceWeight = 1.5f;
         private Vector3 avoidanceVector = Vector3.zero;
-        public GameObject currentAvoidanceTarget;
+        private GameObject currentAvoidanceTarget;
         public GameObject CurrentAvoidanceTarget{
             get => currentAvoidanceTarget;
             set => currentAvoidanceTarget = value;
@@ -70,7 +70,7 @@ namespace MotionMatching{
         private float collisionDangerThreshold = 4.0f;
         private Vector3 otherPositionAtNearestApproach;
         private Vector3 myPositionAtNearestApproach;
-        public GameObject potentialAvoidanceTarget;
+        private GameObject potentialAvoidanceTarget;
         // --------------------------------------------------------------------------
 
         private void Start()
@@ -290,11 +290,11 @@ namespace MotionMatching{
                 ParameterManager otherParameterManager = other.GetComponent<ParameterManager>();
 
                 // predicted time until nearest approach of "this" and "other"
-                float time = predictNearestApproachTime (CurrentDirection, CurrentPosition, CurrentSpeed, otherParameterManager.GetCurrentDirection(), otherParameterManager.GetRawCurrentPosition(), otherParameterManager.GetCurrentSpeed());
+                float time = predictNearestApproachTime (CurrentDirection, GetCurrentPosition(), CurrentSpeed, otherParameterManager.GetCurrentDirection(), otherParameterManager.GetCurrentPosition(), otherParameterManager.GetCurrentSpeed());
                 //Debug.Log("time:"+time);
                 if ((time >= 0) && (time < minTimeToCollision)){
                     //Debug.Log("Distance:"+computeNearestApproachPositions (time, CurrentPosition, CurrentDirection, CurrentSpeed, otherParameterManager.GetRawCurrentPosition(), otherParameterManager.GetCurrentDirection(), otherParameterManager.GetCurrentSpeed()));
-                    if (computeNearestApproachPositions (time, CurrentPosition, CurrentDirection, CurrentSpeed, otherParameterManager.GetRawCurrentPosition(), otherParameterManager.GetCurrentDirection(), otherParameterManager.GetCurrentSpeed()) < collisionDangerThreshold)
+                    if (computeNearestApproachPositions (time, GetCurrentPosition(), CurrentDirection, CurrentSpeed, otherParameterManager.GetCurrentPosition(), otherParameterManager.GetCurrentDirection(), otherParameterManager.GetCurrentSpeed()) < collisionDangerThreshold)
                     {
                         minTimeToCollision = time;
                         potentialAvoidanceTarget = other;
@@ -311,7 +311,7 @@ namespace MotionMatching{
                 {
                     // anti-parallel "head on" paths:
                     // steer away from future threat position
-                    Vector3 offset = otherPositionAtNearestApproach - CurrentPosition;
+                    Vector3 offset = otherPositionAtNearestApproach - (Vector3)GetCurrentPosition();
                     Vector3 rightVector = Vector3.Cross(CurrentDirection, Vector3.up);
 
                     float sideDot = Vector3.Dot(offset, rightVector);
@@ -323,7 +323,7 @@ namespace MotionMatching{
                     if (parallelness > angle)
                     {
                         // parallel paths: steer away from threat
-                        Vector3 offset = potentialAvoidanceTarget.GetComponent<ParameterManager>().GetRawCurrentPosition() - CurrentPosition;
+                        Vector3 offset = potentialAvoidanceTarget.GetComponent<ParameterManager>().GetCurrentPosition() - (Vector3)GetCurrentPosition();
                         Vector3 rightVector = Vector3.Cross(CurrentDirection, Vector3.up);
 
                         float sideDot = Vector3.Dot(offset, rightVector);
@@ -415,22 +415,22 @@ namespace MotionMatching{
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.black;
-            Gizmos.DrawSphere(CurrentPosition,0.3f);
+            Gizmos.DrawSphere((Vector3)GetCurrentPosition(),0.3f);
             //AvoidanceVector
             Gizmos.color = Color.blue;
-            GizmosExtensions.DrawArrow(CurrentPosition, CurrentPosition + avoidanceVector*avoidanceWeight);
+            GizmosExtensions.DrawArrow((Vector3)GetCurrentPosition(), (Vector3)GetCurrentPosition() + avoidanceVector*avoidanceWeight);
 
             //toGoalVector
             Gizmos.color = Color.yellow;
-            GizmosExtensions.DrawArrow(CurrentPosition, CurrentPosition + CurrentDirection* CurrentSpeed);
+            GizmosExtensions.DrawArrow((Vector3)GetCurrentPosition(), (Vector3)GetCurrentPosition() + CurrentDirection* CurrentSpeed);
 
             //GoalDirection
             Gizmos.color = Color.white;
-            GizmosExtensions.DrawArrow(CurrentPosition, CurrentPosition + toGoalVector* toGoalWeight);
+            GizmosExtensions.DrawArrow((Vector3)GetCurrentPosition(), (Vector3)GetCurrentPosition() + toGoalVector* toGoalWeight);
 
             //PotentialAvoidaceVector
             Gizmos.color = Color.green;
-            GizmosExtensions.DrawArrow(CurrentPosition, CurrentPosition + avoidNeighborsVector*avoidNeighborWeight);
+            GizmosExtensions.DrawArrow((Vector3)GetCurrentPosition(), (Vector3)GetCurrentPosition() + avoidNeighborsVector*avoidNeighborWeight);
 
             if (Path == null) return;
 
