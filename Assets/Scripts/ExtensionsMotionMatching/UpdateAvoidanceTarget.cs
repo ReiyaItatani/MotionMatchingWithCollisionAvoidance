@@ -26,6 +26,7 @@ public class UpdateAvoidanceTarget : MonoBehaviour
 
     void OnTriggerExit(Collider other)
     {
+        if(pathCharacterController == null) return;
         if (pathCharacterController.CurrentAvoidanceTarget!=null && pathCharacterController.CurrentAvoidanceTarget.Equals(other.gameObject))
         {
             pathCharacterController.CurrentAvoidanceTarget = null;

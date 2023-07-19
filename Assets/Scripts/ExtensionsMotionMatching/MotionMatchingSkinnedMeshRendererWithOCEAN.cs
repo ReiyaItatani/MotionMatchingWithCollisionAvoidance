@@ -403,7 +403,7 @@ namespace MotionMatching
 
         [HideInInspector] public FaceScript faceController;
 
-        // public AnimatorInspector _animatorInspector;
+        public AnimatorInspector _animatorInspector;
 
         static public GameObject GetChildGameObject(GameObject fromGameObject, string withName)
         {
@@ -438,13 +438,13 @@ namespace MotionMatching
             target_right = t_Hips.position + t_Hips.right;
             target_center = t_Hips.position;
 
-            if(IKWeightByPass)
-            {
-                for(int i = 0; i < 12; i++)
-                {
-                    ikRatioArray[i] = 1;
-                }
-            }
+            // if(IKWeightByPass)
+            // {
+            //     for(int i = 0; i < 12; i++)
+            //     {
+            //         ikRatioArray[i] = 1;
+            //     }
+            // }
 
             float ar0 = Mathf.Clamp(IKFAC_up, 0, 1) * mult_top;
             float ar1 = Mathf.Clamp(-IKFAC_up, 0, 1) * mult_bottom;
@@ -454,47 +454,49 @@ namespace MotionMatching
             float ar5 = Mathf.Clamp(-IKFAC_forward, 0, 1) * mult_back;
 
         
-            if (USE_ANCHORS)
-            {
-                pppl = t_LeftHand.position
-                + Vector3.Lerp(t_LeftHand.position, target_top, ar0 * ikRatioArray[0]) - t_LeftHand.position
-                + Vector3.Lerp(t_LeftHand.position, target_bottom, ar1 * ikRatioArray[1]) - t_LeftHand.position
-                + Vector3.Lerp(t_LeftHand.position, target_left, ar2 * ikRatioArray[2]) - t_LeftHand.position
-                + Vector3.Lerp(t_LeftHand.position, target_center, ar3 * ikRatioArray[3]) - t_LeftHand.position
-                + Vector3.Lerp(t_LeftHand.position, target_forward, ar4 * ikRatioArray[4]) - t_LeftHand.position
-                + Vector3.Lerp(t_LeftHand.position, target_back, ar5 * ikRatioArray[5]) - t_LeftHand.position;
+            // if (USE_ANCHORS)
+            // {
+            //     pppl = t_LeftHand.position
+            //     + Vector3.Lerp(t_LeftHand.position, target_top, ar0 * ikRatioArray[0]) - t_LeftHand.position
+            //     + Vector3.Lerp(t_LeftHand.position, target_bottom, ar1 * ikRatioArray[1]) - t_LeftHand.position
+            //     + Vector3.Lerp(t_LeftHand.position, target_left, ar2 * ikRatioArray[2]) - t_LeftHand.position
+            //     + Vector3.Lerp(t_LeftHand.position, target_center, ar3 * ikRatioArray[3]) - t_LeftHand.position
+            //     + Vector3.Lerp(t_LeftHand.position, target_forward, ar4 * ikRatioArray[4]) - t_LeftHand.position
+            //     + Vector3.Lerp(t_LeftHand.position, target_back, ar5 * ikRatioArray[5]) - t_LeftHand.position;
 
-                pppr = t_RightHand.position
-                + Vector3.Lerp(t_RightHand.position, target_top, ar0 * ikRatioArray[6]) - t_RightHand.position
-                + Vector3.Lerp(t_RightHand.position, target_bottom, ar1 * ikRatioArray[7]) - t_RightHand.position
-                + Vector3.Lerp(t_RightHand.position, target_right, ar2 * ikRatioArray[8]) - t_RightHand.position
-                + Vector3.Lerp(t_RightHand.position, target_center, ar3 * ikRatioArray[9]) - t_RightHand.position
-                + Vector3.Lerp(t_RightHand.position, target_forward, ar4 * ikRatioArray[10]) - t_RightHand.position
-                + Vector3.Lerp(t_RightHand.position, target_back, ar5 * ikRatioArray[11]) - t_RightHand.position;
-            }
-            else
-            {
-                pppl = t_LeftHand.position
-                + t_Hips.up.normalized * ar0 * ikRatioArray[0]
-                - t_Hips.up.normalized * ar1 * ikRatioArray[1]
-                - t_Hips.right.normalized * ar2 * ikRatioArray[2]
-                + t_Hips.right.normalized * ar3 * ikRatioArray[3]
-                + t_Hips.forward.normalized * ar4 * ikRatioArray[4]
-                - t_Hips.forward.normalized * ar5 * ikRatioArray[5];
+            //     pppr = t_RightHand.position
+            //     + Vector3.Lerp(t_RightHand.position, target_top, ar0 * ikRatioArray[6]) - t_RightHand.position
+            //     + Vector3.Lerp(t_RightHand.position, target_bottom, ar1 * ikRatioArray[7]) - t_RightHand.position
+            //     + Vector3.Lerp(t_RightHand.position, target_right, ar2 * ikRatioArray[8]) - t_RightHand.position
+            //     + Vector3.Lerp(t_RightHand.position, target_center, ar3 * ikRatioArray[9]) - t_RightHand.position
+            //     + Vector3.Lerp(t_RightHand.position, target_forward, ar4 * ikRatioArray[10]) - t_RightHand.position
+            //     + Vector3.Lerp(t_RightHand.position, target_back, ar5 * ikRatioArray[11]) - t_RightHand.position;
+            // }
+            // else
+            // {
+            //     pppl = t_LeftHand.position
+            //     + t_Hips.up.normalized * ar0 * ikRatioArray[0]
+            //     - t_Hips.up.normalized * ar1 * ikRatioArray[1]
+            //     - t_Hips.right.normalized * ar2 * ikRatioArray[2]
+            //     + t_Hips.right.normalized * ar3 * ikRatioArray[3]
+            //     + t_Hips.forward.normalized * ar4 * ikRatioArray[4]
+            //     - t_Hips.forward.normalized * ar5 * ikRatioArray[5];
 
-                pppr = t_RightHand.position
-                + t_Hips.up.normalized * ar0 * ikRatioArray[6]
-                - t_Hips.up.normalized * ar1 * ikRatioArray[7]
-                + t_Hips.right.normalized * ar2 * ikRatioArray[8]
-                - t_Hips.right.normalized * ar3 * ikRatioArray[9]
-                + t_Hips.forward.normalized * ar4 * ikRatioArray[10]
-                - t_Hips.forward.normalized * ar5 * ikRatioArray[11];
-            }
+            //     pppr = t_RightHand.position
+            //     + t_Hips.up.normalized * ar0 * ikRatioArray[6]
+            //     - t_Hips.up.normalized * ar1 * ikRatioArray[7]
+            //     + t_Hips.right.normalized * ar2 * ikRatioArray[8]
+            //     - t_Hips.right.normalized * ar3 * ikRatioArray[9]
+            //     + t_Hips.forward.normalized * ar4 * ikRatioArray[10]
+            //     - t_Hips.forward.normalized * ar5 * ikRatioArray[11];
+            // }
             
 
-            LeftHandIK.transform.position = pppl; // Vector3.Lerp(LeftHandIK.transform.position, pppl, Time.deltaTime*followmult);
-            RightHandIK.transform.position = pppr; // Vector3.Lerp(RightHandIK.transform.position, pppr, Time.deltaTime* followmult);
+            // LeftHandIK.transform.position = pppl; // Vector3.Lerp(LeftHandIK.transform.position, pppl, Time.deltaTime*followmult);
+            // RightHandIK.transform.position = pppr; // Vector3.Lerp(RightHandIK.transform.position, pppr, Time.deltaTime* followmult);
 
+            LeftHandIK.transform.position = Animator.GetBoneTransform(HumanBodyBones.LeftHand).position; 
+            RightHandIK.transform.position = Animator.GetBoneTransform(HumanBodyBones.RightHand).position; 
             LeftFootIK.transform.position = t_LeftFoot.position - t_Hips.right * IKFAC_side * 0.01f;
             RightFootIK.transform.position = t_RightFoot.position + t_Hips.right * IKFAC_side * 0.01f;
 
@@ -586,7 +588,7 @@ namespace MotionMatching
             // {
             //     ikRatioArray[i] = ikRatioArray[i] + (ikRatioArray_target[i] - ikRatioArray[i]) * Time.deltaTime;
             // }
-            // AdjustIKTargets();
+            AdjustIKTargets();
 
             if (C_LabanIK)
             {
@@ -1217,7 +1219,7 @@ namespace MotionMatching
             if (!Freeze)
             {
                 if (C_Fluctuation) FluctuatePass();
-                FingerPass();
+                // FingerPass();
             }
 
             if (C_LookShift)
@@ -1698,7 +1700,6 @@ namespace MotionMatching
             if (d == 0) return 0;
             else return (newmax - newmin) * (oldvalue - oldmin) / d + newmin;
         }
-
     }
 
 

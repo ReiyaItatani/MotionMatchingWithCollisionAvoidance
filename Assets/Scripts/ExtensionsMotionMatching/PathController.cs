@@ -40,7 +40,7 @@ namespace MotionMatching{
         [Header("Parameters For Basic Collision Avoidance")]
         public CapsuleCollider agentCollider;
         private BoxCollider avoidanceCollider;
-        private GameObject avoidanceColliderObject;
+        private GameObject avoidanceColliderArea;
         public Vector3 avoidanceColliderSize = new Vector3(1.5f, 1.5f, 2.0f); 
         private float agentRadius;
         private float avoidanceWeight = 1.5f;
@@ -72,21 +72,40 @@ namespace MotionMatching{
         private Vector3 myPositionAtNearestApproach;
         private GameObject potentialAvoidanceTarget;
         // --------------------------------------------------------------------------
+        // Unaligned Collision Avoidance -------------------------------------------
+        [Header("Social Behaviour")]
+        private bool onWaiting = false;
+        private GameObject collidedAgent;
+        // --------------------------------------------------------------------------
 
         private void Start()
         {
             //Create Box Collider
-            avoidanceColliderObject = new GameObject("avoidanceColliderObject");
-            avoidanceColliderObject.transform.parent = this.transform;
-            avoidanceCollider = avoidanceColliderObject.AddComponent<BoxCollider>();
+            avoidanceColliderArea = new GameObject("AvoidanceColliderArea");
+            avoidanceColliderArea.transform.parent = this.transform;
+            avoidanceCollider = avoidanceColliderArea.AddComponent<BoxCollider>();
             avoidanceCollider.size = avoidanceColliderSize;
             avoidanceCollider.isTrigger = true;
-            avoidanceColliderObject.AddComponent<UpdateAvoidanceTarget>();
+            avoidanceColliderArea.AddComponent<UpdateAvoidanceTarget>();
+
             //init
-            initialSpeed = CurrentSpeed;
+            CurrentSpeed = initialSpeed;
+            if (initialSpeed < MinSpeed)
+            {
+                MinSpeed = initialSpeed;
+            }
             agentRadius = agentCollider.radius;
             CurrentPosition = Path[0];
-            CurrentGoal = Path[CurrentGoalIndex];
+            CurrentGoal = Path[CurrentGoalIndex];            
+            
+            //Create Agent Collision Detection:This is a script to detect the collision between agents by using capsule collider.
+            AgentCollisionDetection agentCollisionDetection = agentCollider.GetComponent<AgentCollisionDetection>();
+            if (agentCollisionDetection == null)
+            {
+                agentCollisionDetection = agentCollider.gameObject.AddComponent<AgentCollisionDetection>();
+                Debug.Log("AgentCollisionDetection script added");
+            }
+            agentCollisionDetection.SetPathController(this.gameObject.GetComponent<PathController>());
  
             // Get the feature indices
             TrajectoryPosFeatureIndex = -1;
@@ -140,7 +159,15 @@ namespace MotionMatching{
 
             //Move Agent
             direction = (toGoalWeight*toGoalVector + avoidanceWeight*avoidanceVector + avoidNeighborWeight*avoidNeighborsVector).normalized;
-            nextPosition = currentPosition + direction * CurrentSpeed * time;
+
+            //if the Agent collide with the other agent
+            if(onWaiting){
+                //if the agents hit, the agent will be one step away from the other agent
+                // direction = ((Vector3)GetCurrentPosition()-collidedAgent.transform.position).normalized;
+                nextPosition = currentPosition;
+            }else{
+                nextPosition = currentPosition + direction * CurrentSpeed * time;
+            }
         }
 
         //To Update Goal Direction
@@ -221,9 +248,9 @@ namespace MotionMatching{
         private IEnumerator UpdateAvoidanceColliderPos(float AgentHeight){
             while(true){
                 Vector3 Center = (Vector3)GetCurrentPosition()+CurrentDirection;
-                avoidanceColliderObject.transform.position = new Vector3(Center.x, AgentHeight, Center.z);
+                avoidanceColliderArea.transform.position = new Vector3(Center.x, AgentHeight, Center.z);
                 Quaternion targetRotation = Quaternion.LookRotation(CurrentDirection);
-                avoidanceColliderObject.transform.rotation = targetRotation;
+                avoidanceColliderArea.transform.rotation = targetRotation;
                 yield return null;
             }
         }
@@ -410,6 +437,12 @@ namespace MotionMatching{
         public float GetCurrentSpeed(){
             return CurrentSpeed;
         }
+        
+        public void SetOnWaiting(bool _onWaiting, GameObject _collidedAgent){
+            onWaiting = _onWaiting;
+            collidedAgent = _collidedAgent;
+        }
+
 
     #if UNITY_EDITOR
         private void OnDrawGizmos()

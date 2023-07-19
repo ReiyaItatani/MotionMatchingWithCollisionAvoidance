@@ -298,6 +298,9 @@ public class TestMinAgentController : MonoBehaviour {
         LeftHandIK.transform.position = pppl; // Vector3.Lerp(LeftHandIK.transform.position, pppl, Time.deltaTime*followmult);
         RightHandIK.transform.position = pppr; // Vector3.Lerp(RightHandIK.transform.position, pppr, Time.deltaTime* followmult);
 
+        LeftHandIK.transform.position = anim.GetBoneTransform(HumanBodyBones.LeftHand).position; 
+        RightHandIK.transform.position = anim.GetBoneTransform(HumanBodyBones.RightHand).position;   
+
         LeftFootIK.transform.position = t_LeftFoot.position - t_Hips.right * IKFAC_side * 0.01f;
         RightFootIK.transform.position = t_RightFoot.position + t_Hips.right * IKFAC_side * 0.01f;
 
@@ -1036,6 +1039,7 @@ public class TestMinAgentController : MonoBehaviour {
             if (C_Fluctuation) FluctuatePass();
             FingerPass();
         }
+        
 
         if (C_LookShift)
         {
