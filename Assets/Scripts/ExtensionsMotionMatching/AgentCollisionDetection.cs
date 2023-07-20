@@ -9,19 +9,6 @@ public class AgentCollisionDetection : MonoBehaviour
     private float currentSpeed;
     private bool onWaiting = false;
 
-    // void OnCollisionEnter(Collision collision)
-    // {
-    //     // Check if the object we collided with has the "Agent" tag
-    //     if (collision.gameObject.tag == "Agent")
-    //     {
-    //         // Log a message to the Unity console
-    //         Debug.Log("Collided with Agent");
-
-    //         if(pathController!=null){
-    //             StartCoroutine(pathController.SetSpeedToZeroTemporarily(3.0f));
-    //         }
-    //     }
-    // }
     void OnTriggerEnter(Collider collider)
     {
         // Check if the object we collided with has the "Agent" tag
@@ -29,7 +16,6 @@ public class AgentCollisionDetection : MonoBehaviour
         {
             if(pathController!=null){
                 if(onWaiting == false){
-                    //Have to impkement waiting time based on characteristic
                     StartCoroutine(WaitTime(3.0f, collider.gameObject));
                 }
             }
@@ -40,7 +26,7 @@ public class AgentCollisionDetection : MonoBehaviour
         pathController = _pathController;
     }
 
-public IEnumerator WaitTime(float time, GameObject collidedAgent)
+    public IEnumerator WaitTime(float time, GameObject collidedAgent)
     {
         onWaiting = true;
         pathController.SetOnWaiting(onWaiting, collidedAgent);
@@ -49,4 +35,9 @@ public IEnumerator WaitTime(float time, GameObject collidedAgent)
         pathController.SetOnWaiting(onWaiting, collidedAgent);
         yield return null;
     }
+
+    public bool GetWaiting(){
+        return onWaiting;
+    }
+
 }

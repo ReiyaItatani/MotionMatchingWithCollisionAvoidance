@@ -77,6 +77,7 @@ namespace MotionMatching{
         private bool onWaiting = false;
         private GameObject collidedAgent;
         // --------------------------------------------------------------------------
+        
 
         private void Start()
         {
@@ -164,7 +165,7 @@ namespace MotionMatching{
             if(onWaiting){
                 //if the agents hit, the agent will be one step away from the other agent
                 // direction = ((Vector3)GetCurrentPosition()-collidedAgent.transform.position).normalized;
-                nextPosition = currentPosition;
+                nextPosition = currentPosition + ((Vector3)GetCurrentPosition()-collidedAgent.transform.position).normalized * 0.2f * time;
             }else{
                 nextPosition = currentPosition + direction * CurrentSpeed * time;
             }

@@ -334,7 +334,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 378866565}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 13.67, y: 0, z: 10}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -633,8 +633,6 @@ MonoBehaviour:
       x: 10
       y: 0
     Velocity: 2.5
-  avoidanceCollider: {fileID: 436362507}
-  agentCollider: {fileID: 2093018044}
 --- !u!4 &506783194
 Transform:
   m_ObjectHideFlags: 0
@@ -995,7 +993,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1212519217}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 10}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1197,8 +1195,6 @@ MonoBehaviour:
       x: 3
       y: 5
     Velocity: 1
-  avoidanceCollider: {fileID: 0}
-  agentCollider: {fileID: 0}
 --- !u!4 &1536473773
 Transform:
   m_ObjectHideFlags: 0
@@ -1484,8 +1480,6 @@ MonoBehaviour:
       x: 3
       y: 5
     Velocity: 2.5
-  avoidanceCollider: {fileID: 0}
-  agentCollider: {fileID: 0}
 --- !u!4 &1897668724
 Transform:
   m_ObjectHideFlags: 0
