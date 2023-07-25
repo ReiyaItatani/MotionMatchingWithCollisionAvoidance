@@ -6,8 +6,18 @@ using MotionMatching;
 public class AgentCollisionDetection : MonoBehaviour
 {
     private PathController pathController;
+    private CapsuleCollider capsuleCollider;
+    private float height;
     private float currentSpeed;
     private bool onWaiting = false;
+
+    void Update(){
+        if(pathController!=null){
+            Vector3 currentPosition = pathController.GetCurrentPosition();
+            Vector3 difference = new Vector3(currentPosition.x - this.transform.position.x, capsuleCollider.center.y, currentPosition.z - this.transform.position.z);
+            capsuleCollider.center = difference;
+        }
+    }
 
     void OnTriggerEnter(Collider collider)
     {
@@ -22,8 +32,9 @@ public class AgentCollisionDetection : MonoBehaviour
         }
     }
 
-    public void SetPathController(PathController _pathController){
+    public void InitParameter(PathController _pathController, CapsuleCollider _capsuleCollider){
         pathController = _pathController;
+        capsuleCollider = _capsuleCollider;
     }
 
     public IEnumerator WaitTime(float time, GameObject collidedAgent)

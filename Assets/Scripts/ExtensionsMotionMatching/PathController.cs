@@ -72,8 +72,8 @@ namespace MotionMatching{
         private Vector3 myPositionAtNearestApproach;
         private GameObject potentialAvoidanceTarget;
         // --------------------------------------------------------------------------
-        // Unaligned Collision Avoidance -------------------------------------------
-        [Header("Social Behaviour")]
+        // When Collide -------------------------------------------------------------
+        [Header("Social Behaviour, Non-verbal Communication")]
         private bool onWaiting = false;
         private GameObject collidedAgent;
         // --------------------------------------------------------------------------
@@ -106,7 +106,7 @@ namespace MotionMatching{
                 agentCollisionDetection = agentCollider.gameObject.AddComponent<AgentCollisionDetection>();
                 Debug.Log("AgentCollisionDetection script added");
             }
-            agentCollisionDetection.SetPathController(this.gameObject.GetComponent<PathController>());
+            agentCollisionDetection.InitParameter(this.gameObject.GetComponent<PathController>(), agentCollider);
  
             // Get the feature indices
             TrajectoryPosFeatureIndex = -1;
@@ -170,6 +170,40 @@ namespace MotionMatching{
                 nextPosition = currentPosition + direction * CurrentSpeed * time;
             }
         }
+
+        //
+        void CheckCollision(GameObject collidedAgent)
+        {
+            Vector3 otherDirection = collidedAgent.GetComponent<ParameterManager>().GetCurrentDirection();
+            Vector3 myDirection = GetCurrentDirection();
+
+            float dotProduct = Vector3.Dot(myDirection.normalized, otherDirection.normalized);
+
+            float angle = 0.707f;
+            if (dotProduct < -angle)
+            {
+                // The directions are almost opposite (anti-parallel)
+                Debug.Log("Directions are almost opposite");
+                //
+            }
+            else
+            {
+                if (dotProduct > angle)
+                {
+                    // The directions are almost the same (parallel)
+                    Debug.Log("Directions are almost the same");
+                    //スピードを比べて、自身のほうが早いようであれば、collision avoidance force方向に強めに避けていく。
+                    //もしくは、後ろにいるエージェントの速度を減速させる。
+                }
+                else
+                {
+                    // The directions are neither parallel nor anti-parallel
+                    Debug.Log("Directions are neither parallel nor anti-parallel");
+                    //片方のエージェントが止まって、
+                }
+            }
+        }
+
 
         //To Update Goal Direction
         private void CheckForGoalProximity()
