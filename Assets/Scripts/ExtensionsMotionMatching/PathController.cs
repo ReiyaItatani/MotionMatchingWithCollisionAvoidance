@@ -171,7 +171,6 @@ namespace MotionMatching{
             }
         }
 
-        //
         void CheckCollision(GameObject collidedAgent)
         {
             Vector3 otherDirection = collidedAgent.GetComponent<ParameterManager>().GetCurrentDirection();
@@ -179,28 +178,38 @@ namespace MotionMatching{
 
             float dotProduct = Vector3.Dot(myDirection.normalized, otherDirection.normalized);
 
-            float angle = 0.707f;
-            if (dotProduct < -angle)
+            // Convert the dot product result to angle in degrees
+            float angleInDegrees = Mathf.Acos(dotProduct) * Mathf.Rad2Deg;
+
+            if (angleInDegrees > 180) angleInDegrees -= 360; // Adjust for angles greater than 180
+
+            float parallelThreshold = 45f;    // Threshold for directions to be considered "almost the same"
+            float antiParallelThreshold = 135f;  // Threshold for directions to be considered "almost opposite"
+            float obliqueThreshold = 90f; // Threshold for directions to be oblique
+
+            if (angleInDegrees < -antiParallelThreshold)
             {
                 // The directions are almost opposite (anti-parallel)
                 Debug.Log("Directions are almost opposite");
-                //
+                // Your code for this case...
+            }
+            else if (angleInDegrees > -obliqueThreshold && angleInDegrees < obliqueThreshold)
+            {
+                // The directions are oblique (between 90 and 135 degrees)
+                Debug.Log("Directions are oblique");
+                // Your code for this case...
+            }
+            else if (angleInDegrees > obliqueThreshold)
+            {
+                // The directions are almost the same (parallel)
+                Debug.Log("Directions are almost the same");
+                // Your code for this case...
             }
             else
             {
-                if (dotProduct > angle)
-                {
-                    // The directions are almost the same (parallel)
-                    Debug.Log("Directions are almost the same");
-                    //スピードを比べて、自身のほうが早いようであれば、collision avoidance force方向に強めに避けていく。
-                    //もしくは、後ろにいるエージェントの速度を減速させる。
-                }
-                else
-                {
-                    // The directions are neither parallel nor anti-parallel
-                    Debug.Log("Directions are neither parallel nor anti-parallel");
-                    //片方のエージェントが止まって、
-                }
+                // The directions are neither parallel nor anti-parallel nor oblique
+                Debug.Log("Directions are neither parallel nor anti-parallel nor oblique");
+                // Your code for this case...
             }
         }
 
