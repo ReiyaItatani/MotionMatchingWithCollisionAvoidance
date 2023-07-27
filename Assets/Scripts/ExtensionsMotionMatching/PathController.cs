@@ -3,6 +3,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using Drawing;
 
 namespace MotionMatching{
     using TrajectoryFeature = MotionMatchingData.TrajectoryFeature;
@@ -18,14 +19,18 @@ namespace MotionMatching{
         private Vector3 CurrentDirection;
         private Vector3[] PredictedPositions;
         private Vector3[] PredictedDirections;
+        [Range(0.0f, 2.0f)] public float MaxDistanceSimulationBoneAndObject = 0.1f; // Max distance between SimulationBone and SimulationObject
+        [Range(0.0f, 2.0f)] public float PositionAdjustmentHalflife = 0.1f; // Time needed to move half of the distance between SimulationBone and SimulationObject
+        [Range(0.0f, 2.0f)] public float PosMaximumAdjustmentRatio = 0.1f; // Ratio between the adjustment and the character's velocity to clamp the adjustment
         // Speed Of Agents -----------------------------------------------------------------
-        private float CurrentSpeed = 1.0f;
+        [Header("Speed")]
+        private float CurrentSpeed = 1.0f; //Current speed of the agent
         [Range (0.0f, 1.5f)]
-        public float initialSpeed = 1.0f;
-        private float MinSpeed = 0.5f;
+        public float initialSpeed = 1.0f; //Initial speed of the agent
+        private float MinSpeed = 0.5f; //Minimum speed of the agent
         // --------------------------------------------------------------------------
         // To Mange Agents -----------------------------------------------------------------
-        [Tooltip("Agent Manager is a script to manage agents")] public AgentManager agentManager;
+        [Tooltip("Agent Manager is a script to manage agents")] public AgentManager agentManager; //Manager for all of the agents
         // --------------------------------------------------------------------------
         // Features -----------------------------------------------------------------
         [Header("Features For Motion Matching")]
@@ -38,44 +43,50 @@ namespace MotionMatching{
         // --------------------------------------------------------------------------
         // Collision Avoidance ------------------------------------------------------
         [Header("Parameters For Basic Collision Avoidance")]
-        public CapsuleCollider agentCollider;
-        private BoxCollider avoidanceCollider;
-        private GameObject avoidanceColliderArea;
         public Vector3 avoidanceColliderSize = new Vector3(1.5f, 1.5f, 2.0f); 
-        private float agentRadius;
-        private float avoidanceWeight = 1.5f;
-        private Vector3 avoidanceVector = Vector3.zero;
+        private Vector3 avoidanceVector = Vector3.zero;//Direction of basic collision avoidance
+        private float avoidanceWeight = 1.5f;//Weight for basic collision avoidance
         private GameObject currentAvoidanceTarget;
         public GameObject CurrentAvoidanceTarget{
             get => currentAvoidanceTarget;
             set => currentAvoidanceTarget = value;
         }
+        public CapsuleCollider agentCollider; //Collider of the agent
+        private BoxCollider avoidanceCollider; //The area to trigger basic collision avoidance
+        private GameObject avoidanceColliderArea;
+        private float agentRadius;
         // --------------------------------------------------------------------------
         // To Goal Direction --------------------------------------------------------
         [Header("Parameters For Goal Direction")]
-        private Vector3 toGoalVector = Vector3.zero;
-        private float toGoalWeight = 1.7f;
         private Vector3 CurrentGoal;
+        private Vector3 toGoalVector = Vector3.zero;//Direction to goal
+        private float toGoalWeight = 1.7f;//Weight for goal direction
         private int CurrentGoalIndex = 1;
-        [SerializeField]
-        private float goalRadius = 0.5f;
-        [SerializeField]
-        private float slowingRadius = 2.0f;
+        [SerializeField]private float goalRadius = 0.5f;
+        [SerializeField]private float slowingRadius = 2.0f;
         // --------------------------------------------------------------------------
         // Unaligned Collision Avoidance -------------------------------------------
         [Header("Parameters For Unaligned Collision Avoidance")]
-        private Vector3 avoidNeighborsVector = Vector3.zero;
-        private float avoidNeighborWeight = 1.0f;
-        private float minTimeToCollision =5.0f;
-        private float collisionDangerThreshold = 4.0f;
         private Vector3 otherPositionAtNearestApproach;
         private Vector3 myPositionAtNearestApproach;
+        private Vector3 avoidNeighborsVector = Vector3.zero;//Direction for unaligned collision avoidance
         private GameObject potentialAvoidanceTarget;
+        private float avoidNeighborWeight = 1.0f;//Weight for unaligned collision avoidance
+        private float minTimeToCollision =5.0f;
+        private float collisionDangerThreshold = 4.0f;
         // --------------------------------------------------------------------------
-        // When Collide -------------------------------------------------------------
+        // When Collide each other -----------------------------------------------------
         [Header("Social Behaviour, Non-verbal Communication")]
-        private bool onWaiting = false;
+        private bool onCollide = false;
+        private bool onMoving = false;
         private GameObject collidedAgent;
+        // --------------------------------------------------------------------------
+        // Gizmo Parameters -------------------------------------------------------------
+        [Header("Controll Gizmos")]
+        public bool ShowAvoidanceForce = false;
+        public bool ShowUnalignedCollisionAvoidance = false;
+        public bool ShowGoalDirection = false;
+        public bool ShowCurrentDirection = false;
         // --------------------------------------------------------------------------
         
 
@@ -89,6 +100,7 @@ namespace MotionMatching{
             avoidanceCollider.isTrigger = true;
             avoidanceColliderArea.AddComponent<UpdateAvoidanceTarget>();
 
+
             //init
             CurrentSpeed = initialSpeed;
             if (initialSpeed < MinSpeed)
@@ -99,6 +111,7 @@ namespace MotionMatching{
             CurrentPosition = Path[0];
             CurrentGoal = Path[CurrentGoalIndex];            
             
+
             //Create Agent Collision Detection:This is a script to detect the collision between agents by using capsule collider.
             AgentCollisionDetection agentCollisionDetection = agentCollider.GetComponent<AgentCollisionDetection>();
             if (agentCollisionDetection == null)
@@ -108,6 +121,7 @@ namespace MotionMatching{
             }
             agentCollisionDetection.InitParameter(this.gameObject.GetComponent<PathController>(), agentCollider);
  
+
             // Get the feature indices
             TrajectoryPosFeatureIndex = -1;
             TrajectoryRotFeatureIndex = -1;
@@ -122,7 +136,6 @@ namespace MotionMatching{
 
             TrajectoryPosPredictionFrames = SimulationBone.MMData.TrajectoryFeatures[TrajectoryPosFeatureIndex].FramesPrediction;
             TrajectoryRotPredictionFrames = SimulationBone.MMData.TrajectoryFeatures[TrajectoryRotFeatureIndex].FramesPrediction;
-            // TODO: generalize this, allow for different number of prediction frames
             Debug.Assert(TrajectoryPosPredictionFrames.Length == TrajectoryRotPredictionFrames.Length, "Trajectory Position and Trajectory Direction Prediction Frames must be the same for PathCharacterController");
             for (int i = 0; i < TrajectoryPosPredictionFrames.Length; ++i)
             {
@@ -133,6 +146,7 @@ namespace MotionMatching{
             PredictedPositions = new Vector3[NumberPredictionPos];
             PredictedDirections = new Vector3[NumberPredictionRot];
             
+
             StartCoroutine(UpdateAvoidanceColliderPos(0.9f));
             StartCoroutine(UpdateAvoidanceVector(0.1f, 0.5f));
             StartCoroutine(UpdateAvoidNeighborsVector(agentManager.GetAgents(), 0.1f, 0.3f));
@@ -144,10 +158,52 @@ namespace MotionMatching{
             {
                 SimulatePath(DatabaseDeltaTime * TrajectoryPosPredictionFrames[i], CurrentPosition, out PredictedPositions[i], out PredictedDirections[i]);
             }
+            
             // Update Current Position and Direction
             SimulatePath(Time.deltaTime, CurrentPosition, out CurrentPosition, out CurrentDirection);
             CheckForGoalProximity();
+
+            //Prevent agents from intersection
+            AdjustSimulationBone();
+            ClampSimulationBone();
+
+            DrawInfo();
         }
+
+        private void ClampSimulationBone()
+        {
+            // Clamp Position
+            float3 simulationObject = GetCurrentPosition();
+            float3 simulationBone = SimulationBone.transform.position;
+            if (math.distance(simulationObject, simulationBone) > MaxDistanceSimulationBoneAndObject)
+            {
+                float3 newSimulationBonePos = MaxDistanceSimulationBoneAndObject * math.normalize(simulationBone - simulationObject) + simulationObject;
+                SimulationBone.SetPosAdjustment(newSimulationBonePos - simulationBone);
+            }
+        }
+        private void AdjustSimulationBone()
+        {
+            AdjustCharacterPosition();
+        }
+
+        private void AdjustCharacterPosition()
+        {
+            float3 simulationObject = GetCurrentPosition();
+            float3 simulationBone = SimulationBone.transform.position;
+            float3 differencePosition = simulationObject - simulationBone;
+            // Damp the difference using the adjustment halflife and dt
+            float3 adjustmentPosition = Spring.DampAdjustmentImplicit(differencePosition, PositionAdjustmentHalflife, Time.deltaTime);
+            // Clamp adjustment if the length is greater than the character velocity
+            // multiplied by the ratio
+            float maxLength = PosMaximumAdjustmentRatio * math.length(SimulationBone.Velocity) * Time.deltaTime;
+            if (math.length(adjustmentPosition) > maxLength)
+            {
+                adjustmentPosition = maxLength * math.normalize(adjustmentPosition);
+            }
+            // Move the simulation bone towards the simulation object
+            SimulationBone.SetPosAdjustment(adjustmentPosition);
+        }
+
 
         private void SimulatePath(float time, Vector3 currentPosition, out Vector3 nextPosition, out Vector3 direction)
         {
@@ -160,60 +216,63 @@ namespace MotionMatching{
 
             //Move Agent
             direction = (toGoalWeight*toGoalVector + avoidanceWeight*avoidanceVector + avoidNeighborWeight*avoidNeighborsVector).normalized;
-
-            //if the Agent collide with the other agent
-            if(onWaiting){
-                //if the agents hit, the agent will be one step away from the other agent
-                // direction = ((Vector3)GetCurrentPosition()-collidedAgent.transform.position).normalized;
-                nextPosition = currentPosition + ((Vector3)GetCurrentPosition()-collidedAgent.transform.position).normalized * 0.2f * time;
+        
+            if(onCollide){
+                if(onMoving){
+                    Vector3 offset = collidedAgent.GetComponent<ParameterManager>().GetCurrentPosition() - (Vector3)GetCurrentPosition();
+                    Vector3 myRightAgainstOther = Vector3.Cross(offset.normalized, Vector3.up);
+                    direction = (direction + myRightAgainstOther.normalized*1.0f).normalized;
+                    nextPosition = currentPosition + direction * CurrentSpeed * time;
+                    // if(collidedAgent.GetComponent<ParameterManager>().GetOnMoving()){
+                    //     nextPosition = currentPosition + ((Vector3)GetCurrentPosition()-collidedAgent.transform.position).normalized * 0.3f * time;
+                    // }else{
+                    //     Vector3 offset = collidedAgent.GetComponent<ParameterManager>().GetCurrentPosition() - (Vector3)GetCurrentPosition();
+                    //     Vector3 myRightAgainstOther = Vector3.Cross(offset.normalized, Vector3.up);
+                    //     direction = (direction + myRightAgainstOther.normalized*1.0f).normalized;
+                    //     nextPosition = currentPosition + direction * CurrentSpeed * time;
+                    // }   
+                }else{
+                    nextPosition = currentPosition + ((Vector3)GetCurrentPosition()-collidedAgent.transform.position).normalized * 0.3f * time;
+                }
             }else{
                 nextPosition = currentPosition + direction * CurrentSpeed * time;
             }
         }
 
-        void CheckCollision(GameObject collidedAgent)
-        {
-            Vector3 otherDirection = collidedAgent.GetComponent<ParameterManager>().GetCurrentDirection();
-            Vector3 myDirection = GetCurrentDirection();
+        // private void CheckCollision(Vector3 otherPosition,Vector3 myPosition, Vector3 otherDirection, Vector3 myDirection)
+        // {
+        //     // parallel: +1, perpendicular: 0, anti-parallel: -1
+        //     float dotProduct = Vector3.Dot(myDirection.normalized, otherDirection.normalized);
 
-            float dotProduct = Vector3.Dot(myDirection.normalized, otherDirection.normalized);
+        //     float angle = 0.707f;
 
-            // Convert the dot product result to angle in degrees
-            float angleInDegrees = Mathf.Acos(dotProduct) * Mathf.Rad2Deg;
+        //     if (dotProduct < -angle)
+        //     {
+        //         Vector3 offset = otherPosition - myPosition;
+        //         Vector3 myRightAgainstOther = Vector3.Cross(offset.normalized, Vector3.up);
+        //         float dotToMyRight = Vector3.Dot(myRightAgainstOther, myDirection);
 
-            if (angleInDegrees > 180) angleInDegrees -= 360; // Adjust for angles greater than 180
+        //         Vector3 myRightAgainstMe = Vector3.Cross(-offset.normalized, Vector3.up);
+        //         float dotToOtherRight = Vector3.Dot(myRightAgainstMe, otherDirection);
 
-            float parallelThreshold = 45f;    // Threshold for directions to be considered "almost the same"
-            float antiParallelThreshold = 135f;  // Threshold for directions to be considered "almost opposite"
-            float obliqueThreshold = 90f; // Threshold for directions to be oblique
-
-            if (angleInDegrees < -antiParallelThreshold)
-            {
-                // The directions are almost opposite (anti-parallel)
-                Debug.Log("Directions are almost opposite");
-                // Your code for this case...
-            }
-            else if (angleInDegrees > -obliqueThreshold && angleInDegrees < obliqueThreshold)
-            {
-                // The directions are oblique (between 90 and 135 degrees)
-                Debug.Log("Directions are oblique");
-                // Your code for this case...
-            }
-            else if (angleInDegrees > obliqueThreshold)
-            {
-                // The directions are almost the same (parallel)
-                Debug.Log("Directions are almost the same");
-                // Your code for this case...
-            }
-            else
-            {
-                // The directions are neither parallel nor anti-parallel nor oblique
-                Debug.Log("Directions are neither parallel nor anti-parallel nor oblique");
-                // Your code for this case...
-            }
-        }
-
-
+        //         if ((dotToMyRight > 0 && dotToOtherRight < 0) || (dotToMyRight < 0 && dotToOtherRight > 0))
+        //         {
+        //             Debug.Log("Potential to Collide");
+        //         }
+        //     }
+        //     else
+        //     {
+        //         if (dotProduct > angle)
+        //         {
+                    
+        //         }
+        //         else
+        //         {
+                    
+        //         }
+        //     }
+        // }
+        
         //To Update Goal Direction
         private void CheckForGoalProximity()
         {
@@ -481,33 +540,51 @@ namespace MotionMatching{
         public float GetCurrentSpeed(){
             return CurrentSpeed;
         }
-        
-        public void SetOnWaiting(bool _onWaiting, GameObject _collidedAgent){
-            onWaiting = _onWaiting;
+
+        public void SetCollidedAgent(GameObject _collidedAgent){
             collidedAgent = _collidedAgent;
+        }
+        
+        public void SetOnCollide(bool _onCollide, GameObject _collidedAgent){
+            onCollide = _onCollide;
+            _collidedAgent.GetComponent<ParameterManager>().SetOnCollide(onCollide);
+        }
+
+        public void SetOnMoving(bool _onMoving, GameObject _collidedAgent){
+            onMoving = _onMoving;
+            _collidedAgent.GetComponent<ParameterManager>().SetOnMoving(onMoving);
+        }
+
+        private void DrawInfo(){
+            
+            Color gizmoColor = new Color(1.0f, 88/255f, 85/255f);
+            Draw.WireCylinder((Vector3)GetCurrentPosition(), Vector3.up, agentCollider.height, agentRadius, gizmoColor);
+
+            if(ShowAvoidanceForce){
+                gizmoColor = Color.blue;
+                Draw.ArrowheadArc((Vector3)GetCurrentPosition(), avoidanceVector, 0.55f, gizmoColor);
+            }
+
+            if(ShowCurrentDirection){
+                gizmoColor = Color.yellow;
+                Draw.ArrowheadArc((Vector3)GetCurrentPosition(), CurrentDirection, 0.55f, gizmoColor);
+            }
+            
+            if(ShowGoalDirection){
+                gizmoColor = Color.white;
+                Draw.ArrowheadArc((Vector3)GetCurrentPosition(), toGoalVector, 0.55f, gizmoColor);
+            }
+
+            if(ShowUnalignedCollisionAvoidance){
+                gizmoColor = Color.green;
+                Draw.ArrowheadArc((Vector3)GetCurrentPosition(), avoidNeighborsVector, 0.55f, gizmoColor);
+            }
         }
 
 
     #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
-            Gizmos.color = Color.black;
-            Gizmos.DrawSphere((Vector3)GetCurrentPosition(),0.3f);
-            //AvoidanceVector
-            Gizmos.color = Color.blue;
-            GizmosExtensions.DrawArrow((Vector3)GetCurrentPosition(), (Vector3)GetCurrentPosition() + avoidanceVector*avoidanceWeight);
-
-            //toGoalVector
-            Gizmos.color = Color.yellow;
-            GizmosExtensions.DrawArrow((Vector3)GetCurrentPosition(), (Vector3)GetCurrentPosition() + CurrentDirection* CurrentSpeed);
-
-            //GoalDirection
-            Gizmos.color = Color.white;
-            GizmosExtensions.DrawArrow((Vector3)GetCurrentPosition(), (Vector3)GetCurrentPosition() + toGoalVector* toGoalWeight);
-
-            //PotentialAvoidaceVector
-            Gizmos.color = Color.green;
-            GizmosExtensions.DrawArrow((Vector3)GetCurrentPosition(), (Vector3)GetCurrentPosition() + avoidNeighborsVector*avoidNeighborWeight);
 
             if (Path == null) return;
 
@@ -568,49 +645,5 @@ namespace MotionMatching{
             }
         }
     #endif
-
-
-        // private void OnDrawGizmos()
-        // {
-        //     Gizmos.color = Color.yellow;
-        //     GizmosExtensions.DrawArrow(CurrentPosition, CurrentPosition + CurrentDirection* CurrentSpeed);   
-
-        // //     Gizmos.DrawSphere(CurrentPosition, 0.3f);
-
-        //     for (int i = 0; i < Path.Length; i++)
-        //     {
-        //         Gizmos.color = Color.red;
-        //         Vector3 gizmoPosition = Path[i] - new Vector3(0, 1, 0);
-        //         Gizmos.DrawSphere(gizmoPosition, 0.5f);
-
-        //         // Draw slowing radius around the goal in 2D
-        //         Gizmos.color = Color.yellow;
-        //         DrawCircle(gizmoPosition, slowingRadius);
-
-        //         // Draw goal radius around the goal in 2D
-        //         Gizmos.color = Color.cyan;
-        //         DrawCircle(gizmoPosition, goalRadius);
-        //     }
-        // }
-
-        // private void DrawCircle(Vector3 center, float radius)
-        // {
-        //     float theta = 0;
-        //     float x = radius * Mathf.Cos(theta);
-        //     float y = radius * Mathf.Sin(theta);
-        //     Vector3 pos = center + new Vector3(x, 0, y);
-        //     Vector3 newPos = pos;
-        //     Vector3 lastPos = pos;
-        //     for (theta = 0.1f; theta < Mathf.PI * 2; theta += 0.1f)
-        //     {
-        //         x = radius * Mathf.Cos(theta);
-        //         y = radius * Mathf.Sin(theta);
-        //         newPos = center + new Vector3(x, 0, y);
-        //         Gizmos.DrawLine(pos, newPos);
-        //         pos = newPos;
-        //     }
-        //     // Draw the final line segment
-        //     Gizmos.DrawLine(pos, lastPos);
-        // }
     }
 }

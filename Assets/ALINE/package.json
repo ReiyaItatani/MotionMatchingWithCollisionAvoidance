@@ -1,0 +1,43 @@
+{
+    "author": {
+        "email": "aron.granberg@gmail.com",
+        "name": "Aron Granberg",
+        "url": "https://www.arongranberg.com"
+    },
+    "changelogUrl": "http://arongranberg.com/aline/documentation/beta/changelog.html",
+    "dependencies": {
+        "com.unity.burst": "1.7.2",
+        "com.unity.collections": "1.4.0",
+        "com.unity.jobs": "0.70.0-preview.7",
+        "com.unity.mathematics": "1.2.1",
+        "com.unity.modules.physics": "1.0.0",
+        "com.unity.modules.physics2d": "1.0.0",
+        "com.unity.modules.ui": "1.0.0",
+        "com.unity.ugui": "1.0.0"
+    },
+    "description": "ALINE is a complete replacement for Unity's built-in Debug.Draw and Gizmo drawing functionality and much more. It is faster, has more features and has better rendering quality.",
+    "displayName": "ALINE",
+    "documentationUrl": "http://arongranberg.com/aline/documentation/beta",
+    "keywords": [
+        "drawing",
+        "vector",
+        "canvas",
+        "debug",
+        "sketch",
+        "gizmo"
+    ],
+    "name": "com.arongranberg.aline",
+    "publishConfig": {
+        "registry": "https://arongranberg.com/packages_forward/"
+    },
+    "samples": [
+        {
+            "description": "Additional examples",
+            "displayName": "Example scenes",
+            "path": "ExampleScenes~"
+        }
+    ],
+    "unity": "2020.3",
+    "unityRelease": "0f1",
+    "version": "1.6.4"
+}

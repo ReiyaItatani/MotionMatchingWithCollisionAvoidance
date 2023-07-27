@@ -209,12 +209,19 @@ MonoBehaviour:
   Path:
   - {x: 10, y: 0, z: 0}
   - {x: -10, y: 0, z: 0}
+  MaxDistanceSimulationBoneAndObject: 0.1
+  PositionAdjustmentHalflife: 0.1
+  PosMaximumAdjustmentRatio: 0.1
   initialSpeed: 1
   agentManager: {fileID: 151487187}
-  agentCollider: {fileID: 1288300699}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
+  agentCollider: {fileID: 1288300699}
   goalRadius: 0.5
   slowingRadius: 2
+  ShowAvoidanceForce: 0
+  ShowUnalignedCollisionAvoidance: 0
+  ShowGoalDirection: 0
+  ShowCurrentDirection: 0
 --- !u!1001 &68469138
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -339,7 +346,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  m_Radius: 0.5
+  m_Radius: 0.25
   m_Height: 1.8
   m_Direction: 1
   m_Center: {x: 0, y: 0.9, z: 0}
@@ -391,7 +398,7 @@ MonoBehaviour:
   CharacterController: {fileID: 1945981607}
   MMData: {fileID: 11400000, guid: 8ddcffd587519e840ba105f93050fcf6, type: 2}
   LockFPS: 1
-  SearchTime: 0.16666667
+  SearchTime: 0.01
   UseBVHSearch: 1
   Inertialize: 1
   FootLock: 1
@@ -463,12 +470,19 @@ MonoBehaviour:
   Path:
   - {x: 7, y: 0, z: 0}
   - {x: -10, y: 0, z: 0}
+  MaxDistanceSimulationBoneAndObject: 0.1
+  PositionAdjustmentHalflife: 0.1
+  PosMaximumAdjustmentRatio: 0.1
   initialSpeed: 1
   agentManager: {fileID: 151487187}
-  agentCollider: {fileID: 1090823237}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
+  agentCollider: {fileID: 1090823237}
   goalRadius: 0.5
   slowingRadius: 2
+  ShowAvoidanceForce: 0
+  ShowUnalignedCollisionAvoidance: 0
+  ShowGoalDirection: 0
+  ShowCurrentDirection: 1
 --- !u!4 &90112972
 Transform:
   m_ObjectHideFlags: 0
@@ -608,7 +622,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  m_Radius: 0.5
+  m_Radius: 0.25
   m_Height: 1.8
   m_Direction: 1
   m_Center: {x: 0, y: 0.9, z: 0}
@@ -694,7 +708,7 @@ MonoBehaviour:
   CharacterController: {fileID: 67876275}
   MMData: {fileID: 11400000, guid: 8ddcffd587519e840ba105f93050fcf6, type: 2}
   LockFPS: 1
-  SearchTime: 0.16666667
+  SearchTime: 0.01
   UseBVHSearch: 1
   Inertialize: 1
   FootLock: 1
@@ -960,7 +974,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  m_Radius: 0.5
+  m_Radius: 0.25
   m_Height: 1.8
   m_Direction: 1
   m_Center: {x: 0, y: 0.9, z: 0}
@@ -1030,12 +1044,19 @@ MonoBehaviour:
   Path:
   - {x: -12, y: 0, z: 0}
   - {x: 10, y: 0, z: 0}
+  MaxDistanceSimulationBoneAndObject: 0.1
+  PositionAdjustmentHalflife: 0.1
+  PosMaximumAdjustmentRatio: 0.1
   initialSpeed: 1
   agentManager: {fileID: 151487187}
-  agentCollider: {fileID: 783082595}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
+  agentCollider: {fileID: 783082595}
   goalRadius: 0.5
   slowingRadius: 2
+  ShowAvoidanceForce: 0
+  ShowUnalignedCollisionAvoidance: 0
+  ShowGoalDirection: 0
+  ShowCurrentDirection: 1
 --- !u!1 &302328117
 GameObject:
   m_ObjectHideFlags: 0
@@ -1307,7 +1328,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  m_Radius: 0.5
+  m_Radius: 0.25
   m_Height: 1.8
   m_Direction: 1
   m_Center: {x: 0, y: 0.9, z: 0}
@@ -1579,7 +1600,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &611814047
 Transform:
   m_ObjectHideFlags: 0
@@ -1889,7 +1910,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  m_Radius: 0.5
+  m_Radius: 0.25
   m_Height: 1.8
   m_Direction: 1
   m_Center: {x: 0, y: 0.9, z: 0}
@@ -1954,7 +1975,7 @@ MonoBehaviour:
   CharacterController: {fileID: 1886199139}
   MMData: {fileID: 11400000, guid: 8ddcffd587519e840ba105f93050fcf6, type: 2}
   LockFPS: 1
-  SearchTime: 0.16666667
+  SearchTime: 0.01
   UseBVHSearch: 1
   Inertialize: 1
   FootLock: 1
@@ -2057,7 +2078,7 @@ MonoBehaviour:
   CharacterController: {fileID: 90112971}
   MMData: {fileID: 11400000, guid: 8ddcffd587519e840ba105f93050fcf6, type: 2}
   LockFPS: 1
-  SearchTime: 0.16666667
+  SearchTime: 0.01
   UseBVHSearch: 1
   Inertialize: 1
   FootLock: 1
@@ -2135,12 +2156,19 @@ MonoBehaviour:
   Path:
   - {x: -14, y: 0, z: 0}
   - {x: 10, y: 0, z: 0}
+  MaxDistanceSimulationBoneAndObject: 0.1
+  PositionAdjustmentHalflife: 0.1
+  PosMaximumAdjustmentRatio: 0.1
   initialSpeed: 1
   agentManager: {fileID: 151487187}
-  agentCollider: {fileID: 251955679}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
+  agentCollider: {fileID: 251955679}
   goalRadius: 0.5
   slowingRadius: 2
+  ShowAvoidanceForce: 0
+  ShowUnalignedCollisionAvoidance: 0
+  ShowGoalDirection: 0
+  ShowCurrentDirection: 1
 --- !u!4 &906927582
 Transform:
   m_ObjectHideFlags: 0
@@ -2279,12 +2307,19 @@ MonoBehaviour:
   Path:
   - {x: 8, y: 0, z: 0}
   - {x: -10, y: 0, z: 0}
+  MaxDistanceSimulationBoneAndObject: 0.1
+  PositionAdjustmentHalflife: 0.1
+  PosMaximumAdjustmentRatio: 0.1
   initialSpeed: 1
   agentManager: {fileID: 151487187}
-  agentCollider: {fileID: 1938952731}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
+  agentCollider: {fileID: 1938952731}
   goalRadius: 0.5
   slowingRadius: 2
+  ShowAvoidanceForce: 0
+  ShowUnalignedCollisionAvoidance: 0
+  ShowGoalDirection: 0
+  ShowCurrentDirection: 1
 --- !u!4 &1012472076
 Transform:
   m_ObjectHideFlags: 0
@@ -2424,7 +2459,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  m_Radius: 0.5
+  m_Radius: 0.25
   m_Height: 1.8
   m_Direction: 1
   m_Center: {x: 0, y: 0.9, z: 0}
@@ -2479,7 +2514,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  m_Radius: 0.5
+  m_Radius: 0.25
   m_Height: 1.8
   m_Direction: 1
   m_Center: {x: 0, y: 0.9, z: 0}
@@ -2717,7 +2752,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  m_Radius: 0.5
+  m_Radius: 0.25
   m_Height: 1.8
   m_Direction: 1
   m_Center: {x: 0, y: 0.9, z: 0}
@@ -3034,6 +3069,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5207854012189514198, guid: 17d2ceb469f508a47ade33a62a335e9d,
+        type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 17d2ceb469f508a47ade33a62a335e9d, type: 3}
 --- !u!4 &1288300697 stripped
@@ -3058,7 +3098,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  m_Radius: 0.5
+  m_Radius: 0.25
   m_Height: 1.8
   m_Direction: 1
   m_Center: {x: 0, y: 0.9, z: 0}
@@ -3123,7 +3163,7 @@ MonoBehaviour:
   CharacterController: {fileID: 1012472075}
   MMData: {fileID: 11400000, guid: 8ddcffd587519e840ba105f93050fcf6, type: 2}
   LockFPS: 1
-  SearchTime: 0.16666667
+  SearchTime: 0.01
   UseBVHSearch: 1
   Inertialize: 1
   FootLock: 1
@@ -3226,7 +3266,7 @@ MonoBehaviour:
   CharacterController: {fileID: 1492377444}
   MMData: {fileID: 11400000, guid: 8ddcffd587519e840ba105f93050fcf6, type: 2}
   LockFPS: 1
-  SearchTime: 0.16666667
+  SearchTime: 0.01
   UseBVHSearch: 1
   Inertialize: 1
   FootLock: 1
@@ -3298,12 +3338,19 @@ MonoBehaviour:
   Path:
   - {x: -5, y: 0, z: 0}
   - {x: 7, y: 0, z: 0}
+  MaxDistanceSimulationBoneAndObject: 0.1
+  PositionAdjustmentHalflife: 0.1
+  PosMaximumAdjustmentRatio: 0.1
   initialSpeed: 1
   agentManager: {fileID: 151487187}
-  agentCollider: {fileID: 101781429}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
+  agentCollider: {fileID: 101781429}
   goalRadius: 0.5
   slowingRadius: 2
+  ShowAvoidanceForce: 0
+  ShowUnalignedCollisionAvoidance: 0
+  ShowGoalDirection: 0
+  ShowCurrentDirection: 1
 --- !u!4 &1492377445
 Transform:
   m_ObjectHideFlags: 0
@@ -3351,7 +3398,7 @@ MonoBehaviour:
   CharacterController: {fileID: 298391577}
   MMData: {fileID: 11400000, guid: 8ddcffd587519e840ba105f93050fcf6, type: 2}
   LockFPS: 1
-  SearchTime: 0.16666667
+  SearchTime: 0.01
   UseBVHSearch: 1
   Inertialize: 1
   FootLock: 1
@@ -3454,7 +3501,7 @@ MonoBehaviour:
   CharacterController: {fileID: 1826635286}
   MMData: {fileID: 11400000, guid: 8ddcffd587519e840ba105f93050fcf6, type: 2}
   LockFPS: 1
-  SearchTime: 0.16666667
+  SearchTime: 0.01
   UseBVHSearch: 1
   Inertialize: 1
   FootLock: 1
@@ -3692,7 +3739,7 @@ MonoBehaviour:
   CharacterController: {fileID: 906927581}
   MMData: {fileID: 11400000, guid: 8ddcffd587519e840ba105f93050fcf6, type: 2}
   LockFPS: 1
-  SearchTime: 0.16666667
+  SearchTime: 0.01
   UseBVHSearch: 1
   Inertialize: 1
   FootLock: 1
@@ -3764,12 +3811,19 @@ MonoBehaviour:
   Path:
   - {x: 6, y: 0, z: 0}
   - {x: -9, y: 0, z: 0}
+  MaxDistanceSimulationBoneAndObject: 0.1
+  PositionAdjustmentHalflife: 0.1
+  PosMaximumAdjustmentRatio: 0.1
   initialSpeed: 1
   agentManager: {fileID: 151487187}
-  agentCollider: {fileID: 1165114767}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
+  agentCollider: {fileID: 1165114767}
   goalRadius: 0.5
   slowingRadius: 2
+  ShowAvoidanceForce: 0
+  ShowUnalignedCollisionAvoidance: 0
+  ShowGoalDirection: 0
+  ShowCurrentDirection: 1
 --- !u!4 &1749407123
 Transform:
   m_ObjectHideFlags: 0
@@ -3985,12 +4039,19 @@ MonoBehaviour:
   Path:
   - {x: 11, y: 0, z: 0}
   - {x: -10, y: 0, z: 0}
+  MaxDistanceSimulationBoneAndObject: 0.1
+  PositionAdjustmentHalflife: 0.1
+  PosMaximumAdjustmentRatio: 0.1
   initialSpeed: 1
   agentManager: {fileID: 151487187}
-  agentCollider: {fileID: 1130924115}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
+  agentCollider: {fileID: 1130924115}
   goalRadius: 0.5
   slowingRadius: 2
+  ShowAvoidanceForce: 0
+  ShowUnalignedCollisionAvoidance: 0
+  ShowGoalDirection: 0
+  ShowCurrentDirection: 1
 --- !u!4 &1826635287
 Transform:
   m_ObjectHideFlags: 0
@@ -4075,12 +4136,19 @@ MonoBehaviour:
   Path:
   - {x: -6, y: 0, z: 0}
   - {x: 10, y: 0, z: 0}
+  MaxDistanceSimulationBoneAndObject: 0.1
+  PositionAdjustmentHalflife: 0.1
+  PosMaximumAdjustmentRatio: 0.1
   initialSpeed: 1
   agentManager: {fileID: 151487187}
-  agentCollider: {fileID: 68469142}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
+  agentCollider: {fileID: 68469142}
   goalRadius: 0.5
   slowingRadius: 2
+  ShowAvoidanceForce: 0
+  ShowUnalignedCollisionAvoidance: 0
+  ShowGoalDirection: 0
+  ShowCurrentDirection: 1
 --- !u!4 &1886199140
 Transform:
   m_ObjectHideFlags: 0
@@ -4131,12 +4199,19 @@ MonoBehaviour:
   Path:
   - {x: 10, y: 0, z: 0}
   - {x: -10, y: 0, z: 0}
+  MaxDistanceSimulationBoneAndObject: 0.1
+  PositionAdjustmentHalflife: 0.1
+  PosMaximumAdjustmentRatio: 0.1
   initialSpeed: 0.5
   agentManager: {fileID: 151487187}
-  agentCollider: {fileID: 1627104969}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
+  agentCollider: {fileID: 1627104969}
   goalRadius: 0.5
   slowingRadius: 2
+  ShowAvoidanceForce: 1
+  ShowUnalignedCollisionAvoidance: 1
+  ShowGoalDirection: 1
+  ShowCurrentDirection: 1
 --- !u!4 &1933235968
 Transform:
   m_ObjectHideFlags: 0
@@ -4276,7 +4351,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  m_Radius: 0.5
+  m_Radius: 0.25
   m_Height: 1.8
   m_Direction: 1
   m_Center: {x: 0, y: 0.9, z: 0}
@@ -4331,12 +4406,19 @@ MonoBehaviour:
   Path:
   - {x: -8, y: 0, z: 0}
   - {x: 10, y: 0, z: 0}
+  MaxDistanceSimulationBoneAndObject: 0.1
+  PositionAdjustmentHalflife: 0.1
+  PosMaximumAdjustmentRatio: 0.1
   initialSpeed: 1
   agentManager: {fileID: 151487187}
-  agentCollider: {fileID: 448742786}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
+  agentCollider: {fileID: 448742786}
   goalRadius: 0.5
   slowingRadius: 2
+  ShowAvoidanceForce: 0
+  ShowUnalignedCollisionAvoidance: 0
+  ShowGoalDirection: 0
+  ShowCurrentDirection: 1
 --- !u!4 &1945981608
 Transform:
   m_ObjectHideFlags: 0
@@ -4591,7 +4673,7 @@ MonoBehaviour:
   CharacterController: {fileID: 1749407122}
   MMData: {fileID: 11400000, guid: 8ddcffd587519e840ba105f93050fcf6, type: 2}
   LockFPS: 1
-  SearchTime: 0.16666667
+  SearchTime: 0.01
   UseBVHSearch: 1
   Inertialize: 1
   FootLock: 1

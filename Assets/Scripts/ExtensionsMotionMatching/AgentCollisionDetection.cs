@@ -7,9 +7,8 @@ public class AgentCollisionDetection : MonoBehaviour
 {
     private PathController pathController;
     private CapsuleCollider capsuleCollider;
-    private float height;
-    private float currentSpeed;
-    private bool onWaiting = false;
+    private bool onCollide = false;
+    private bool onMoving = false;
 
     void Update(){
         if(pathController!=null){
@@ -25,8 +24,9 @@ public class AgentCollisionDetection : MonoBehaviour
         if (collider.gameObject.tag == "Agent")
         {
             if(pathController!=null){
-                if(onWaiting == false){
-                    StartCoroutine(WaitTime(3.0f, collider.gameObject));
+                if(onCollide == false){
+                    pathController.SetCollidedAgent(collider.gameObject);
+                    StartCoroutine(WaitTime(Random.Range(2f, 5f), collider.gameObject));
                 }
             }
         }
@@ -37,18 +37,26 @@ public class AgentCollisionDetection : MonoBehaviour
         capsuleCollider = _capsuleCollider;
     }
 
-    public IEnumerator WaitTime(float time, GameObject collidedAgent)
+    public IEnumerator WaitTime(float time, GameObject _collidedAgent)
     {
-        onWaiting = true;
-        pathController.SetOnWaiting(onWaiting, collidedAgent);
-        yield return new WaitForSeconds(time);
-        onWaiting = false;
-        pathController.SetOnWaiting(onWaiting, collidedAgent);
+        //waitstart
+        onCollide = true;
+        pathController.SetOnCollide(onCollide, _collidedAgent);
+        yield return new WaitForSeconds(time/2f);
+        //talkstart
+        onMoving = true;
+        pathController.SetOnMoving(onMoving, _collidedAgent);
+        yield return new WaitForSeconds(time/2f);
+        //backtonormal
+        onCollide = false;
+        onMoving = false;
+        pathController.SetOnCollide(onCollide, _collidedAgent);
+        pathController.SetOnMoving(onMoving, _collidedAgent);
         yield return null;
     }
 
-    public bool GetWaiting(){
-        return onWaiting;
+    public bool GetCollide(){
+        return onCollide;
     }
 
 }
