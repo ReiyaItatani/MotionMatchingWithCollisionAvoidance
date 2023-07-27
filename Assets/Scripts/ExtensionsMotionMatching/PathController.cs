@@ -72,8 +72,8 @@ namespace MotionMatching{
         private Vector3 myPositionAtNearestApproach;
         private GameObject potentialAvoidanceTarget;
         // --------------------------------------------------------------------------
-        // Unaligned Collision Avoidance -------------------------------------------
-        [Header("Social Behaviour")]
+        // When Collide -------------------------------------------------------------
+        [Header("Social Behaviour, Non-verbal Communication")]
         private bool onWaiting = false;
         private GameObject collidedAgent;
         // --------------------------------------------------------------------------
@@ -106,7 +106,7 @@ namespace MotionMatching{
                 agentCollisionDetection = agentCollider.gameObject.AddComponent<AgentCollisionDetection>();
                 Debug.Log("AgentCollisionDetection script added");
             }
-            agentCollisionDetection.SetPathController(this.gameObject.GetComponent<PathController>());
+            agentCollisionDetection.InitParameter(this.gameObject.GetComponent<PathController>(), agentCollider);
  
             // Get the feature indices
             TrajectoryPosFeatureIndex = -1;
@@ -170,6 +170,49 @@ namespace MotionMatching{
                 nextPosition = currentPosition + direction * CurrentSpeed * time;
             }
         }
+
+        void CheckCollision(GameObject collidedAgent)
+        {
+            Vector3 otherDirection = collidedAgent.GetComponent<ParameterManager>().GetCurrentDirection();
+            Vector3 myDirection = GetCurrentDirection();
+
+            float dotProduct = Vector3.Dot(myDirection.normalized, otherDirection.normalized);
+
+            // Convert the dot product result to angle in degrees
+            float angleInDegrees = Mathf.Acos(dotProduct) * Mathf.Rad2Deg;
+
+            if (angleInDegrees > 180) angleInDegrees -= 360; // Adjust for angles greater than 180
+
+            float parallelThreshold = 45f;    // Threshold for directions to be considered "almost the same"
+            float antiParallelThreshold = 135f;  // Threshold for directions to be considered "almost opposite"
+            float obliqueThreshold = 90f; // Threshold for directions to be oblique
+
+            if (angleInDegrees < -antiParallelThreshold)
+            {
+                // The directions are almost opposite (anti-parallel)
+                Debug.Log("Directions are almost opposite");
+                // Your code for this case...
+            }
+            else if (angleInDegrees > -obliqueThreshold && angleInDegrees < obliqueThreshold)
+            {
+                // The directions are oblique (between 90 and 135 degrees)
+                Debug.Log("Directions are oblique");
+                // Your code for this case...
+            }
+            else if (angleInDegrees > obliqueThreshold)
+            {
+                // The directions are almost the same (parallel)
+                Debug.Log("Directions are almost the same");
+                // Your code for this case...
+            }
+            else
+            {
+                // The directions are neither parallel nor anti-parallel nor oblique
+                Debug.Log("Directions are neither parallel nor anti-parallel nor oblique");
+                // Your code for this case...
+            }
+        }
+
 
         //To Update Goal Direction
         private void CheckForGoalProximity()
