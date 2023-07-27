@@ -62,7 +62,7 @@ namespace MotionMatching
             // get the animator
             Animator.logWarnings = false;
 
-            ikRatioArray = new float[12];
+            // ikRatioArray = new float[12];
 
             // face script part
             GameObject body = GetChildGameObject(gameObject, "Body");
@@ -403,8 +403,6 @@ namespace MotionMatching
 
         [HideInInspector] public FaceScript faceController;
 
-        public AnimatorInspector _animatorInspector;
-
         static public GameObject GetChildGameObject(GameObject fromGameObject, string withName)
         {
             Transform[] ts = fromGameObject.transform.GetComponentsInChildren<Transform>(true);
@@ -413,8 +411,8 @@ namespace MotionMatching
         }
         private bool talkFlag = false;
         private bool preTalkFlag = false;
-        public float[] ikRatioArray;
-        public float[] ikRatioArray_target;
+        // public float[] ikRatioArray;
+        // public float[] ikRatioArray_target;
         private Vector3 target_top;
         private Vector3 target_bottom;
         private Vector3 target_forward;
@@ -423,7 +421,7 @@ namespace MotionMatching
         private Vector3 target_right;
         private Vector3 target_center;
 
-        private Vector3 pppl, pppr;
+        // private Vector3 pppl, pppr;
 
         private void AdjustIKTargets()
         {
@@ -1087,6 +1085,7 @@ namespace MotionMatching
             Quaternion fingRestR = Quaternion.Euler(fingerRotationR, 0, 0);
 
             t_LeftIndexDistal.localRotation *= fingIndexL;
+            Debug.Log(t_LeftIndexDistal.localRotation);
             t_LeftIndexIntermediate.localRotation *= fingIndexL;
             t_LeftIndexProximal.localRotation *= fingIndexL;
             t_LeftMiddleDistal.localRotation *= fingRestL;
@@ -1219,7 +1218,7 @@ namespace MotionMatching
             if (!Freeze)
             {
                 if (C_Fluctuation) FluctuatePass();
-                // FingerPass();
+                //   FingerPass();
             }
 
             if (C_LookShift)
@@ -1700,6 +1699,7 @@ namespace MotionMatching
             if (d == 0) return 0;
             else return (newmax - newmin) * (oldvalue - oldmin) / d + newmin;
         }
+
     }
 
 

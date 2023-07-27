@@ -20,7 +20,7 @@ namespace MotionMatching{
         private Vector3[] PredictedDirections;
         // Speed Of Agents -----------------------------------------------------------------
         private float CurrentSpeed = 1.0f;
-        [Range (0.5f, 1.5f)]
+        [Range (0.0f, 1.5f)]
         public float initialSpeed = 1.0f;
         private float MinSpeed = 0.5f;
         // --------------------------------------------------------------------------
