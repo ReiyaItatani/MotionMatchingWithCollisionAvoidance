@@ -62,8 +62,8 @@ namespace MotionMatching{
         private Vector3 toGoalVector = Vector3.zero;//Direction to goal
         private float toGoalWeight = 1.7f;//Weight for goal direction
         private int CurrentGoalIndex = 1;
-        [SerializeField]private float goalRadius = 0.5f;
-        [SerializeField]private float slowingRadius = 2.0f;
+        public float goalRadius = 0.5f;
+        public float slowingRadius = 2.0f;
         // --------------------------------------------------------------------------
         // Unaligned Collision Avoidance -------------------------------------------
         [Header("Parameters For Unaligned Collision Avoidance")]
@@ -149,7 +149,7 @@ namespace MotionMatching{
 
             StartCoroutine(UpdateAvoidanceColliderPos(0.9f));
             StartCoroutine(UpdateAvoidanceVector(0.1f, 0.5f));
-            StartCoroutine(UpdateAvoidNeighborsVector(agentManager.GetAgents(), 0.1f, 0.3f));
+            //StartCoroutine(UpdateAvoidNeighborsVector(agentManager.GetAgents(), 0.1f, 0.3f));
         }
 
         protected override void OnUpdate(){
@@ -359,7 +359,7 @@ namespace MotionMatching{
         }
 
         //Unnaligned Collision Avoidance
-        public float predictNearestApproachTime (Vector3 myDirection, Vector3 myPosition, float mySpeed, Vector3 otherDirection, Vector3 otherPosition, float otherSpeed)
+        private float predictNearestApproachTime (Vector3 myDirection, Vector3 myPosition, float mySpeed, Vector3 otherDirection, Vector3 otherPosition, float otherSpeed)
         {
             Vector3 relVelocity = otherDirection*otherSpeed - myDirection*mySpeed;
             float relSpeed = relVelocity.magnitude;
@@ -384,7 +384,7 @@ namespace MotionMatching{
 
             return Vector3.Distance(myFinal, otherFinal);
         }
-        private IEnumerator UpdateAvoidNeighborsVector(List<GameObject> Agents , float updateTime, float transitionTime){
+        public IEnumerator UpdateAvoidNeighborsVector(List<GameObject> Agents , float updateTime, float transitionTime){
             while(true){
                 if(currentAvoidanceTarget != null){
                     avoidNeighborsVector = Vector3.zero;
