@@ -156,7 +156,7 @@ MonoBehaviour:
   MaxDistanceSimulationBoneAndObject: 0.1
   PositionAdjustmentHalflife: 0.1
   PosMaximumAdjustmentRatio: 0.1
-  initialSpeed: 1
+  initialSpeed: 0.7
   agentManager: {fileID: 0}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
   agentCollider: {fileID: 2979401668644894565}

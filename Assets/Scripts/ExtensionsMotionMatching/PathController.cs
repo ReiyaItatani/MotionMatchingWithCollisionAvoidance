@@ -217,61 +217,63 @@ namespace MotionMatching{
             //Move Agent
             direction = (toGoalWeight*toGoalVector + avoidanceWeight*avoidanceVector + avoidNeighborWeight*avoidNeighborsVector).normalized;
         
+            //線対称に変えるのがうまくいっていない！！！なんかそのまま進んじゃってる気がする。
+            //後ろからぶつかったときに後ろが止まるの〇
+            //複数人とぶつかったとき（現在は、ぶつかった相手1体にフォーカスしている。）
+            //check Collision
             if(onCollide){
+                Vector3 myDir = GetCurrentDirection();
+                Vector3 myPos = GetCurrentPosition();
+                Vector3 otherDir = collidedAgent.GetComponent<ParameterManager>().GetCurrentDirection();
+                Vector3 otherPos = collidedAgent.GetComponent<ParameterManager>().GetCurrentPosition();
+                Vector3 offset = otherPos - myPos;
+                float dotProduct = Vector3.Dot(myDir, otherDir);
+                float angle = 0.707f;
                 if(onMoving){
-                    Vector3 offset = collidedAgent.GetComponent<ParameterManager>().GetCurrentPosition() - (Vector3)GetCurrentPosition();
-                    Vector3 myRightAgainstOther = Vector3.Cross(offset.normalized, Vector3.up);
-                    direction = (direction + myRightAgainstOther.normalized*1.0f).normalized;
-                    nextPosition = currentPosition + direction * CurrentSpeed * time;
-                    // if(collidedAgent.GetComponent<ParameterManager>().GetOnMoving()){
-                    //     nextPosition = currentPosition + ((Vector3)GetCurrentPosition()-collidedAgent.transform.position).normalized * 0.3f * time;
-                    // }else{
-                    //     Vector3 offset = collidedAgent.GetComponent<ParameterManager>().GetCurrentPosition() - (Vector3)GetCurrentPosition();
-                    //     Vector3 myRightAgainstOther = Vector3.Cross(offset.normalized, Vector3.up);
-                    //     direction = (direction + myRightAgainstOther.normalized*1.0f).normalized;
-                    //     nextPosition = currentPosition + direction * CurrentSpeed * time;
-                    // }   
+                    // parallel: +1, perpendicular: 0, anti-parallel: -1
+                    if (dotProduct < -angle){
+                        //anti-parallel
+                        direction = checkOppoentDir(myDir, myPos, otherDir, otherPos);
+                        nextPosition = currentPosition + direction * CurrentSpeed * time;
+                    }else{
+                        //parallel
+                        if(Vector3.Dot(offset, GetCurrentDirection())>0){
+                            //if the other agent is in front of you
+                            nextPosition = currentPosition;
+                        }{
+                            //if you are in front of the other agent
+                            nextPosition = currentPosition + direction * CurrentSpeed * time;
+                        }
+                    }
                 }else{
-                    nextPosition = currentPosition + ((Vector3)GetCurrentPosition()-collidedAgent.transform.position).normalized * 0.3f * time;
+                    //take a step back
+                    nextPosition = currentPosition - offset * 0.3f * time;
                 }
             }else{
                 nextPosition = currentPosition + direction * CurrentSpeed * time;
             }
         }
 
-        // private void CheckCollision(Vector3 otherPosition,Vector3 myPosition, Vector3 otherDirection, Vector3 myDirection)
-        // {
-        //     // parallel: +1, perpendicular: 0, anti-parallel: -1
-        //     float dotProduct = Vector3.Dot(myDirection.normalized, otherDirection.normalized);
+        private Vector3 checkOppoentDir(Vector3 myDirection, Vector3 myPosition, Vector3 otherDirection, Vector3 otherPosition){
+            Vector3 offset = (otherPosition - myPosition).normalized;
+            Vector3 right= Vector3.Cross(Vector3.up, offset);
+            if(Vector3.Dot(right, myDirection)>0 && Vector3.Dot(right, otherDirection)>0 || Vector3.Dot(right, myDirection)<0 && Vector3.Dot(right, otherDirection)<0){
+                //Potential to collide
+                return GetReflectionVector(myDirection, offset);
+            }
+            return myDirection;
+        }
 
-        //     float angle = 0.707f;
-
-        //     if (dotProduct < -angle)
-        //     {
-        //         Vector3 offset = otherPosition - myPosition;
-        //         Vector3 myRightAgainstOther = Vector3.Cross(offset.normalized, Vector3.up);
-        //         float dotToMyRight = Vector3.Dot(myRightAgainstOther, myDirection);
-
-        //         Vector3 myRightAgainstMe = Vector3.Cross(-offset.normalized, Vector3.up);
-        //         float dotToOtherRight = Vector3.Dot(myRightAgainstMe, otherDirection);
-
-        //         if ((dotToMyRight > 0 && dotToOtherRight < 0) || (dotToMyRight < 0 && dotToOtherRight > 0))
-        //         {
-        //             Debug.Log("Potential to Collide");
-        //         }
-        //     }
-        //     else
-        //     {
-        //         if (dotProduct > angle)
-        //         {
-                    
-        //         }
-        //         else
-        //         {
-                    
-        //         }
-        //     }
-        // }
+        public static Vector3 GetReflectionVector(Vector3 p, Vector3 x)
+        {
+            //targetVector
+            p = p.normalized;
+            //baseVector
+            x = x.normalized;
+            float cosTheta = Vector3.Dot(p, x); // p・x = cos θ
+            Vector3 q = 2 * cosTheta * x - p;   // q = 2cos θ・x - p
+            return q;
+        }
         
         //To Update Goal Direction
         private void CheckForGoalProximity()

@@ -26,7 +26,7 @@ public class AgentCollisionDetection : MonoBehaviour
             if(pathController!=null){
                 if(onCollide == false){
                     pathController.SetCollidedAgent(collider.gameObject);
-                    StartCoroutine(WaitTime(Random.Range(2f, 5f), collider.gameObject));
+                    StartCoroutine(WaitTime(Random.Range(1f, 5f), collider.gameObject));
                 }
             }
         }
@@ -42,11 +42,11 @@ public class AgentCollisionDetection : MonoBehaviour
         //waitstart
         onCollide = true;
         pathController.SetOnCollide(onCollide, _collidedAgent);
-        yield return new WaitForSeconds(time/2f);
+        yield return new WaitForSeconds(time/4f);
         //talkstart
         onMoving = true;
         pathController.SetOnMoving(onMoving, _collidedAgent);
-        yield return new WaitForSeconds(time/2f);
+        yield return new WaitForSeconds(time - time/4f);
         //backtonormal
         onCollide = false;
         onMoving = false;
