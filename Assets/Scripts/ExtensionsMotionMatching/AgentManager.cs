@@ -62,10 +62,10 @@ public class AgentManager : MonoBehaviour
                 AvoidanceColliderSize = pathController.avoidanceColliderSize;
                 GoalRadius = pathController.goalRadius;
                 SlowingRadius = pathController.slowingRadius;
-                ShowAvoidanceForce = pathController.ShowAvoidanceForce;
-                ShowUnalignedCollisionAvoidance = pathController.ShowUnalignedCollisionAvoidance;
-                ShowGoalDirection = pathController.ShowGoalDirection;
-                ShowCurrentDirection = pathController.ShowCurrentDirection;
+                ShowAvoidanceForce = pathController.showAvoidanceForce;
+                ShowUnalignedCollisionAvoidance = pathController.showUnalignedCollisionAvoidance;
+                ShowGoalDirection = pathController.showGoalDirection;
+                ShowCurrentDirection = pathController.showCurrentDirection;
 
                 PathControllers.Add(pathController.gameObject);
             }
@@ -145,10 +145,10 @@ public class AgentManager : MonoBehaviour
                 pathController.avoidanceColliderSize = AvoidanceColliderSize;
                 pathController.goalRadius = GoalRadius;
                 pathController.slowingRadius = SlowingRadius;
-                pathController.ShowAvoidanceForce = ShowAvoidanceForce;
-                pathController.ShowUnalignedCollisionAvoidance = ShowUnalignedCollisionAvoidance;
-                pathController.ShowGoalDirection = ShowGoalDirection;
-                pathController.ShowCurrentDirection = ShowCurrentDirection;
+                pathController.showAvoidanceForce = ShowAvoidanceForce;
+                pathController.showUnalignedCollisionAvoidance = ShowUnalignedCollisionAvoidance;
+                pathController.showGoalDirection = ShowGoalDirection;
+                pathController.showCurrentDirection = ShowCurrentDirection;
             }
         }
 

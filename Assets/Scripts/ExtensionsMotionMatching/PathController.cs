@@ -24,10 +24,10 @@ namespace MotionMatching{
         [Range(0.0f, 2.0f)] public float PosMaximumAdjustmentRatio = 0.1f; // Ratio between the adjustment and the character's velocity to clamp the adjustment
         // Speed Of Agents -----------------------------------------------------------------
         [Header("Speed")]
-        private float CurrentSpeed = 1.0f; //Current speed of the agent
+        private float currentSpeed = 1.0f; //Current speed of the agent
         [Range (0.0f, 1.5f)]
         public float initialSpeed = 1.0f; //Initial speed of the agent
-        private float MinSpeed = 0.5f; //Minimum speed of the agent
+        private float minSpeed = 0.5f; //Minimum speed of the agent
         // --------------------------------------------------------------------------
         // To Mange Agents -----------------------------------------------------------------
         [Tooltip("Agent Manager is a script to manage agents")] public AgentManager agentManager; //Manager for all of the agents
@@ -58,10 +58,10 @@ namespace MotionMatching{
         // --------------------------------------------------------------------------
         // To Goal Direction --------------------------------------------------------
         [Header("Parameters For Goal Direction")]
-        private Vector3 CurrentGoal;
+        private Vector3 currentGoal;
         private Vector3 toGoalVector = Vector3.zero;//Direction to goal
         private float toGoalWeight = 1.7f;//Weight for goal direction
-        private int CurrentGoalIndex = 1;
+        private int currentGoalIndex = 1;
         public float goalRadius = 0.5f;
         public float slowingRadius = 2.0f;
         // --------------------------------------------------------------------------
@@ -83,10 +83,10 @@ namespace MotionMatching{
         // --------------------------------------------------------------------------
         // Gizmo Parameters -------------------------------------------------------------
         [Header("Controll Gizmos")]
-        public bool ShowAvoidanceForce = false;
-        public bool ShowUnalignedCollisionAvoidance = false;
-        public bool ShowGoalDirection = false;
-        public bool ShowCurrentDirection = false;
+        public bool showAvoidanceForce = false;
+        public bool showUnalignedCollisionAvoidance = false;
+        public bool showGoalDirection = false;
+        public bool showCurrentDirection = false;
         // --------------------------------------------------------------------------
         
 
@@ -101,18 +101,18 @@ namespace MotionMatching{
             avoidanceColliderArea.AddComponent<UpdateAvoidanceTarget>();
 
 
-            //init
-            CurrentSpeed = initialSpeed;
-            if (initialSpeed < MinSpeed)
+            //Init
+            currentSpeed = initialSpeed;
+            if (initialSpeed < minSpeed)
             {
-                MinSpeed = initialSpeed;
+                minSpeed = initialSpeed;
             }
             agentRadius = agentCollider.radius;
             CurrentPosition = Path[0];
-            CurrentGoal = Path[CurrentGoalIndex];            
+            currentGoal = Path[currentGoalIndex];            
             
 
-            //Create Agent Collision Detection:This is a script to detect the collision between agents by using capsule collider.
+            //Create Agent Collision Detection
             AgentCollisionDetection agentCollisionDetection = agentCollider.GetComponent<AgentCollisionDetection>();
             if (agentCollisionDetection == null)
             {
@@ -159,33 +159,83 @@ namespace MotionMatching{
                 SimulatePath(DatabaseDeltaTime * TrajectoryPosPredictionFrames[i], CurrentPosition, out PredictedPositions[i], out PredictedDirections[i]);
             }
             
-            // Update Current Position and Direction
+            //Update Current Position and Direction
             SimulatePath(Time.deltaTime, CurrentPosition, out CurrentPosition, out CurrentDirection);
+
             CheckForGoalProximity();
 
             //Prevent agents from intersection
-            AdjustSimulationBone();
+            AdjustCharacterPosition();
             ClampSimulationBone();
 
             DrawInfo();
         }
 
-        private void ClampSimulationBone()
+        private void SimulatePath(float time, Vector3 currentPosition, out Vector3 nextPosition, out Vector3 direction)
         {
-            // Clamp Position
-            float3 simulationObject = GetCurrentPosition();
-            float3 simulationBone = SimulationBone.transform.position;
-            if (math.distance(simulationObject, simulationBone) > MaxDistanceSimulationBoneAndObject)
-            {
-                float3 newSimulationBonePos = MaxDistanceSimulationBoneAndObject * math.normalize(simulationBone - simulationObject) + simulationObject;
-                SimulationBone.SetPosAdjustment(newSimulationBonePos - simulationBone);
+            //Update ToGoalVector
+            toGoalVector = (currentGoal - currentPosition).normalized;
+
+            //Gradually decrease speed
+            float distanceToGoal = Vector3.Distance(currentPosition, currentGoal);
+            currentSpeed = distanceToGoal < slowingRadius ? Mathf.Lerp(minSpeed, currentSpeed, distanceToGoal / slowingRadius) : currentSpeed;
+
+            //Move Agent
+            direction = (toGoalWeight*toGoalVector + avoidanceWeight*avoidanceVector + avoidNeighborWeight*avoidNeighborsVector).normalized;
+
+            //Check collision
+            if(onCollide){
+                Vector3 myDir = GetCurrentDirection();
+                Vector3 myPos = GetCurrentPosition();
+                Vector3 otherDir = collidedAgent.GetComponent<ParameterManager>().GetCurrentDirection();
+                Vector3 otherPos = collidedAgent.GetComponent<ParameterManager>().GetCurrentPosition();
+                Vector3 offset = otherPos - myPos;
+                float dotProduct = Vector3.Dot(myDir, otherDir);
+                if(onMoving){
+                    if (dotProduct < 0){
+                        //anti-parallel
+                        direction = checkOppoentDir(myDir, myPos, otherDir, otherPos);
+                        nextPosition = currentPosition + direction * currentSpeed * time;
+                    }else{
+                        //parallel
+                        if(Vector3.Dot(offset, GetCurrentDirection())>0){
+                            //If the other agent is in front of you
+                            nextPosition = currentPosition;
+                        }else{
+                            //If you are in front of the other agent
+                            nextPosition = currentPosition + direction * currentSpeed * time;
+                        }
+                    }
+                }else{
+                    //Take a step back
+                    nextPosition = currentPosition - offset * 0.3f * time;
+                }
+            }else{
+                nextPosition = currentPosition + direction * currentSpeed * time;
             }
         }
-        private void AdjustSimulationBone()
-        {
-            AdjustCharacterPosition();
+
+        private Vector3 checkOppoentDir(Vector3 myDirection, Vector3 myPosition, Vector3 otherDirection, Vector3 otherPosition){
+            Vector3 offset = (otherPosition - myPosition).normalized;
+            Vector3 right= Vector3.Cross(Vector3.up, offset);
+            if(Vector3.Dot(right, myDirection)>0 && Vector3.Dot(right, otherDirection)>0 || Vector3.Dot(right, myDirection)<0 && Vector3.Dot(right, otherDirection)<0){
+                //Potential to collide
+                return GetReflectionVector(myDirection, offset);
+            }
+            return myDirection;
         }
 
+        public static Vector3 GetReflectionVector(Vector3 targetVector, Vector3 baseVector)
+        {
+            //targetVector
+            targetVector = targetVector.normalized;
+            //baseVector
+            baseVector = baseVector.normalized;
+            float cosTheta = Vector3.Dot(targetVector, baseVector); // p・x = cos θ
+            Vector3 q = 2 * cosTheta * baseVector - targetVector;   // q = 2cos θ・x - p
+            return q;
+        }
+        
         private void AdjustCharacterPosition()
         {
             float3 simulationObject = GetCurrentPosition();
@@ -204,101 +254,42 @@ namespace MotionMatching{
             SimulationBone.SetPosAdjustment(adjustmentPosition);
         }
 
-
-        private void SimulatePath(float time, Vector3 currentPosition, out Vector3 nextPosition, out Vector3 direction)
+        private void ClampSimulationBone()
         {
-            //Update ToGoalVector
-            toGoalVector = (CurrentGoal - currentPosition).normalized;
-
-            //gradually decrease speed of the agent if it is close to the goal:
-            float distanceToGoal = Vector3.Distance(currentPosition, CurrentGoal);
-            CurrentSpeed = distanceToGoal < slowingRadius ? Mathf.Lerp(MinSpeed, CurrentSpeed, distanceToGoal / slowingRadius) : CurrentSpeed;
-
-            //Move Agent
-            direction = (toGoalWeight*toGoalVector + avoidanceWeight*avoidanceVector + avoidNeighborWeight*avoidNeighborsVector).normalized;
-        
-            //線対称に変えるのがうまくいっていない！！！なんかそのまま進んじゃってる気がする。
-            //後ろからぶつかったときに後ろが止まるの〇
-            //複数人とぶつかったとき（現在は、ぶつかった相手1体にフォーカスしている。）
-            //check Collision
-            if(onCollide){
-                Vector3 myDir = GetCurrentDirection();
-                Vector3 myPos = GetCurrentPosition();
-                Vector3 otherDir = collidedAgent.GetComponent<ParameterManager>().GetCurrentDirection();
-                Vector3 otherPos = collidedAgent.GetComponent<ParameterManager>().GetCurrentPosition();
-                Vector3 offset = otherPos - myPos;
-                float dotProduct = Vector3.Dot(myDir, otherDir);
-                float angle = 0.707f;
-                if(onMoving){
-                    // parallel: +1, perpendicular: 0, anti-parallel: -1
-                    if (dotProduct < -angle){
-                        //anti-parallel
-                        direction = checkOppoentDir(myDir, myPos, otherDir, otherPos);
-                        nextPosition = currentPosition + direction * CurrentSpeed * time;
-                    }else{
-                        //parallel
-                        if(Vector3.Dot(offset, GetCurrentDirection())>0){
-                            //if the other agent is in front of you
-                            nextPosition = currentPosition;
-                        }{
-                            //if you are in front of the other agent
-                            nextPosition = currentPosition + direction * CurrentSpeed * time;
-                        }
-                    }
-                }else{
-                    //take a step back
-                    nextPosition = currentPosition - offset * 0.3f * time;
-                }
-            }else{
-                nextPosition = currentPosition + direction * CurrentSpeed * time;
+            // Clamp Position
+            float3 simulationObject = GetCurrentPosition();
+            float3 simulationBone = SimulationBone.transform.position;
+            if (math.distance(simulationObject, simulationBone) > MaxDistanceSimulationBoneAndObject)
+            {
+                float3 newSimulationBonePos = MaxDistanceSimulationBoneAndObject * math.normalize(simulationBone - simulationObject) + simulationObject;
+                SimulationBone.SetPosAdjustment(newSimulationBonePos - simulationBone);
             }
         }
 
-        private Vector3 checkOppoentDir(Vector3 myDirection, Vector3 myPosition, Vector3 otherDirection, Vector3 otherPosition){
-            Vector3 offset = (otherPosition - myPosition).normalized;
-            Vector3 right= Vector3.Cross(Vector3.up, offset);
-            if(Vector3.Dot(right, myDirection)>0 && Vector3.Dot(right, otherDirection)>0 || Vector3.Dot(right, myDirection)<0 && Vector3.Dot(right, otherDirection)<0){
-                //Potential to collide
-                return GetReflectionVector(myDirection, offset);
-            }
-            return myDirection;
-        }
-
-        public static Vector3 GetReflectionVector(Vector3 p, Vector3 x)
-        {
-            //targetVector
-            p = p.normalized;
-            //baseVector
-            x = x.normalized;
-            float cosTheta = Vector3.Dot(p, x); // p・x = cos θ
-            Vector3 q = 2 * cosTheta * x - p;   // q = 2cos θ・x - p
-            return q;
-        }
-        
         //To Update Goal Direction
         private void CheckForGoalProximity()
         {
-            float distanceToGoal = Vector3.Distance(CurrentPosition, CurrentGoal);
+            float distanceToGoal = Vector3.Distance(CurrentPosition, currentGoal);
             if (distanceToGoal < goalRadius)
             {
                 SelectRandomGoal();
             }
         }
         private void SelectRandomGoal(){
-            CurrentGoalIndex++;
-            CurrentGoal = Path[(CurrentGoalIndex + 1) % Path.Length];
-            StartCoroutine(GradualSpeedUp(1.0f, CurrentSpeed, initialSpeed));
+            currentGoalIndex++;
+            currentGoal = Path[(currentGoalIndex + 1) % Path.Length];
+            StartCoroutine(GradualSpeedUp(1.0f, currentSpeed, initialSpeed));
         }
 
-        private IEnumerator GradualSpeedUp(float duration, float currentSpeed, float targetSpeed){
+        private IEnumerator GradualSpeedUp(float duration, float _currentSpeed, float targetSpeed){
             float elapsedTime = 0.0f;
-            float initialSpeed = currentSpeed;
+            float initialSpeed = _currentSpeed;
             while(elapsedTime < duration){
                 elapsedTime += Time.deltaTime;
-                CurrentSpeed = Mathf.Lerp(currentSpeed, targetSpeed, elapsedTime/duration);
+                currentSpeed = Mathf.Lerp(initialSpeed, targetSpeed, elapsedTime/duration);
                 yield return new WaitForSeconds(Time.deltaTime);
             }
-            CurrentSpeed = targetSpeed;
+            currentSpeed = targetSpeed;
 
             yield return null;
         }
@@ -422,11 +413,11 @@ namespace MotionMatching{
                 ParameterManager otherParameterManager = other.GetComponent<ParameterManager>();
 
                 // predicted time until nearest approach of "this" and "other"
-                float time = predictNearestApproachTime (CurrentDirection, GetCurrentPosition(), CurrentSpeed, otherParameterManager.GetCurrentDirection(), otherParameterManager.GetCurrentPosition(), otherParameterManager.GetCurrentSpeed());
+                float time = predictNearestApproachTime (CurrentDirection, GetCurrentPosition(), currentSpeed, otherParameterManager.GetCurrentDirection(), otherParameterManager.GetCurrentPosition(), otherParameterManager.GetCurrentSpeed());
                 //Debug.Log("time:"+time);
                 if ((time >= 0) && (time < minTimeToCollision)){
                     //Debug.Log("Distance:"+computeNearestApproachPositions (time, CurrentPosition, CurrentDirection, CurrentSpeed, otherParameterManager.GetRawCurrentPosition(), otherParameterManager.GetCurrentDirection(), otherParameterManager.GetCurrentSpeed()));
-                    if (computeNearestApproachPositions (time, GetCurrentPosition(), CurrentDirection, CurrentSpeed, otherParameterManager.GetCurrentPosition(), otherParameterManager.GetCurrentDirection(), otherParameterManager.GetCurrentSpeed()) < collisionDangerThreshold)
+                    if (computeNearestApproachPositions (time, GetCurrentPosition(), CurrentDirection, currentSpeed, otherParameterManager.GetCurrentPosition(), otherParameterManager.GetCurrentDirection(), otherParameterManager.GetCurrentSpeed()) < collisionDangerThreshold)
                     {
                         minTimeToCollision = time;
                         potentialAvoidanceTarget = other;
@@ -465,7 +456,7 @@ namespace MotionMatching{
                     {
                         // perpendicular paths: steer behind threat
                         // (only the slower of the two does this)
-                        if(potentialAvoidanceTarget.GetComponent<ParameterManager>().GetCurrentSpeed() <= CurrentSpeed){
+                        if(potentialAvoidanceTarget.GetComponent<ParameterManager>().GetCurrentSpeed() <= currentSpeed){
                             Vector3 rightVector = Vector3.Cross(CurrentDirection, Vector3.up);
                             float sideDot = Vector3.Dot(rightVector, potentialAvoidanceTarget.GetComponent<ParameterManager>().GetCurrentDirection());
                             steer = (sideDot > 0) ? -1.0f : 1.0f;
@@ -540,7 +531,7 @@ namespace MotionMatching{
             return CurrentPosition;
         }
         public float GetCurrentSpeed(){
-            return CurrentSpeed;
+            return currentSpeed;
         }
 
         public void SetCollidedAgent(GameObject _collidedAgent){
@@ -562,22 +553,22 @@ namespace MotionMatching{
             Color gizmoColor = new Color(1.0f, 88/255f, 85/255f);
             Draw.WireCylinder((Vector3)GetCurrentPosition(), Vector3.up, agentCollider.height, agentRadius, gizmoColor);
 
-            if(ShowAvoidanceForce){
+            if(showAvoidanceForce){
                 gizmoColor = Color.blue;
                 Draw.ArrowheadArc((Vector3)GetCurrentPosition(), avoidanceVector, 0.55f, gizmoColor);
             }
 
-            if(ShowCurrentDirection){
+            if(showCurrentDirection){
                 gizmoColor = Color.yellow;
                 Draw.ArrowheadArc((Vector3)GetCurrentPosition(), CurrentDirection, 0.55f, gizmoColor);
             }
             
-            if(ShowGoalDirection){
+            if(showGoalDirection){
                 gizmoColor = Color.white;
                 Draw.ArrowheadArc((Vector3)GetCurrentPosition(), toGoalVector, 0.55f, gizmoColor);
             }
 
-            if(ShowUnalignedCollisionAvoidance){
+            if(showUnalignedCollisionAvoidance){
                 gizmoColor = Color.green;
                 Draw.ArrowheadArc((Vector3)GetCurrentPosition(), avoidNeighborsVector, 0.55f, gizmoColor);
             }
@@ -625,7 +616,7 @@ namespace MotionMatching{
             Vector3 firstPos2 = GetWorldPosition(transform,Path[0]);
             Vector3 start2 = new Vector3(lastPos2.x, heightOffset, lastPos2.z);
             Vector3 end2 = new Vector3(firstPos2.x, heightOffset, firstPos2.z);
-            GizmosExtensions.DrawArrow(start2, start2 + (end2 - start2).normalized * CurrentSpeed, thickness: 3);
+            GizmosExtensions.DrawArrow(start2, start2 + (end2 - start2).normalized * currentSpeed, thickness: 3);
 
             // Draw Current Position And Direction
             if (!Application.isPlaying) return;

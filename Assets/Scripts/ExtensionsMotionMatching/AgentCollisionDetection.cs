@@ -24,10 +24,12 @@ public class AgentCollisionDetection : MonoBehaviour
         if (collider.gameObject.tag == "Agent")
         {
             if(pathController!=null){
-                if(onCollide == false){
-                    pathController.SetCollidedAgent(collider.gameObject);
-                    StartCoroutine(WaitTime(Random.Range(1f, 5f), collider.gameObject));
-                }
+                onCollide = false;
+                onMoving = false;
+                pathController.SetOnCollide(onCollide, collider.gameObject);
+                pathController.SetOnMoving(onMoving, collider.gameObject);
+                pathController.SetCollidedAgent(collider.gameObject);
+                StartCoroutine(WaitTime(Random.Range(1f, 5f), collider.gameObject));
             }
         }
     }
