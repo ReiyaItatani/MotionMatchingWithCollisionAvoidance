@@ -43,65 +43,32 @@ namespace MotionMatching
         private void OnEnable()
         {
             MotionMatching.OnSkeletonTransformUpdated += OnSkeletonTransformUpdated;
-            MotionMatching.OnSkeletonTransformUpdated += UpdateAnimatorIK;
         }
 
         private void OnDisable()
         {
             MotionMatching.OnSkeletonTransformUpdated -= OnSkeletonTransformUpdated;
-            MotionMatching.OnSkeletonTransformUpdated -= UpdateAnimatorIK;
         }
 
         private void Start()
         {
+            /*MotionMatching*/
             // BindSkinnedMeshRenderers();
             if (ShouldRetarget) InitRetargeting();
 
 
-            //Ocean
+            /*Ocean*/
             // get the animator
             Animator.logWarnings = false;
-
-            // ikRatioArray = new float[12];
-
             // face script part
             GameObject body = GetChildGameObject(gameObject, "Body");
             faceController = body.AddComponent<FaceScript>();
-            faceController.blinkOff = ExpFreeze;
             faceController.meshRenderer = body.GetComponentInChildren<SkinnedMeshRenderer>();
             faceController.InitShapeKeys();
 
             // SinkPassInit();
             GetBodyTransforms();
             FluctuatePassInit();
-            
-            // Create IK Targets
-            LeftHandIK = new GameObject ("LeftHandIK");
-            RightHandIK = new GameObject("RightHandIK");
-            BodyIK = new GameObject("BodyIK");
-            LeftFootIK = new GameObject("LeftFootIK");
-            RightFootIK = new GameObject("RightFootIK");
-            HeadLookIK = new GameObject("HeadLookIK");
-
-            LeftHandIK.transform.SetParent(gameObject.transform);
-            RightHandIK.transform.SetParent(gameObject.transform);
-            BodyIK.transform.SetParent(gameObject.transform);
-            LeftFootIK.transform.SetParent(gameObject.transform);
-            RightFootIK.transform.SetParent(gameObject.transform);
-            HeadLookIK.transform.SetParent(gameObject.transform);
-
-            // Init IK target positions
-            LeftHandIK.transform.position = t_LeftHand.position;
-            RightHandIK.transform.position = t_RightHand.position;
-            BodyIK.transform.position = t_Hips.position + Vector3.up;
-            LeftFootIK.transform.position = t_LeftFoot.position;
-            RightFootIK.transform.position = t_RightFoot.position;
-            HeadLookIK.transform.position = t_Head.position + t_Head.forward;
-
-            LeftHandIK.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-            LeftHandIK.layer = 10;
-
-            RightHandIK.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
         }
 
         private void InitRetargeting()
@@ -254,69 +221,11 @@ namespace MotionMatching
                 Debug.LogWarning("ForwardLocalVector is too close to zero. Object: " + name);
             }
         }
-
-#if UNITY_EDITOR
-        private void OnDrawGizmosSelected()
-        {
-            Animator animator = GetComponent<Animator>();
-
-            if (animator == null) return;
-
-            Vector3 leftSole = animator.GetBoneTransform(HumanBodyBones.LeftToes).TransformPoint(ToesSoleOffset);
-            Vector3 rightSole = animator.GetBoneTransform(HumanBodyBones.RightToes).TransformPoint(ToesSoleOffset);
-            Gizmos.color = Color.red;
-            Gizmos.DrawSphere(leftSole, 0.005f);
-            Gizmos.DrawSphere(rightSole, 0.005f);
-        }
-#endif
-
         
         //OCEAN
-        // public int le_state_out;
-
-        public float mult_top = 1f;
-        public float mult_bottom = 1f;
-        public float mult_side = 1f;
-        public float mult_center = 1f;
-        public float mult_front = 1f;
-        public float mult_back = 1f;
-
-        public bool LE_MODE;
-        public bool USE_ANCHORS;
-
-        private float faketimer = 3f;
-        private int fakestate = 0;
-
         public bool FLUC_ADD = false;
-        public bool OnlyOneHand = false;
-
-        [Range(0f, 1f)] public float IK_MAIN_FACTOR_TARGET = 1f;
-        [Range(0f, 1f)] public float IK_MAIN_FACTOR_BASE = 1f;
-        [Range(0f, 1f)] public float IK_MAIN_FACTOR_CURRENT = 1f;
-        [Range(0f, 1f)] public float TransitionFactor = 0f;
-        public bool AnimationNoTransition = false;
-
-        public int CurrentState = -1;
-
-        public bool Freeze;
-        public bool ExpFreeze;
-
-        [Header("Control Switches 1")]
-        public bool C_MainSwitchForPhoto; // only emotions
-        public bool C_LabanRotation = true;
-        public bool C_LabanIK = true;
-        public bool C_Fluctuation = true;
-        public bool C_SpeedAdjust = true;
-        public bool C_LookIK;
-        public bool C_LookShift;
-        public bool C_EmotionsOn = true;
-
-        [Header("Control Switches 2")]
-        public bool IKWeightByPass;
-        public bool IKALLBYPASS;
-
-        [Header("Control Switches 2")]
-        public bool Map_OCEAN_to_LabanShape = true;
+        [Header("Map_OCEAN")]
+        // public bool Map_OCEAN_to_LabanShape = true;
         public bool Map_OCEAN_to_LabanEffort = true;
         public bool Map_OCEAN_to_Additional = true;
 
@@ -349,11 +258,6 @@ namespace MotionMatching
         [Range(-1f, 1f)] public float base_disgust = 0f;
         [Range(-1f, 1f)] public float base_fear = 0f;
 
-        [Header("IK Parameters")]
-        [Range(-1f, 1f)] public float IKFAC_forward;
-        [Range(-1f, 1f)] public float IKFAC_up;
-        [Range(-1f, 1f)] public float IKFAC_side;
-
         [Header("Look Shift Parameters")]
         [Range(0f, 100f)] public float ls_hor;
         [Range(0f, 100f)] public float ls_ver;
@@ -373,33 +277,13 @@ namespace MotionMatching
         private readonly float head_max = 5f;
         //private readonly float head_min = -2f;
         private readonly float head_min = -5f;
-        [Range(-1f, 1f)] public float finger_bend_open;
-        private readonly float finger_open_max = 20f;
-        private readonly float finger_open_min = -12f;
-        [Range(-1f, 1f)] public float finger_bend_close;
-        private readonly float finger_close_max = 30f;
-        private readonly float finger_close_min = 0f;
 
         private readonly float multiplyRotationFactor = 1f;
 
         public GameObject lookObject;
 
-        [HideInInspector] public String text_O;
-        [HideInInspector] public String text_C;
-        [HideInInspector] public String text_E;
-        [HideInInspector] public String text_A;
-        [HideInInspector] public String text_N;
-
         // distances of body parts
         // float d_upperArm, d_lowerArm, d_hand;
-
-        // IK Targets
-        private GameObject LeftHandIK;
-        private GameObject RightHandIK;
-        private GameObject BodyIK;
-        private GameObject LeftFootIK;
-        private GameObject RightFootIK;
-        private GameObject HeadLookIK;
 
         [HideInInspector] public FaceScript faceController;
 
@@ -408,438 +292,6 @@ namespace MotionMatching
             Transform[] ts = fromGameObject.transform.GetComponentsInChildren<Transform>(true);
             foreach (Transform t in ts) if (t.gameObject.name == withName) return t.gameObject;
             return null;
-        }
-        private bool talkFlag = false;
-        private bool preTalkFlag = false;
-        // public float[] ikRatioArray;
-        // public float[] ikRatioArray_target;
-        private Vector3 target_top;
-        private Vector3 target_bottom;
-        private Vector3 target_forward;
-        private Vector3 target_back;
-        private Vector3 target_left;
-        private Vector3 target_right;
-        private Vector3 target_center;
-
-        // private Vector3 pppl, pppr;
-
-        private void AdjustIKTargets()
-        {
-            if (LeftHandIK == null || RightHandIK == null) return;
-
-            // adjust targets
-            target_top = t_Hips.position + Vector3.up;
-            target_bottom = t_Hips.position + Vector3.down;
-            target_forward = t_Hips.position + t_Hips.forward;
-            target_back = t_Hips.position - t_Hips.forward;
-            target_left = t_Hips.position - t_Hips.right;
-            target_right = t_Hips.position + t_Hips.right;
-            target_center = t_Hips.position;
-
-            // if(IKWeightByPass)
-            // {
-            //     for(int i = 0; i < 12; i++)
-            //     {
-            //         ikRatioArray[i] = 1;
-            //     }
-            // }
-
-            float ar0 = Mathf.Clamp(IKFAC_up, 0, 1) * mult_top;
-            float ar1 = Mathf.Clamp(-IKFAC_up, 0, 1) * mult_bottom;
-            float ar2 = Mathf.Clamp(IKFAC_side, 0, 1) * mult_side;
-            float ar3 = Mathf.Clamp(-IKFAC_side, 0, 1) * mult_center;
-            float ar4 = Mathf.Clamp(IKFAC_forward, 0, 1) * mult_front;
-            float ar5 = Mathf.Clamp(-IKFAC_forward, 0, 1) * mult_back;
-
-        
-            // if (USE_ANCHORS)
-            // {
-            //     pppl = t_LeftHand.position
-            //     + Vector3.Lerp(t_LeftHand.position, target_top, ar0 * ikRatioArray[0]) - t_LeftHand.position
-            //     + Vector3.Lerp(t_LeftHand.position, target_bottom, ar1 * ikRatioArray[1]) - t_LeftHand.position
-            //     + Vector3.Lerp(t_LeftHand.position, target_left, ar2 * ikRatioArray[2]) - t_LeftHand.position
-            //     + Vector3.Lerp(t_LeftHand.position, target_center, ar3 * ikRatioArray[3]) - t_LeftHand.position
-            //     + Vector3.Lerp(t_LeftHand.position, target_forward, ar4 * ikRatioArray[4]) - t_LeftHand.position
-            //     + Vector3.Lerp(t_LeftHand.position, target_back, ar5 * ikRatioArray[5]) - t_LeftHand.position;
-
-            //     pppr = t_RightHand.position
-            //     + Vector3.Lerp(t_RightHand.position, target_top, ar0 * ikRatioArray[6]) - t_RightHand.position
-            //     + Vector3.Lerp(t_RightHand.position, target_bottom, ar1 * ikRatioArray[7]) - t_RightHand.position
-            //     + Vector3.Lerp(t_RightHand.position, target_right, ar2 * ikRatioArray[8]) - t_RightHand.position
-            //     + Vector3.Lerp(t_RightHand.position, target_center, ar3 * ikRatioArray[9]) - t_RightHand.position
-            //     + Vector3.Lerp(t_RightHand.position, target_forward, ar4 * ikRatioArray[10]) - t_RightHand.position
-            //     + Vector3.Lerp(t_RightHand.position, target_back, ar5 * ikRatioArray[11]) - t_RightHand.position;
-            // }
-            // else
-            // {
-            //     pppl = t_LeftHand.position
-            //     + t_Hips.up.normalized * ar0 * ikRatioArray[0]
-            //     - t_Hips.up.normalized * ar1 * ikRatioArray[1]
-            //     - t_Hips.right.normalized * ar2 * ikRatioArray[2]
-            //     + t_Hips.right.normalized * ar3 * ikRatioArray[3]
-            //     + t_Hips.forward.normalized * ar4 * ikRatioArray[4]
-            //     - t_Hips.forward.normalized * ar5 * ikRatioArray[5];
-
-            //     pppr = t_RightHand.position
-            //     + t_Hips.up.normalized * ar0 * ikRatioArray[6]
-            //     - t_Hips.up.normalized * ar1 * ikRatioArray[7]
-            //     + t_Hips.right.normalized * ar2 * ikRatioArray[8]
-            //     - t_Hips.right.normalized * ar3 * ikRatioArray[9]
-            //     + t_Hips.forward.normalized * ar4 * ikRatioArray[10]
-            //     - t_Hips.forward.normalized * ar5 * ikRatioArray[11];
-            // }
-            
-
-            // LeftHandIK.transform.position = pppl; // Vector3.Lerp(LeftHandIK.transform.position, pppl, Time.deltaTime*followmult);
-            // RightHandIK.transform.position = pppr; // Vector3.Lerp(RightHandIK.transform.position, pppr, Time.deltaTime* followmult);
-
-            LeftHandIK.transform.position = Animator.GetBoneTransform(HumanBodyBones.LeftHand).position; 
-            RightHandIK.transform.position = Animator.GetBoneTransform(HumanBodyBones.RightHand).position; 
-            LeftFootIK.transform.position = t_LeftFoot.position - t_Hips.right * IKFAC_side * 0.01f;
-            RightFootIK.transform.position = t_RightFoot.position + t_Hips.right * IKFAC_side * 0.01f;
-
-            BodyIK.transform.position =
-                (
-                    (
-                        (IKFAC_forward > 0) ?
-                        Vector3.Lerp(t_Neck.position, target_forward, IKFAC_forward * 0.5f) :
-                        Vector3.Lerp(t_Neck.position, target_back, -IKFAC_forward * 0.5f)
-                    )
-                );
-            
-        }
-        private int AnimationNo;
-        private void Update()
-        {
-            faceController.freeze = Freeze;
-        }
-        private void UpdateAnimatorIK()
-        {
-            if(IKALLBYPASS)
-            {
-                Animator.SetIKPosition(AvatarIKGoal.LeftHand, LeftHandIK.transform.position);
-                Animator.SetIKPosition(AvatarIKGoal.RightHand, RightHandIK.transform.position);
-                Animator.SetIKPosition(AvatarIKGoal.LeftFoot, LeftFootIK.transform.position);
-                Animator.SetIKPosition(AvatarIKGoal.RightFoot, RightFootIK.transform.position);
-
-                Animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, 1);
-                Animator.SetIKPositionWeight(AvatarIKGoal.RightHand, 1);
-                Animator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, 1);
-                Animator.SetIKPositionWeight(AvatarIKGoal.RightFoot, 1);
-                return;
-            }
-
-            if(C_MainSwitchForPhoto)
-            {
-                EmotionPass();
-                Animator.StopPlayback();
-                return;
-            }
-            /*
-            * UPDATE VARIABLES
-            */
-
-            // if (linesFor != pre_linesFor) { pre_linesFor = linesFor; SetLinesFor(); }
-
-            if (Map_OCEAN_to_LabanShape) OCEAN_to_LabanShape();
-            if (Map_OCEAN_to_LabanEffort) OCEAN_to_LabanEffort();
-            if (Map_OCEAN_to_Additional) OCEAN_to_Additional();
-
-            if (C_SpeedAdjust)
-            {
-                if (Freeze)
-                {
-                    Animator.speed = 0;
-                }
-            }
-    
-            /*
-            * TALK ANIMATIONS
-            */
-
-            talkFlag = faceController.talkingNow;
-
-            if (talkFlag && !preTalkFlag)
-            {
-                Animator.SetInteger("AnimationNo", 1);
-            }
-
-            if (!talkFlag && preTalkFlag)
-            {
-                Animator.SetInteger("AnimationNo", 0);
-            }
-
-            preTalkFlag = talkFlag;
-            
-            /*
-            * UPDATE ANIMATION
-            */
-
-            // LookPass();
-
-            GetBodyTransforms();
-
-            //Have to change
-            // ikRatioArray_target = _animatorInspector.GetCurrentIKRatioArray(Animator);
-
-            // for(int i = 0; i < ikRatioArray.Length; i++)
-            // {
-            //     ikRatioArray[i] = ikRatioArray[i] + (ikRatioArray_target[i] - ikRatioArray[i]) * Time.deltaTime;
-            // }
-            AdjustIKTargets();
-
-            if (C_LabanIK)
-            {
-                StateUpdate();
-                IKFactorUpdate();
-
-                Animator.SetIKPosition(AvatarIKGoal.LeftHand, LeftHandIK.transform.position);
-                Animator.SetIKPosition(AvatarIKGoal.RightHand, RightHandIK.transform.position);
-                Animator.SetIKPosition(AvatarIKGoal.LeftFoot, LeftFootIK.transform.position);
-                Animator.SetIKPosition(AvatarIKGoal.RightFoot, RightFootIK.transform.position);
-
-                Animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, IK_MAIN_FACTOR_CURRENT);
-                Animator.SetIKPositionWeight(AvatarIKGoal.RightHand, IK_MAIN_FACTOR_CURRENT);
-                Animator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, IK_MAIN_FACTOR_CURRENT);
-                Animator.SetIKPositionWeight(AvatarIKGoal.RightFoot, IK_MAIN_FACTOR_CURRENT);
-
-                if (OnlyOneHand)
-                {
-                    faketimer -= Time.deltaTime * 0.75f;
-
-                    if(faketimer <= 0)
-                    {
-                        if (fakestate == 0)
-                        {
-                            // linesFor = LinesFor.LeftHand;
-                            IKWeightByPass = true;
-                        }
-
-                        faketimer = 1f;
-                        fakestate++;
-
-                        if(fakestate == 8)
-                        {
-                            // TestForVid = true;
-                            // lineT = -1;
-                            IKWeightByPass = false;
-                            OnlyOneHand = false;
-                            // linesFor = LinesFor.None;
-                        }
-                    }
-
-                    switch (fakestate)
-                    {
-                        case 0:
-                            break;
-                        case 1:
-                            IKFAC_forward = 1 - faketimer;
-                            break;
-                        case 2:
-                            IKFAC_forward = faketimer;
-                            IKFAC_up = 1 - faketimer;
-                            break;
-                        case 3:
-                            IKFAC_up = faketimer;
-                            IKFAC_side = 1 - faketimer;
-                            break;
-                        case 4:
-                            IKFAC_side = faketimer;
-                            IKFAC_forward = -(1 - faketimer);
-                            break;
-                        case 5:
-                            IKFAC_forward = -faketimer;
-                            IKFAC_side = (1 - faketimer);
-                            //IKFAC_up = 1 - faketimer;
-                            break;
-                        case 6:
-                            IKFAC_side = faketimer;
-                            IKFAC_up = (1 - faketimer);
-                            //IKFAC_up = (faketimer - 0.5f) * 2f;
-                            break;
-                        case 7:
-                            IKFAC_up = faketimer;
-                            //IKFAC_up = -faketimer;
-                            break;
-                    }
-
-                    // linesFor = LinesFor.LeftHand;
-                    Animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, IK_MAIN_FACTOR_CURRENT);
-                    Animator.SetIKPositionWeight(AvatarIKGoal.RightHand, 0);
-                    Animator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, 0);
-                    Animator.SetIKPositionWeight(AvatarIKGoal.RightFoot, 0);
-                }
-                else
-                {
-                    Animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, IK_MAIN_FACTOR_CURRENT);
-                    Animator.SetIKPositionWeight(AvatarIKGoal.RightHand, IK_MAIN_FACTOR_CURRENT);
-                    Animator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, 0);
-                    Animator.SetIKPositionWeight(AvatarIKGoal.RightFoot, 0);
-                }
-
-            }
-
-            if (C_LookIK)
-            {
-                Animator.SetLookAtPosition(lookObject.transform.position); // HeadLookIK.transform.position);
-                Animator.SetLookAtWeight(1f, 0f, 0.35f, 0.45f);
-            }
-        
-        }
-
-        private float[] AnimSpecificIK_Case0 = { 1f, 0.8f, 0.8f };
-        private float[] AnimSpecificIK_Case1 = { 0.3f, 0.24f, 0.15f };
-        private float[] AnimSpecificIK_Case2 = { 1f, 0.6f, 0.9f };
-        private float[] AnimSpecificIK_Case3 = { 0.3f, 0.4f, 0.2f };
-        private float[] AnimSpecificIK_Case4 = { 1f, 0.5f, 0.3f };
-        private float[] AnimSpecificIK_Case5 = { 0.2f, 0.12f, 0.07f };
-        private float[] AnimSpecificIK_Case6 = { 1f, 0.8f, 0.5f };
-        private float[] AnimSpecificIK_Case7 = { 0.3f, 0.2f, 0.24f };
-        private float[] AnimSpecificIK_Case8 = { 0.4f, 0.24f, 0.08f };
-        private float[] AnimSpecificIK_Case9 = { 0.2f, 0.1f, 0.09f };
-
-        private float[] AnimSpecificIK_Current = null;
-
-        private int oldAnimationNo = -1;
-
-        private void IKFactorUpdate()
-        {
-            if (AnimSpecificIK_Current == null) return;
-
-            AnimationNo = Animator.GetInteger("CurrentAnimationStateNo_AnimatorBased");
-
-            if (AnimationNo == 0)
-            {
-                IK_MAIN_FACTOR_TARGET = AnimSpecificIK_Current[0];
-            }
-            else if (AnimationNo > 0 && AnimationNo <= 3)
-            {
-                IK_MAIN_FACTOR_TARGET = AnimSpecificIK_Current[AnimationNo - 1];
-            }
-
-            if (AnimationNoTransition)
-            {
-                TransitionFactor += Time.deltaTime * 3f;
-                if(TransitionFactor >= 1f)
-                {
-                    TransitionFactor = 1f;
-                    AnimationNoTransition = false;
-                }
-            }
-            else
-            {
-                if (oldAnimationNo != AnimationNo)
-                {
-                    // start transition
-                    IK_MAIN_FACTOR_BASE = IK_MAIN_FACTOR_CURRENT;
-
-                    AnimationNoTransition = true;
-                    TransitionFactor = 0f;
-
-                    oldAnimationNo = AnimationNo;
-                }
-            }
-
-            IK_MAIN_FACTOR_CURRENT = Mathf.Lerp(IK_MAIN_FACTOR_BASE, IK_MAIN_FACTOR_TARGET, TransitionFactor);
-        }
-
-        int caseno = -1;
-
-        public void SetCurrentStateForIK(int state)
-        {
-            CurrentState = state;
-        }
-
-        private void StateUpdate()
-        {
-            if(CurrentState != caseno)
-            {
-                caseno = CurrentState;
-
-                switch (caseno)
-                {
-                    case 0:
-                        openness = 1f;
-                        conscientiousness = 0f;
-                        extraversion = 0f;
-                        agreeableness = 0f;
-                        neuroticism = 0f;
-                        AnimSpecificIK_Current = AnimSpecificIK_Case0;
-                        break;
-                    case 1:
-                        openness = -1f;
-                        conscientiousness = 0f;
-                        extraversion = 0f;
-                        agreeableness = 0f;
-                        neuroticism = 0f;
-                        AnimSpecificIK_Current = AnimSpecificIK_Case1;
-                        break;
-                    case 2:
-                        openness = 0f;
-                        conscientiousness = 1f;
-                        extraversion = 0f;
-                        agreeableness = 0f;
-                        neuroticism = 0f;
-                        AnimSpecificIK_Current = AnimSpecificIK_Case2;
-                        break;
-                    case 3:
-                        openness = 0f;
-                        conscientiousness = -1f;
-                        extraversion = 0f;
-                        agreeableness = 0f;
-                        neuroticism = 0f;
-                        AnimSpecificIK_Current = AnimSpecificIK_Case3;
-                        break;
-                    case 4:
-                        openness = 0f;
-                        conscientiousness = 0f;
-                        extraversion = 1f;
-                        agreeableness = 0f;
-                        neuroticism = 0f;
-                        AnimSpecificIK_Current = AnimSpecificIK_Case4;
-                        break;
-                    case 5:
-                        openness = 0f;
-                        conscientiousness = 0f;
-                        extraversion = -1f;
-                        agreeableness = 0f;
-                        neuroticism = 0f;
-                        AnimSpecificIK_Current = AnimSpecificIK_Case5;
-                        break;
-                    case 6:
-                        openness = 0f;
-                        conscientiousness = 0f;
-                        extraversion = 0f;
-                        agreeableness = 1f;
-                        neuroticism = 0f;
-                        AnimSpecificIK_Current = AnimSpecificIK_Case6;
-                        break;
-                    case 7:
-                        openness = 0f;
-                        conscientiousness = 0f;
-                        extraversion = 0f;
-                        agreeableness = -1f;
-                        neuroticism = 0f;
-                        AnimSpecificIK_Current = AnimSpecificIK_Case7;
-                        break;
-                    case 8:
-                        openness = 0f;
-                        conscientiousness = 0f;
-                        extraversion = 0f;
-                        agreeableness = 0f;
-                        neuroticism = 1f;
-                        AnimSpecificIK_Current = AnimSpecificIK_Case8;
-                        break;
-                    case 9:
-                        openness = 0f;
-                        conscientiousness = 0f;
-                        extraversion = 0f;
-                        agreeableness = 0f;
-                        neuroticism = -1f;
-                        AnimSpecificIK_Current = AnimSpecificIK_Case9;
-                        break;
-                }
-            }
         }
 
         #region TRANSFORMS GET SET
@@ -1046,81 +498,10 @@ namespace MotionMatching
             nrp_neck.x = ScaleBetween(head_bend, head_min, head_max, -1f, 1f);
             nrp_head.x = ScaleBetween(-head_bend*0.6f, head_min, head_max, -1f, 1f);
 
-            // finger bend
-            fingerRotationMax = ScaleBetween(finger_bend_close, finger_close_min, finger_close_max, -1f, 1f);
-            fingerRotationMin = ScaleBetween(finger_bend_open, finger_open_min, finger_open_max, -1f, 1f);
-        }
-
-        // finger angles
-        public float fingerRotationL;
-        public float fingerRotationR;
-
-        private float fingerRotationLTarget;
-        private float fingerRotationRTarget;
-
-        private float fingerRotationMin;
-        private float fingerRotationMax;
-
-        private float fingerChangeTimer;
-
-        private void FingerPass()
-        {
-            // finger angles
-            if (fingerChangeTimer <= 0f)
-            {
-                fingerChangeTimer = UnityEngine.Random.Range(1f, 5f);
-                fingerRotationLTarget = UnityEngine.Random.Range(fingerRotationMin, fingerRotationMax);
-                fingerRotationRTarget = UnityEngine.Random.Range(fingerRotationMin, fingerRotationMax);
-            }
-
-            fingerChangeTimer -= Time.deltaTime;
-            fingerRotationL = (fingerRotationLTarget - fingerRotationL) * 0.01f + fingerRotationL;
-            fingerRotationR = (fingerRotationRTarget - fingerRotationR) * 0.01f + fingerRotationR;
-
-            Quaternion fingIndexL = Quaternion.Euler(fingerRotationL, 0, 0);
-            Quaternion fingIndexR = Quaternion.Euler(fingerRotationR, 0, 0);
-            Quaternion fingThumbL = Quaternion.Euler(0, 0, fingerRotationL*0.2f);
-            Quaternion fingThumbR = Quaternion.Euler(0, 0, -fingerRotationR*0.2f);
-            Quaternion fingRestL = Quaternion.Euler(fingerRotationL, 0, 0);
-            Quaternion fingRestR = Quaternion.Euler(fingerRotationR, 0, 0);
-
-            t_LeftIndexDistal.localRotation *= fingIndexL;
-            Debug.Log(t_LeftIndexDistal.localRotation);
-            t_LeftIndexIntermediate.localRotation *= fingIndexL;
-            t_LeftIndexProximal.localRotation *= fingIndexL;
-            t_LeftMiddleDistal.localRotation *= fingRestL;
-            t_LeftMiddleIntermediate.localRotation *= fingRestL;
-            t_LeftMiddleProximal.localRotation *= fingRestL;
-            t_LeftRingDistal.localRotation *= fingRestL;
-            t_LeftRingIntermediate.localRotation *= fingRestL;
-            t_LeftRingProximal.localRotation *= fingRestL;
-            t_LeftThumbDistal.localRotation *= fingThumbL;
-            t_LeftThumbIntermediate.localRotation *= fingThumbL;
-            t_LeftThumbProximal.localRotation *= fingThumbL;
-            t_LeftLittleDistal.localRotation *= fingRestL;
-            t_LeftLittleIntermediate.localRotation *= fingRestL;
-            t_LeftLittleProximal.localRotation *= fingRestL;
-
-            t_RightIndexDistal.localRotation *= fingIndexR;
-            t_RightIndexIntermediate.localRotation *= fingIndexR;
-            t_RightIndexProximal.localRotation *= fingIndexR;
-            t_RightMiddleDistal.localRotation *= fingRestR;
-            t_RightMiddleIntermediate.localRotation *= fingRestR;
-            t_RightMiddleProximal.localRotation *= fingRestR;
-            t_RightRingDistal.localRotation *= fingRestR;
-            t_RightRingIntermediate.localRotation *= fingRestR;
-            t_RightRingProximal.localRotation *= fingRestR;
-            t_RightThumbDistal.localRotation *= fingThumbR;
-            t_RightThumbIntermediate.localRotation *= fingThumbR;
-            t_RightThumbProximal.localRotation *= fingThumbR;
-            t_RightLittleDistal.localRotation *= fingRestR;
-            t_RightLittleIntermediate.localRotation *= fingRestR;
-            t_RightLittleProximal.localRotation *= fingRestR;
         }
 
         #region FLUCTUATE
         private CircularNoise circularNoise;
-        private Quaternion tmpQ;
 
         private float fluctuateAngle;
         private float fluctuateAngle_pre;
@@ -1174,65 +555,37 @@ namespace MotionMatching
         }
         #endregion
 
-        List<GameObject> plist = new List<GameObject>();
-
-        private void LateUpdate()
-        {
-
-            if (C_MainSwitchForPhoto) return;
-
+        void LateUpdate(){
+            // if (Map_OCEAN_to_LabanShape) OCEAN_to_LabanShape();
+            if (Map_OCEAN_to_LabanEffort) OCEAN_to_LabanEffort();
+            if (Map_OCEAN_to_Additional) OCEAN_to_Additional();
+            //Posture
             t_Head = Animator.GetBoneTransform(HumanBodyBones.Head);
             t_Neck = Animator.GetBoneTransform(HumanBodyBones.Neck);
-
             GetBodyTransforms();
-
-            if (C_LabanRotation)
-            {
-                t_Head.localRotation *= Quaternion.Euler(nrp_head.x, 0f, 0f);
-                t_Neck.localRotation *= Quaternion.Euler(nrp_neck.x, 0f, 0f);
-            }
-
+            t_Head.localRotation *= Quaternion.Euler(nrp_head.x, 0f, 0f);
+            t_Neck.localRotation *= Quaternion.Euler(nrp_neck.x, 0f, 0f);
+            //Ocean parameters to rotation of each bones
             LabanEffort_to_Rotations();
             AdditionalPass();
+            NewRotatePass();
 
-            if (C_EmotionsOn)
-            {
-                EmotionPass();
-            }
-            else
-            {
-                faceController.exp_angry = 0;
-                faceController.exp_disgust = 0;
-                faceController.exp_fear = 0;
-                faceController.exp_happy = 0;
-                faceController.exp_sad = 0;
-                faceController.exp_shock = 0;
-            }
+            //Emotion
+            EmotionPass();
 
-            if (C_LabanRotation)
-            {
-                NewRotatePass();
-                // SinkPass();
-            }
+            //Fluctuate
+            FluctuatePass();
 
-            if (!Freeze)
-            {
-                if (C_Fluctuation) FluctuatePass();
-                //   FingerPass();
-            }
-
-            if (C_LookShift)
-            {
-                circularNoise.SetScalingFactor(21, -ls_ver, ls_ver);
-                circularNoise.SetScalingFactor(22, -ls_hor, ls_hor);
-                circularNoise.SetDeltaAngle(21, ls_ver_speed);
-                circularNoise.SetDeltaAngle(22, ls_hor_speed);
-                t_Neck.localRotation *= Quaternion.Slerp(Quaternion.identity, Quaternion.Euler(circularNoise.values[21], circularNoise.values[22], 0), multiplyRotationFactor);
-            }
-
+            //Noise for Look
+            circularNoise.SetScalingFactor(21, -ls_ver, ls_ver);
+            circularNoise.SetScalingFactor(22, -ls_hor, ls_hor);
+            circularNoise.SetDeltaAngle(21, ls_ver_speed);
+            circularNoise.SetDeltaAngle(22, ls_hor_speed);
+            t_Neck.localRotation *= Quaternion.Slerp(Quaternion.identity, Quaternion.Euler(circularNoise.values[21], circularNoise.values[22], 0), multiplyRotationFactor);
+            
+            //Set transforms
             Animator.SetBoneLocalRotation(HumanBodyBones.Head, t_Head.localRotation);
             Animator.SetBoneLocalRotation(HumanBodyBones.Neck, t_Neck.localRotation);
-
             SetBodyTransforms();
         }
 
@@ -1356,20 +709,8 @@ namespace MotionMatching
             faceController.exp_sad = ScaleBetween(Mathf.Clamp(e_sad, 0, 100), 0, 100, 0, 1);
             faceController.exp_shock = ScaleBetween(Mathf.Clamp(e_shock, 0, 100), 0, 100, 0, 1);
 
-            if(!Freeze)
-            {
-                tmpDecayValue = emotionDecayFactor * Time.deltaTime;
-            }
-            else
-            {
-                tmpDecayValue = 0;
-            }
 
-            if(ExpFreeze)
-            {
-                tmpDecayValue = 0;
-            }
-
+            tmpDecayValue = emotionDecayFactor * Time.deltaTime;
             // decay emotion
             if (e_angry > 0) e_angry -= tmpDecayValue; else e_angry = 0;
             if (e_disgust > 0) e_disgust -= tmpDecayValue; else e_disgust = 0;
@@ -1409,32 +750,22 @@ namespace MotionMatching
             }
         }
 
-        public void OCEAN_to_LabanShape()
-        {
-            if(map_new_weights)
-            {
-                IKFAC_up = ScaleBetween(extraversion + openness + agreeableness + conscientiousness, -1, 1, -4, 4);
-                IKFAC_side = ScaleBetween(extraversion * 1.5f + openness, -1, 1, -2.5f, 2.5f);
-                IKFAC_forward = ScaleBetween(neuroticism + extraversion, -1, 1, -4f, 4f);
+        // public void OCEAN_to_LabanShape()
+        // {
+        //     if(map_new_weights)
+        //     {
+        //         IKFAC_up = ScaleBetween(extraversion + openness + agreeableness + conscientiousness, -1, 1, -4, 4);
+        //         IKFAC_side = ScaleBetween(extraversion * 1.5f + openness, -1, 1, -2.5f, 2.5f);
+        //         IKFAC_forward = ScaleBetween(neuroticism + extraversion, -1, 1, -4f, 4f);
 
-            }
-            else
-            {
-                IKFAC_up = ScaleBetween(extraversion + openness + agreeableness + conscientiousness, -1, 1, -1, 1);
-                IKFAC_side = ScaleBetween(extraversion * 1.5f + openness, -1, 1, -1.5f, 1.5f);
-                IKFAC_forward = ScaleBetween(neuroticism + extraversion, -1, 1, -1, 1);
-            }
-
-
-            if (LE_MODE)
-            {
-            /* 
-                IKFAC_side = Mathf.Clamp(IKFAC_side, -.3f, 1f);
-                IKFAC_forward = Mathf.Clamp(IKFAC_forward, -.2f, .4f);
-                IKFAC_up = Mathf.Clamp(IKFAC_up, -.2f, .6f);
-                */
-            }
-        }
+        //     }
+        //     else
+        //     {
+        //         IKFAC_up = ScaleBetween(extraversion + openness + agreeableness + conscientiousness, -1, 1, -1, 1);
+        //         IKFAC_side = ScaleBetween(extraversion * 1.5f + openness, -1, 1, -1.5f, 1.5f);
+        //         IKFAC_forward = ScaleBetween(neuroticism + extraversion, -1, 1, -1, 1);
+        //     }
+        // }
 
         public void OCEAN_to_Additional()
         {
@@ -1443,8 +774,8 @@ namespace MotionMatching
                 spine_bend = ScaleBetween(-0.5f * agreeableness - extraversion * .8f, -1, 1, -1.5f, 1.5f) * le_lsq_fac;
                 head_bend = ScaleBetween(-0.5f * openness - 0.5f * agreeableness - 0.5f * conscientiousness - extraversion * .8f, -1, 1, -2.5f, 2.5f) * le_lsq_fac;
                 sink_bend = ScaleBetween(-0.5f * conscientiousness - 0.5f * extraversion * .8f - openness, -1, 1, -2f, 2f) * le_lsq_fac;
-                finger_bend_open = ScaleBetween(-0.5f * openness - agreeableness, -1, 1, -1.5f, 1.5f) * le_lsq_fac;
-                finger_bend_close = ScaleBetween(-openness - agreeableness + neuroticism, -1, 1, -3f, 3f) * le_lsq_fac;
+                // finger_bend_open = ScaleBetween(-0.5f * openness - agreeableness, -1, 1, -1.5f, 1.5f) * le_lsq_fac;
+                // finger_bend_close = ScaleBetween(-openness - agreeableness + neuroticism, -1, 1, -3f, 3f) * le_lsq_fac;
 
                 faceController.blink_min = ScaleBetween(conscientiousness - neuroticism, 0.6f, 5f, -2f, 2f);
                 faceController.blink_max = ScaleBetween(conscientiousness - neuroticism, 2f, 8f, -2f, 2f);
@@ -1466,8 +797,8 @@ namespace MotionMatching
                 spine_bend = ScaleBetween(-agreeableness * 0.5f - extraversion * .6f, -1, 1, -1f, 1f);
                 head_bend = ScaleBetween(openness - agreeableness * 0.5f - conscientiousness - extraversion * .5f, -1, 1, -1, 1);
                 sink_bend = ScaleBetween(conscientiousness - extraversion * .7f - openness, -1, 1, -1f, 1f);
-                finger_bend_open = ScaleBetween(openness - agreeableness, -1, 1, -1, 1);
-                finger_bend_close = ScaleBetween(-openness - agreeableness + neuroticism, -1, 1, -1, 1);
+                // finger_bend_open = ScaleBetween(openness - agreeableness, -1, 1, -1, 1);
+                // finger_bend_close = ScaleBetween(-openness - agreeableness + neuroticism, -1, 1, -1, 1);
 
                 faceController.blink_min = ScaleBetween(conscientiousness - neuroticism, 0.6f, 5f, -1, 1);
                 faceController.blink_max = ScaleBetween(conscientiousness - neuroticism, 2f, 8f, -1, 1);
@@ -1547,151 +878,156 @@ namespace MotionMatching
         * 
         * * */
 
-        public float[] probs;
-        private TextOCEAN[] oceans;
+        // public float[] probs;
+        // private TextOCEAN[] oceans;
+        // [HideInInspector] public String text_O;
+        // [HideInInspector] public String text_C;
+        // [HideInInspector] public String text_E;
+        // [HideInInspector] public String text_A;
+        // [HideInInspector] public String text_N;
 
-        public void InitTextOCEANProbs()
-        {
-            oceans = new TextOCEAN[10];
+        // public void InitTextOCEANProbs()
+        // {
+        //     oceans = new TextOCEAN[10];
 
-            oceans[0] = TextOCEAN.O_pos;
-            oceans[1] = TextOCEAN.O_neg;
-            oceans[2] = TextOCEAN.C_pos;
-            oceans[3] = TextOCEAN.C_neg;
-            oceans[4] = TextOCEAN.E_pos;
-            oceans[5] = TextOCEAN.E_neg;
-            oceans[6] = TextOCEAN.A_pos;
-            oceans[7] = TextOCEAN.A_neg;
-            oceans[8] = TextOCEAN.N_pos;
-            oceans[9] = TextOCEAN.N_neg;
+        //     oceans[0] = TextOCEAN.O_pos;
+        //     oceans[1] = TextOCEAN.O_neg;
+        //     oceans[2] = TextOCEAN.C_pos;
+        //     oceans[3] = TextOCEAN.C_neg;
+        //     oceans[4] = TextOCEAN.E_pos;
+        //     oceans[5] = TextOCEAN.E_neg;
+        //     oceans[6] = TextOCEAN.A_pos;
+        //     oceans[7] = TextOCEAN.A_neg;
+        //     oceans[8] = TextOCEAN.N_pos;
+        //     oceans[9] = TextOCEAN.N_neg;
 
-            probs = new float[10];
-        }
+        //     probs = new float[10];
+        // }
 
-        public void CalculateTextOCEANProbs()
-        {
-            probs[0] = Mathf.Clamp(openness, 0, 1);
-            probs[1] = Mathf.Clamp(-openness, 0, 1);
-            probs[2] = Mathf.Clamp(conscientiousness, 0, 1);
-            probs[3] = Mathf.Clamp(-conscientiousness, 0, 1);
-            probs[4] = Mathf.Clamp(extraversion, 0, 1);
-            probs[5] = Mathf.Clamp(-extraversion, 0, 1);
-            probs[6] = Mathf.Clamp(agreeableness, 0, 1);
-            probs[7] = Mathf.Clamp(-agreeableness, 0, 1);
-            probs[8] = Mathf.Clamp(neuroticism, 0, 1);
-            probs[9] = Mathf.Clamp(-neuroticism, 0, 1);
+        // public void CalculateTextOCEANProbs()
+        // {
+        //     probs[0] = Mathf.Clamp(openness, 0, 1);
+        //     probs[1] = Mathf.Clamp(-openness, 0, 1);
+        //     probs[2] = Mathf.Clamp(conscientiousness, 0, 1);
+        //     probs[3] = Mathf.Clamp(-conscientiousness, 0, 1);
+        //     probs[4] = Mathf.Clamp(extraversion, 0, 1);
+        //     probs[5] = Mathf.Clamp(-extraversion, 0, 1);
+        //     probs[6] = Mathf.Clamp(agreeableness, 0, 1);
+        //     probs[7] = Mathf.Clamp(-agreeableness, 0, 1);
+        //     probs[8] = Mathf.Clamp(neuroticism, 0, 1);
+        //     probs[9] = Mathf.Clamp(-neuroticism, 0, 1);
 
-            float total = 0f;
+        //     float total = 0f;
 
-            for (int i = 0; i < 10; i++)
-            {
-                total += probs[i];
-            }
+        //     for (int i = 0; i < 10; i++)
+        //     {
+        //         total += probs[i];
+        //     }
 
-            if (total == 0f)
-            {
-                for (int i = 0; i < 10; i++)
-                {
-                    probs[i] = 1f / 10f;
-                }
-            }
-            else
-            {
-                for (int i = 0; i < 10; i++)
-                {
-                    probs[i] = probs[i] / total;
-                }
-            }
+        //     if (total == 0f)
+        //     {
+        //         for (int i = 0; i < 10; i++)
+        //         {
+        //             probs[i] = 1f / 10f;
+        //         }
+        //     }
+        //     else
+        //     {
+        //         for (int i = 0; i < 10; i++)
+        //         {
+        //             probs[i] = probs[i] / total;
+        //         }
+        //     }
 
-            if(probs[0] > probs[1])
-            {
-                text_O = "Openness: (+) " + probs[0].ToString("F2") + "½";
-            }
-            else if (probs[0] < probs[1])
-            {
-                text_O = "Openness: (-) " + probs[1].ToString("F2") + "½";
-            }
-            else
-            {
-                text_O = "Openness: (+) " + probs[0].ToString("F2") + "½, (-) " + probs[1].ToString("F2") + "½";
-            }
+        //     if(probs[0] > probs[1])
+        //     {
+        //         text_O = "Openness: (+) " + probs[0].ToString("F2") + "½";
+        //     }
+        //     else if (probs[0] < probs[1])
+        //     {
+        //         text_O = "Openness: (-) " + probs[1].ToString("F2") + "½";
+        //     }
+        //     else
+        //     {
+        //         text_O = "Openness: (+) " + probs[0].ToString("F2") + "½, (-) " + probs[1].ToString("F2") + "½";
+        //     }
 
-            if (probs[2] > probs[3])
-            {
-                text_C = "Conscientiousness: (+) " + probs[2].ToString("F2") + "½";
-            }
-            else if (probs[2] < probs[3])
-            {
-                text_C = "Conscientiousness: (-) " + probs[3].ToString("F2") + "½";
-            }
-            else
-            {
-                text_C = "Conscientiousness: (+) " + probs[2].ToString("F2") + "½, (-) " + probs[3].ToString("F2") + "½";
-            }
+        //     if (probs[2] > probs[3])
+        //     {
+        //         text_C = "Conscientiousness: (+) " + probs[2].ToString("F2") + "½";
+        //     }
+        //     else if (probs[2] < probs[3])
+        //     {
+        //         text_C = "Conscientiousness: (-) " + probs[3].ToString("F2") + "½";
+        //     }
+        //     else
+        //     {
+        //         text_C = "Conscientiousness: (+) " + probs[2].ToString("F2") + "½, (-) " + probs[3].ToString("F2") + "½";
+        //     }
 
-            if (probs[4] > probs[5])
-            {
-                text_E = "Extroversion: (+) " + probs[4].ToString("F2") + "½";
-            }
-            else if (probs[4] < probs[5])
-            {
-                text_E = "Extroversion: (-) " + probs[5].ToString("F2") + "½";
-            }
-            else
-            {
-                text_E = "Extroversion: (+) " + probs[4].ToString("F2") + "½, (-) " + probs[5].ToString("F2") + "½";
-            }
+        //     if (probs[4] > probs[5])
+        //     {
+        //         text_E = "Extroversion: (+) " + probs[4].ToString("F2") + "½";
+        //     }
+        //     else if (probs[4] < probs[5])
+        //     {
+        //         text_E = "Extroversion: (-) " + probs[5].ToString("F2") + "½";
+        //     }
+        //     else
+        //     {
+        //         text_E = "Extroversion: (+) " + probs[4].ToString("F2") + "½, (-) " + probs[5].ToString("F2") + "½";
+        //     }
 
-            if (probs[6] > probs[7])
-            {
-                text_A = "Agreeableness: (+) " + probs[6].ToString("F2") + "½";
-            }
-            else if (probs[6] < probs[7])
-            {
-                text_A = "Agreeableness: (-) " + probs[7].ToString("F2") + "½";
-            }
-            else
-            {
-                text_A = "Agreeableness: (+) " + probs[6].ToString("F2") + "½, (-) " + probs[7].ToString("F2") + "½";
-            }
+        //     if (probs[6] > probs[7])
+        //     {
+        //         text_A = "Agreeableness: (+) " + probs[6].ToString("F2") + "½";
+        //     }
+        //     else if (probs[6] < probs[7])
+        //     {
+        //         text_A = "Agreeableness: (-) " + probs[7].ToString("F2") + "½";
+        //     }
+        //     else
+        //     {
+        //         text_A = "Agreeableness: (+) " + probs[6].ToString("F2") + "½, (-) " + probs[7].ToString("F2") + "½";
+        //     }
 
-            if (probs[8] > probs[9])
-            {
-                text_N = "Neuroticism: (+) " + probs[8].ToString("F2") + "½";
-            }
-            else if (probs[8] < probs[9])
-            {
-                text_N = "Neuroticism: (-) " + probs[9].ToString("F2") + "½";
-            }
-            else
-            {
-                text_N = "Neuroticism: (+) " + probs[8].ToString("F2") + "½, (-) " + probs[9].ToString("F2") + "½";
-            }
-        }
+        //     if (probs[8] > probs[9])
+        //     {
+        //         text_N = "Neuroticism: (+) " + probs[8].ToString("F2") + "½";
+        //     }
+        //     else if (probs[8] < probs[9])
+        //     {
+        //         text_N = "Neuroticism: (-) " + probs[9].ToString("F2") + "½";
+        //     }
+        //     else
+        //     {
+        //         text_N = "Neuroticism: (+) " + probs[8].ToString("F2") + "½, (-) " + probs[9].ToString("F2") + "½";
+        //     }
+        // }
 
-        public TextOCEAN DetermineTextOCEAN()
-        {
-            if(probs == null || probs.Length != 10)
-            {
-                InitTextOCEANProbs();
-            }
+        // public TextOCEAN DetermineTextOCEAN()
+        // {
+        //     if(probs == null || probs.Length != 10)
+        //     {
+        //         InitTextOCEANProbs();
+        //     }
 
-            CalculateTextOCEANProbs();
+        //     CalculateTextOCEANProbs();
 
-            float r = UnityEngine.Random.value;
+        //     float r = UnityEngine.Random.value;
 
-            for (int i = 0; i < 10; i++)
-            {
-                r -= probs[i];
+        //     for (int i = 0; i < 10; i++)
+        //     {
+        //         r -= probs[i];
 
-                if(r <= 0)
-                {
-                    return oceans[i];
-                }
-            }
+        //         if(r <= 0)
+        //         {
+        //             return oceans[i];
+        //         }
+        //     }
 
-            return oceans[9];
-        }
+        //     return oceans[9];
+        // }
         
         private static float ScaleBetween(float oldvalue, float newmin, float newmax, float oldmin, float oldmax)
         {

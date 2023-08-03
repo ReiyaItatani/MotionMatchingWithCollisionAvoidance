@@ -162,7 +162,7 @@ namespace MotionMatching{
             //Update Current Position and Direction
             SimulatePath(Time.deltaTime, CurrentPosition, out CurrentPosition, out CurrentDirection);
 
-            CheckForGoalProximity();
+            CheckForGoalProximity(CurrentPosition, currentGoal, goalRadius);
 
             //Prevent agents from intersection
             AdjustCharacterPosition();
@@ -191,10 +191,11 @@ namespace MotionMatching{
                 Vector3 otherPos = collidedAgent.GetComponent<ParameterManager>().GetCurrentPosition();
                 Vector3 offset = otherPos - myPos;
                 float dotProduct = Vector3.Dot(myDir, otherDir);
+                float angle = 0.1f;
                 if(onMoving){
-                    if (dotProduct < 0){
+                    if (dotProduct <= -angle){
                         //anti-parallel
-                        direction = checkOppoentDir(myDir, myPos, otherDir, otherPos);
+                        direction = CheckOppoentDir(myDir, myPos, otherDir, otherPos);
                         nextPosition = currentPosition + direction * currentSpeed * time;
                     }else{
                         //parallel
@@ -214,8 +215,7 @@ namespace MotionMatching{
                 nextPosition = currentPosition + direction * currentSpeed * time;
             }
         }
-
-        private Vector3 checkOppoentDir(Vector3 myDirection, Vector3 myPosition, Vector3 otherDirection, Vector3 otherPosition){
+        private Vector3 CheckOppoentDir(Vector3 myDirection, Vector3 myPosition, Vector3 otherDirection, Vector3 otherPosition){
             Vector3 offset = (otherPosition - myPosition).normalized;
             Vector3 right= Vector3.Cross(Vector3.up, offset);
             if(Vector3.Dot(right, myDirection)>0 && Vector3.Dot(right, otherDirection)>0 || Vector3.Dot(right, myDirection)<0 && Vector3.Dot(right, otherDirection)<0){
@@ -224,12 +224,9 @@ namespace MotionMatching{
             }
             return myDirection;
         }
-
         public static Vector3 GetReflectionVector(Vector3 targetVector, Vector3 baseVector)
         {
-            //targetVector
             targetVector = targetVector.normalized;
-            //baseVector
             baseVector = baseVector.normalized;
             float cosTheta = Vector3.Dot(targetVector, baseVector); // p・x = cos θ
             Vector3 q = 2 * cosTheta * baseVector - targetVector;   // q = 2cos θ・x - p
@@ -253,7 +250,6 @@ namespace MotionMatching{
             // Move the simulation bone towards the simulation object
             SimulationBone.SetPosAdjustment(adjustmentPosition);
         }
-
         private void ClampSimulationBone()
         {
             // Clamp Position
@@ -267,10 +263,10 @@ namespace MotionMatching{
         }
 
         //To Update Goal Direction
-        private void CheckForGoalProximity()
+        private void CheckForGoalProximity(Vector3 _currentPosition, Vector3 _currentGoal, float _goalRadius)
         {
-            float distanceToGoal = Vector3.Distance(CurrentPosition, currentGoal);
-            if (distanceToGoal < goalRadius)
+            float distanceToGoal = Vector3.Distance(_currentPosition, _currentGoal);
+            if (distanceToGoal < _goalRadius)
             {
                 SelectRandomGoal();
             }
@@ -278,15 +274,13 @@ namespace MotionMatching{
         private void SelectRandomGoal(){
             currentGoalIndex++;
             currentGoal = Path[(currentGoalIndex + 1) % Path.Length];
-            StartCoroutine(GradualSpeedUp(1.0f, currentSpeed, initialSpeed));
+            StartCoroutine(GradualSpeedUp(3.0f, currentSpeed, initialSpeed));
         }
-
         private IEnumerator GradualSpeedUp(float duration, float _currentSpeed, float targetSpeed){
             float elapsedTime = 0.0f;
-            float initialSpeed = _currentSpeed;
             while(elapsedTime < duration){
                 elapsedTime += Time.deltaTime;
-                currentSpeed = Mathf.Lerp(initialSpeed, targetSpeed, elapsedTime/duration);
+                currentSpeed = Mathf.Lerp(_currentSpeed, targetSpeed, elapsedTime/duration);
                 yield return new WaitForSeconds(Time.deltaTime);
             }
             currentSpeed = targetSpeed;
@@ -305,13 +299,11 @@ namespace MotionMatching{
                 {
                     avoidanceVector = ComputeAvoidanceVector(currentAvoidanceTarget, CurrentDirection, GetCurrentPosition());
                     //gradually increase the avoidance force considering the distance 
-                    //Debug.Log(1.0f-Vector3.Distance(currentAvoidanceTarget.transform.position, transform.position)/(Mathf.Sqrt(avoidanceArea.x/2*avoidanceArea.x/2+avoidanceArea.z*avoidanceArea.z)+agentRadius*2));
                     avoidanceVector = avoidanceVector*(1.0f-Vector3.Distance(currentAvoidanceTarget.transform.position, GetCurrentPosition())/(Mathf.Sqrt(avoidanceColliderSize.x/2*avoidanceColliderSize.x/2+avoidanceColliderSize.z*avoidanceColliderSize.z)+agentRadius*2));
                     elapsedTime = 0.0f;
                 }
                 else
                 {
-
                     elapsedTime += Time.deltaTime;
                     if(transitionTime > elapsedTime){
                         avoidanceVector = Vector3.Lerp(avoidanceVector, Vector3.zero, elapsedTime/transitionTime);
@@ -324,7 +316,6 @@ namespace MotionMatching{
                 yield return new WaitForSeconds(updateTime);
             }
         }
-
         private Vector3 ComputeAvoidanceVector(GameObject avoidanceTarget, Vector3 currentDirection, Vector3 currentPosition)
         {
             Vector3 directionToAvoidanceTarget = (avoidanceTarget.transform.position - currentPosition).normalized;
@@ -339,8 +330,6 @@ namespace MotionMatching{
             }
             return Vector3.Cross(upVector, directionToAvoidanceTarget).normalized;
         }
-
-        //For Update AvoidanceTarget
         private IEnumerator UpdateAvoidanceColliderPos(float AgentHeight){
             while(true){
                 Vector3 Center = (Vector3)GetCurrentPosition()+CurrentDirection;
@@ -352,55 +341,18 @@ namespace MotionMatching{
         }
 
         //Unnaligned Collision Avoidance
-        private float predictNearestApproachTime (Vector3 myDirection, Vector3 myPosition, float mySpeed, Vector3 otherDirection, Vector3 otherPosition, float otherSpeed)
-        {
-            Vector3 relVelocity = otherDirection*otherSpeed - myDirection*mySpeed;
-            float relSpeed = relVelocity.magnitude;
-            Vector3 relTangent = relVelocity / relSpeed;
-            Vector3 relPosition = myPosition - otherPosition;
-            float projection = Vector3.Dot(relTangent, relPosition); 
-            if (relSpeed == 0) return 0;
-
-            return projection / relSpeed;
-        }
-        private float computeNearestApproachPositions (float time, Vector3 myPosition, Vector3 myDirection, float mySpeed, Vector3 otherPosition, Vector3 otherDirection, float otherSpeed)
-        {
-            Vector3    myTravel = myDirection * mySpeed * time;
-            Vector3 otherTravel = otherDirection * otherSpeed * time;
-
-            Vector3    myFinal =  myPosition +    myTravel;
-            Vector3 otherFinal = new Vector3(0f,0f,0f)+otherPosition + otherTravel;
-
-            // xxx for annotation
-            myPositionAtNearestApproach = myFinal;
-            otherPositionAtNearestApproach = otherFinal;
-
-            return Vector3.Distance(myFinal, otherFinal);
-        }
         public IEnumerator UpdateAvoidNeighborsVector(List<GameObject> Agents , float updateTime, float transitionTime){
             while(true){
                 if(currentAvoidanceTarget != null){
                     avoidNeighborsVector = Vector3.zero;
                 }else{
-                    Vector3 newavoidNeighborsVector = steerToAvoidNeighbors(Agents, minTimeToCollision, collisionDangerThreshold);
+                    Vector3 newavoidNeighborsVector = SteerToAvoidNeighbors(Agents, minTimeToCollision, collisionDangerThreshold);
                     yield return StartCoroutine(AvoidNeighborsVectorGradualVectorTransition(transitionTime, avoidNeighborsVector, newavoidNeighborsVector));
                 }
                 yield return new WaitForSeconds(updateTime);
             }
         }
-        private IEnumerator AvoidNeighborsVectorGradualVectorTransition(float duration, Vector3 initialVector, Vector3 targetVector){
-            float elapsedTime = 0.0f;
-            Vector3 initialavoidNeighborsVector = initialVector;
-            while(elapsedTime < duration){
-                elapsedTime += Time.deltaTime;
-                avoidNeighborsVector = Vector3.Slerp(initialavoidNeighborsVector, targetVector, elapsedTime/duration);
-                yield return new WaitForSeconds(Time.deltaTime);
-            }
-            avoidNeighborsVector = targetVector;
-
-            yield return null;
-        }
-        public Vector3 steerToAvoidNeighbors (List<GameObject> others, float minTimeToCollision, float collisionDangerThreshold)
+        public Vector3 SteerToAvoidNeighbors (List<GameObject> others, float minTimeToCollision, float collisionDangerThreshold)
         {
             float steer = 0;
             potentialAvoidanceTarget = null;
@@ -413,11 +365,11 @@ namespace MotionMatching{
                 ParameterManager otherParameterManager = other.GetComponent<ParameterManager>();
 
                 // predicted time until nearest approach of "this" and "other"
-                float time = predictNearestApproachTime (CurrentDirection, GetCurrentPosition(), currentSpeed, otherParameterManager.GetCurrentDirection(), otherParameterManager.GetCurrentPosition(), otherParameterManager.GetCurrentSpeed());
+                float time = PredictNearestApproachTime (CurrentDirection, GetCurrentPosition(), currentSpeed, otherParameterManager.GetCurrentDirection(), otherParameterManager.GetCurrentPosition(), otherParameterManager.GetCurrentSpeed());
                 //Debug.Log("time:"+time);
                 if ((time >= 0) && (time < minTimeToCollision)){
                     //Debug.Log("Distance:"+computeNearestApproachPositions (time, CurrentPosition, CurrentDirection, CurrentSpeed, otherParameterManager.GetRawCurrentPosition(), otherParameterManager.GetCurrentDirection(), otherParameterManager.GetCurrentSpeed()));
-                    if (computeNearestApproachPositions (time, GetCurrentPosition(), CurrentDirection, currentSpeed, otherParameterManager.GetCurrentPosition(), otherParameterManager.GetCurrentDirection(), otherParameterManager.GetCurrentSpeed()) < collisionDangerThreshold)
+                    if (ComputeNearestApproachPositions (time, GetCurrentPosition(), CurrentDirection, currentSpeed, otherParameterManager.GetCurrentPosition(), otherParameterManager.GetCurrentDirection(), otherParameterManager.GetCurrentSpeed()) < collisionDangerThreshold)
                     {
                         minTimeToCollision = time;
                         potentialAvoidanceTarget = other;
@@ -466,15 +418,44 @@ namespace MotionMatching{
             }
             return Vector3.Cross(CurrentDirection, Vector3.up) * steer;
         }
+        private float PredictNearestApproachTime (Vector3 myDirection, Vector3 myPosition, float mySpeed, Vector3 otherDirection, Vector3 otherPosition, float otherSpeed)
+        {
+            Vector3 relVelocity = otherDirection*otherSpeed - myDirection*mySpeed;
+            float relSpeed = relVelocity.magnitude;
+            Vector3 relTangent = relVelocity / relSpeed;
+            Vector3 relPosition = myPosition - otherPosition;
+            float projection = Vector3.Dot(relTangent, relPosition); 
+            if (relSpeed == 0) return 0;
 
-        private Vector3 GetWorldPredictedPos(int index)
-        {
-            return PredictedPositions[index] + transform.position;
+            return projection / relSpeed;
         }
-        private Vector3 GetWorldPredictedDir(int index)
+        private float ComputeNearestApproachPositions (float time, Vector3 myPosition, Vector3 myDirection, float mySpeed, Vector3 otherPosition, Vector3 otherDirection, float otherSpeed)
         {
-            return PredictedDirections[index];
+            Vector3    myTravel = myDirection * mySpeed * time;
+            Vector3 otherTravel = otherDirection * otherSpeed * time;
+
+            Vector3    myFinal =  myPosition +    myTravel;
+            Vector3 otherFinal = new Vector3(0f,0f,0f)+otherPosition + otherTravel;
+
+            // xxx for annotation
+            myPositionAtNearestApproach = myFinal;
+            otherPositionAtNearestApproach = otherFinal;
+
+            return Vector3.Distance(myFinal, otherFinal);
         }
+        private IEnumerator AvoidNeighborsVectorGradualVectorTransition(float duration, Vector3 initialVector, Vector3 targetVector){
+            float elapsedTime = 0.0f;
+            Vector3 initialavoidNeighborsVector = initialVector;
+            while(elapsedTime < duration){
+                elapsedTime += Time.deltaTime;
+                avoidNeighborsVector = Vector3.Slerp(initialavoidNeighborsVector, targetVector, elapsedTime/duration);
+                yield return new WaitForSeconds(Time.deltaTime);
+            }
+            avoidNeighborsVector = targetVector;
+
+            yield return null;
+        }
+        
         public override void GetTrajectoryFeature(TrajectoryFeature feature, int index, Transform character, NativeArray<float> output)
         {
             if (!feature.SimulationBone) Debug.Assert(false, "Trajectory should be computed using the SimulationBone");
@@ -496,6 +477,15 @@ namespace MotionMatching{
                     Debug.Assert(false, "Unknown feature type: " + feature.FeatureType);
                     break;
             }
+        }
+
+        private Vector3 GetWorldPredictedPos(int index)
+        {
+            return PredictedPositions[index] + transform.position;
+        }
+        private Vector3 GetWorldPredictedDir(int index)
+        {
+            return PredictedDirections[index];
         }
 
         public override float3 GetWorldInitPosition()

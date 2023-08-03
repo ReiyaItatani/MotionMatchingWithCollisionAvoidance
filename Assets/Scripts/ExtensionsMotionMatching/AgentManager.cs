@@ -119,22 +119,6 @@ public class AgentManager : MonoBehaviour
         
     }
 
-    public List<GameObject> GetAgents() {
-        return Agents;
-    }
-
-    public List<GameObject> GetPathControllers() {
-        return PathControllers;
-    }
-
-    public List<GameObject> GetMotionMatchingControllers() {
-        return MotionMatchingControllers;
-    }
-
-    public List<GameObject> GetMotionMatchingSkinnedMeshRendererWithOCEANs() {
-        return MotionMatchingSkinnedMeshRendererWithOCEANs;
-    }
-
     void Update()
     {
         foreach(GameObject controllerObject in PathControllers) 

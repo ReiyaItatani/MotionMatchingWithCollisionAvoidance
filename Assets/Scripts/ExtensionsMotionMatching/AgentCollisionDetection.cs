@@ -7,8 +7,15 @@ public class AgentCollisionDetection : MonoBehaviour
 {
     private PathController pathController;
     private CapsuleCollider capsuleCollider;
+    private MotionMatchingSkinnedMeshRendererWithOCEAN motionMatchingSkinnedMeshRendererWithOCEAN;
     private bool onCollide = false;
     private bool onMoving = false;
+
+    void Start(){
+        if(this.gameObject.GetComponent<MotionMatchingSkinnedMeshRendererWithOCEAN>()!=null){
+            motionMatchingSkinnedMeshRendererWithOCEAN = this.gameObject.GetComponent<MotionMatchingSkinnedMeshRendererWithOCEAN>();
+        }
+    }
 
     void Update(){
         if(pathController!=null){
@@ -41,15 +48,24 @@ public class AgentCollisionDetection : MonoBehaviour
 
     public IEnumerator WaitTime(float time, GameObject _collidedAgent)
     {
-        //waitstart
+        //Start wait
         onCollide = true;
         pathController.SetOnCollide(onCollide, _collidedAgent);
+
+        //Look at
+        if(motionMatchingSkinnedMeshRendererWithOCEAN != null){
+            motionMatchingSkinnedMeshRendererWithOCEAN.lookObject = _collidedAgent;
+        }
+
         yield return new WaitForSeconds(time/4f);
-        //talkstart
+        //Start talk
+        if(motionMatchingSkinnedMeshRendererWithOCEAN != null){
+            motionMatchingSkinnedMeshRendererWithOCEAN.lookObject = null;
+        }
         onMoving = true;
         pathController.SetOnMoving(onMoving, _collidedAgent);
         yield return new WaitForSeconds(time - time/4f);
-        //backtonormal
+        //Back to normal
         onCollide = false;
         onMoving = false;
         pathController.SetOnCollide(onCollide, _collidedAgent);
