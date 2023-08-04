@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Mathematics;
 using System;
-
+using Drawing;
 namespace MotionMatching
 {
     [RequireComponent(typeof(Animator))]
@@ -237,10 +237,10 @@ namespace MotionMatching
         [Range(-1f, 1f)] public float neuroticism = 0f;
 
         [Header("Laban Effort Parameters")]
-        [Range(-1f, 1f)] public float space = 0f;
-        [Range(-1f, 1f)] public float weight = 0f;
-        [Range(-1f, 1f)] public float time = 0f;
-        [Range(-1f, 1f)] public float flow = 0f;
+        [Range(-1f, 1f), HideInInspector] public float space = 0f;
+        [Range(-1f, 1f), HideInInspector] public float weight = 0f;
+        [Range(-1f, 1f), HideInInspector] public float time = 0f;
+        [Range(-1f, 1f), HideInInspector] public float flow = 0f;
 
         [Header("Emotion Parameters")]
         [Range(0f, 1f)] public float e_happy = 0f;
@@ -251,28 +251,28 @@ namespace MotionMatching
         [Range(0f, 1f)] public float e_shock = 0f;
 
         [Header("Base Expression Parameters")]
-        [Range(-1f, 1f)] public float base_happy = 0f;
-        [Range(-1f, 1f)] public float base_sad = 0f;
-        [Range(-1f, 1f)] public float base_angry = 0f;
-        [Range(-1f, 1f)] public float base_shock = 0f;
-        [Range(-1f, 1f)] public float base_disgust = 0f;
-        [Range(-1f, 1f)] public float base_fear = 0f;
+        [Range(-1f, 1f), HideInInspector] public float base_happy = 0f;
+        [Range(-1f, 1f), HideInInspector] public float base_sad = 0f;
+        [Range(-1f, 1f), HideInInspector] public float base_angry = 0f;
+        [Range(-1f, 1f), HideInInspector] public float base_shock = 0f;
+        [Range(-1f, 1f), HideInInspector] public float base_disgust = 0f;
+        [Range(-1f, 1f), HideInInspector] public float base_fear = 0f;
 
         [Header("Look Shift Parameters")]
-        [Range(0f, 100f)] public float ls_hor;
-        [Range(0f, 100f)] public float ls_ver;
-        [Range(0f, 5f)] public float ls_hor_speed;
-        [Range(0f, 5f)] public float ls_ver_speed;
+        [Range(0f, 100f), HideInInspector] public float ls_hor;
+        [Range(0f, 100f), HideInInspector] public float ls_ver;
+        [Range(0f, 5f), HideInInspector] public float ls_hor_speed;
+        [Range(0f, 5f), HideInInspector] public float ls_ver_speed;
 
         [Header("Additional Body Parameters")]
-        [Range(-1f, 1f)] public float spine_bend;
+        [Range(-1f, 1f), HideInInspector] public float spine_bend;
         //private readonly float spine_max = 12;
         private readonly float spine_max = 16;
         //private readonly float spine_min = -10;
         private readonly float spine_min = -14;
-        [Range(-1f, 1f)] public float sink_bend;
+        [Range(-1f, 1f), HideInInspector] public float sink_bend;
         //private readonly float sink_max = 13;
-        [Range(-1f, 1f)] public float head_bend;
+        [Range(-1f, 1f), HideInInspector] public float head_bend;
         //private readonly float head_max = 2f;
         private readonly float head_max = 5f;
         //private readonly float head_min = -2f;
@@ -576,6 +576,9 @@ namespace MotionMatching
             //Fluctuate
             FluctuatePass();
 
+            //LookAt
+            LookAtPass();
+
             //Noise for Look
             circularNoise.SetScalingFactor(21, -ls_ver, ls_ver);
             circularNoise.SetScalingFactor(22, -ls_hor, ls_hor);
@@ -587,6 +590,29 @@ namespace MotionMatching
             Animator.SetBoneLocalRotation(HumanBodyBones.Head, t_Head.localRotation);
             Animator.SetBoneLocalRotation(HumanBodyBones.Neck, t_Neck.localRotation);
             SetBodyTransforms();
+        }
+
+        /* * *
+        * 
+        * LOOK AT PASS
+        * 
+        * * */
+        private void LookAtPass(){
+            Vector3 lookDirection = this.transform.InverseTransformDirection(lookObject.transform.position - this.transform.position);
+            Quaternion fromTo = Quaternion.FromToRotation(t_Head.forward, lookDirection);
+
+            // Limit
+            float angle = Quaternion.Angle(Quaternion.identity, fromTo);
+            if (angle > 30.0f)
+            {
+                fromTo = Quaternion.RotateTowards(Quaternion.identity, fromTo, 30.0f);
+            }
+
+
+            //Set Rotation
+            t_Head.localRotation *= fromTo;
+            t_Neck.localRotation *= fromTo;
+
         }
 
         #region NEW ROTATE PASS

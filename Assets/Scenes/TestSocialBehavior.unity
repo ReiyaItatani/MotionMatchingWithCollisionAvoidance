@@ -192,9 +192,39 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8469025142273640792, guid: 6e1043e501d716749960b3aa8faf64b1,
         type: 3}
+      propertyPath: base_sad
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8469025142273640792, guid: 6e1043e501d716749960b3aa8faf64b1,
+        type: 3}
+      propertyPath: base_fear
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8469025142273640792, guid: 6e1043e501d716749960b3aa8faf64b1,
+        type: 3}
+      propertyPath: base_angry
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8469025142273640792, guid: 6e1043e501d716749960b3aa8faf64b1,
+        type: 3}
+      propertyPath: base_happy
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8469025142273640792, guid: 6e1043e501d716749960b3aa8faf64b1,
+        type: 3}
+      propertyPath: base_shock
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8469025142273640792, guid: 6e1043e501d716749960b3aa8faf64b1,
+        type: 3}
       propertyPath: lookObject
       value: 
       objectReference: {fileID: 806692281}
+    - target: {fileID: 8469025142273640792, guid: 6e1043e501d716749960b3aa8faf64b1,
+        type: 3}
+      propertyPath: base_disgust
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6e1043e501d716749960b3aa8faf64b1, type: 3}
 --- !u!1 &153227989
@@ -2557,12 +2587,12 @@ MonoBehaviour:
   e_disgust: 0
   e_fear: 0
   e_shock: 0
-  base_happy: 0
-  base_sad: 0
-  base_angry: 0
-  base_shock: 0
-  base_disgust: 0
-  base_fear: 0
+  base_happy: 1
+  base_sad: 1
+  base_angry: 1
+  base_shock: 1
+  base_disgust: 1
+  base_fear: 1
   IKFAC_forward: 0
   IKFAC_up: 0
   IKFAC_side: 0

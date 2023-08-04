@@ -905,7 +905,7 @@ public class TestMinAgentController : MonoBehaviour {
         Quaternion fingRestR = Quaternion.Euler(fingerRotationR, 0, 0);
 
         t_LeftIndexDistal.localRotation *= fingIndexL;
-        Debug.Log(t_LeftIndexDistal.localRotation);
+        //Debug.Log(t_LeftIndexDistal.localRotation);
         t_LeftIndexIntermediate.localRotation *= fingIndexL;
         t_LeftIndexProximal.localRotation *= fingIndexL;
         t_LeftMiddleDistal.localRotation *= fingRestL;
