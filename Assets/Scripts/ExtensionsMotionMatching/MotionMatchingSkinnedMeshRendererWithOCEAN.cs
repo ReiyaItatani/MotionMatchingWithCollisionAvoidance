@@ -69,6 +69,8 @@ namespace MotionMatching
             // SinkPassInit();
             GetBodyTransforms();
             FluctuatePassInit();
+
+            // StartCoroutine(LookAtPass());
         }
 
         private void InitRetargeting()
@@ -597,7 +599,9 @@ namespace MotionMatching
         * LOOK AT PASS
         * 
         * * */
+
         private void LookAtPass(){
+            if(lookObject == null) return;
             Vector3 lookDirection = this.transform.InverseTransformDirection(lookObject.transform.position - this.transform.position);
             Quaternion fromTo = Quaternion.FromToRotation(t_Head.forward, lookDirection);
 
@@ -612,8 +616,32 @@ namespace MotionMatching
             //Set Rotation
             t_Head.localRotation *= fromTo;
             t_Neck.localRotation *= fromTo;
-
         }
+    //     float rotateSpeed = 1.0f; 
+
+    //     private IEnumerator LookAtPass() {
+    //     while (true) {
+    //         if(lookObject == null) yield return null;
+        
+    //         Vector3 lookDirection = this.transform.InverseTransformDirection(lookObject.transform.position - this.transform.position);
+    //         Quaternion fromTo = Quaternion.FromToRotation(t_Head.forward, lookDirection);
+
+    //         // Rotate over time
+    //         Quaternion targetRotationHead = t_Head.localRotation * fromTo;
+    //         Quaternion targetRotationNeck = t_Neck.localRotation * fromTo;
+    //         while (Quaternion.Angle(t_Head.localRotation, targetRotationHead) > 0.1f) {
+    //             t_Head.localRotation = Quaternion.RotateTowards(t_Head.localRotation, targetRotationHead, Time.deltaTime * rotateSpeed);
+    //             t_Neck.localRotation = Quaternion.RotateTowards(t_Neck.localRotation, targetRotationNeck, Time.deltaTime * rotateSpeed);
+    //             yield return null;
+    //         }
+    //     }
+    // }
+
+
+
+
+
+
 
         #region NEW ROTATE PASS
         private Vector3 nrp_spine;
