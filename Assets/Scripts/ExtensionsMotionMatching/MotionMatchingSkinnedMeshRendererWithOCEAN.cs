@@ -136,7 +136,8 @@ namespace MotionMatching
         }
 
         private void OnSkeletonTransformUpdated()
-        {
+        {   
+
             if (!ShouldRetarget) return;
             // Motion
             transform.position = MotionMatching.transform.position;
@@ -165,6 +166,9 @@ namespace MotionMatching
             // Hips
             TargetBones[0].position = MotionMatching.GetSkeletonTransforms()[1].position;
 
+            
+
+
             // Toes-Floor Penetration
             if (AvoidToesFloorPenetration)
             {
@@ -181,6 +185,42 @@ namespace MotionMatching
                 hipsPos.y += ToesPenetrationMovingCorrection;
                 TargetBones[0].position = hipsPos;
             }
+        }
+        void LateUpdate(){
+            // if (Map_OCEAN_to_LabanShape) OCEAN_to_LabanShape();
+            if (Map_OCEAN_to_LabanEffort) OCEAN_to_LabanEffort();
+            if (Map_OCEAN_to_Additional) OCEAN_to_Additional();
+
+            //Posture
+            GetBodyTransforms();
+            t_Head.localRotation *= Quaternion.Euler(nrp_head.x, 0f, 0f);
+            t_Neck.localRotation *= Quaternion.Euler(nrp_neck.x, 0f, 0f);
+            //Ocean parameters to rotation of each bones
+            LabanEffort_to_Rotations();
+            AdditionalPass();
+            NewRotatePass();
+
+            //Emotion
+            EmotionPass();
+
+            //Fluctuate
+            FluctuatePass();
+
+            //LookAt
+            LookAtPass();
+
+            //Noise for Look
+            circularNoise.SetScalingFactor(21, -ls_ver, ls_ver);
+            circularNoise.SetScalingFactor(22, -ls_hor, ls_hor);
+            circularNoise.SetDeltaAngle(21, ls_ver_speed);
+            circularNoise.SetDeltaAngle(22, ls_hor_speed);
+            t_Neck.localRotation *= Quaternion.Slerp(Quaternion.identity, Quaternion.Euler(circularNoise.values[21], circularNoise.values[22], 0), multiplyRotationFactor);
+        
+            //Set transforms
+            SetBodyTransforms();
+
+            // GetBodyTransforms();
+            // Draw.ArrowheadArc(this.transform.position, TargetBones[5].forward, 0.55f, Color.blue);
         }
 
         // Used for retargeting. First parent, then children
@@ -557,61 +597,31 @@ namespace MotionMatching
         }
         #endregion
 
-        void LateUpdate(){
-            // if (Map_OCEAN_to_LabanShape) OCEAN_to_LabanShape();
-            if (Map_OCEAN_to_LabanEffort) OCEAN_to_LabanEffort();
-            if (Map_OCEAN_to_Additional) OCEAN_to_Additional();
-            //Posture
-            t_Head = Animator.GetBoneTransform(HumanBodyBones.Head);
-            t_Neck = Animator.GetBoneTransform(HumanBodyBones.Neck);
-            GetBodyTransforms();
-            t_Head.localRotation *= Quaternion.Euler(nrp_head.x, 0f, 0f);
-            t_Neck.localRotation *= Quaternion.Euler(nrp_neck.x, 0f, 0f);
-            //Ocean parameters to rotation of each bones
-            LabanEffort_to_Rotations();
-            AdditionalPass();
-            NewRotatePass();
-
-            //Emotion
-            EmotionPass();
-
-            //Fluctuate
-            FluctuatePass();
-
-            //LookAt
-            LookAtPass();
-
-            //Noise for Look
-            circularNoise.SetScalingFactor(21, -ls_ver, ls_ver);
-            circularNoise.SetScalingFactor(22, -ls_hor, ls_hor);
-            circularNoise.SetDeltaAngle(21, ls_ver_speed);
-            circularNoise.SetDeltaAngle(22, ls_hor_speed);
-            t_Neck.localRotation *= Quaternion.Slerp(Quaternion.identity, Quaternion.Euler(circularNoise.values[21], circularNoise.values[22], 0), multiplyRotationFactor);
-            
-            //Set transforms
-            Animator.SetBoneLocalRotation(HumanBodyBones.Head, t_Head.localRotation);
-            Animator.SetBoneLocalRotation(HumanBodyBones.Neck, t_Neck.localRotation);
-            SetBodyTransforms();
-        }
-
         /* * *
         * 
         * LOOK AT PASS
         * 
         * * */
 
+        //rotateの計算
+        //30°以上なら大きさを変更
+
+        [Range(0f,1f)]
+        public float lookAtWeight = 1f;
+
         private void LookAtPass(){
             if(lookObject == null) return;
-            Vector3 lookDirection = this.transform.InverseTransformDirection(lookObject.transform.position - this.transform.position);
+            Vector3 lookDirection = this.transform.InverseTransformDirection(lookObject.transform.position - t_Head.transform.position);
             Quaternion fromTo = Quaternion.FromToRotation(t_Head.forward, lookDirection);
+            //Draw.ArrowheadArc(this.transform.position, t_Head.forward, 0.55f, Color.blue);
 
             // Limit
             float angle = Quaternion.Angle(Quaternion.identity, fromTo);
-            if (angle > 30.0f)
+            float limit = 30.0f*lookAtWeight;
+            if (angle >= limit)
             {
-                fromTo = Quaternion.RotateTowards(Quaternion.identity, fromTo, 30.0f);
+                fromTo = Quaternion.RotateTowards(Quaternion.identity, fromTo, limit);
             }
-
 
             //Set Rotation
             t_Head.localRotation *= fromTo;
