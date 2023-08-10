@@ -495,70 +495,6 @@ CapsuleCollider:
   m_Height: 1.8
   m_Direction: 1
   m_Center: {x: 0, y: 0.9, z: 0}
---- !u!114 &3149585628719314924
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 393091267271500954}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 776adaaacdc5c4e8ab0395120a6e972b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fixTransforms: 1
-  solver:
-    executedInEditor: 0
-    IKPosition: {x: -0.000029089884, y: 1.5509098, z: -4.737348}
-    IKPositionWeight: 1
-    root: {fileID: 1026639022299479584}
-    target: {fileID: 0}
-    spine: []
-    head:
-      transform: {fileID: 6364650838290590883}
-      weight: 1
-      solverPosition: {x: 0, y: 0, z: 0}
-      solverRotation: {x: 0, y: 0, z: 0, w: 1}
-      defaultLocalPosition: {x: -0, y: 0.12309021, z: -0.037463322}
-      defaultLocalRotation: {x: 0, y: -0, z: -1.1100208e-31, w: 1}
-      length: 0
-      sqrMag: 0
-      axis: {x: 8.867573e-11, y: 0.00000021016524, z: 1}
-      baseForwardOffsetEuler: {x: 0, y: 0, z: 0}
-    eyes: []
-    bodyWeight: 0.5
-    headWeight: 0.5
-    eyesWeight: 1
-    clampWeight: 1
-    clampWeightHead: 1
-    clampWeightEyes: 0.5
-    clampSmoothing: 2
-    spineWeightCurve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 0.3
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 1
-        value: 1
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    spineTargetOffset: {x: 0, y: 0, z: 0}
 --- !u!114 &8469025142273640792
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -576,35 +512,7 @@ MonoBehaviour:
   UpLocalVector: {x: 0, y: 1, z: 0}
   AvoidToesFloorPenetration: 1
   ToesSoleOffset: {x: 0, y: 0, z: -0.02}
-  mult_top: 1
-  mult_bottom: 1
-  mult_side: 1
-  mult_center: 1
-  mult_front: 1
-  mult_back: 1
-  LE_MODE: 0
-  USE_ANCHORS: 0
   FLUC_ADD: 0
-  OnlyOneHand: 0
-  IK_MAIN_FACTOR_TARGET: 1
-  IK_MAIN_FACTOR_BASE: 1
-  IK_MAIN_FACTOR_CURRENT: 1
-  TransitionFactor: 0
-  AnimationNoTransition: 0
-  CurrentState: -1
-  Freeze: 0
-  ExpFreeze: 0
-  C_MainSwitchForPhoto: 0
-  C_LabanRotation: 1
-  C_LabanIK: 1
-  C_Fluctuation: 1
-  C_SpeedAdjust: 1
-  C_LookIK: 1
-  C_LookShift: 1
-  C_EmotionsOn: 1
-  IKWeightByPass: 0
-  IKALLBYPASS: 0
-  Map_OCEAN_to_LabanShape: 1
   Map_OCEAN_to_LabanEffort: 1
   Map_OCEAN_to_Additional: 1
   openness: 0
@@ -628,9 +536,6 @@ MonoBehaviour:
   base_shock: 0
   base_disgust: 0
   base_fear: 0
-  IKFAC_forward: 0
-  IKFAC_up: 0
-  IKFAC_side: 0
   ls_hor: 0
   ls_ver: 0
   ls_hor_speed: 0
@@ -638,18 +543,9 @@ MonoBehaviour:
   spine_bend: 0
   sink_bend: 0
   head_bend: 0
-  finger_bend_open: 0
-  finger_bend_close: 0
   lookObject: {fileID: 0}
-  text_O: 
-  text_C: 
-  text_E: 
-  text_A: 
-  text_N: 
   faceController: {fileID: 0}
-  fingerRotationL: 0
-  fingerRotationR: 0
-  probs: []
+  lookAtWeight: 0
 --- !u!114 &8469025142273640796
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -672,12 +568,6 @@ Transform:
 --- !u!137 &4712722172450955826 stripped
 SkinnedMeshRenderer:
   m_CorrespondingSourceObject: {fileID: 3814257128501120094, guid: 09860aa1d7ab2b542b5e3fe113c2dda1,
-    type: 3}
-  m_PrefabInstance: {fileID: 8469025140347530860}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &6364650838290590883 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 3304460468310475471, guid: 09860aa1d7ab2b542b5e3fe113c2dda1,
     type: 3}
   m_PrefabInstance: {fileID: 8469025140347530860}
   m_PrefabAsset: {fileID: 0}

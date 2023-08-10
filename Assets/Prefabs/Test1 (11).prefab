@@ -481,35 +481,7 @@ MonoBehaviour:
   UpLocalVector: {x: 0, y: 1, z: 0}
   AvoidToesFloorPenetration: 1
   ToesSoleOffset: {x: 0, y: 0, z: -0.02}
-  mult_top: 1
-  mult_bottom: 1
-  mult_side: 1
-  mult_center: 1
-  mult_front: 1
-  mult_back: 1
-  LE_MODE: 0
-  USE_ANCHORS: 0
   FLUC_ADD: 0
-  OnlyOneHand: 0
-  IK_MAIN_FACTOR_TARGET: 1
-  IK_MAIN_FACTOR_BASE: 1
-  IK_MAIN_FACTOR_CURRENT: 1
-  TransitionFactor: 0
-  AnimationNoTransition: 0
-  CurrentState: -1
-  Freeze: 0
-  ExpFreeze: 0
-  C_MainSwitchForPhoto: 0
-  C_LabanRotation: 1
-  C_LabanIK: 1
-  C_Fluctuation: 1
-  C_SpeedAdjust: 1
-  C_LookIK: 1
-  C_LookShift: 1
-  C_EmotionsOn: 1
-  IKWeightByPass: 0
-  IKALLBYPASS: 0
-  Map_OCEAN_to_LabanShape: 1
   Map_OCEAN_to_LabanEffort: 1
   Map_OCEAN_to_Additional: 1
   openness: 0
@@ -533,9 +505,6 @@ MonoBehaviour:
   base_shock: 0
   base_disgust: 0
   base_fear: 0
-  IKFAC_forward: 0
-  IKFAC_up: 0
-  IKFAC_side: 0
   ls_hor: 0
   ls_ver: 0
   ls_hor_speed: 0
@@ -543,18 +512,9 @@ MonoBehaviour:
   spine_bend: 0
   sink_bend: 0
   head_bend: 0
-  finger_bend_open: 0
-  finger_bend_close: 0
   lookObject: {fileID: 0}
-  text_O: 
-  text_C: 
-  text_E: 
-  text_A: 
-  text_N: 
   faceController: {fileID: 0}
-  fingerRotationL: 0
-  fingerRotationR: 0
-  probs: []
+  lookAtWeight: 0
 --- !u!114 &8469025142273640796
 MonoBehaviour:
   m_ObjectHideFlags: 0

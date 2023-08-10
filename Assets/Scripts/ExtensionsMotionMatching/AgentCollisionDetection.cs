@@ -36,7 +36,7 @@ public class AgentCollisionDetection : MonoBehaviour
                 pathController.SetOnCollide(onCollide, collider.gameObject);
                 pathController.SetOnMoving(onMoving, collider.gameObject);
                 pathController.SetCollidedAgent(collider.gameObject);
-                StartCoroutine(WaitTime(Random.Range(1f, 5f), collider.gameObject));
+                StartCoroutine(WaitTime(Random.Range(5f, 10f), collider.gameObject));
             }
         }
     }

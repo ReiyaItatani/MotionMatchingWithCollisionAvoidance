@@ -608,25 +608,59 @@ namespace MotionMatching
 
         [Range(0f,1f)]
         public float lookAtWeight = 1f;
+        private bool startCoroutine = false;
+        private float lookHeightOffset = 0.8f;
+        private Vector3 otherHeadPosition;
 
         private void LookAtPass(){
-            if(lookObject == null) return;
-            Vector3 lookDirection = this.transform.InverseTransformDirection(lookObject.transform.position - t_Head.transform.position);
+            if(lookObject == null){
+                if(startCoroutine == false){
+                    startCoroutine = true;
+                    StartCoroutine(LookAtWeightChanger(lookAtWeight, 0.0f, UnityEngine.Random.Range(1.0f, 1.5f), false));
+                }
+            }else{
+                if(startCoroutine == false){
+                    startCoroutine = true;
+                    StartCoroutine(LookAtWeightChanger(lookAtWeight, 1.0f, UnityEngine.Random.Range(1.0f, 1.5f), false));
+                    otherHeadPosition = lookObject.transform.position;
+                }
+            }
+            // otherHeadPosition.y += lookHeightOffset;
+            Vector3 lookDirection = this.transform.InverseTransformDirection(otherHeadPosition - t_Head.transform.position);
             Quaternion fromTo = Quaternion.FromToRotation(t_Head.forward, lookDirection);
             //Draw.ArrowheadArc(this.transform.position, t_Head.forward, 0.55f, Color.blue);
 
             // Limit
             float angle = Quaternion.Angle(Quaternion.identity, fromTo);
-            float limit = 30.0f*lookAtWeight;
+            float limit = 50.0f*lookAtWeight;
             if (angle >= limit)
             {
                 fromTo = Quaternion.RotateTowards(Quaternion.identity, fromTo, limit);
             }
+            // Extract the rotation around the Z-axis
+            float yRotation = fromTo.eulerAngles.y;
 
-            //Set Rotation
-            t_Head.localRotation *= fromTo;
-            t_Neck.localRotation *= fromTo;
+            // Create a new quaternion representing only the rotation around the Z-axis
+            Quaternion yRotationOnly = Quaternion.Euler(0, yRotation, 0);
+
+            t_Head.localRotation *= yRotationOnly;
+            t_Neck.localRotation *= yRotationOnly;
+
         }
+
+        private IEnumerator LookAtWeightChanger(float originalWeight, float targetWeight, float duration, bool setBool){
+            float elapsedTime = 0;
+            float initialWeight = originalWeight;
+            while(elapsedTime<duration){
+                elapsedTime += Time.deltaTime;
+                lookAtWeight = Mathf.Lerp(initialWeight, targetWeight, elapsedTime/duration);
+                yield return new WaitForSeconds(Time.deltaTime);
+            }
+            lookAtWeight = targetWeight;
+            startCoroutine = setBool;
+            yield return null;
+        }   
+        
     //     float rotateSpeed = 1.0f; 
 
     //     private IEnumerator LookAtPass() {
