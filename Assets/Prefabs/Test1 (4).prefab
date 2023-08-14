@@ -59,10 +59,10 @@ MonoBehaviour:
   agentCollider: {fileID: 6081626095346752730}
   goalRadius: 0.5
   slowingRadius: 2
-  ShowAvoidanceForce: 0
-  ShowUnalignedCollisionAvoidance: 0
-  ShowGoalDirection: 0
-  ShowCurrentDirection: 1
+  showAvoidanceForce: 0
+  showUnalignedCollisionAvoidance: 0
+  showGoalDirection: 0
+  showCurrentDirection: 0
 --- !u!1 &6081626094929801655
 GameObject:
   m_ObjectHideFlags: 0
