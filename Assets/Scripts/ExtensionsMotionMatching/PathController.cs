@@ -61,7 +61,7 @@ namespace MotionMatching{
         private Vector3 currentGoal;
         private Vector3 toGoalVector = Vector3.zero;//Direction to goal
         private float toGoalWeight = 1.7f;//Weight for goal direction
-        private int currentGoalIndex = 1;
+        public int currentGoalIndex = 1;
         public float goalRadius = 0.5f;
         public float slowingRadius = 2.0f;
         // --------------------------------------------------------------------------
@@ -271,9 +271,25 @@ namespace MotionMatching{
                 SelectRandomGoal();
             }
         }
+        private bool isIncreasing = true;
         private void SelectRandomGoal(){
-            currentGoalIndex++;
-            currentGoal = Path[(currentGoalIndex + 1) % Path.Length];
+            if(isIncreasing)
+            {
+                currentGoalIndex++;
+                if(currentGoalIndex >= Path.Length - 1) 
+                {
+                    isIncreasing = false;
+                }
+            }
+            else
+            {
+                currentGoalIndex--;
+                if(currentGoalIndex <= 0)
+                {
+                    isIncreasing = true;
+                }
+            }
+            currentGoal = Path[currentGoalIndex];
             StartCoroutine(GradualSpeedUp(3.0f, currentSpeed, initialSpeed));
         }
         private IEnumerator GradualSpeedUp(float duration, float _currentSpeed, float targetSpeed){
@@ -581,17 +597,17 @@ namespace MotionMatching{
                 Gizmos.DrawSphere(new Vector3(pos.x, heightOffset, pos.z), 0.1f);
             }
             // Draw Path
-            Gizmos.color = new Color(0.5f, 0.0f, 0.0f, 1.0f);
-            for (int i = 0; i < Path.Length - 1; i++)
-            {
-                Vector3 pos = GetWorldPosition(transform, Path[i]);
-                Vector3 nextPos = GetWorldPosition(transform, Path[i+1]);
-                GizmosExtensions.DrawLine(new Vector3(pos.x, heightOffset, pos.z), new Vector3(nextPos.x, heightOffset, nextPos.z), 6);
-            }
+            // Gizmos.color = new Color(0.5f, 0.0f, 0.0f, 1.0f);
+            // for (int i = 0; i < Path.Length - 1; i++)
+            // {
+            //     Vector3 pos = GetWorldPosition(transform, Path[i]);
+            //     Vector3 nextPos = GetWorldPosition(transform, Path[i+1]);
+            //     GizmosExtensions.DrawLine(new Vector3(pos.x, heightOffset, pos.z), new Vector3(nextPos.x, heightOffset, nextPos.z), 6);
+            // }
             // Last Line
-            Vector3 lastPos = GetWorldPosition(transform, Path[Path.Length - 1]);
-            Vector3 firstPos = GetWorldPosition(transform, Path[0]);
-            GizmosExtensions.DrawLine(new Vector3(lastPos.x, heightOffset, lastPos.z), new Vector3(firstPos.x, heightOffset, firstPos.z), 6);
+            // Vector3 lastPos = GetWorldPosition(transform, Path[Path.Length - 1]);
+            // Vector3 firstPos = GetWorldPosition(transform, Path[0]);
+            // GizmosExtensions.DrawLine(new Vector3(lastPos.x, heightOffset, lastPos.z), new Vector3(firstPos.x, heightOffset, firstPos.z), 6);
             // Draw Velocity
             // for (int i = 0; i < Path.Length - 1; i++)
             // {
@@ -602,11 +618,11 @@ namespace MotionMatching{
             //     GizmosExtensions.DrawArrow(start, start + (end - start).normalized * Vector3.Min(Path[i], Vector3.Distance(pos, nextPos)), thickness: 6);
             // }
             // Last Line
-            Vector3 lastPos2 = GetWorldPosition(transform, Path[Path.Length - 1]);
-            Vector3 firstPos2 = GetWorldPosition(transform,Path[0]);
-            Vector3 start2 = new Vector3(lastPos2.x, heightOffset, lastPos2.z);
-            Vector3 end2 = new Vector3(firstPos2.x, heightOffset, firstPos2.z);
-            GizmosExtensions.DrawArrow(start2, start2 + (end2 - start2).normalized * currentSpeed, thickness: 3);
+            // Vector3 lastPos2 = GetWorldPosition(transform, Path[Path.Length - 1]);
+            // Vector3 firstPos2 = GetWorldPosition(transform,Path[0]);
+            // Vector3 start2 = new Vector3(lastPos2.x, heightOffset, lastPos2.z);
+            // Vector3 end2 = new Vector3(firstPos2.x, heightOffset, firstPos2.z);
+            // GizmosExtensions.DrawArrow(start2, start2 + (end2 - start2).normalized * currentSpeed, thickness: 3);
 
             // Draw Current Position And Direction
             if (!Application.isPlaying) return;

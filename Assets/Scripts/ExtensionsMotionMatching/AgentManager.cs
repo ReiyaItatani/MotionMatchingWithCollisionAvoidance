@@ -40,23 +40,35 @@ public class AgentManager : MonoBehaviour
     [Range(0f, 1f)] public float e_fear = 0f;
     [Range(0f, 1f)] public float e_shock = 0f;
 
+    [HideInInspector]
     public List<GameObject> Agents = new List<GameObject>();
     private List<GameObject> PathControllers = new List<GameObject>();
     private List<GameObject> MotionMatchingControllers = new List<GameObject>();
     private List<GameObject> MotionMatchingSkinnedMeshRendererWithOCEANs = new List<GameObject>();
     private List<GameObject> MotionMatchingSkinnedMeshRenderers = new List<GameObject>();
     private List<GameObject> Avatars = new List<GameObject>();
+    private AvatarCreator avatarCreator;
 
 
     void Start()
     {
+        
+        avatarCreator = GetComponent<AvatarCreator>();
+        if(avatarCreator == null) 
+        {
+            Debug.LogError("AvatarCreator component not found on the same GameObject!");
+        }
+
+        if(avatarCreator != null) 
+        {
+            Agents = avatarCreator.InstantiatedAvatars; 
+        }
+
+        
         for (int i = 0; i < Agents.Count; i++)
         {
-            // Instantiate the Prefab at the randomPosition and with no rotation
-            GameObject newPrefab = Instantiate(Agents[i], Vector3.zero, Quaternion.identity);
-
             // Get PathController gameobjects
-            PathController pathController = newPrefab.GetComponentInChildren<PathController>();
+            PathController pathController = Agents[i].GetComponentInChildren<PathController>();
             if(pathController != null) {
                 // Read initial values
                 AvoidanceColliderSize = pathController.avoidanceColliderSize;
@@ -71,7 +83,7 @@ public class AgentManager : MonoBehaviour
             }
 
             // Get MotionMatchingController gameobjects
-            MotionMatchingController motionMatchingController = newPrefab.GetComponentInChildren<MotionMatchingController>();
+            MotionMatchingController motionMatchingController = Agents[i].GetComponentInChildren<MotionMatchingController>();
             if(motionMatchingController != null) {
                 SphereRadius = motionMatchingController.SpheresRadius;
                 DebugSkeleton = motionMatchingController.DebugSkeleton;
@@ -83,7 +95,7 @@ public class AgentManager : MonoBehaviour
             }
 
             // Get MotionMatchingSkinnedMeshRendererWithOCEAN gameobjects
-            MotionMatchingSkinnedMeshRendererWithOCEAN mmSMRWithOCEAN = newPrefab.GetComponentInChildren<MotionMatchingSkinnedMeshRendererWithOCEAN>();
+            MotionMatchingSkinnedMeshRendererWithOCEAN mmSMRWithOCEAN = Agents[i].GetComponentInChildren<MotionMatchingSkinnedMeshRendererWithOCEAN>();
             if(mmSMRWithOCEAN != null) {
                 // Read initial values
                 openness = mmSMRWithOCEAN.openness;
@@ -101,7 +113,7 @@ public class AgentManager : MonoBehaviour
                 Avatars.Add(mmSMRWithOCEAN.gameObject);
             }
 
-            MotionMatchingSkinnedMeshRenderer mmSMR = newPrefab.GetComponentInChildren<MotionMatchingSkinnedMeshRenderer>();
+            MotionMatchingSkinnedMeshRenderer mmSMR = Agents[i].GetComponentInChildren<MotionMatchingSkinnedMeshRenderer>();
             if(mmSMR != null) {
                 MotionMatchingSkinnedMeshRenderers.Add(mmSMR.gameObject);
                 Avatars.Add(mmSMR.gameObject);
