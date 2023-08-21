@@ -40,7 +40,6 @@ public class AgentManager : MonoBehaviour
     [Range(0f, 1f)] public float e_fear = 0f;
     [Range(0f, 1f)] public float e_shock = 0f;
 
-    [HideInInspector]
     public List<GameObject> Agents = new List<GameObject>();
     private List<GameObject> PathControllers = new List<GameObject>();
     private List<GameObject> MotionMatchingControllers = new List<GameObject>();
@@ -49,21 +48,13 @@ public class AgentManager : MonoBehaviour
     private List<GameObject> Avatars = new List<GameObject>();
     private AvatarCreator avatarCreator;
 
+    void Awake(){
+        avatarCreator = this.GetComponent<AvatarCreator>();
+        Agents = avatarCreator.instantiatedAvatars; 
+    }
 
     void Start()
     {
-        
-        avatarCreator = GetComponent<AvatarCreator>();
-        if(avatarCreator == null) 
-        {
-            Debug.LogError("AvatarCreator component not found on the same GameObject!");
-        }
-
-        if(avatarCreator != null) 
-        {
-            Agents = avatarCreator.InstantiatedAvatars; 
-        }
-
         
         for (int i = 0; i < Agents.Count; i++)
         {
@@ -120,14 +111,14 @@ public class AgentManager : MonoBehaviour
             }
         }
 
-        foreach(GameObject controllerObject in PathControllers) 
-        {
-            PathController pathController = controllerObject.GetComponent<PathController>();
-            if(pathController != null) 
-            {
-                StartCoroutine(pathController.UpdateAvoidNeighborsVector(Avatars,0.1f, 0.3f));
-            }
-        }
+        // foreach(GameObject controllerObject in PathControllers) 
+        // {
+        //     PathController pathController = controllerObject.GetComponent<PathController>();
+        //     if(pathController != null) 
+        //     {
+        //         StartCoroutine(pathController.UpdateAvoidNeighborsVector(Avatars,0.1f, 0.3f));
+        //     }
+        // }
         
     }
 

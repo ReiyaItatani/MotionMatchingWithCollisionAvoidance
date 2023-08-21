@@ -2,22 +2,21 @@ using UnityEngine;
 using UnityEngine.AI;
 using MotionMatching;
 using System.Collections.Generic;
+using System.IO;
 
+[RequireComponent(typeof(AgentManager))]
 public class AvatarCreator : MonoBehaviour
 {
     public List<GameObject> avatarPrefabs = new List<GameObject>();
     public int spawnCount = 1;
-    private List<GameObject> instantiatedAvatars = new List<GameObject>();
+    public List<GameObject> instantiatedAvatars = new List<GameObject>();
 
-    [Tooltip("Path")]
+    [Header("Agent's Path"), Tooltip("Path")]
     public Transform startPoint;
     public Transform endPoint;
     public NavMeshPath path;
     public List<Vector3> pathVertices= new List<Vector3>();
-    public List<GameObject> InstantiatedAvatars
-    {
-        get { return instantiatedAvatars; }
-    }
+    public float radius = 1f;
 
     public void InstantiateAvatars()
     {
@@ -28,10 +27,17 @@ public class AvatarCreator : MonoBehaviour
             GameObject randomAvatar = avatarPrefabs[Random.Range(0, avatarPrefabs.Count)];
             GameObject instance = Instantiate(randomAvatar, this.transform);
             PathController pathController = instance.GetComponentInChildren<PathController>();
+            
+            pathController.avatarCreator = this.GetComponent<AvatarCreator>();
             if(pathController != null)
             {
                 pathController.Path = pathVertices.ToArray();
             }
+
+            //Path Noise
+            pathController.Path[0] += GenerateRandomPointInCircle(radius);
+            pathController.Path[pathController.Path.Length-1] += GenerateRandomPointInCircle(radius);
+
             instantiatedAvatars.Add(instance);
         }
     }
@@ -60,6 +66,32 @@ public class AvatarCreator : MonoBehaviour
         }
 
         return pathVertices;
+    }
+
+    public List<GameObject> GetAgents()
+    {
+        List<GameObject> agentsList = new List<GameObject>();
+
+        for (int i = 0; i < instantiatedAvatars.Count; i++)
+        {
+            MotionMatchingSkinnedMeshRendererWithOCEAN component = instantiatedAvatars[i].GetComponentInChildren<MotionMatchingSkinnedMeshRendererWithOCEAN>();
+            if (component != null)
+            {
+                agentsList.Add(component.gameObject);
+            }
+        }
+        return agentsList;
+    }
+
+    Vector3 GenerateRandomPointInCircle(float r)
+    {
+        float angle = Random.Range(0f, 2f * Mathf.PI); 
+        float distance = Mathf.Sqrt(Random.Range(0f, r * r));
+
+        float x = distance * Mathf.Cos(angle);
+        float z = distance * Mathf.Sin(angle);
+
+        return new Vector3(x, 0f, z);
     }
 
 #if UNITY_EDITOR

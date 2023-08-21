@@ -30,7 +30,7 @@ namespace MotionMatching{
         private float minSpeed = 0.5f; //Minimum speed of the agent
         // --------------------------------------------------------------------------
         // To Mange Agents -----------------------------------------------------------------
-        [Tooltip("Agent Manager is a script to manage agents")] public AgentManager agentManager; //Manager for all of the agents
+        [Tooltip("Agent Manager is a script to manage agents")] public AvatarCreator avatarCreator; //Manager for all of the agents
         // --------------------------------------------------------------------------
         // Features -----------------------------------------------------------------
         [Header("Features For Motion Matching")]
@@ -149,7 +149,7 @@ namespace MotionMatching{
 
             StartCoroutine(UpdateAvoidanceColliderPos(0.9f));
             StartCoroutine(UpdateAvoidanceVector(0.1f, 0.5f));
-            //StartCoroutine(UpdateAvoidNeighborsVector(agentManager.GetAgents(), 0.1f, 0.3f));
+            StartCoroutine(UpdateAvoidNeighborsVector(avatarCreator.GetAgents(), 0.1f, 0.3f));
         }
 
         protected override void OnUpdate(){
@@ -590,7 +590,7 @@ namespace MotionMatching{
             const float heightOffset = 0.01f;
 
             // Draw KeyPoints
-            Gizmos.color = Color.red;
+            Gizmos.color = Color.blue;
             for (int i = 0; i < Path.Length; i++)
             {
                 Vector3 pos = GetWorldPosition(transform, Path[i]);

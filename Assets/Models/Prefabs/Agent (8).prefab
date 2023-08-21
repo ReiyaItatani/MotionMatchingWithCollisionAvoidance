@@ -950,7 +950,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2912762289123587760}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1019,6 +1019,7 @@ MonoBehaviour:
   agentManager: {fileID: 0}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
   agentCollider: {fileID: 5234952108793116131}
+  currentGoalIndex: 1
   goalRadius: 0.5
   slowingRadius: 2
   showAvoidanceForce: 0
@@ -1446,7 +1447,7 @@ GameObject:
   - component: {fileID: 6369576434190551622}
   m_Layer: 0
   m_Name: female13@T-Pose
-  m_TagString: Untagged
+  m_TagString: Agent
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
