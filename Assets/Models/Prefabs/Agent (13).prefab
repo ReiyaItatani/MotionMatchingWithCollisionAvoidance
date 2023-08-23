@@ -1830,8 +1830,9 @@ Transform:
   m_Children:
   - {fileID: 6905705553251343}
   - {fileID: 8500705502793996407}
+  - {fileID: 8534726783986455850}
   m_Father: {fileID: 8534726784664074963}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &4298235459566275892
 Animator:
@@ -2129,7 +2130,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &8534726783986455850
 Transform:
   m_ObjectHideFlags: 0
@@ -2138,11 +2139,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8534726783986455851}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.5349998, z: 6.4500003}
+  m_LocalPosition: {x: 0.51, y: -6.267569, z: 5.9326215}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 8534726784664074963}
+  m_Father: {fileID: 8637616739976238781}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &8534726783986455847
@@ -2279,7 +2280,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0b97b38f2f1fd24185315141a6c6a56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  skinnedMeshRenderer: {fileID: 0}
+  skinnedMeshRenderer: {fileID: 5225892585908198856}
   visemeToBlendTargets: 000000000100000002000000030000000400000005000000060000000700000008000000090000000a0000000b0000000c0000000d0000000e000000
   enableVisemeTestKeys: 0
   visemeTestKeys: 600000000900000071000000770000006500000072000000740000007900000075000000690000006f000000700000005b0000005d0000005c000000
@@ -2387,7 +2388,6 @@ Transform:
   m_Children:
   - {fileID: 8534726784994661192}
   - {fileID: 8534726784559080086}
-  - {fileID: 8534726783986455850}
   - {fileID: 8637616739976238781}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -2446,7 +2446,7 @@ MonoBehaviour:
   PositionAdjustmentHalflife: 0.1
   PosMaximumAdjustmentRatio: 0.1
   initialSpeed: 1.2
-  agentManager: {fileID: 0}
+  avatarCreator: {fileID: 0}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
   agentCollider: {fileID: 8774337926849790458}
   currentGoalIndex: 1

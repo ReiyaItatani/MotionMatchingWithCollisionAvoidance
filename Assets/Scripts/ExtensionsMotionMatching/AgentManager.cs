@@ -40,7 +40,6 @@ public class AgentManager : MonoBehaviour
     [Range(0f, 1f)] public float e_fear = 0f;
     [Range(0f, 1f)] public float e_shock = 0f;
 
-    public List<GameObject> Agents = new List<GameObject>();
     private List<GameObject> PathControllers = new List<GameObject>();
     private List<GameObject> MotionMatchingControllers = new List<GameObject>();
     private List<GameObject> MotionMatchingSkinnedMeshRendererWithOCEANs = new List<GameObject>();
@@ -48,18 +47,22 @@ public class AgentManager : MonoBehaviour
     private List<GameObject> Avatars = new List<GameObject>();
     private AvatarCreator avatarCreator;
 
+    [Header("Others")]
+    public bool onConversation = false;
+    private List<GameObject> soundObjects = new List<GameObject>();
+
     void Awake(){
         avatarCreator = this.GetComponent<AvatarCreator>();
-        Agents = avatarCreator.instantiatedAvatars; 
+        Avatars = avatarCreator.instantiatedAvatars; 
     }
 
     void Start()
     {
         
-        for (int i = 0; i < Agents.Count; i++)
+        for (int i = 0; i < Avatars.Count; i++)
         {
             // Get PathController gameobjects
-            PathController pathController = Agents[i].GetComponentInChildren<PathController>();
+            PathController pathController = Avatars[i].GetComponentInChildren<PathController>();
             if(pathController != null) {
                 // Read initial values
                 AvoidanceColliderSize = pathController.avoidanceColliderSize;
@@ -74,7 +77,7 @@ public class AgentManager : MonoBehaviour
             }
 
             // Get MotionMatchingController gameobjects
-            MotionMatchingController motionMatchingController = Agents[i].GetComponentInChildren<MotionMatchingController>();
+            MotionMatchingController motionMatchingController = Avatars[i].GetComponentInChildren<MotionMatchingController>();
             if(motionMatchingController != null) {
                 SphereRadius = motionMatchingController.SpheresRadius;
                 DebugSkeleton = motionMatchingController.DebugSkeleton;
@@ -86,7 +89,7 @@ public class AgentManager : MonoBehaviour
             }
 
             // Get MotionMatchingSkinnedMeshRendererWithOCEAN gameobjects
-            MotionMatchingSkinnedMeshRendererWithOCEAN mmSMRWithOCEAN = Agents[i].GetComponentInChildren<MotionMatchingSkinnedMeshRendererWithOCEAN>();
+            MotionMatchingSkinnedMeshRendererWithOCEAN mmSMRWithOCEAN = Avatars[i].GetComponentInChildren<MotionMatchingSkinnedMeshRendererWithOCEAN>();
             if(mmSMRWithOCEAN != null) {
                 // Read initial values
                 openness = mmSMRWithOCEAN.openness;
@@ -101,13 +104,12 @@ public class AgentManager : MonoBehaviour
                 e_fear = mmSMRWithOCEAN.e_fear;
                 e_shock = mmSMRWithOCEAN.e_shock;
                 MotionMatchingSkinnedMeshRendererWithOCEANs.Add(mmSMRWithOCEAN.gameObject);
-                Avatars.Add(mmSMRWithOCEAN.gameObject);
+                soundObjects.Add(mmSMRWithOCEAN.gameObject.GetComponentInChildren<AudioSource>().gameObject);
             }
 
-            MotionMatchingSkinnedMeshRenderer mmSMR = Agents[i].GetComponentInChildren<MotionMatchingSkinnedMeshRenderer>();
+            MotionMatchingSkinnedMeshRenderer mmSMR = Avatars[i].GetComponentInChildren<MotionMatchingSkinnedMeshRenderer>();
             if(mmSMR != null) {
                 MotionMatchingSkinnedMeshRenderers.Add(mmSMR.gameObject);
-                Avatars.Add(mmSMR.gameObject);
             }
         }
 
@@ -169,6 +171,13 @@ public class AgentManager : MonoBehaviour
                 mmOCEAN.e_disgust = e_disgust;
                 mmOCEAN.e_fear = e_fear;
                 mmOCEAN.e_shock = e_shock;
+            }
+        }
+        foreach(GameObject controllerObject in soundObjects){
+            if(onConversation == true){
+                controllerObject.SetActive(true);
+            }else{
+                controllerObject.SetActive(false);
             }
         }
     }

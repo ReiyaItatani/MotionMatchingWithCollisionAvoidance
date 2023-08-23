@@ -664,7 +664,7 @@ MonoBehaviour:
   PositionAdjustmentHalflife: 0.1
   PosMaximumAdjustmentRatio: 0.1
   initialSpeed: 1.2
-  agentManager: {fileID: 0}
+  avatarCreator: {fileID: 0}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
   agentCollider: {fileID: 7794483934572774477}
   currentGoalIndex: 1
@@ -773,7 +773,6 @@ Transform:
   m_Children:
   - {fileID: 2761454223099640985}
   - {fileID: 2761454223427219345}
-  - {fileID: 2761454224270072113}
   - {fileID: 432238232012213637}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -796,7 +795,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &2761454224270072113
 Transform:
   m_ObjectHideFlags: 0
@@ -805,11 +804,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2761454224270072126}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.5349998, z: 6.4500003}
+  m_LocalPosition: {x: 0.51, y: -6.267569, z: 5.9326215}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2761454224257669495}
+  m_Father: {fileID: 432238232012213637}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &2761454224270072114
@@ -946,7 +945,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0b97b38f2f1fd24185315141a6c6a56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  skinnedMeshRenderer: {fileID: 0}
+  skinnedMeshRenderer: {fileID: 3480167719964337535}
   visemeToBlendTargets: 000000000100000002000000030000000400000005000000060000000700000008000000090000000a0000000b0000000c0000000d0000000e000000
   enableVisemeTestKeys: 0
   visemeTestKeys: 600000000900000071000000770000006500000072000000740000007900000075000000690000006f000000700000005b0000005d0000005c000000
@@ -2534,8 +2533,9 @@ Transform:
   m_Children:
   - {fileID: 4990844989326595939}
   - {fileID: 4600656310348427408}
+  - {fileID: 2761454224270072113}
   m_Father: {fileID: 2761454224257669495}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &4714411056511316876
 Animator:

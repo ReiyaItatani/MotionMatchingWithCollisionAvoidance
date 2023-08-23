@@ -92,10 +92,30 @@ public class OVRLipSyncContextMorphTarget : MonoBehaviour
         // morph target needs to be set manually; possibly other components will need the same
         if(skinnedMeshRenderer == null)
         {
-            Debug.LogError("LipSyncContextMorphTarget.Start Error: " +
-                "Please set the target Skinned Mesh Renderer to be controlled!");
-            return;
+            //get meshrenderer 
+            Transform bodyTransform = this.transform.parent.Find("Body");
+
+            if (bodyTransform != null)
+            {
+                skinnedMeshRenderer = bodyTransform.GetComponent<SkinnedMeshRenderer>();
+
+                if (skinnedMeshRenderer != null)
+                {
+                    Debug.Log("Found the MeshRenderer component on 'Body' object!");
+                }
+                else
+                {
+                    Debug.LogWarning("MeshRenderer component was not found on 'Body' object.");
+                    return;
+                }
+            }
+            else
+            {
+                Debug.LogWarning("'Body' object was not found.");
+                return;
+            }
         }
+        
 
         // make sure there is a phoneme context assigned to this object
         lipsyncContext = GetComponent<OVRLipSyncContextBase>();
@@ -167,6 +187,19 @@ public class OVRLipSyncContextMorphTarget : MonoBehaviour
                 skinnedMeshRenderer.SetBlendShapeWeight(
                     visemeToBlendTargets[i],
                     frame.Visemes[i] * 100.0f);
+            }
+        }
+    }
+
+    void OnDisable(){
+        for (int i = 0; i < visemeToBlendTargets.Length; i++)
+        {
+            if (visemeToBlendTargets[i] != -1)
+            {
+                // Viseme blend weights are in range of 0->1.0, we need to make range 100
+                skinnedMeshRenderer.SetBlendShapeWeight(
+                    visemeToBlendTargets[i],
+                    0);
             }
         }
     }

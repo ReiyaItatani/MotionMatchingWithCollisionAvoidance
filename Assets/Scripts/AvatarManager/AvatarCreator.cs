@@ -11,11 +11,12 @@ public class AvatarCreator : MonoBehaviour
     public int spawnCount = 1;
     public List<GameObject> instantiatedAvatars = new List<GameObject>();
 
-    [Header("Agent's Path"), Tooltip("Path")]
+    [Header("Agent's Path")]
     public Transform startPoint;
     public Transform endPoint;
     public NavMeshPath path;
     public List<Vector3> pathVertices= new List<Vector3>();
+    [Tooltip("This is a parameter to scatter the start and end positions of the path. The larger the value, the more the start and end positions of the path will deviate.")]
     public float radius = 1f;
 
     public void InstantiateAvatars()
@@ -37,6 +38,9 @@ public class AvatarCreator : MonoBehaviour
             //Path Noise
             pathController.Path[0] += GenerateRandomPointInCircle(radius);
             pathController.Path[pathController.Path.Length-1] += GenerateRandomPointInCircle(radius);
+
+            //initial Speed
+            pathController.initialSpeed = Random.Range(0.5f, 1.5f);
 
             instantiatedAvatars.Add(instance);
         }
