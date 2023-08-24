@@ -11,10 +11,13 @@ public class AgentCollisionDetection : MonoBehaviour
     private bool onCollide = false;
     private bool onMoving = false;
 
+    public RandomAudioPlay randomAudioPlay;
+
     void Start(){
         if(this.gameObject.GetComponent<MotionMatchingSkinnedMeshRendererWithOCEAN>()!=null){
             motionMatchingSkinnedMeshRendererWithOCEAN = this.gameObject.GetComponent<MotionMatchingSkinnedMeshRendererWithOCEAN>();
         }
+        randomAudioPlay = this.gameObject.GetComponentInChildren<RandomAudioPlay>();
     }
 
     void Update(){
@@ -56,9 +59,13 @@ public class AgentCollisionDetection : MonoBehaviour
         if(motionMatchingSkinnedMeshRendererWithOCEAN != null){
             motionMatchingSkinnedMeshRendererWithOCEAN.lookObject = _collidedAgent;
         }
+        //Start talk
+        if(randomAudioPlay!=null){
+            randomAudioPlay.TryPlayAudio();
+        }
 
         yield return new WaitForSeconds(time/4f);
-        //Start talk
+
         if(motionMatchingSkinnedMeshRendererWithOCEAN != null){
             motionMatchingSkinnedMeshRendererWithOCEAN.lookObject = null;
         }

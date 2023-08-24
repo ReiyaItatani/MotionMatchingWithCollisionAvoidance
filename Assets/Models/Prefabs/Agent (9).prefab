@@ -297,6 +297,7 @@ GameObject:
   - component: {fileID: 959849167624119981}
   - component: {fileID: 959849167624119986}
   - component: {fileID: 959849167624119987}
+  - component: {fileID: 959849168460750431}
   m_Layer: 0
   m_Name: Sound
   m_TagString: Untagged
@@ -329,11 +330,11 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 8040c5eeff209114798dbf4666a71900, type: 3}
-  m_PlayOnAwake: 1
+  m_audioClip: {fileID: 8300000, guid: 6104dd54d297b2746a235c08aae5ad55, type: 3}
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
-  Loop: 1
+  Loop: 0
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -462,6 +463,19 @@ MonoBehaviour:
   laughterThreshold: 0.5
   laughterMultiplier: 1.5
   smoothAmount: 70
+--- !u!114 &959849168460750431
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 959849167624119985}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d12f0bca3bddd5f47955d64fec130b73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playProbability: 0.3
 --- !u!1 &959849168395143274
 GameObject:
   m_ObjectHideFlags: 0
