@@ -8,8 +8,6 @@ public class AgentManager : MonoBehaviour
 
     [Header("BasicCollisionAvoidance Parameters")]
     public Vector3 AvoidanceColliderSize;
-    public float GoalRadius;
-    public float SlowingRadius;
 
     [Header("ControllGizmos Parameters")]
     public bool ShowAvoidanceForce;
@@ -65,9 +63,7 @@ public class AgentManager : MonoBehaviour
             PathController pathController = Avatars[i].GetComponentInChildren<PathController>();
             if(pathController != null) {
                 // Read initial values
-                AvoidanceColliderSize = pathController.avoidanceColliderSize;
-                GoalRadius = pathController.goalRadius;
-                SlowingRadius = pathController.slowingRadius;
+                AvoidanceColliderSize = pathController.avoidanceColliderSize;;
                 ShowAvoidanceForce = pathController.showAvoidanceForce;
                 ShowUnalignedCollisionAvoidance = pathController.showUnalignedCollisionAvoidance;
                 ShowGoalDirection = pathController.showGoalDirection;
@@ -132,8 +128,6 @@ public class AgentManager : MonoBehaviour
             if(pathController != null) 
             {
                 pathController.avoidanceColliderSize = AvoidanceColliderSize;
-                pathController.goalRadius = GoalRadius;
-                pathController.slowingRadius = SlowingRadius;
                 pathController.showAvoidanceForce = ShowAvoidanceForce;
                 pathController.showUnalignedCollisionAvoidance = ShowUnalignedCollisionAvoidance;
                 pathController.showGoalDirection = ShowGoalDirection;

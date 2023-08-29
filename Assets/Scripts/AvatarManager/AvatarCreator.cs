@@ -17,7 +17,11 @@ public class AvatarCreator : MonoBehaviour
     public NavMeshPath path;
     public List<Vector3> pathVertices= new List<Vector3>();
     [Tooltip("This is a parameter to scatter the start and end positions of the path. The larger the value, the more the start and end positions of the path will deviate.")]
-    public float radius = 1f;
+    public float startPointDeviation = 1f;
+
+    [Header("Goal Size")]
+    public float GoalRadius = 2f;
+    public float SlowingRadius = 3f;
 
     public void InstantiateAvatars()
     {
@@ -36,11 +40,15 @@ public class AvatarCreator : MonoBehaviour
             }
 
             //Path Noise
-            pathController.Path[0] += GenerateRandomPointInCircle(radius);
-            pathController.Path[pathController.Path.Length-1] += GenerateRandomPointInCircle(radius);
+            pathController.Path[0] += GenerateRandomPointInCircle(startPointDeviation);
+            // pathController.Path[pathController.Path.Length-1] += GenerateRandomPointInCircle(radius);
 
             //initial Speed
             pathController.initialSpeed = Random.Range(0.5f, 1.5f);
+
+            //set goal size
+            pathController.goalRadius = GoalRadius;
+            pathController.slowingRadius = SlowingRadius;
 
             instantiatedAvatars.Add(instance);
         }
