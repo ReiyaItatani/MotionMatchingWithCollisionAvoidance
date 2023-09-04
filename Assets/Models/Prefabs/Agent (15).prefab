@@ -719,10 +719,10 @@ Animator:
   m_GameObject: {fileID: 2797144022311236386}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: c48bd6431055d9f42bf71afb6a341e2e, type: 3}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 4187bfeb243a1734e9bc7c8084382bc4, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
-  m_ApplyRootMotion: 1
+  m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_WarningMessage: 
@@ -773,6 +773,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MotionMatching: {fileID: 5910409746952338494}
+  AvatarMask: {fileID: 11400000, guid: a6bccdd3441d37c4f8b39ba775108fbf, type: 2}
+  RootPositionsMask: 1
+  RootRotationsMask: 1
+  BlendPoses: 1
+  BlendHalfLife: 0.05
   ForwardLocalVector: {x: 0, y: 0, z: 1}
   UpLocalVector: {x: 0, y: 1, z: 0}
   AvoidToesFloorPenetration: 1
@@ -810,7 +815,7 @@ MonoBehaviour:
   head_bend: 0
   lookObject: {fileID: 0}
   faceController: {fileID: 0}
-  lookAtWeight: 1
+  lookAtWeight: 0
 --- !u!114 &8405363857646155934
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2107,13 +2112,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb60b22db7711ad49ae0e3874213e63f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SimulationBone: {fileID: 5910409746952338494}
+  MotionMatching: {fileID: 5910409746952338494}
   TrajectoryPositionFeatureName: FuturePosition
   TrajectoryDirectionFeatureName: FutureDirection
   Path:
   - {x: -15, y: 0, z: 0}
   - {x: 15, y: 0, z: 0}
-  MaxDistanceSimulationBoneAndObject: 0.1
+  MaxDistanceMMAndCharacterController: 0.1
   PositionAdjustmentHalflife: 0.1
   PosMaximumAdjustmentRatio: 0.1
   initialSpeed: 1.2

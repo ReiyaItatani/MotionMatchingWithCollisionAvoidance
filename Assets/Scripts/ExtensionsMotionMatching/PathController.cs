@@ -19,7 +19,7 @@ namespace MotionMatching{
         private Vector3 CurrentDirection;
         private Vector3[] PredictedPositions;
         private Vector3[] PredictedDirections;
-        [Range(0.0f, 2.0f)] public float MaxDistanceSimulationBoneAndObject = 0.1f; // Max distance between SimulationBone and SimulationObject
+        [Range(0.0f, 2.0f)] public float MaxDistanceMMAndCharacterController = 0.1f; // Max distance between SimulationBone and SimulationObject
         [Range(0.0f, 2.0f)] public float PositionAdjustmentHalflife = 0.1f; // Time needed to move half of the distance between SimulationBone and SimulationObject
         [Range(0.0f, 2.0f)] public float PosMaximumAdjustmentRatio = 0.1f; // Ratio between the adjustment and the character's velocity to clamp the adjustment
         // Speed Of Agents -----------------------------------------------------------------
@@ -125,23 +125,22 @@ namespace MotionMatching{
             // Get the feature indices
             TrajectoryPosFeatureIndex = -1;
             TrajectoryRotFeatureIndex = -1;
-            for (int i = 0; i < SimulationBone.MMData.TrajectoryFeatures.Count; ++i)
+            for (int i = 0; i < MotionMatching.MMData.TrajectoryFeatures.Count; ++i)
             {
-                if (SimulationBone.MMData.TrajectoryFeatures[i].Name == TrajectoryPositionFeatureName) TrajectoryPosFeatureIndex = i;
-                if (SimulationBone.MMData.TrajectoryFeatures[i].Name == TrajectoryDirectionFeatureName) TrajectoryRotFeatureIndex = i;
+                if (MotionMatching.MMData.TrajectoryFeatures[i].Name == TrajectoryPositionFeatureName) TrajectoryPosFeatureIndex = i;
+                if (MotionMatching.MMData.TrajectoryFeatures[i].Name == TrajectoryDirectionFeatureName) TrajectoryRotFeatureIndex = i;
             }
             Debug.Assert(TrajectoryPosFeatureIndex != -1, "Trajectory Position Feature not found");
             Debug.Assert(TrajectoryRotFeatureIndex != -1, "Trajectory Direction Feature not found");
 
-
-            TrajectoryPosPredictionFrames = SimulationBone.MMData.TrajectoryFeatures[TrajectoryPosFeatureIndex].FramesPrediction;
-            TrajectoryRotPredictionFrames = SimulationBone.MMData.TrajectoryFeatures[TrajectoryRotFeatureIndex].FramesPrediction;
+            TrajectoryPosPredictionFrames = MotionMatching.MMData.TrajectoryFeatures[TrajectoryPosFeatureIndex].FramesPrediction;
+            TrajectoryRotPredictionFrames = MotionMatching.MMData.TrajectoryFeatures[TrajectoryRotFeatureIndex].FramesPrediction;
+            // TODO: generalize this, allow for different number of prediction frames
             Debug.Assert(TrajectoryPosPredictionFrames.Length == TrajectoryRotPredictionFrames.Length, "Trajectory Position and Trajectory Direction Prediction Frames must be the same for PathCharacterController");
             for (int i = 0; i < TrajectoryPosPredictionFrames.Length; ++i)
             {
                 Debug.Assert(TrajectoryPosPredictionFrames[i] == TrajectoryRotPredictionFrames[i], "Trajectory Position and Trajectory Direction Prediction Frames must be the same for PathCharacterController");
             }
-
 
             PredictedPositions = new Vector3[NumberPredictionPos];
             PredictedDirections = new Vector3[NumberPredictionRot];
@@ -168,6 +167,7 @@ namespace MotionMatching{
             AdjustCharacterPosition();
             ClampSimulationBone();
 
+            //Draw vectors
             DrawInfo();
         }
 
@@ -235,31 +235,56 @@ namespace MotionMatching{
         
         private void AdjustCharacterPosition()
         {
-            float3 simulationObject = GetCurrentPosition();
-            float3 simulationBone = SimulationBone.transform.position;
-            float3 differencePosition = simulationObject - simulationBone;
+            // float3 simulationObject = GetCurrentPosition();
+            // float3 simulationBone = SimulationBone.transform.position;
+            // float3 differencePosition = simulationObject - simulationBone;
+            // // Damp the difference using the adjustment halflife and dt
+            // float3 adjustmentPosition = Spring.DampAdjustmentImplicit(differencePosition, PositionAdjustmentHalflife, Time.deltaTime);
+            // // Clamp adjustment if the length is greater than the character velocity
+            // // multiplied by the ratio
+            // float maxLength = PosMaximumAdjustmentRatio * math.length(SimulationBone.Velocity) * Time.deltaTime;
+            // if (math.length(adjustmentPosition) > maxLength)
+            // {
+            //     adjustmentPosition = maxLength * math.normalize(adjustmentPosition);
+            // }
+            // // Move the simulation bone towards the simulation object
+            // SimulationBone.SetPosAdjustment(adjustmentPosition);
+
+            float3 characterController = GetCurrentPosition();
+            float3 motionMatching = MotionMatching.transform.position;
+            float3 differencePosition = characterController - motionMatching;
             // Damp the difference using the adjustment halflife and dt
             float3 adjustmentPosition = Spring.DampAdjustmentImplicit(differencePosition, PositionAdjustmentHalflife, Time.deltaTime);
             // Clamp adjustment if the length is greater than the character velocity
             // multiplied by the ratio
-            float maxLength = PosMaximumAdjustmentRatio * math.length(SimulationBone.Velocity) * Time.deltaTime;
+            float maxLength = PosMaximumAdjustmentRatio * math.length(MotionMatching.Velocity) * Time.deltaTime;
             if (math.length(adjustmentPosition) > maxLength)
             {
                 adjustmentPosition = maxLength * math.normalize(adjustmentPosition);
             }
             // Move the simulation bone towards the simulation object
-            SimulationBone.SetPosAdjustment(adjustmentPosition);
+            MotionMatching.SetPosAdjustment(adjustmentPosition);
         }
         private void ClampSimulationBone()
         {
-            // Clamp Position
-            float3 simulationObject = GetCurrentPosition();
-            float3 simulationBone = SimulationBone.transform.position;
-            if (math.distance(simulationObject, simulationBone) > MaxDistanceSimulationBoneAndObject)
+                        // Clamp Position
+            float3 characterController = GetCurrentPosition();
+            float3 motionMatching = MotionMatching.transform.position;
+            if (math.distance(characterController, motionMatching) > MaxDistanceMMAndCharacterController)
             {
-                float3 newSimulationBonePos = MaxDistanceSimulationBoneAndObject * math.normalize(simulationBone - simulationObject) + simulationObject;
-                SimulationBone.SetPosAdjustment(newSimulationBonePos - simulationBone);
+                float3 newMotionMatchingPos = MaxDistanceMMAndCharacterController * math.normalize(motionMatching - characterController) + characterController;
+                MotionMatching.SetPosAdjustment(newMotionMatchingPos - motionMatching);
             }
+
+
+            // // Clamp Position
+            // float3 simulationObject = GetCurrentPosition();
+            // float3 simulationBone = SimulationBone.transform.position;
+            // if (math.distance(simulationObject, simulationBone) > MaxDistanceSimulationBoneAndObject)
+            // {
+            //     float3 newSimulationBonePos = MaxDistanceSimulationBoneAndObject * math.normalize(simulationBone - simulationObject) + simulationObject;
+            //     SimulationBone.SetPosAdjustment(newSimulationBonePos - simulationBone);
+            // }
         }
 
         //To Update Goal Direction
@@ -310,7 +335,6 @@ namespace MotionMatching{
         {
             float elapsedTime = 0.0f;
             while(true){
-                //temporalily
                 if (currentAvoidanceTarget != null)
                 {
                     avoidanceVector = ComputeAvoidanceVector(currentAvoidanceTarget, CurrentDirection, GetCurrentPosition());
