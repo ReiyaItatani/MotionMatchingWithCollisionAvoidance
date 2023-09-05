@@ -25,8 +25,6 @@ namespace MotionMatching
         [Tooltip("Decrease this value to accelerate blending. Time needed to move half of the distance between the source to the target pose.")]
         [Range(0.0f, 1.0f)] public float BlendHalfLife = 0.05f;
 
-        private AvatarMaskData InitialAvatarMask;
-
         [Header("Retargeting")]
         [Tooltip("Local vector (axis) pointing in the forward direction of the character")] 
         public Vector3 ForwardLocalVector = new Vector3(0, 0, 1);
@@ -68,7 +66,6 @@ namespace MotionMatching
             PreviousJointMask = new bool[BodyJoints.Length];
             PreviousJointRotations = new quaternion[BodyJoints.Length];
             OffsetJointRotations = new quaternion[BodyJoints.Length];
-            InitialAvatarMask = AvatarMask;
         }
 
         private void OnEnable()
@@ -370,14 +367,6 @@ namespace MotionMatching
             {
                 Debug.LogWarning("ForwardLocalVector is too close to zero. Object: " + name);
             }
-        }
-
-        public void SetAvatarMaskNull(){
-            AvatarMask = null;
-        }
-
-        public void SetAvatarMaskToInitialMask(){
-            AvatarMask = InitialAvatarMask;
         }
 
         #if UNITY_EDITOR

@@ -684,7 +684,6 @@ GameObject:
   - component: {fileID: 2292178860896639934}
   - component: {fileID: 2292178860896639873}
   - component: {fileID: 2292178860896639872}
-  - component: {fileID: 2292178861185554272}
   m_Layer: 0
   m_Name: Sound
   m_TagString: Untagged
@@ -700,7 +699,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2292178860896639874}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.51, y: -6.267569, z: 5.9326215}
+  m_LocalPosition: {x: 0, y: 1.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -850,19 +849,6 @@ MonoBehaviour:
   laughterThreshold: 0.5
   laughterMultiplier: 1.5
   smoothAmount: 70
---- !u!114 &2292178861185554272
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2292178860896639874}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d12f0bca3bddd5f47955d64fec130b73, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playProbability: 0.3
 --- !u!1 &2292178862250391964
 GameObject:
   m_ObjectHideFlags: 0
@@ -923,6 +909,7 @@ MonoBehaviour:
   currentGoalIndex: 1
   goalRadius: 0.5
   slowingRadius: 2
+  showAgentSphere: 0
   showAvoidanceForce: 0
   showUnalignedCollisionAvoidance: 0
   showGoalDirection: 0
@@ -1876,6 +1863,8 @@ GameObject:
   - component: {fileID: 6723672650547733181}
   - component: {fileID: 6355018157702255598}
   - component: {fileID: 3507569429810528946}
+  - component: {fileID: 2292178861185554274}
+  - component: {fileID: 2292178861185554273}
   m_Layer: 0
   m_Name: male6@T-Pose
   m_TagString: Agent
@@ -2021,6 +2010,40 @@ MonoBehaviour:
   lookObject: {fileID: 0}
   faceController: {fileID: 0}
   lookAtWeight: 0
+--- !u!114 &2292178861185554274
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5609413917706003595}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fc975652ab7bcd4cacb9377e5592b74, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onTalk: 0
+  audioSource: {fileID: 2292178860896639934}
+  audioClips:
+  - {fileID: 8300000, guid: 6104dd54d297b2746a235c08aae5ad55, type: 3}
+  - {fileID: 8300000, guid: bcad6fe36e26b4748b8c34c9e1804a8c, type: 3}
+  - {fileID: 8300000, guid: d866266b79ec89742baa20523b70fac5, type: 3}
+  playProbability: 0.1
+  onAnimation: 1
+  motionMatchingSkinnedMeshRendererWithOCEAN: {fileID: 3507569429810528946}
+--- !u!114 &2292178861185554273
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5609413917706003595}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0faf669923ade934b9002377206d49d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  socialBehaviour: {fileID: 2292178861185554274}
 --- !u!1 &5776613196754007084
 GameObject:
   m_ObjectHideFlags: 0

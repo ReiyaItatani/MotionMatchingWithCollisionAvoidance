@@ -1809,6 +1809,8 @@ GameObject:
   - component: {fileID: 8774337926849790458}
   - component: {fileID: 3119668174546418394}
   - component: {fileID: 5501216699893442129}
+  - component: {fileID: 8534726784215831859}
+  - component: {fileID: 8534726784215831858}
   m_Layer: 0
   m_Name: male2@T-Pose
   m_TagString: Agent
@@ -1954,6 +1956,40 @@ MonoBehaviour:
   lookObject: {fileID: 0}
   faceController: {fileID: 0}
   lookAtWeight: 0
+--- !u!114 &8534726784215831859
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8014361874791824517}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fc975652ab7bcd4cacb9377e5592b74, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onTalk: 0
+  audioSource: {fileID: 8534726783986455847}
+  audioClips:
+  - {fileID: 8300000, guid: 6104dd54d297b2746a235c08aae5ad55, type: 3}
+  - {fileID: 8300000, guid: bcad6fe36e26b4748b8c34c9e1804a8c, type: 3}
+  - {fileID: 8300000, guid: d866266b79ec89742baa20523b70fac5, type: 3}
+  playProbability: 0.1
+  onAnimation: 1
+  motionMatchingSkinnedMeshRendererWithOCEAN: {fileID: 5501216699893442129}
+--- !u!114 &8534726784215831858
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8014361874791824517}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0faf669923ade934b9002377206d49d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  socialBehaviour: {fileID: 8534726784215831859}
 --- !u!1 &8174022627181643996
 GameObject:
   m_ObjectHideFlags: 0
@@ -2129,7 +2165,6 @@ GameObject:
   - component: {fileID: 8534726783986455847}
   - component: {fileID: 8534726783986455848}
   - component: {fileID: 8534726783986455849}
-  - component: {fileID: 8534726784215831857}
   m_Layer: 0
   m_Name: Sound
   m_TagString: Untagged
@@ -2145,7 +2180,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8534726783986455851}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.51, y: -6.267569, z: 5.9326215}
+  m_LocalPosition: {x: 0, y: 1.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2295,19 +2330,6 @@ MonoBehaviour:
   laughterThreshold: 0.5
   laughterMultiplier: 1.5
   smoothAmount: 70
---- !u!114 &8534726784215831857
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8534726783986455851}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d12f0bca3bddd5f47955d64fec130b73, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playProbability: 0.3
 --- !u!1 &8534726784559080087
 GameObject:
   m_ObjectHideFlags: 0
@@ -2471,6 +2493,7 @@ MonoBehaviour:
   currentGoalIndex: 1
   goalRadius: 0.5
   slowingRadius: 2
+  showAgentSphere: 0
   showAvoidanceForce: 0
   showUnalignedCollisionAvoidance: 0
   showGoalDirection: 0

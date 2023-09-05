@@ -297,7 +297,6 @@ GameObject:
   - component: {fileID: 959849167624119981}
   - component: {fileID: 959849167624119986}
   - component: {fileID: 959849167624119987}
-  - component: {fileID: 959849168460750431}
   m_Layer: 0
   m_Name: Sound
   m_TagString: Untagged
@@ -313,7 +312,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 959849167624119985}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.51, y: -6.267569, z: 5.9326215}
+  m_LocalPosition: {x: 0, y: 1.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -463,19 +462,6 @@ MonoBehaviour:
   laughterThreshold: 0.5
   laughterMultiplier: 1.5
   smoothAmount: 70
---- !u!114 &959849168460750431
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 959849167624119985}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d12f0bca3bddd5f47955d64fec130b73, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playProbability: 0.3
 --- !u!1 &959849168395143274
 GameObject:
   m_ObjectHideFlags: 0
@@ -639,6 +625,7 @@ MonoBehaviour:
   currentGoalIndex: 1
   goalRadius: 0.5
   slowingRadius: 2
+  showAgentSphere: 0
   showAvoidanceForce: 0
   showUnalignedCollisionAvoidance: 0
   showGoalDirection: 0
@@ -1950,6 +1937,8 @@ GameObject:
   - component: {fileID: 4865871418201678197}
   - component: {fileID: 7368585965149986171}
   - component: {fileID: 7975671220297431710}
+  - component: {fileID: 959849168460750433}
+  - component: {fileID: 959849168460750432}
   m_Layer: 0
   m_Name: female14@T-Pose
   m_TagString: Agent
@@ -2095,6 +2084,40 @@ MonoBehaviour:
   lookObject: {fileID: 0}
   faceController: {fileID: 0}
   lookAtWeight: 0
+--- !u!114 &959849168460750433
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6213858109677354009}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fc975652ab7bcd4cacb9377e5592b74, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onTalk: 0
+  audioSource: {fileID: 959849167624119981}
+  audioClips:
+  - {fileID: 8300000, guid: 6104dd54d297b2746a235c08aae5ad55, type: 3}
+  - {fileID: 8300000, guid: bcad6fe36e26b4748b8c34c9e1804a8c, type: 3}
+  - {fileID: 8300000, guid: d866266b79ec89742baa20523b70fac5, type: 3}
+  playProbability: 0.1
+  onAnimation: 1
+  motionMatchingSkinnedMeshRendererWithOCEAN: {fileID: 7975671220297431710}
+--- !u!114 &959849168460750432
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6213858109677354009}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0faf669923ade934b9002377206d49d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  socialBehaviour: {fileID: 959849168460750433}
 --- !u!1 &6521606550951931739
 GameObject:
   m_ObjectHideFlags: 0

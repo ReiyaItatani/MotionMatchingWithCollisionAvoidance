@@ -45,9 +45,9 @@ public class AgentManager : MonoBehaviour
     private List<GameObject> Avatars = new List<GameObject>();
     private AvatarCreator avatarCreator;
 
-    [Header("Others")]
-    public bool onConversation = false;
-    private List<GameObject> soundObjects = new List<GameObject>();
+    [Header("Social Behaviour")]
+    public bool onTalk = false;
+    public bool onAnimation = true;
 
     void Awake(){
         avatarCreator = this.GetComponent<AvatarCreator>();
@@ -77,8 +77,13 @@ public class AgentManager : MonoBehaviour
             if(mmSMRWithOCEAN != null) {
                 SetMotionMatchingSkinnedMeshRendererWithOCEANParams(mmSMRWithOCEAN);
                 MotionMatchingSkinnedMeshRendererWithOCEANs.Add(mmSMRWithOCEAN.gameObject);
-                soundObjects.Add(mmSMRWithOCEAN.gameObject.GetComponentInChildren<AudioSource>().gameObject);
             }
+
+            // Get SocialBehaviour gameobjects
+            SocialBehaviour socialBehaviour = Avatars[i].GetComponentInChildren<SocialBehaviour>();
+            if(socialBehaviour != null) {
+                SetSocialBehaviourParams(socialBehaviour);
+            }     
         }
     }
 
@@ -108,13 +113,10 @@ public class AgentManager : MonoBehaviour
             {
                 SetMotionMatchingSkinnedMeshRendererWithOCEANParams(mmSMRWithOCEAN);
             }
-        }
-        foreach(GameObject controllerObject in soundObjects){
-            if(onConversation == true){
-                controllerObject.SetActive(true);
-            }else{
-                controllerObject.SetActive(false);
-            }
+            SocialBehaviour socialBehaviour = controllerObject.GetComponent<SocialBehaviour>();
+            if(socialBehaviour != null) {
+                SetSocialBehaviourParams(socialBehaviour);
+            }    
         }
     }
 
@@ -148,6 +150,11 @@ public class AgentManager : MonoBehaviour
         mmSMRWithOCEAN.e_disgust = e_disgust;
         mmSMRWithOCEAN.e_fear = e_fear;
         mmSMRWithOCEAN.e_shock = e_shock;      
+    }
+
+    private void SetSocialBehaviourParams(SocialBehaviour socialBehaviour){
+        socialBehaviour.onTalk = onTalk;
+        socialBehaviour.onAnimation = onAnimation;
     }
 
 }

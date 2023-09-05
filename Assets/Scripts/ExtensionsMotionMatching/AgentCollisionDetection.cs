@@ -11,22 +11,15 @@ public class AgentCollisionDetection : MonoBehaviour
     private bool onCollide = false;
     private bool onMoving = false;
 
-    private bool finishStartFunction = false;
+    public SocialBehaviour socialBehaviour;
 
-    //Talk
-    private RandomAudioPlay randomAudioPlay;
-    public bool onTalk = true;
-
-    //Animation
-    public bool onAnimation = true;
 
     void Awake(){
         if(this.gameObject.GetComponent<MotionMatchingSkinnedMeshRendererWithOCEAN>()!=null){
             motionMatchingSkinnedMeshRendererWithOCEAN = this.gameObject.GetComponent<MotionMatchingSkinnedMeshRendererWithOCEAN>();
         }
-        randomAudioPlay = this.gameObject.GetComponentInChildren<RandomAudioPlay>();
-        if(onAnimation == true){
-            motionMatchingSkinnedMeshRendererWithOCEAN.SetAvatarMaskNull();
+        if(socialBehaviour == null){
+            socialBehaviour = this.gameObject.GetComponent<SocialBehaviour>();
         }
     }
 
@@ -70,13 +63,11 @@ public class AgentCollisionDetection : MonoBehaviour
             motionMatchingSkinnedMeshRendererWithOCEAN.lookObject = _collidedAgent;
         }
         //Start talk
-        if(randomAudioPlay!=null && onTalk == true){
-            randomAudioPlay.TryPlayAudio();
-        }
+        socialBehaviour.TryPlayAudio();
+
         //Start Animation
-        if(onAnimation == true){
-            motionMatchingSkinnedMeshRendererWithOCEAN.SetAvatarMaskToInitialMask();
-        }
+        socialBehaviour.TriggerUnityAnimation();
+
         yield return new WaitForSeconds(time/4f);
 
         //Look at forward
@@ -85,9 +76,7 @@ public class AgentCollisionDetection : MonoBehaviour
         }
 
         //Stop Animaiton
-        if(onAnimation == true){
-            motionMatchingSkinnedMeshRendererWithOCEAN.SetAvatarMaskNull();
-        }
+        socialBehaviour.FollowMotionMacthing();
 
         //StartMove
         onMoving = true;
