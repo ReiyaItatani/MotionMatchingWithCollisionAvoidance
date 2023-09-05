@@ -11,15 +11,19 @@ public class ParameterManager : MonoBehaviour
     public Vector3 GetCurrentDirection(){
         return pathController.GetCurrentDirection();
     }
+    
     public Vector3 GetRawCurrentPosition(){
         return pathController.GetRawCurrentPosition();
     }
+
     public Vector3 GetCurrentPosition(){
         return pathController.GetCurrentPosition();
     }
+
     public float GetCurrentSpeed(){
         return pathController.GetCurrentSpeed();
     }
+
     public void SetOnCollide(bool _onCollide){
         onCollide = _onCollide;
     }
@@ -27,6 +31,7 @@ public class ParameterManager : MonoBehaviour
     public void SetOnMoving(bool _onMoving){
         onMoving = _onMoving;
     }
+
     public bool GetoOnCollide(){
         return onCollide;
     }

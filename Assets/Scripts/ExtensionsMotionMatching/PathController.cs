@@ -31,7 +31,7 @@ namespace MotionMatching{
         private float minSpeed = 0.5f; //Minimum speed of the agent
         // --------------------------------------------------------------------------
         // To Mange Agents -----------------------------------------------------------------
-        [Tooltip("Agent Manager is a script to manage agents")] public AvatarCreator avatarCreator; //Manager for all of the agents
+        public AvatarCreator avatarCreator; //Manager for all of the agents
         // --------------------------------------------------------------------------
         // Features -----------------------------------------------------------------
         [Header("Features For Motion Matching")]
@@ -62,7 +62,7 @@ namespace MotionMatching{
         private Vector3 currentGoal;
         private Vector3 toGoalVector = Vector3.zero;//Direction to goal
         private float toGoalWeight = 1.7f;//Weight for goal direction
-        public int currentGoalIndex = 1;//Current goal index num
+        private int currentGoalIndex = 1;//Current goal index num
         public float goalRadius = 0.5f;
         public float slowingRadius = 2.0f;
         // --------------------------------------------------------------------------

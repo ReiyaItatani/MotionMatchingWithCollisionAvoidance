@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using MotionMatching;
 
+[RequireComponent(typeof(UnityEngine.CapsuleCollider))]
 public class AgentCollisionDetection : MonoBehaviour
 {
     private PathController pathController;
