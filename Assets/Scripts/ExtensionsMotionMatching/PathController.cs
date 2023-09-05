@@ -190,6 +190,7 @@ namespace MotionMatching{
                 Vector3 otherDir = collidedAgent.GetComponent<ParameterManager>().GetCurrentDirection();
                 Vector3 otherPos = collidedAgent.GetComponent<ParameterManager>().GetCurrentPosition();
                 Vector3 offset = otherPos - myPos;
+                offset = new Vector3(offset.x, 0f, offset.z);
                 float dotProduct = Vector3.Dot(myDir, otherDir);
                 float angle = 0.1f;
                 if(onMoving){

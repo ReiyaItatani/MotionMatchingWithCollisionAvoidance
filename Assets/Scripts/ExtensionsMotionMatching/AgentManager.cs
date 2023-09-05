@@ -16,7 +16,7 @@ public class AgentManager : MonoBehaviour
     public bool ShowCurrentDirection;
 
     [Header("MotionMatchingController Debug")]
-    public float SphereRadius;
+    // public float SphereRadius;
     public bool DebugSkeleton;
     public bool DebugCurrent;
     public bool DebugPose;
@@ -41,7 +41,6 @@ public class AgentManager : MonoBehaviour
     private List<GameObject> PathControllers = new List<GameObject>();
     private List<GameObject> MotionMatchingControllers = new List<GameObject>();
     private List<GameObject> MotionMatchingSkinnedMeshRendererWithOCEANs = new List<GameObject>();
-    private List<GameObject> MotionMatchingSkinnedMeshRenderers = new List<GameObject>();
     private List<GameObject> Avatars = new List<GameObject>();
     private AvatarCreator avatarCreator;
 
@@ -75,7 +74,7 @@ public class AgentManager : MonoBehaviour
             // Get MotionMatchingController gameobjects
             MotionMatchingController motionMatchingController = Avatars[i].GetComponentInChildren<MotionMatchingController>();
             if(motionMatchingController != null) {
-                SphereRadius = motionMatchingController.SpheresRadius;
+                // SphereRadius = motionMatchingController.SpheresRadius;
                 DebugSkeleton = motionMatchingController.DebugSkeleton;
                 DebugCurrent = motionMatchingController.DebugCurrent;
                 DebugPose = motionMatchingController.DebugPose;
@@ -102,26 +101,10 @@ public class AgentManager : MonoBehaviour
                 MotionMatchingSkinnedMeshRendererWithOCEANs.Add(mmSMRWithOCEAN.gameObject);
                 soundObjects.Add(mmSMRWithOCEAN.gameObject.GetComponentInChildren<AudioSource>().gameObject);
             }
-
-            MotionMatchingSkinnedMeshRenderer mmSMR = Avatars[i].GetComponentInChildren<MotionMatchingSkinnedMeshRenderer>();
-            if(mmSMR != null) {
-                MotionMatchingSkinnedMeshRenderers.Add(mmSMR.gameObject);
-            }
         }
-
-        // foreach(GameObject controllerObject in PathControllers) 
-        // {
-        //     PathController pathController = controllerObject.GetComponent<PathController>();
-        //     if(pathController != null) 
-        //     {
-        //         StartCoroutine(pathController.UpdateAvoidNeighborsVector(Avatars,0.1f, 0.3f));
-        //     }
-        // }
-        
     }
 
-    void Update()
-    {
+    private void OnValidate() {
         foreach(GameObject controllerObject in PathControllers) 
         {
             PathController pathController = controllerObject.GetComponent<PathController>();
@@ -140,7 +123,7 @@ public class AgentManager : MonoBehaviour
             MotionMatchingController motionMatchingController = controllerObject.GetComponent<MotionMatchingController>();
             if(motionMatchingController != null) 
             {
-                motionMatchingController.SpheresRadius = SphereRadius;
+                // motionMatchingController.SpheresRadius = SphereRadius;
                 motionMatchingController.DebugSkeleton = DebugSkeleton;
                 motionMatchingController.DebugCurrent = DebugCurrent;
                 motionMatchingController.DebugPose = DebugPose;
@@ -174,5 +157,6 @@ public class AgentManager : MonoBehaviour
                 controllerObject.SetActive(false);
             }
         }
+        
     }
 }
