@@ -61,7 +61,7 @@ namespace MotionMatching{
         private Vector3 currentGoal;
         private Vector3 toGoalVector = Vector3.zero;//Direction to goal
         private float toGoalWeight = 1.7f;//Weight for goal direction
-        public int currentGoalIndex = 1;
+        public int currentGoalIndex = 1;//Current goal index num
         public float goalRadius = 0.5f;
         public float slowingRadius = 2.0f;
         // --------------------------------------------------------------------------
@@ -83,6 +83,7 @@ namespace MotionMatching{
         // --------------------------------------------------------------------------
         // Gizmo Parameters -------------------------------------------------------------
         [Header("Controll Gizmos")]
+        public bool showAgentSphere = false;
         public bool showAvoidanceForce = false;
         public bool showUnalignedCollisionAvoidance = false;
         public bool showGoalDirection = false;
@@ -167,7 +168,7 @@ namespace MotionMatching{
             AdjustCharacterPosition();
             ClampSimulationBone();
 
-            //Draw vectors
+            //Draw Gizmos
             DrawInfo();
         }
 
@@ -236,21 +237,6 @@ namespace MotionMatching{
         
         private void AdjustCharacterPosition()
         {
-            // float3 simulationObject = GetCurrentPosition();
-            // float3 simulationBone = SimulationBone.transform.position;
-            // float3 differencePosition = simulationObject - simulationBone;
-            // // Damp the difference using the adjustment halflife and dt
-            // float3 adjustmentPosition = Spring.DampAdjustmentImplicit(differencePosition, PositionAdjustmentHalflife, Time.deltaTime);
-            // // Clamp adjustment if the length is greater than the character velocity
-            // // multiplied by the ratio
-            // float maxLength = PosMaximumAdjustmentRatio * math.length(SimulationBone.Velocity) * Time.deltaTime;
-            // if (math.length(adjustmentPosition) > maxLength)
-            // {
-            //     adjustmentPosition = maxLength * math.normalize(adjustmentPosition);
-            // }
-            // // Move the simulation bone towards the simulation object
-            // SimulationBone.SetPosAdjustment(adjustmentPosition);
-
             float3 characterController = GetCurrentPosition();
             float3 motionMatching = MotionMatching.transform.position;
             float3 differencePosition = characterController - motionMatching;
@@ -268,7 +254,7 @@ namespace MotionMatching{
         }
         private void ClampSimulationBone()
         {
-                        // Clamp Position
+            // Clamp Position
             float3 characterController = GetCurrentPosition();
             float3 motionMatching = MotionMatching.transform.position;
             if (math.distance(characterController, motionMatching) > MaxDistanceMMAndCharacterController)
@@ -276,45 +262,34 @@ namespace MotionMatching{
                 float3 newMotionMatchingPos = MaxDistanceMMAndCharacterController * math.normalize(motionMatching - characterController) + characterController;
                 MotionMatching.SetPosAdjustment(newMotionMatchingPos - motionMatching);
             }
-
-
-            // // Clamp Position
-            // float3 simulationObject = GetCurrentPosition();
-            // float3 simulationBone = SimulationBone.transform.position;
-            // if (math.distance(simulationObject, simulationBone) > MaxDistanceSimulationBoneAndObject)
-            // {
-            //     float3 newSimulationBonePos = MaxDistanceSimulationBoneAndObject * math.normalize(simulationBone - simulationObject) + simulationObject;
-            //     SimulationBone.SetPosAdjustment(newSimulationBonePos - simulationBone);
-            // }
         }
 
         //To Update Goal Direction
         private void CheckForGoalProximity(Vector3 _currentPosition, Vector3 _currentGoal, float _goalRadius)
         {
             float distanceToGoal = Vector3.Distance(_currentPosition, _currentGoal);
-            if (distanceToGoal < _goalRadius)
-            {
-                SelectRandomGoal();
-            }
+            if (distanceToGoal < _goalRadius) SelectRandomGoal();
         }
         private bool isIncreasing = true;
         private void SelectRandomGoal(){
+
             if(isIncreasing)
             {
+                //Path[index]→Path[index+1]
                 currentGoalIndex++;
-                if(currentGoalIndex >= Path.Length - 1) 
-                {
-                    isIncreasing = false;
-                }
+                if(currentGoalIndex >= Path.Length - 1) isIncreasing = false;
             }
             else
             {
+                //Path[index]→Path[index-1]
                 currentGoalIndex--;
-                if(currentGoalIndex <= 0)
-                {
-                    isIncreasing = true;
-                }
+                if(currentGoalIndex <= 0) isIncreasing = true;
             }
+
+            //Adjustment
+            if(currentGoalIndex > Path.Length-1) currentGoalIndex = Path.Length-2;
+            if(currentGoalIndex < 0) currentGoalIndex = -currentGoalIndex;
+
             currentGoal = Path[currentGoalIndex];
             StartCoroutine(GradualSpeedUp(3.0f, currentSpeed, initialSpeed));
         }
@@ -580,9 +555,11 @@ namespace MotionMatching{
         }
 
         private void DrawInfo(){
-            
-            Color gizmoColor = new Color(1.0f, 88/255f, 85/255f);
-            Draw.WireCylinder((Vector3)GetCurrentPosition(), Vector3.up, agentCollider.height, agentRadius, gizmoColor);
+            Color gizmoColor;
+            if(showAgentSphere){
+                gizmoColor = new Color(1.0f, 88/255f, 85/255f);
+                Draw.WireCylinder((Vector3)GetCurrentPosition(), Vector3.up, agentCollider.height, agentRadius, gizmoColor);
+            }
 
             if(showAvoidanceForce){
                 gizmoColor = Color.blue;

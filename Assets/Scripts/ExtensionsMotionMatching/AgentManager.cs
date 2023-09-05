@@ -7,21 +7,22 @@ public class AgentManager : MonoBehaviour
 {
 
     [Header("BasicCollisionAvoidance Parameters")]
-    public Vector3 AvoidanceColliderSize;
+    public Vector3 AvoidanceColliderSize = new Vector3(1.5f, 1.5f, 2.0f);
 
     [Header("ControllGizmos Parameters")]
-    public bool ShowAvoidanceForce;
-    public bool ShowUnalignedCollisionAvoidance;
-    public bool ShowGoalDirection;
-    public bool ShowCurrentDirection;
+    public bool showAgentSphere = false;
+    public bool ShowAvoidanceForce = false;
+    public bool ShowUnalignedCollisionAvoidance = false;
+    public bool ShowGoalDirection = false;
+    public bool ShowCurrentDirection = false;
 
     [Header("MotionMatchingController Debug")]
     // public float SphereRadius;
-    public bool DebugSkeleton;
-    public bool DebugCurrent;
-    public bool DebugPose;
-    public bool DebugTrajectory;
-    public bool DebugContacts;
+    public bool DebugSkeleton = false;
+    public bool DebugCurrent = false;
+    public bool DebugPose = false;
+    public bool DebugTrajectory = false;
+    public bool DebugContacts = false;
 
     [Header("OCEAN Parameters")]
     [Range(-1f, 1f)] public float openness = 0f;
@@ -55,49 +56,26 @@ public class AgentManager : MonoBehaviour
 
     void Start()
     {
-        
         for (int i = 0; i < Avatars.Count; i++)
         {
             // Get PathController gameobjects
             PathController pathController = Avatars[i].GetComponentInChildren<PathController>();
             if(pathController != null) {
-                // Read initial values
-                AvoidanceColliderSize = pathController.avoidanceColliderSize;;
-                ShowAvoidanceForce = pathController.showAvoidanceForce;
-                ShowUnalignedCollisionAvoidance = pathController.showUnalignedCollisionAvoidance;
-                ShowGoalDirection = pathController.showGoalDirection;
-                ShowCurrentDirection = pathController.showCurrentDirection;
-
+                SetPathControllerParams(pathController);
                 PathControllers.Add(pathController.gameObject);
             }
 
             // Get MotionMatchingController gameobjects
             MotionMatchingController motionMatchingController = Avatars[i].GetComponentInChildren<MotionMatchingController>();
             if(motionMatchingController != null) {
-                // SphereRadius = motionMatchingController.SpheresRadius;
-                DebugSkeleton = motionMatchingController.DebugSkeleton;
-                DebugCurrent = motionMatchingController.DebugCurrent;
-                DebugPose = motionMatchingController.DebugPose;
-                DebugTrajectory = motionMatchingController.DebugTrajectory;
-                DebugContacts = motionMatchingController.DebugContacts;
+                SetMotionMatchingControllerParams(motionMatchingController);
                 MotionMatchingControllers.Add(motionMatchingController.gameObject);
             }
 
             // Get MotionMatchingSkinnedMeshRendererWithOCEAN gameobjects
             MotionMatchingSkinnedMeshRendererWithOCEAN mmSMRWithOCEAN = Avatars[i].GetComponentInChildren<MotionMatchingSkinnedMeshRendererWithOCEAN>();
             if(mmSMRWithOCEAN != null) {
-                // Read initial values
-                openness = mmSMRWithOCEAN.openness;
-                conscientiousness = mmSMRWithOCEAN.conscientiousness;
-                extraversion = mmSMRWithOCEAN.extraversion;
-                agreeableness = mmSMRWithOCEAN.agreeableness;
-                neuroticism = mmSMRWithOCEAN.neuroticism;
-                e_happy = mmSMRWithOCEAN.e_happy;
-                e_sad = mmSMRWithOCEAN.e_sad;
-                e_angry = mmSMRWithOCEAN.e_angry;
-                e_disgust = mmSMRWithOCEAN.e_disgust;
-                e_fear = mmSMRWithOCEAN.e_fear;
-                e_shock = mmSMRWithOCEAN.e_shock;
+                SetMotionMatchingSkinnedMeshRendererWithOCEANParams(mmSMRWithOCEAN);
                 MotionMatchingSkinnedMeshRendererWithOCEANs.Add(mmSMRWithOCEAN.gameObject);
                 soundObjects.Add(mmSMRWithOCEAN.gameObject.GetComponentInChildren<AudioSource>().gameObject);
             }
@@ -110,11 +88,7 @@ public class AgentManager : MonoBehaviour
             PathController pathController = controllerObject.GetComponent<PathController>();
             if(pathController != null) 
             {
-                pathController.avoidanceColliderSize = AvoidanceColliderSize;
-                pathController.showAvoidanceForce = ShowAvoidanceForce;
-                pathController.showUnalignedCollisionAvoidance = ShowUnalignedCollisionAvoidance;
-                pathController.showGoalDirection = ShowGoalDirection;
-                pathController.showCurrentDirection = ShowCurrentDirection;
+                SetPathControllerParams(pathController);
             }
         }
 
@@ -123,31 +97,16 @@ public class AgentManager : MonoBehaviour
             MotionMatchingController motionMatchingController = controllerObject.GetComponent<MotionMatchingController>();
             if(motionMatchingController != null) 
             {
-                // motionMatchingController.SpheresRadius = SphereRadius;
-                motionMatchingController.DebugSkeleton = DebugSkeleton;
-                motionMatchingController.DebugCurrent = DebugCurrent;
-                motionMatchingController.DebugPose = DebugPose;
-                motionMatchingController.DebugTrajectory = DebugTrajectory;
-                motionMatchingController.DebugContacts = DebugContacts;
+                SetMotionMatchingControllerParams(motionMatchingController);
             }
         }
 
         foreach(GameObject controllerObject in MotionMatchingSkinnedMeshRendererWithOCEANs) 
         {
-            MotionMatchingSkinnedMeshRendererWithOCEAN mmOCEAN = controllerObject.GetComponent<MotionMatchingSkinnedMeshRendererWithOCEAN>();
-            if(mmOCEAN != null) 
+            MotionMatchingSkinnedMeshRendererWithOCEAN mmSMRWithOCEAN = controllerObject.GetComponent<MotionMatchingSkinnedMeshRendererWithOCEAN>();
+            if(mmSMRWithOCEAN != null) 
             {
-                mmOCEAN.openness = openness;
-                mmOCEAN.conscientiousness = conscientiousness;
-                mmOCEAN.extraversion = extraversion;
-                mmOCEAN.agreeableness = agreeableness;
-                mmOCEAN.neuroticism = neuroticism;
-                mmOCEAN.e_happy = e_happy;
-                mmOCEAN.e_sad = e_sad;
-                mmOCEAN.e_angry = e_angry;
-                mmOCEAN.e_disgust = e_disgust;
-                mmOCEAN.e_fear = e_fear;
-                mmOCEAN.e_shock = e_shock;
+                SetMotionMatchingSkinnedMeshRendererWithOCEANParams(mmSMRWithOCEAN);
             }
         }
         foreach(GameObject controllerObject in soundObjects){
@@ -157,6 +116,38 @@ public class AgentManager : MonoBehaviour
                 controllerObject.SetActive(false);
             }
         }
-        
     }
+
+    private void SetPathControllerParams(PathController pathController){
+        pathController.avoidanceColliderSize = AvoidanceColliderSize;
+        pathController.showAgentSphere = showAgentSphere;
+        pathController.showAvoidanceForce = ShowAvoidanceForce;
+        pathController.showUnalignedCollisionAvoidance = ShowUnalignedCollisionAvoidance;
+        pathController.showGoalDirection = ShowGoalDirection;
+        pathController.showCurrentDirection = ShowCurrentDirection;
+    }
+
+    private void SetMotionMatchingControllerParams(MotionMatchingController motionMatchingController){
+        // motionMatchingController.SpheresRadius = SphereRadius;
+        motionMatchingController.DebugSkeleton = DebugSkeleton;
+        motionMatchingController.DebugCurrent = DebugCurrent;
+        motionMatchingController.DebugPose = DebugPose;
+        motionMatchingController.DebugTrajectory = DebugTrajectory;
+        motionMatchingController.DebugContacts = DebugContacts;
+    }
+
+    private void SetMotionMatchingSkinnedMeshRendererWithOCEANParams(MotionMatchingSkinnedMeshRendererWithOCEAN mmSMRWithOCEAN){
+        mmSMRWithOCEAN.openness = openness;
+        mmSMRWithOCEAN.conscientiousness = conscientiousness;
+        mmSMRWithOCEAN.extraversion = extraversion;
+        mmSMRWithOCEAN.agreeableness = agreeableness;
+        mmSMRWithOCEAN.neuroticism = neuroticism;
+        mmSMRWithOCEAN.e_happy = e_happy;
+        mmSMRWithOCEAN.e_sad = e_sad;
+        mmSMRWithOCEAN.e_angry = e_angry;
+        mmSMRWithOCEAN.e_disgust = e_disgust;
+        mmSMRWithOCEAN.e_fear = e_fear;
+        mmSMRWithOCEAN.e_shock = e_shock;      
+    }
+
 }
