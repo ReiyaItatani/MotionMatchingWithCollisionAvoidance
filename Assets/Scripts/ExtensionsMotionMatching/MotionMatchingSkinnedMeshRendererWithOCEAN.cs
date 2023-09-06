@@ -314,6 +314,8 @@ namespace MotionMatching
 
             //LookAt
             LookAtPass();
+            //EyesMovement
+            EyesMovementPass();
 
             //Noise for Look
             circularNoise.SetScalingFactor(21, -ls_ver, ls_ver);
@@ -781,6 +783,83 @@ namespace MotionMatching
             startCoroutine = setBool;
             yield return null;
         }   
+
+        private int lookRight_Eyes = 112;
+        private int lookLeft_Eyes = 111;
+        public float blendValue;
+        public bool startEyeWeightCoroutine = false;
+
+        private void EyesMovementPass()
+        {
+            if (lookObject == null)
+            {
+                ResetEyesBlendShape();
+                if (startEyeWeightCoroutine)
+                {
+                    startEyeWeightCoroutine = false;
+                    StartCoroutine(EyesWeightChanger(blendValue, 0, UnityEngine.Random.Range(1.0f, 1.5f)));
+                }
+            }
+            else
+            {
+                CalculateBlendValueBasedOnDirection(lookObject.transform.position - this.transform.position);
+            }
+        }
+
+        private void ResetEyesBlendShape()
+        {
+            if (faceController.meshRenderer.GetBlendShapeWeight(lookRight_Eyes) > 0)
+            {
+                SetEyesBlendShape(lookRight_Eyes, blendValue);
+            }
+            else if (faceController.meshRenderer.GetBlendShapeWeight(lookLeft_Eyes) > 0)
+            {
+                SetEyesBlendShape(lookLeft_Eyes, blendValue);
+            }
+        }
+
+        private void CalculateBlendValueBasedOnDirection(Vector3 direction)
+        {
+            float angle = Vector3.Angle(t_Head.forward, direction);
+            float sign = Mathf.Sign(Vector3.Cross(t_Head.forward, direction).y);
+
+            blendValue = Mathf.Clamp(angle / 90.0f * 100.0f, 0.0f, 100.0f);
+
+            // Sign indicates direction (1 for right, -1 for left)
+            if (sign >= 0)
+            {
+                SetEyesBlendShape(lookLeft_Eyes, 0);
+                SetEyesBlendShape(lookRight_Eyes, blendValue);
+            }
+            else
+            {
+                SetEyesBlendShape(lookLeft_Eyes, blendValue);
+                SetEyesBlendShape(lookRight_Eyes, 0);
+            }
+            
+            startEyeWeightCoroutine = true;
+        }
+
+        private void SetEyesBlendShape(int blendShapeIndex, float value)
+        {
+            faceController.meshRenderer.SetBlendShapeWeight(blendShapeIndex, value);
+        }
+
+        private IEnumerator EyesWeightChanger(float originalWeight, float targetWeight, float duration)
+        {
+            float elapsedTime = 0;
+            float initialWeight = originalWeight;
+
+            while (elapsedTime < duration)
+            {
+                elapsedTime += Time.deltaTime;
+                blendValue = Mathf.Lerp(initialWeight, targetWeight, elapsedTime / duration);
+                yield return new WaitForSeconds(Time.deltaTime);
+            }
+
+            blendValue = targetWeight;
+        }
+
         
     //     float rotateSpeed = 1.0f; 
 
