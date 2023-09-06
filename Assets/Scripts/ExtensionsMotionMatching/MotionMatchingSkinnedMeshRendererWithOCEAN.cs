@@ -275,6 +275,7 @@ namespace MotionMatching
 
             // Update State
             UpdatePreviousInertialization();
+            UpdateOCEAN();
         }
 
         private void UpdatePreviousInertialization()
@@ -291,7 +292,7 @@ namespace MotionMatching
             PreviousHipsPosition = TargetBones != null ? TargetBones[0].position : float3.zero;
         }
 
-        void LateUpdate(){
+        void UpdateOCEAN(){
             // if (Map_OCEAN_to_LabanShape) OCEAN_to_LabanShape();
             if (Map_OCEAN_to_LabanEffort) OCEAN_to_LabanEffort();
             if (Map_OCEAN_to_Additional) OCEAN_to_Additional();

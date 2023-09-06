@@ -60,9 +60,10 @@ public class AgentCollisionDetection : MonoBehaviour
         pathController.SetOnCollide(onCollide, _collidedAgent);
 
         //Look at
-        if(motionMatchingSkinnedMeshRendererWithOCEAN != null){
-            motionMatchingSkinnedMeshRendererWithOCEAN.lookObject = _collidedAgent;
-        }
+        socialBehaviour.LookAtTarget(_collidedAgent);
+        // if(motionMatchingSkinnedMeshRendererWithOCEAN != null){
+        //     motionMatchingSkinnedMeshRendererWithOCEAN.lookObject = _collidedAgent;
+        // }
         //Start talk
         socialBehaviour.TryPlayAudio();
 
@@ -72,9 +73,10 @@ public class AgentCollisionDetection : MonoBehaviour
         yield return new WaitForSeconds(time/4f);
 
         //Look at forward
-        if(motionMatchingSkinnedMeshRendererWithOCEAN != null){
-            motionMatchingSkinnedMeshRendererWithOCEAN.lookObject = null;
-        }
+        socialBehaviour.LookForward();
+        // if(motionMatchingSkinnedMeshRendererWithOCEAN != null){
+        //     motionMatchingSkinnedMeshRendererWithOCEAN.lookObject = null;
+        // }
 
         //Stop Animaiton
         socialBehaviour.FollowMotionMacthing();
