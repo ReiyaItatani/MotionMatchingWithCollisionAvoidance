@@ -587,6 +587,8 @@ GameObject:
   - component: {fileID: 468054037622545720}
   - component: {fileID: 5706542000042816843}
   - component: {fileID: 1769139915259376981}
+  - component: {fileID: 7040185036686580988}
+  - component: {fileID: 3215789159825709622}
   m_Layer: 0
   m_Name: male20@T-Pose
   m_TagString: Agent
@@ -731,7 +733,41 @@ MonoBehaviour:
   head_bend: 0
   lookObject: {fileID: 0}
   faceController: {fileID: 0}
-  lookAtWeight: 1
+  lookAtWeight: 0
+--- !u!114 &7040185036686580988
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2764670733821659272}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fc975652ab7bcd4cacb9377e5592b74, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onTalk: 0
+  audioSource: {fileID: 3666288616992205137}
+  audioClips:
+  - {fileID: 8300000, guid: 6104dd54d297b2746a235c08aae5ad55, type: 3}
+  - {fileID: 8300000, guid: bcad6fe36e26b4748b8c34c9e1804a8c, type: 3}
+  - {fileID: 8300000, guid: d866266b79ec89742baa20523b70fac5, type: 3}
+  playProbability: 0.1
+  onAnimation: 1
+  motionMatchingSkinnedMeshRendererWithOCEAN: {fileID: 1769139915259376981}
+--- !u!114 &3215789159825709622
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2764670733821659272}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0faf669923ade934b9002377206d49d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  socialBehaviour: {fileID: 7040185036686580988}
 --- !u!1 &2795934929639194838
 GameObject:
   m_ObjectHideFlags: 0
@@ -1262,7 +1298,6 @@ MonoBehaviour:
   avatarCreator: {fileID: 0}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
   agentCollider: {fileID: 468054037622545720}
-  currentGoalIndex: 1
   goalRadius: 0.5
   slowingRadius: 2
   showAgentSphere: 0
