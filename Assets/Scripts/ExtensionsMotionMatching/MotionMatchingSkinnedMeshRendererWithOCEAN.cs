@@ -726,9 +726,6 @@ namespace MotionMatching
         * 
         * * */
 
-        //rotateの計算
-        //30°以上なら大きさを変更
-
         [Range(0f,1f)]
         public float lookAtWeight = 1f;
         private bool startCoroutine = false;
@@ -784,10 +781,17 @@ namespace MotionMatching
             yield return null;
         }   
 
+
+        /* * *
+        * 
+        * EYES MOVEMENT PASS
+        * 
+        * * */
+
         private int lookRight_Eyes = 112;
         private int lookLeft_Eyes = 111;
-        public float blendValue;
-        public bool startEyeWeightCoroutine = false;
+        private float blendValue;
+        private bool startEyeWeightCoroutine = false;
 
         private void EyesMovementPass()
         {

@@ -16,12 +16,8 @@ public class AgentCollisionDetection : MonoBehaviour
 
 
     void Awake(){
-        if(this.gameObject.GetComponent<MotionMatchingSkinnedMeshRendererWithOCEAN>()!=null){
-            motionMatchingSkinnedMeshRendererWithOCEAN = this.gameObject.GetComponent<MotionMatchingSkinnedMeshRendererWithOCEAN>();
-        }
-        if(socialBehaviour == null){
-            socialBehaviour = this.gameObject.GetComponent<SocialBehaviour>();
-        }
+        motionMatchingSkinnedMeshRendererWithOCEAN = this.gameObject.GetComponent<MotionMatchingSkinnedMeshRendererWithOCEAN>();
+        socialBehaviour = this.gameObject.GetComponent<SocialBehaviour>();
     }
 
     void Update(){
@@ -35,16 +31,14 @@ public class AgentCollisionDetection : MonoBehaviour
     void OnTriggerEnter(Collider collider)
     {
         // Check if the object we collided with has the "Agent" tag
-        if (collider.gameObject.tag == "Agent")
+        if (collider.gameObject.tag == "Agent" && pathController!=null)
         {
-            if(pathController!=null){
-                onCollide = false;
-                onMoving = false;
-                pathController.SetOnCollide(onCollide, collider.gameObject);
-                pathController.SetOnMoving(onMoving, collider.gameObject);
-                pathController.SetCollidedAgent(collider.gameObject);
-                StartCoroutine(WaitTime(Random.Range(3f, 7f), collider.gameObject));
-            }
+            onCollide = false;
+            onMoving = false;
+            pathController.SetOnCollide(onCollide, collider.gameObject);
+            pathController.SetOnMoving(onMoving, collider.gameObject);
+            pathController.SetCollidedAgent(collider.gameObject);
+            StartCoroutine(WaitTime(Random.Range(3f, 7f), collider.gameObject));
         }
     }
 
@@ -58,29 +52,18 @@ public class AgentCollisionDetection : MonoBehaviour
         //Start wait
         onCollide = true;
         pathController.SetOnCollide(onCollide, _collidedAgent);
-
         //Look at
         socialBehaviour.LookAtTarget(_collidedAgent);
-        // if(motionMatchingSkinnedMeshRendererWithOCEAN != null){
-        //     motionMatchingSkinnedMeshRendererWithOCEAN.lookObject = _collidedAgent;
-        // }
         //Start talk
         socialBehaviour.TryPlayAudio();
-
         //Start Animation
         socialBehaviour.TriggerUnityAnimation();
-
         yield return new WaitForSeconds(time/4f);
 
         //Look at forward
         socialBehaviour.LookForward();
-        // if(motionMatchingSkinnedMeshRendererWithOCEAN != null){
-        //     motionMatchingSkinnedMeshRendererWithOCEAN.lookObject = null;
-        // }
-
         //Stop Animaiton
         socialBehaviour.FollowMotionMacthing();
-
         //StartMove
         onMoving = true;
         pathController.SetOnMoving(onMoving, _collidedAgent);
@@ -93,9 +76,4 @@ public class AgentCollisionDetection : MonoBehaviour
         pathController.SetOnMoving(onMoving, _collidedAgent);
         yield return null;
     }
-
-    public bool GetCollide(){
-        return onCollide;
-    }
-
 }
