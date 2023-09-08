@@ -550,9 +550,12 @@ MonoBehaviour:
   initialSpeed: 0.83605015
   avatarCreator: {fileID: 151487188}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
+  avoidanceWeight: 1.5
   agentCollider: {fileID: 1234926156}
+  toGoalWeight: 1.7
   goalRadius: 2
   slowingRadius: 3
+  avoidNeighborWeight: 1
   showAgentSphere: 0
   showAvoidanceForce: 0
   showUnalignedCollisionAvoidance: 0
@@ -1901,6 +1904,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AvoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
+  goalRadius: 0.5
+  slowingRadius: 2
+  toGoalWeight: 1.7
+  avoidNeighborWeight: 1
+  avoidanceWeight: 1.5
+  MaxDistanceMMAndCharacterController: 0.1
+  PositionAdjustmentHalflife: 0.1
+  PosMaximumAdjustmentRatio: 0.1
   showAgentSphere: 0
   ShowAvoidanceForce: 0
   ShowUnalignedCollisionAvoidance: 0
@@ -1966,7 +1977,6 @@ MonoBehaviour:
   - {fileID: 8691402518093017443, guid: 035c579f94d772a46a1244d0482d2aaf, type: 3}
   - {fileID: 3666288618358909002, guid: bccb5b845c41ca245b9d77d853f0a39c, type: 3}
   - {fileID: 8706195490004232953, guid: 03eb5105f3037c5448934ed1d6104b54, type: 3}
-  spawnCount: 10
   instantiatedAvatars:
   - {fileID: 311327000}
   - {fileID: 604147035}
@@ -1978,6 +1988,7 @@ MonoBehaviour:
   - {fileID: 876183533}
   - {fileID: 369281106}
   - {fileID: 1995755234}
+  spawnCount: 10
   startPoint: {fileID: 537566895}
   endPoint: {fileID: 900388677}
   pathVertices:
@@ -2217,9 +2228,12 @@ MonoBehaviour:
   initialSpeed: 0.92569625
   avatarCreator: {fileID: 151487188}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
+  avoidanceWeight: 1.5
   agentCollider: {fileID: 1963575454}
+  toGoalWeight: 1.7
   goalRadius: 2
   slowingRadius: 3
+  avoidNeighborWeight: 1
   showAgentSphere: 0
   showAvoidanceForce: 0
   showUnalignedCollisionAvoidance: 0
@@ -9172,9 +9186,12 @@ MonoBehaviour:
   initialSpeed: 1.1710336
   avatarCreator: {fileID: 151487188}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
+  avoidanceWeight: 1.5
   agentCollider: {fileID: 334708634}
+  toGoalWeight: 1.7
   goalRadius: 2
   slowingRadius: 3
+  avoidNeighborWeight: 1
   showAgentSphere: 0
   showAvoidanceForce: 0
   showUnalignedCollisionAvoidance: 0
@@ -10375,9 +10392,12 @@ MonoBehaviour:
   initialSpeed: 0.9654387
   avatarCreator: {fileID: 151487188}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
+  avoidanceWeight: 1.5
   agentCollider: {fileID: 687862929}
+  toGoalWeight: 1.7
   goalRadius: 2
   slowingRadius: 3
+  avoidNeighborWeight: 1
   showAgentSphere: 0
   showAvoidanceForce: 0
   showUnalignedCollisionAvoidance: 0
@@ -13844,9 +13864,12 @@ MonoBehaviour:
   initialSpeed: 1.0754212
   avatarCreator: {fileID: 151487188}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
+  avoidanceWeight: 1.5
   agentCollider: {fileID: 234498204}
+  toGoalWeight: 1.7
   goalRadius: 2
   slowingRadius: 3
+  avoidNeighborWeight: 1
   showAgentSphere: 0
   showAvoidanceForce: 0
   showUnalignedCollisionAvoidance: 0
@@ -20169,9 +20192,12 @@ MonoBehaviour:
   initialSpeed: 1.2313421
   avatarCreator: {fileID: 151487188}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
+  avoidanceWeight: 1.5
   agentCollider: {fileID: 353259994}
+  toGoalWeight: 1.7
   goalRadius: 2
   slowingRadius: 3
+  avoidNeighborWeight: 1
   showAgentSphere: 0
   showAvoidanceForce: 0
   showUnalignedCollisionAvoidance: 0
@@ -20333,9 +20359,12 @@ MonoBehaviour:
   initialSpeed: 0.85163176
   avatarCreator: {fileID: 151487188}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
+  avoidanceWeight: 1.5
   agentCollider: {fileID: 1227067012}
+  toGoalWeight: 1.7
   goalRadius: 2
   slowingRadius: 3
+  avoidNeighborWeight: 1
   showAgentSphere: 0
   showAvoidanceForce: 0
   showUnalignedCollisionAvoidance: 0
@@ -20428,9 +20457,12 @@ MonoBehaviour:
   initialSpeed: 0.6687428
   avatarCreator: {fileID: 151487188}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
+  avoidanceWeight: 1.5
   agentCollider: {fileID: 531159786}
+  toGoalWeight: 1.7
   goalRadius: 2
   slowingRadius: 3
+  avoidNeighborWeight: 1
   showAgentSphere: 0
   showAvoidanceForce: 0
   showUnalignedCollisionAvoidance: 0
@@ -21206,9 +21238,12 @@ MonoBehaviour:
   initialSpeed: 0.63119316
   avatarCreator: {fileID: 151487188}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
+  avoidanceWeight: 1.5
   agentCollider: {fileID: 2121218373}
+  toGoalWeight: 1.7
   goalRadius: 2
   slowingRadius: 3
+  avoidNeighborWeight: 1
   showAgentSphere: 0
   showAvoidanceForce: 0
   showUnalignedCollisionAvoidance: 0
@@ -22227,9 +22262,12 @@ MonoBehaviour:
   initialSpeed: 0.9620775
   avatarCreator: {fileID: 151487188}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
+  avoidanceWeight: 1.5
   agentCollider: {fileID: 444519608}
+  toGoalWeight: 1.7
   goalRadius: 2
   slowingRadius: 3
+  avoidNeighborWeight: 1
   showAgentSphere: 0
   showAvoidanceForce: 0
   showUnalignedCollisionAvoidance: 0

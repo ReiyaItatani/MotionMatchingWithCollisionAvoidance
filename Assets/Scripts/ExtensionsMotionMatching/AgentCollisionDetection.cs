@@ -14,7 +14,6 @@ public class AgentCollisionDetection : MonoBehaviour
 
     public SocialBehaviour socialBehaviour;
 
-
     void Awake(){
         motionMatchingSkinnedMeshRendererWithOCEAN = this.gameObject.GetComponent<MotionMatchingSkinnedMeshRendererWithOCEAN>();
         socialBehaviour = this.gameObject.GetComponent<SocialBehaviour>();
@@ -38,7 +37,8 @@ public class AgentCollisionDetection : MonoBehaviour
             pathController.SetOnCollide(onCollide, collider.gameObject);
             pathController.SetOnMoving(onMoving, collider.gameObject);
             pathController.SetCollidedAgent(collider.gameObject);
-            StartCoroutine(WaitTime(Random.Range(3f, 7f), collider.gameObject));
+            if(socialBehaviour != null && 
+            motionMatchingSkinnedMeshRendererWithOCEAN != null) StartCoroutine(WaitTime(Random.Range(3f, 7f), collider.gameObject));
         }
     }
 
@@ -58,7 +58,7 @@ public class AgentCollisionDetection : MonoBehaviour
         socialBehaviour.TryPlayAudio();
         //Start Animation
         socialBehaviour.TriggerUnityAnimation();
-        yield return new WaitForSeconds(time/4f);
+        yield return new WaitForSeconds(time/2.0f);
 
         //Look at forward
         socialBehaviour.LookForward();
@@ -67,7 +67,7 @@ public class AgentCollisionDetection : MonoBehaviour
         //StartMove
         onMoving = true;
         pathController.SetOnMoving(onMoving, _collidedAgent);
-        yield return new WaitForSeconds(time - time/4f);
+        yield return new WaitForSeconds(time - time/2.0f);
 
         //Back to normal
         onCollide = false;

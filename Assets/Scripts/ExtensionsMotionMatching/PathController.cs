@@ -20,13 +20,16 @@ namespace MotionMatching{
         private Vector3 CurrentDirection;
         private Vector3[] PredictedPositions;
         private Vector3[] PredictedDirections;
-        [Range(0.0f, 2.0f)] public float MaxDistanceMMAndCharacterController = 0.1f; // Max distance between SimulationBone and SimulationObject
-        [Range(0.0f, 2.0f)] public float PositionAdjustmentHalflife = 0.1f; // Time needed to move half of the distance between SimulationBone and SimulationObject
-        [Range(0.0f, 2.0f)] public float PosMaximumAdjustmentRatio = 0.1f; // Ratio between the adjustment and the character's velocity to clamp the adjustment
+        [HideInInspector, Range(0.0f, 2.0f), Tooltip("Max distance between SimulationBone and SimulationObject")] 
+        public float MaxDistanceMMAndCharacterController = 0.1f; // Max distance between SimulationBone and SimulationObject
+        [HideInInspector, Range(0.0f, 2.0f), Tooltip("Time needed to move half of the distance between SimulationBone and SimulationObject")] 
+        public float PositionAdjustmentHalflife = 0.1f; // Time needed to move half of the distance between SimulationBone and SimulationObject
+        [HideInInspector, Range(0.0f, 2.0f), Tooltip("Ratio between the adjustment and the character's velocity to clamp the adjustment")] 
+        public float PosMaximumAdjustmentRatio = 0.1f; // Ratio between the adjustment and the character's velocity to clamp the adjustment
         // Speed Of Agents -----------------------------------------------------------------
         [Header("Speed")]
         private float currentSpeed = 1.0f; //Current speed of the agent
-        [Range (0.0f, 1.5f)]
+        [Range (0.0f, 1.5f), HideInInspector]
         public float initialSpeed = 1.0f; //Initial speed of the agent
         private float minSpeed = 0.5f; //Minimum speed of the agent
         // --------------------------------------------------------------------------
@@ -43,10 +46,11 @@ namespace MotionMatching{
         private int NumberPredictionRot { get { return TrajectoryRotPredictionFrames.Length; } }
         // --------------------------------------------------------------------------
         // Collision Avoidance ------------------------------------------------------
-        [Header("Parameters For Basic Collision Avoidance")]
+        [Header("Parameters For Basic Collision Avoidance"), HideInInspector]
         public Vector3 avoidanceColliderSize = new Vector3(1.5f, 1.5f, 2.0f); 
         private Vector3 avoidanceVector = Vector3.zero;//Direction of basic collision avoidance
-        private float avoidanceWeight = 1.5f;//Weight for basic collision avoidance
+        [HideInInspector]
+        public float avoidanceWeight = 1.5f;//Weight for basic collision avoidance
         private GameObject currentAvoidanceTarget;
         public GameObject CurrentAvoidanceTarget{
             get => currentAvoidanceTarget;
@@ -61,9 +65,12 @@ namespace MotionMatching{
         [Header("Parameters For Goal Direction")]
         private Vector3 currentGoal;
         private Vector3 toGoalVector = Vector3.zero;//Direction to goal
-        private float toGoalWeight = 1.7f;//Weight for goal direction
+        [HideInInspector]
+        public float toGoalWeight = 1.7f;//Weight for goal direction
         private int currentGoalIndex = 1;//Current goal index num
+        [HideInInspector]
         public float goalRadius = 0.5f;
+        [HideInInspector]
         public float slowingRadius = 2.0f;
         // --------------------------------------------------------------------------
         // Unaligned Collision Avoidance -------------------------------------------
@@ -72,7 +79,8 @@ namespace MotionMatching{
         private Vector3 myPositionAtNearestApproach;
         private Vector3 avoidNeighborsVector = Vector3.zero;//Direction for unaligned collision avoidance
         private GameObject potentialAvoidanceTarget;
-        private float avoidNeighborWeight = 1.0f;//Weight for unaligned collision avoidance
+        [HideInInspector]
+        public float avoidNeighborWeight = 1.0f;//Weight for unaligned collision avoidance
         private float minTimeToCollision =5.0f;
         private float collisionDangerThreshold = 4.0f;
         // --------------------------------------------------------------------------
@@ -84,10 +92,15 @@ namespace MotionMatching{
         // --------------------------------------------------------------------------
         // Gizmo Parameters -------------------------------------------------------------
         [Header("Controll Gizmos")]
+        [HideInInspector]
         public bool showAgentSphere = false;
+        [HideInInspector]
         public bool showAvoidanceForce = false;
+        [HideInInspector]
         public bool showUnalignedCollisionAvoidance = false;
+        [HideInInspector]
         public bool showGoalDirection = false;
+        [HideInInspector]
         public bool showCurrentDirection = false;
         // --------------------------------------------------------------------------
         

@@ -8,13 +8,14 @@ using System.IO;
 public class AvatarCreator : MonoBehaviour
 {
     public List<GameObject> avatarPrefabs = new List<GameObject>();
-    public int spawnCount = 1;
     public List<GameObject> instantiatedAvatars = new List<GameObject>();
+    public int spawnCount = 1;    
 
     [Header("Agent's Path")]
     public Transform startPoint;
     public Transform endPoint;
     public NavMeshPath path;
+    [HideInInspector]
     public List<Vector3> pathVertices= new List<Vector3>();
     [Tooltip("This is a parameter to scatter the start and end positions of the path. The larger the value, the more the start and end positions of the path will deviate.")]
     public float startPointDeviation = 1f;

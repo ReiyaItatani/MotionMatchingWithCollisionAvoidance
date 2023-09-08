@@ -7,7 +7,36 @@ public class AgentManager : MonoBehaviour
 {
 
     [Header("BasicCollisionAvoidance Parameters")]
+
+    [Tooltip("Size of the avoidance collider.")]
     public Vector3 AvoidanceColliderSize = new Vector3(1.5f, 1.5f, 2.0f);
+    [Tooltip("Radius to consider as the goal.")]
+    [Range(0.1f, 5.0f)]
+    public float goalRadius = 0.5f;
+    [Tooltip("Radius to start slowing down.")]
+    [Range(0.1f, 5.0f)]
+    public float slowingRadius = 2.0f;
+
+    [Space]
+
+    [Tooltip("Weight for moving towards the goal.")]
+    [Range(0.0f, 5.0f)]
+    public float toGoalWeight = 1.7f;
+    [Tooltip("Weight to avoid neighbors.")]
+    [Range(0.0f, 5.0f)]
+    public float avoidNeighborWeight = 1.0f;
+    [Tooltip("Weight for general avoidance.")]
+    [Range(0.0f, 5.0f)]
+    public float avoidanceWeight = 1.5f;
+
+    [Space]
+
+    [Range(0.0f, 2.0f), Tooltip("Max distance between SimulationBone and SimulationObject")] 
+    public float MaxDistanceMMAndCharacterController = 0.1f;
+    [Range(0.0f, 2.0f), Tooltip("Time needed to move half of the distance between SimulationBone and SimulationObject")] 
+    public float PositionAdjustmentHalflife = 0.1f;
+    [Range(0.0f, 2.0f), Tooltip("Ratio between the adjustment and the character's velocity to clamp the adjustment")] 
+    public float PosMaximumAdjustmentRatio = 0.1f;
 
     [Header("ControllGizmos Parameters")]
     public bool showAgentSphere = false;
@@ -122,6 +151,18 @@ public class AgentManager : MonoBehaviour
 
     private void SetPathControllerParams(PathController pathController){
         pathController.avoidanceColliderSize = AvoidanceColliderSize;
+
+        pathController.goalRadius = goalRadius;
+        pathController.slowingRadius = slowingRadius;
+
+        pathController.toGoalWeight = toGoalWeight;
+        pathController.avoidanceWeight = avoidanceWeight;
+        pathController.avoidNeighborWeight = avoidNeighborWeight;
+
+        pathController.MaxDistanceMMAndCharacterController = MaxDistanceMMAndCharacterController;
+        pathController.PositionAdjustmentHalflife = PositionAdjustmentHalflife;
+        pathController.PosMaximumAdjustmentRatio = PosMaximumAdjustmentRatio;
+
         pathController.showAgentSphere = showAgentSphere;
         pathController.showAvoidanceForce = ShowAvoidanceForce;
         pathController.showUnalignedCollisionAvoidance = ShowUnalignedCollisionAvoidance;
