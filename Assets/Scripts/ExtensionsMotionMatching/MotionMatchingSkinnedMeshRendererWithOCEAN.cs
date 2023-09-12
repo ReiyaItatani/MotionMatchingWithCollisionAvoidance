@@ -1012,14 +1012,14 @@ namespace MotionMatching
             faceController.exp_shock = ScaleBetween(Mathf.Clamp(e_shock, 0, 100), 0, 100, 0, 1);
 
 
-            tmpDecayValue = emotionDecayFactor * Time.deltaTime;
+            // tmpDecayValue = emotionDecayFactor * Time.deltaTime;
             // decay emotion
-            if (e_angry > 0) e_angry -= tmpDecayValue; else e_angry = 0;
-            if (e_disgust > 0) e_disgust -= tmpDecayValue; else e_disgust = 0;
-            if (e_fear > 0) e_fear -= tmpDecayValue; else e_fear = 0;
-            if (e_happy > 0) e_happy -= tmpDecayValue; else e_happy = 0;
-            if (e_sad > 0) e_sad -= tmpDecayValue; else e_sad = 0;
-            if (e_shock > 0) e_shock -= tmpDecayValue; else e_shock = 0;
+            // if (e_angry > 0) e_angry -= tmpDecayValue; else e_angry = 0;
+            // if (e_disgust > 0) e_disgust -= tmpDecayValue; else e_disgust = 0;
+            // if (e_fear > 0) e_fear -= tmpDecayValue; else e_fear = 0;
+            // if (e_happy > 0) e_happy -= tmpDecayValue; else e_happy = 0;
+            // if (e_sad > 0) e_sad -= tmpDecayValue; else e_sad = 0;
+            // if (e_shock > 0) e_shock -= tmpDecayValue; else e_shock = 0;
 
         }
 

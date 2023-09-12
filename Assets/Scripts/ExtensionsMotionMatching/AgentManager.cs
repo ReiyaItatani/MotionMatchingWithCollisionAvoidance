@@ -95,7 +95,7 @@ public class AgentManager : MonoBehaviour
         avatarCreator = this.GetComponent<AvatarCreator>();
         Avatars = avatarCreator.instantiatedAvatars; 
         OceanToAtomosphere = Random.Range(0, 5); 
-        OceanToAtomosphere = Random.Range(0, 6); 
+        FeelIndex = Random.Range(0, 6); 
     }
 
     void Start()
@@ -156,6 +156,7 @@ public class AgentManager : MonoBehaviour
             if(mmSMRWithOCEAN != null) 
             {
                 SetMotionMatchingSkinnedMeshRendererWithOCEANParams(mmSMRWithOCEAN);
+                SetRandomValueBasedOnAtomosphere(mmSMRWithOCEAN);
             }
             SocialBehaviour socialBehaviour = controllerObject.GetComponent<SocialBehaviour>();
             if(socialBehaviour != null) {
@@ -217,6 +218,10 @@ public class AgentManager : MonoBehaviour
         //Extraversion → Range(-0.3f, 1.0f);
         //Agreebleness → Range(-1.0f, 1.0f);
         //Neuroticism →　Range(-1.0f, 1.0f);
+
+        OceanToAtomosphere = Random.Range(0, 5); 
+        FeelIndex = Random.Range(0, 6); 
+
         if(OceanToAtomosphere == 0){
             mmSMRWithOCEAN.openness = ConvertAtomosphere(Atomosphere);
         }else if(OceanToAtomosphere == 1){
