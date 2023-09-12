@@ -38,6 +38,10 @@ public class AgentManager : MonoBehaviour
     [Range(0.0f, 2.0f), Tooltip("Ratio between the adjustment and the character's velocity to clamp the adjustment")] 
     public float PosMaximumAdjustmentRatio = 0.1f;
 
+    [Header("Agent Capsule Collider Size")]
+    [Range(0.0f, 1.0f)]
+    public float CapsuleColliderRadius = 0.25f; 
+
     [Header("ControllGizmos Parameters")]
     public bool showAgentSphere = false;
     public bool ShowAvoidanceForce = false;
@@ -52,6 +56,11 @@ public class AgentManager : MonoBehaviour
     public bool DebugPose = false;
     public bool DebugTrajectory = false;
     public bool DebugContacts = false;
+
+    [Header("Crowd Atomosphere")]
+    [Tooltip("Positive:+, Negative:-")]
+    [Range(-1,1)]
+    public float Atomosphere = 0.0f;
 
     [Header("OCEAN Parameters")]
     [Range(-1f, 1f)] public float openness = 0f;
@@ -78,9 +87,15 @@ public class AgentManager : MonoBehaviour
     public bool onTalk = false;
     public bool onAnimation = true;
 
+    //private params
+    private int OceanToAtomosphere = 0;
+    private int FeelIndex =0;
+
     void Awake(){
         avatarCreator = this.GetComponent<AvatarCreator>();
         Avatars = avatarCreator.instantiatedAvatars; 
+        OceanToAtomosphere = Random.Range(0, 5); 
+        OceanToAtomosphere = Random.Range(0, 6); 
     }
 
     void Start()
@@ -163,6 +178,8 @@ public class AgentManager : MonoBehaviour
         pathController.PositionAdjustmentHalflife = PositionAdjustmentHalflife;
         pathController.PosMaximumAdjustmentRatio = PosMaximumAdjustmentRatio;
 
+        pathController.agentCollider.radius = CapsuleColliderRadius;
+
         pathController.showAgentSphere = showAgentSphere;
         pathController.showAvoidanceForce = ShowAvoidanceForce;
         pathController.showUnalignedCollisionAvoidance = ShowUnalignedCollisionAvoidance;
@@ -191,6 +208,65 @@ public class AgentManager : MonoBehaviour
         mmSMRWithOCEAN.e_disgust = e_disgust;
         mmSMRWithOCEAN.e_fear = e_fear;
         mmSMRWithOCEAN.e_shock = e_shock;      
+    }
+
+    private void SetRandomValueBasedOnAtomosphere(MotionMatchingSkinnedMeshRendererWithOCEAN mmSMRWithOCEAN){
+        //Positive:Openness → +, conscientiousness → +, extraversion → +, agreebleness → +, neuroticism →　-
+        //Openness → Range(-0.3f, 1.0f);
+        //Conscientiousness → Range(-1.0f, 1.0f);
+        //Extraversion → Range(-0.3f, 1.0f);
+        //Agreebleness → Range(-1.0f, 1.0f);
+        //Neuroticism →　Range(-1.0f, 1.0f);
+        if(OceanToAtomosphere == 0){
+            mmSMRWithOCEAN.openness = ConvertAtomosphere(Atomosphere);
+        }else if(OceanToAtomosphere == 1){
+            mmSMRWithOCEAN.conscientiousness = Atomosphere;
+        }else if(OceanToAtomosphere == 2){
+            mmSMRWithOCEAN.extraversion = ConvertAtomosphere(Atomosphere);
+        }else if(OceanToAtomosphere == 3){
+            mmSMRWithOCEAN.agreeableness = Atomosphere;
+        }else if(OceanToAtomosphere == 4){
+            mmSMRWithOCEAN.neuroticism = -Atomosphere;
+        }
+
+        if(FeelIndex == 0){
+            if(Atomosphere >= 0){
+                mmSMRWithOCEAN.e_happy = Atomosphere;
+            }
+        }else if(FeelIndex == 1){
+            if(Atomosphere <= 0){
+                mmSMRWithOCEAN.e_sad = -Atomosphere;
+            }
+        }else if(FeelIndex == 2){
+            if(Atomosphere <= 0){
+                mmSMRWithOCEAN.e_angry = -Atomosphere;
+            }
+        }else if(FeelIndex == 3){
+            if(Atomosphere <= 0){
+                mmSMRWithOCEAN.e_disgust = -Atomosphere;
+            }
+        }else if(FeelIndex == 4){
+            if(Atomosphere <= 0){
+                mmSMRWithOCEAN.e_fear = -Atomosphere;
+            }
+        }else if(FeelIndex == 5){
+            if(Atomosphere <= 0){
+                mmSMRWithOCEAN.e_shock = -Atomosphere;
+            }       
+        }
+    }
+
+    private float ConvertAtomosphere(float atomosphere)
+    {
+        if (atomosphere >= 0)
+        {
+            return atomosphere * 1.0f; // 0 to 1 remains the same
+        }
+        else
+        {
+            // Convert -1 to -0.3
+            return atomosphere * 0.3f;
+        }
     }
 
     private void SetSocialBehaviourParams(SocialBehaviour socialBehaviour){

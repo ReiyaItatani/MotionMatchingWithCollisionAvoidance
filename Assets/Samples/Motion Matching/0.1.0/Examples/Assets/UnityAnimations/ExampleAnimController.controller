@@ -43,7 +43,9 @@ MonoBehaviour:
   _randomIntParameters:
   - maxRange: 3
     name: Random
+  _randomOffset: RandomOffset
   _mirrorParameter: Mirror
+  maxRandomOffset: 2
 --- !u!1109 &-4731738159368228590
 AnimatorTransition:
   m_ObjectHideFlags: 1
@@ -157,14 +159,14 @@ AnimatorController:
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 0}
-  - m_Name: Mirror
-    m_Type: 4
+  - m_Name: RandomOffset
+    m_Type: 1
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 0}
-  - m_Name: RandomOffset
-    m_Type: 1
+  - m_Name: Mirror
+    m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
