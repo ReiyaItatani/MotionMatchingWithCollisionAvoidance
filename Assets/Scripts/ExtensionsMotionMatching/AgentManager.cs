@@ -234,6 +234,7 @@ public class AgentManager : MonoBehaviour
         OceanToAtomosphere = Random.Range(0, 5); 
         FeelIndex = Random.Range(0, 6); 
 
+        //Posture
         if(OceanToAtomosphere == 0){
             mmSMRWithOCEAN.openness = ConvertAtomosphere(Atomosphere);
         }else if(OceanToAtomosphere == 1){
@@ -246,11 +247,16 @@ public class AgentManager : MonoBehaviour
             mmSMRWithOCEAN.neuroticism = -Atomosphere;
         }
 
-        if(FeelIndex == 0){
-            if(Atomosphere >= 0){
+        //Positive emotion
+        if(Atomosphere >= 0){
+            int Probability = Random.Range(0, 5);
+            if(Probability != 0){
                 mmSMRWithOCEAN.e_happy = Atomosphere;
-            }
-        }else if(FeelIndex == 1){
+            } 
+        }
+
+        //Negative emotion
+        if(FeelIndex == 1){
             if(Atomosphere <= 0){
                 mmSMRWithOCEAN.e_sad = -Atomosphere;
             }
