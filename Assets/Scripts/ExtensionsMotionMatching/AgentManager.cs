@@ -91,6 +91,9 @@ public class AgentManager : MonoBehaviour
     private int OceanToAtomosphere = 0;
     private int FeelIndex =0;
 
+    [Header("Collision Detection")]
+    public Camera collisionDetectionCam;
+
     void Awake(){
         avatarCreator = this.GetComponent<AvatarCreator>();
         Avatars = avatarCreator.instantiatedAvatars; 
@@ -128,6 +131,11 @@ public class AgentManager : MonoBehaviour
             if(socialBehaviour != null) {
                 SetSocialBehaviourParams(socialBehaviour);
             }     
+
+            AgentCollisionDetection agentCollisionDetection = Avatars[i].GetComponentInChildren<AgentCollisionDetection>();
+            if(agentCollisionDetection != null){
+                SetCollisionDetectionParams(agentCollisionDetection);
+            }
         }
     }
 
@@ -209,6 +217,10 @@ public class AgentManager : MonoBehaviour
         mmSMRWithOCEAN.e_disgust = e_disgust;
         mmSMRWithOCEAN.e_fear = e_fear;
         mmSMRWithOCEAN.e_shock = e_shock;      
+    }
+
+    private void SetCollisionDetectionParams(AgentCollisionDetection agentCollisionDetection){
+        agentCollisionDetection.collisionDetectionCam = collisionDetectionCam;
     }
 
     private void SetRandomValueBasedOnAtomosphere(MotionMatchingSkinnedMeshRendererWithOCEAN mmSMRWithOCEAN){
