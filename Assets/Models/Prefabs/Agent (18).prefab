@@ -481,7 +481,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2001929213741140212}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.51, y: 7.802569, z: 0.5173788}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -538,7 +538,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  m_Radius: 0.25
+  m_Radius: 0.3
   m_Height: 1.8
   m_Direction: 1
   m_Center: {x: 0, y: 0.9, z: 0}
@@ -645,6 +645,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   socialBehaviour: {fileID: 7595932610596807211}
+  collisionDetectionCam: {fileID: 0}
 --- !u!1 &2003544586300564890
 GameObject:
   m_ObjectHideFlags: 0
@@ -2022,10 +2023,12 @@ MonoBehaviour:
   initialSpeed: 1.2
   avatarCreator: {fileID: 0}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
+  avoidanceWeight: 1.5
   agentCollider: {fileID: 7966266612221092433}
-  currentGoalIndex: 1
+  toGoalWeight: 1.7
   goalRadius: 0.5
   slowingRadius: 2
+  avoidNeighborWeight: 1
   showAgentSphere: 0
   showAvoidanceForce: 0
   showUnalignedCollisionAvoidance: 0

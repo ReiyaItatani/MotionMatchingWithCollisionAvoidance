@@ -736,12 +736,12 @@ namespace MotionMatching
             if(lookObject == null){
                 if(startCoroutine == false){
                     startCoroutine = true;
-                    StartCoroutine(LookAtWeightChanger(lookAtWeight, 0.0f, UnityEngine.Random.Range(1.0f, 1.5f), false));
+                    StartCoroutine(LookAtWeightChanger(lookAtWeight, 0.0f, UnityEngine.Random.Range(0.1f, 0.5f), false));
                 }
             }else{
                 if(startCoroutine == false){
                     startCoroutine = true;
-                    StartCoroutine(LookAtWeightChanger(lookAtWeight, 1.0f, UnityEngine.Random.Range(1.0f, 1.5f), false));
+                    StartCoroutine(LookAtWeightChanger(lookAtWeight, 1.0f, UnityEngine.Random.Range(0.1f, 0.5f), false));
                     otherHeadPosition = lookObject.transform.position;
                 }
             }
@@ -752,7 +752,7 @@ namespace MotionMatching
 
             // Limit
             float angle = Quaternion.Angle(Quaternion.identity, fromTo);
-            float limit = 50.0f*lookAtWeight;
+            float limit = 40.0f*lookAtWeight;
             if (angle >= limit)
             {
                 fromTo = Quaternion.RotateTowards(Quaternion.identity, fromTo, limit);
@@ -801,7 +801,7 @@ namespace MotionMatching
                 if (startEyeWeightCoroutine)
                 {
                     startEyeWeightCoroutine = false;
-                    StartCoroutine(EyesWeightChanger(blendValue, 0, UnityEngine.Random.Range(1.0f, 1.5f)));
+                    StartCoroutine(EyesWeightChanger(blendValue, 0, UnityEngine.Random.Range(0.1f, 0.5f)));
                 }
             }
             else

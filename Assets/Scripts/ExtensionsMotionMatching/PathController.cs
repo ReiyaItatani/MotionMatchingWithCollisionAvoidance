@@ -59,7 +59,6 @@ namespace MotionMatching{
         public CapsuleCollider agentCollider; //Collider of the agent
         private BoxCollider avoidanceCollider; //The area to trigger basic collision avoidance
         private GameObject avoidanceColliderArea;
-        private float agentRadius;
         // --------------------------------------------------------------------------
         // To Goal Direction --------------------------------------------------------
         [Header("Parameters For Goal Direction")]
@@ -122,7 +121,6 @@ namespace MotionMatching{
             {
                 minSpeed = initialSpeed;
             }
-            agentRadius = agentCollider.radius;
             CurrentPosition = Path[0];
             currentGoal = Path[currentGoalIndex];            
             
@@ -329,7 +327,7 @@ namespace MotionMatching{
                 {
                     avoidanceVector = ComputeAvoidanceVector(currentAvoidanceTarget, CurrentDirection, GetCurrentPosition());
                     //gradually increase the avoidance force considering the distance 
-                    avoidanceVector = avoidanceVector*(1.0f-Vector3.Distance(currentAvoidanceTarget.transform.position, GetCurrentPosition())/(Mathf.Sqrt(avoidanceColliderSize.x/2*avoidanceColliderSize.x/2+avoidanceColliderSize.z*avoidanceColliderSize.z)+agentRadius*2));
+                    avoidanceVector = avoidanceVector*(1.0f-Vector3.Distance(currentAvoidanceTarget.transform.position, GetCurrentPosition())/(Mathf.Sqrt(avoidanceColliderSize.x/2*avoidanceColliderSize.x/2+avoidanceColliderSize.z*avoidanceColliderSize.z)+agentCollider.radius*2));
                     elapsedTime = 0.0f;
                 }
                 else
@@ -572,7 +570,7 @@ namespace MotionMatching{
             Color gizmoColor;
             if(showAgentSphere){
                 gizmoColor = new Color(1.0f, 88/255f, 85/255f);
-                Draw.WireCylinder((Vector3)GetCurrentPosition(), Vector3.up, agentCollider.height, agentRadius, gizmoColor);
+                Draw.WireCylinder((Vector3)GetCurrentPosition(), Vector3.up, agentCollider.height, agentCollider.radius, gizmoColor);
             }
 
             if(showAvoidanceForce){
