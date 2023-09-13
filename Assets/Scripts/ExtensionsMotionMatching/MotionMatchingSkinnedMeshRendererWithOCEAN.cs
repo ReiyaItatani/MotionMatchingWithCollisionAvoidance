@@ -5,6 +5,9 @@ using Unity.Mathematics;
 using System;
 using Drawing;
 using UnityEngine.PlayerLoop;
+using UnityEngine.Rendering.Universal;
+using UnityEngine.UI;
+using Unity.VisualScripting;
 namespace MotionMatching
 {
     [RequireComponent(typeof(Animator))]
@@ -312,6 +315,8 @@ namespace MotionMatching
             //Fluctuate
             FluctuatePass();
 
+            //EyeLevel
+            AdjustEyeLevelPass();
             //LookAt
             LookAtPass();
             //EyesMovement
@@ -725,7 +730,7 @@ namespace MotionMatching
         * LOOK AT PASS
         * 
         * * */
-
+        [Header("Look At Params")]
         [Range(0f,1f)]
         public float lookAtWeight = 1f;
         private bool startCoroutine = false;
@@ -780,7 +785,18 @@ namespace MotionMatching
             startCoroutine = setBool;
             yield return null;
         }   
+        
+        private void AdjustEyeLevelPass(){
+            // Vector3 t_HeadForward = new Vector3(0f, t_Head.forward.y, t_Head.forward.z);
+            // Quaternion targetRotation = Quaternion.LookRotation(t_HeadForward, t_Hips.forward);
 
+            // Quaternion inverseRotation = Quaternion.Inverse(targetRotation);
+            // float xRotation = inverseRotation.eulerAngles.x;
+
+            // Quaternion xRotationOnly = Quaternion.Euler(xRotation, 0, 0);
+            // t_Head.localRotation *= xRotationOnly;
+            // t_Neck.localRotation *= xRotationOnly;
+        }
 
         /* * *
         * 

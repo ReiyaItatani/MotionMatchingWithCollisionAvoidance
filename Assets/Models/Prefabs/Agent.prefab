@@ -5414,7 +5414,7 @@ MonoBehaviour:
   avatarCreator: {fileID: 0}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
   avoidanceWeight: 1.5
-  agentCollider: {fileID: 9041721339751368487}
+  agentCollider: {fileID: 5135636886978893671}
   toGoalWeight: 1.7
   goalRadius: 0.5
   slowingRadius: 2
