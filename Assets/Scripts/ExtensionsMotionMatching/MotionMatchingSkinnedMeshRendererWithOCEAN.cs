@@ -383,7 +383,6 @@ namespace MotionMatching
             Animator animator = GetComponent<Animator>();
 
             if (animator == null) return;
-
             Vector3 leftSole = animator.GetBoneTransform(HumanBodyBones.LeftToes).TransformPoint(ToesSoleOffset);
             Vector3 rightSole = animator.GetBoneTransform(HumanBodyBones.RightToes).TransformPoint(ToesSoleOffset);
             Gizmos.color = Color.red;
@@ -787,15 +786,10 @@ namespace MotionMatching
         }   
         
         private void AdjustEyeLevelPass(){
-            // Vector3 t_HeadForward = new Vector3(0f, t_Head.forward.y, t_Head.forward.z);
-            // Quaternion targetRotation = Quaternion.LookRotation(t_HeadForward, t_Hips.forward);
-
-            // Quaternion inverseRotation = Quaternion.Inverse(targetRotation);
-            // float xRotation = inverseRotation.eulerAngles.x;
-
-            // Quaternion xRotationOnly = Quaternion.Euler(xRotation, 0, 0);
-            // t_Head.localRotation *= xRotationOnly;
-            // t_Neck.localRotation *= xRotationOnly;
+            Vector3 horizontalForward = new Vector3(t_Head.forward.x, 0, t_Head.forward.z).normalized;
+            Quaternion horizontalRotation = Quaternion.LookRotation(horizontalForward, Vector3.up);
+            t_Head.localRotation *= Quaternion.Inverse(t_Head.rotation) * horizontalRotation;
+            t_Neck.localRotation *= Quaternion.Inverse(t_Head.rotation) * horizontalRotation;
         }
 
         /* * *
