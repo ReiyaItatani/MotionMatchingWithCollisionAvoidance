@@ -4,6 +4,15 @@ using MotionMatching;
 using System.Collections.Generic;
 using System.IO;
 
+public enum SocialRelations
+{
+    Couples,
+    Friends,
+    Families,
+    Coworkers,
+    Individuals
+}
+
 [RequireComponent(typeof(AgentManager))]
 public class AvatarCreator : MonoBehaviour
 {

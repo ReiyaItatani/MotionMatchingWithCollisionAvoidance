@@ -45,7 +45,7 @@ namespace MotionMatching{
         private int NumberPredictionPos { get { return TrajectoryPosPredictionFrames.Length; } }
         private int NumberPredictionRot { get { return TrajectoryRotPredictionFrames.Length; } }
         // --------------------------------------------------------------------------
-        // Collision Avoidance ------------------------------------------------------
+        // Collision Avoidance Force ------------------------------------------------
         [Header("Parameters For Basic Collision Avoidance"), HideInInspector]
         public Vector3 avoidanceColliderSize = new Vector3(1.5f, 1.5f, 2.0f); 
         private Vector3 avoidanceVector = Vector3.zero;//Direction of basic collision avoidance
@@ -58,7 +58,7 @@ namespace MotionMatching{
         }
         public CapsuleCollider agentCollider; //Collider of the agent
         private BoxCollider avoidanceCollider; //The area to trigger basic collision avoidance
-        private GameObject avoidanceColliderArea;
+        private GameObject basicAvoidanceArea;
         // --------------------------------------------------------------------------
         // To Goal Direction --------------------------------------------------------
         [Header("Parameters For Goal Direction")]
@@ -73,7 +73,8 @@ namespace MotionMatching{
         public float slowingRadius = 2.0f;
         // --------------------------------------------------------------------------
         // Unaligned Collision Avoidance -------------------------------------------
-        [Header("Parameters For Unaligned Collision Avoidance")]
+        [Header("Parameters For Unaligned Collision Avoidance"), HideInInspector]
+        public Vector3 unalignedAvoidanceColliderSize = new Vector3(4.5f, 1.5f, 6.0f); 
         private Vector3 otherPositionAtNearestApproach;
         private Vector3 myPositionAtNearestApproach;
         private Vector3 avoidNeighborsVector = Vector3.zero;//Direction for unaligned collision avoidance
@@ -82,6 +83,9 @@ namespace MotionMatching{
         public float avoidNeighborWeight = 1.0f;//Weight for unaligned collision avoidance
         private float minTimeToCollision =5.0f;
         private float collisionDangerThreshold = 4.0f;
+        private BoxCollider unalignedAvoidanceCollider; //The area to trigger unaligned collision avoidance
+        private GameObject unalignedAvoidanceArea;
+        private UpdateUnalignedAvoidanceTarget updateUnalignedAvoidanceTarget;
         // --------------------------------------------------------------------------
         // When Collide each other -----------------------------------------------------
         [Header("Social Behaviour, Non-verbal Communication")]
@@ -102,18 +106,27 @@ namespace MotionMatching{
         [HideInInspector]
         public bool showCurrentDirection = false;
         // --------------------------------------------------------------------------
+        // Avoidance Force From Group ------------------------------------------------
+        public SocialRelations socialRelations;
         
 
         private void Start()
         {
-            //Create Box Collider
-            avoidanceColliderArea = new GameObject("AvoidanceColliderArea");
-            avoidanceColliderArea.transform.parent = this.transform;
-            avoidanceCollider = avoidanceColliderArea.AddComponent<BoxCollider>();
+            //Create Box Collider for Collision Avoidance Force
+            basicAvoidanceArea = new GameObject("BasicCollisionAvoidanceArea");
+            basicAvoidanceArea.transform.parent = this.transform;
+            avoidanceCollider = basicAvoidanceArea.AddComponent<BoxCollider>();
             avoidanceCollider.size = avoidanceColliderSize;
             avoidanceCollider.isTrigger = true;
-            avoidanceColliderArea.AddComponent<UpdateAvoidanceTarget>();
+            basicAvoidanceArea.AddComponent<UpdateAvoidanceTarget>();
 
+            //Create Box Collider for Unaligned Collision Avoidance Force
+            unalignedAvoidanceArea = new GameObject("UnalignedCollisionAvoidanceArea");
+            unalignedAvoidanceArea.transform.parent = this.transform;
+            unalignedAvoidanceCollider = unalignedAvoidanceArea.AddComponent<BoxCollider>();
+            unalignedAvoidanceCollider.size = unalignedAvoidanceColliderSize;
+            unalignedAvoidanceCollider.isTrigger = true;
+            updateUnalignedAvoidanceTarget = unalignedAvoidanceArea.AddComponent<UpdateUnalignedAvoidanceTarget>();
 
             //Init
             currentSpeed = initialSpeed;
@@ -159,9 +172,13 @@ namespace MotionMatching{
             PredictedDirections = new Vector3[NumberPredictionRot];
             
 
-            StartCoroutine(UpdateAvoidanceColliderPos(0.9f));
+            StartCoroutine(UpdateBasicAvoidanceAreaPos(0.9f));
+            StartCoroutine(UpdateUnalignedAvoidanceAreaPos(0.9f));
             StartCoroutine(UpdateAvoidanceVector(0.1f, 0.5f));
-            StartCoroutine(UpdateAvoidNeighborsVector(avatarCreator.GetAgents(), 0.1f, 0.3f));
+            StartCoroutine(UpdateAvoidNeighborsVector(updateUnalignedAvoidanceTarget.GetOthersInUnalignedAvoidanceArea(), 0.1f, 0.3f));
+
+            //If you wanna consider all of the other agents for unaligned collision avoidance use below
+            //StartCoroutine(UpdateAvoidNeighborsVector(avatarCreator.GetAgents(), 0.1f, 0.3f));
         }
 
         protected override void OnUpdate(){
@@ -317,7 +334,7 @@ namespace MotionMatching{
             yield return null;
         }
 
-        //Collision Avoidance
+        //Basic Collision Avoidance
         //※current avoidance target is the agent that has capsule collider
         private IEnumerator UpdateAvoidanceVector(float updateTime, float transitionTime)
         {
@@ -358,22 +375,23 @@ namespace MotionMatching{
             }
             return Vector3.Cross(upVector, directionToAvoidanceTarget).normalized;
         }
-        private IEnumerator UpdateAvoidanceColliderPos(float AgentHeight){
+        private IEnumerator UpdateBasicAvoidanceAreaPos(float AgentHeight){
             while(true){
-                Vector3 Center = (Vector3)GetCurrentPosition()+CurrentDirection;
-                avoidanceColliderArea.transform.position = new Vector3(Center.x, AgentHeight, Center.z);
+                Vector3 Center = (Vector3)GetCurrentPosition()+CurrentDirection.normalized*avoidanceCollider.size.z/2;
+                basicAvoidanceArea.transform.position = new Vector3(Center.x, AgentHeight, Center.z);
                 Quaternion targetRotation = Quaternion.LookRotation(CurrentDirection);
-                avoidanceColliderArea.transform.rotation = targetRotation;
+                basicAvoidanceArea.transform.rotation = targetRotation;
                 yield return null;
             }
         }
 
-        //Unnaligned Collision Avoidance
+        //Unaligned Collision Avoidance
         public IEnumerator UpdateAvoidNeighborsVector(List<GameObject> Agents , float updateTime, float transitionTime){
             while(true){
                 if(currentAvoidanceTarget != null){
                     avoidNeighborsVector = Vector3.zero;
                 }else{
+                    if(Agents== null) yield return null;
                     Vector3 newavoidNeighborsVector = SteerToAvoidNeighbors(Agents, minTimeToCollision, collisionDangerThreshold);
                     yield return StartCoroutine(AvoidNeighborsVectorGradualVectorTransition(transitionTime, avoidNeighborsVector, newavoidNeighborsVector));
                 }
@@ -483,7 +501,18 @@ namespace MotionMatching{
 
             yield return null;
         }
+
+        private IEnumerator UpdateUnalignedAvoidanceAreaPos(float AgentHeight){
+            while(true){
+                Vector3 Center = (Vector3)GetCurrentPosition() + CurrentDirection.normalized*unalignedAvoidanceCollider.size.z/2;
+                unalignedAvoidanceArea.transform.position = new Vector3(Center.x, AgentHeight, Center.z);
+                Quaternion targetRotation = Quaternion.LookRotation(CurrentDirection);
+                unalignedAvoidanceArea.transform.rotation = targetRotation;
+                yield return null;
+            }
+        }
         
+        //Get and Set
         public override void GetTrajectoryFeature(TrajectoryFeature feature, int index, Transform character, NativeArray<float> output)
         {
             if (!feature.SimulationBone) Debug.Assert(false, "Trajectory should be computed using the SimulationBone");

@@ -6,16 +6,20 @@ using MotionMatching;
 public class AgentManager : MonoBehaviour
 {
 
-    [Header("BasicCollisionAvoidance Parameters")]
+    [Header("Basic Collision Avoidance Parameters")]
 
     [Tooltip("Size of the avoidance collider.")]
-    public Vector3 AvoidanceColliderSize = new Vector3(1.5f, 1.5f, 2.0f);
+    public Vector3 avoidanceColliderSize = new Vector3(1.5f, 1.5f, 2.0f);
     [Tooltip("Radius to consider as the goal.")]
     [Range(0.1f, 5.0f)]
     public float goalRadius = 0.5f;
     [Tooltip("Radius to start slowing down.")]
     [Range(0.1f, 5.0f)]
     public float slowingRadius = 2.0f;
+
+    [Header("Parameters For Unaligned Collision Avoidance")]
+    [Tooltip("Size of the unaligned avoidance collider.")]
+    public Vector3 unalignedAvoidanceColliderSize = new Vector3(4.5f, 1.5f, 6.0f); 
 
     [Space]
 
@@ -42,14 +46,14 @@ public class AgentManager : MonoBehaviour
     [Range(0.0f, 1.0f)]
     public float CapsuleColliderRadius = 0.25f; 
 
-    [Header("ControllGizmos Parameters")]
+    [Header("Controll Gizmos Parameters")]
     public bool showAgentSphere = false;
     public bool ShowAvoidanceForce = false;
     public bool ShowUnalignedCollisionAvoidance = false;
     public bool ShowGoalDirection = false;
     public bool ShowCurrentDirection = false;
 
-    [Header("MotionMatchingController Debug")]
+    [Header("Motion Matching Controller Debug")]
     // public float SphereRadius;
     public bool DebugSkeleton = false;
     public bool DebugCurrent = false;
@@ -60,7 +64,8 @@ public class AgentManager : MonoBehaviour
     [Header("OCEAN Parameters")]
     [Range(-1f, 1f),HideInInspector] public float openness = 0f;
     [Range(-1f, 1f),HideInInspector] public float conscientiousness = 0f;
-    [Range(-1f, 1f)] public float extraversion = 0f;
+    [Header("OCEAN Parameters")]
+    [Range(-1f, 1f)] public float Negative_Positive = 0f;
     [Range(-1f, 1f),HideInInspector] public float agreeableness = 0f;
     [Range(-1f, 1f),HideInInspector] public float neuroticism = 0f;
 
@@ -169,7 +174,8 @@ public class AgentManager : MonoBehaviour
     }
 
     private void SetPathControllerParams(PathController pathController){
-        pathController.avoidanceColliderSize = AvoidanceColliderSize;
+        pathController.avoidanceColliderSize = avoidanceColliderSize;
+        pathController.unalignedAvoidanceColliderSize = unalignedAvoidanceColliderSize;
 
         pathController.goalRadius = goalRadius;
         pathController.slowingRadius = slowingRadius;
@@ -203,7 +209,7 @@ public class AgentManager : MonoBehaviour
     private void SetMotionMatchingSkinnedMeshRendererWithOCEANParams(MotionMatchingSkinnedMeshRendererWithOCEAN mmSMRWithOCEAN){
         mmSMRWithOCEAN.openness = openness;
         mmSMRWithOCEAN.conscientiousness = conscientiousness;
-        mmSMRWithOCEAN.extraversion = extraversion;
+        mmSMRWithOCEAN.extraversion = Negative_Positive;
         mmSMRWithOCEAN.agreeableness = agreeableness;
         mmSMRWithOCEAN.neuroticism = neuroticism;
         mmSMRWithOCEAN.e_happy = e_happy;

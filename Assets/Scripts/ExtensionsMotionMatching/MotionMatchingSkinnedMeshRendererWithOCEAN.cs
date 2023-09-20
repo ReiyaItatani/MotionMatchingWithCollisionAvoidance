@@ -1141,11 +1141,11 @@ namespace MotionMatching
             if (map_effort_instead_direct_OCEAN)
             {
                 // body legs sink & rotate ocean
-                nrp_upperLeg.y = ScaleBetween(space, -8, 6, -1f, 1f) * le_lsq_fac;
-                nrp_upperLeg.z = ScaleBetween(space, 4, -2, -1f, 1f) * le_lsq_fac;
-                nrp_lowerLeg.y = ScaleBetween(space, -8, 4, -1f, 1f) * le_lsq_fac;
-                nrp_lowerLeg.z = ScaleBetween(space, 4, -1, -1f, 1f) * le_lsq_fac;
-                nrp_foot.y = ScaleBetween(space, 0, 2, -1f, 1f) * le_lsq_fac;
+                // nrp_upperLeg.y = ScaleBetween(space, -8, 6, -1f, 1f) * le_lsq_fac;
+                // nrp_upperLeg.z = ScaleBetween(space, 4, -2, -1f, 1f) * le_lsq_fac;
+                // nrp_lowerLeg.y = ScaleBetween(space, -8, 4, -1f, 1f) * le_lsq_fac;
+                // nrp_lowerLeg.z = ScaleBetween(space, 4, -1, -1f, 1f) * le_lsq_fac;
+                // nrp_foot.y = ScaleBetween(space, 0, 2, -1f, 1f) * le_lsq_fac;
 
                 // rotate ocean
                 nrp_shoulder.x = ScaleBetween(space, 1, -3, -1f, 1f) * le_lsq_fac;
@@ -1163,11 +1163,11 @@ namespace MotionMatching
             else
             {
                 // body legs sink & rotate ocean
-                nrp_upperLeg.y = ScaleBetween(openness, -8f, 6f, -1, 1);
-                nrp_upperLeg.z = ScaleBetween(openness, 4f, -2f, -1, 1);
-                nrp_lowerLeg.y = ScaleBetween(openness, -8f, 4f, -1, 1);
-                nrp_lowerLeg.z = ScaleBetween(openness, 4f, -1f, -1, 1);
-                nrp_foot.y = ScaleBetween(openness, 0f, 2f, -1, 1);
+                // nrp_upperLeg.y = ScaleBetween(openness, -8f, 6f, -1, 1);
+                // nrp_upperLeg.z = ScaleBetween(openness, 4f, -2f, -1, 1);
+                // nrp_lowerLeg.y = ScaleBetween(openness, -8f, 4f, -1, 1);
+                // nrp_lowerLeg.z = ScaleBetween(openness, 4f, -1f, -1, 1);
+                // nrp_foot.y = ScaleBetween(openness, 0f, 2f, -1, 1);
 
                 // rotate ocean
                 nrp_shoulder.x = ScaleBetween(extraversion, 1, -3, -1, 1);

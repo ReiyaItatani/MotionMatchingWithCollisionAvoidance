@@ -662,6 +662,7 @@ MonoBehaviour:
   toGoalWeight: 1.7
   goalRadius: 0.5
   slowingRadius: 2
+  unalignedAvoidanceColliderSize: {x: 4.5, y: 1.5, z: 6}
   avoidNeighborWeight: 1
   showAgentSphere: 0
   showAvoidanceForce: 0
