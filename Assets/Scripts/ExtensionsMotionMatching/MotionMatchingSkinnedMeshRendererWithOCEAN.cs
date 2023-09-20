@@ -756,7 +756,7 @@ namespace MotionMatching
 
             // Limit
             float angle = Quaternion.Angle(Quaternion.identity, fromTo);
-            float limit = 40.0f*lookAtWeight;
+            float limit = 60.0f*lookAtWeight;
             if (angle >= limit)
             {
                 fromTo = Quaternion.RotateTowards(Quaternion.identity, fromTo, limit);
@@ -767,7 +767,7 @@ namespace MotionMatching
             // Create a new quaternion representing only the rotation around the Z-axis
             Quaternion yRotationOnly = Quaternion.Euler(0, yRotation, 0);
 
-            t_Head.localRotation *= yRotationOnly;
+            //t_Head.localRotation *= yRotationOnly;
             t_Neck.localRotation *= yRotationOnly;
 
         }
@@ -789,7 +789,7 @@ namespace MotionMatching
             Vector3 horizontalForward = new Vector3(t_Head.forward.x, 0, t_Head.forward.z).normalized;
             Quaternion horizontalRotation = Quaternion.LookRotation(horizontalForward, Vector3.up);
             t_Head.localRotation *= Quaternion.Inverse(t_Head.rotation) * horizontalRotation;
-            t_Neck.localRotation *= Quaternion.Inverse(t_Head.rotation) * horizontalRotation;
+            //t_Neck.localRotation *= Quaternion.Inverse(t_Head.rotation) * horizontalRotation;
         }
 
         /* * *

@@ -57,17 +57,12 @@ public class AgentManager : MonoBehaviour
     public bool DebugTrajectory = false;
     public bool DebugContacts = false;
 
-    [Header("Crowd Atomosphere")]
-    [Tooltip("Positive:+, Negative:-")]
-    [Range(-1,1)]
-    public float Atomosphere = 0.0f;
-
     [Header("OCEAN Parameters")]
-    [Range(-1f, 1f)] public float openness = 0f;
-    [Range(-1f, 1f)] public float conscientiousness = 0f;
+    [Range(-1f, 1f),HideInInspector] public float openness = 0f;
+    [Range(-1f, 1f),HideInInspector] public float conscientiousness = 0f;
     [Range(-1f, 1f)] public float extraversion = 0f;
-    [Range(-1f, 1f)] public float agreeableness = 0f;
-    [Range(-1f, 1f)] public float neuroticism = 0f;
+    [Range(-1f, 1f),HideInInspector] public float agreeableness = 0f;
+    [Range(-1f, 1f),HideInInspector] public float neuroticism = 0f;
 
     [Header("Emotion Parameters")]
     [Range(0f, 1f)] public float e_happy = 0f;
@@ -164,7 +159,7 @@ public class AgentManager : MonoBehaviour
             if(mmSMRWithOCEAN != null) 
             {
                 SetMotionMatchingSkinnedMeshRendererWithOCEANParams(mmSMRWithOCEAN);
-                SetRandomValueBasedOnAtomosphere(mmSMRWithOCEAN);
+                //SetRandomValueBasedOnAtomosphere(mmSMRWithOCEAN);
             }
             SocialBehaviour socialBehaviour = controllerObject.GetComponent<SocialBehaviour>();
             if(socialBehaviour != null) {
@@ -223,61 +218,66 @@ public class AgentManager : MonoBehaviour
         agentCollisionDetection.collisionDetectionCam = collisionDetectionCam;
     }
 
-    private void SetRandomValueBasedOnAtomosphere(MotionMatchingSkinnedMeshRendererWithOCEAN mmSMRWithOCEAN){
-        //Positive:Openness → +, conscientiousness → +, extraversion → +, agreebleness → +, neuroticism →　-
-        //Openness → Range(-0.3f, 1.0f);
-        //Conscientiousness → Range(-1.0f, 1.0f);
-        //Extraversion → Range(-0.3f, 1.0f);
-        //Agreebleness → Range(-1.0f, 1.0f);
-        //Neuroticism →　Range(-1.0f, 1.0f);
+    // [Header("Crowd Atomosphere")]
+    // [Tooltip("Positive:+, Negative:-")]
+    // [Range(-1,1)]
+    // public float Atomosphere = 0.0f;
 
-        OceanToAtomosphere = Random.Range(0, 5); 
-        FeelIndex = Random.Range(0, 6); 
+    // private void SetRandomValueBasedOnAtomosphere(MotionMatchingSkinnedMeshRendererWithOCEAN mmSMRWithOCEAN){
+    //     //Positive:Openness → +, conscientiousness → +, extraversion → +, agreebleness → +, neuroticism →　-
+    //     //Openness → Range(-0.3f, 1.0f);
+    //     //Conscientiousness → Range(-1.0f, 1.0f);
+    //     //Extraversion → Range(-0.3f, 1.0f);
+    //     //Agreebleness → Range(-1.0f, 1.0f);
+    //     //Neuroticism →　Range(-1.0f, 1.0f);
 
-        //Posture
-        if(OceanToAtomosphere == 0){
-            mmSMRWithOCEAN.openness = ConvertAtomosphere(Atomosphere);
-        }else if(OceanToAtomosphere == 1){
-            mmSMRWithOCEAN.conscientiousness = Atomosphere;
-        }else if(OceanToAtomosphere == 2){
-            mmSMRWithOCEAN.extraversion = ConvertAtomosphere(Atomosphere);
-        }else if(OceanToAtomosphere == 3){
-            mmSMRWithOCEAN.agreeableness = Atomosphere;
-        }else if(OceanToAtomosphere == 4){
-            mmSMRWithOCEAN.neuroticism = -Atomosphere;
-        }
+    //     OceanToAtomosphere = Random.Range(0, 5); 
+    //     FeelIndex = Random.Range(0, 6); 
 
-        //Positive emotion
-        if(Atomosphere >= 0){
-            int Probability = Random.Range(0, 5);
-            if(Probability != 0){
-                mmSMRWithOCEAN.e_happy = Atomosphere;
-            } 
-        }
+    //     //Posture
+    //     if(OceanToAtomosphere == 0){
+    //         mmSMRWithOCEAN.openness = ConvertAtomosphere(Atomosphere);
+    //     }else if(OceanToAtomosphere == 1){
+    //         mmSMRWithOCEAN.conscientiousness = Atomosphere;
+    //     }else if(OceanToAtomosphere == 2){
+    //         mmSMRWithOCEAN.extraversion = ConvertAtomosphere(Atomosphere);
+    //     }else if(OceanToAtomosphere == 3){
+    //         mmSMRWithOCEAN.agreeableness = Atomosphere;
+    //     }else if(OceanToAtomosphere == 4){
+    //         mmSMRWithOCEAN.neuroticism = -Atomosphere;
+    //     }
 
-        //Negative emotion
-        if(FeelIndex == 1){
-            if(Atomosphere <= 0){
-                mmSMRWithOCEAN.e_sad = -Atomosphere;
-            }
-        }else if(FeelIndex == 2){
-            if(Atomosphere <= 0){
-                mmSMRWithOCEAN.e_angry = -Atomosphere;
-            }
-        }else if(FeelIndex == 3){
-            if(Atomosphere <= 0){
-                mmSMRWithOCEAN.e_disgust = -Atomosphere;
-            }
-        }else if(FeelIndex == 4){
-            if(Atomosphere <= 0){
-                mmSMRWithOCEAN.e_fear = -Atomosphere;
-            }
-        }else if(FeelIndex == 5){
-            if(Atomosphere <= 0){
-                mmSMRWithOCEAN.e_shock = -Atomosphere;
-            }       
-        }
-    }
+    //     //Positive emotion
+    //     if(Atomosphere >= 0){
+    //         int Probability = Random.Range(0, 5);
+    //         if(Probability != 0){
+    //             mmSMRWithOCEAN.e_happy = Atomosphere;
+    //         } 
+    //     }
+
+    //     //Negative emotion
+    //     if(FeelIndex == 1){
+    //         if(Atomosphere <= 0){
+    //             mmSMRWithOCEAN.e_sad = -Atomosphere;
+    //         }
+    //     }else if(FeelIndex == 2){
+    //         if(Atomosphere <= 0){
+    //             mmSMRWithOCEAN.e_angry = -Atomosphere;
+    //         }
+    //     }else if(FeelIndex == 3){
+    //         if(Atomosphere <= 0){
+    //             mmSMRWithOCEAN.e_disgust = -Atomosphere;
+    //         }
+    //     }else if(FeelIndex == 4){
+    //         if(Atomosphere <= 0){
+    //             mmSMRWithOCEAN.e_fear = -Atomosphere;
+    //         }
+    //     }else if(FeelIndex == 5){
+    //         if(Atomosphere <= 0){
+    //             mmSMRWithOCEAN.e_shock = -Atomosphere;
+    //         }       
+    //     }
+    // }
 
     private float ConvertAtomosphere(float atomosphere)
     {
