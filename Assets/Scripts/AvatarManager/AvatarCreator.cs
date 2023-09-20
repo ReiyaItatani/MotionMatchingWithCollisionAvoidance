@@ -3,14 +3,15 @@ using UnityEngine.AI;
 using MotionMatching;
 using System.Collections.Generic;
 using System.IO;
+using  System;
 
 public enum SocialRelations
 {
-    Couples,
-    Friends,
-    Families,
-    Coworkers,
-    Individuals
+    Couple,
+    Friend,
+    Family,
+    Coworker,
+    Individual
 }
 
 [RequireComponent(typeof(AgentManager))]
@@ -33,16 +34,39 @@ public class AvatarCreator : MonoBehaviour
     public float GoalRadius = 2f;
     public float SlowingRadius = 3f;
 
+    [Header("Social Relations")]
+    private Dictionary<SocialRelations, int> categoryCounts = new Dictionary<SocialRelations, int>
+    {
+        { SocialRelations.Couple, 0 },
+        { SocialRelations.Family, 0 },
+        { SocialRelations.Friend, 0 },
+        { SocialRelations.Coworker, 0 },
+        { SocialRelations.Individual, 0 }
+    };
+
+
     public void InstantiateAvatars()
     {
         CalculatePath();
 
         for (int i = 0; i < spawnCount; i++)
         {
-            GameObject randomAvatar = avatarPrefabs[Random.Range(0, avatarPrefabs.Count)];
+            GameObject randomAvatar = avatarPrefabs[UnityEngine.Random.Range(0, avatarPrefabs.Count)];
             GameObject instance = Instantiate(randomAvatar, this.transform);
             PathController pathController = instance.GetComponentInChildren<PathController>();
+
+            //Random Social Relations Allocation 
+            Array values = Enum.GetValues(typeof(SocialRelations));
+            SocialRelations randomRelation;
+            do
+            {
+                randomRelation = (SocialRelations)values.GetValue(UnityEngine.Random.Range(0, values.Length));
+            } while (!IsValidRelation(randomRelation, categoryCounts));
+
+            pathController.socialRelations = randomRelation;
+            categoryCounts[randomRelation]++;
             
+            //Init Path Controller Params
             pathController.avatarCreator = this.GetComponent<AvatarCreator>();
             if(pathController != null)
             {
@@ -54,7 +78,7 @@ public class AvatarCreator : MonoBehaviour
             // pathController.Path[pathController.Path.Length-1] += GenerateRandomPointInCircle(radius);
 
             //initial Speed
-            pathController.initialSpeed = Random.Range(0.5f, 1.5f);
+            pathController.initialSpeed = UnityEngine.Random.Range(0.5f, 1.5f);
 
             //set goal size
             pathController.goalRadius = GoalRadius;
@@ -107,13 +131,28 @@ public class AvatarCreator : MonoBehaviour
 
     Vector3 GenerateRandomPointInCircle(float r)
     {
-        float angle = Random.Range(0f, 2f * Mathf.PI); 
-        float distance = Mathf.Sqrt(Random.Range(0f, r * r));
+        float angle = UnityEngine.Random.Range(0f, 2f * Mathf.PI); 
+        float distance = Mathf.Sqrt(UnityEngine.Random.Range(0f, r * r));
 
         float x = distance * Mathf.Cos(angle);
         float z = distance * Mathf.Sin(angle);
 
         return new Vector3(x, 0f, z);
+    }
+
+    private bool IsValidRelation(SocialRelations relation, Dictionary<SocialRelations, int> counts)
+    {
+        switch (relation)
+        {
+            case SocialRelations.Couple:
+                return counts[relation] < 2;
+            case SocialRelations.Family:
+            case SocialRelations.Friend:
+            case SocialRelations.Coworker:
+                return counts[relation] < 4;
+            default:
+                return true;
+        }
     }
 
 #if UNITY_EDITOR

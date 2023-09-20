@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using Drawing;
+using System.Runtime.InteropServices;
 
 namespace MotionMatching{
     using TrajectoryFeature = MotionMatchingData.TrajectoryFeature;
@@ -598,7 +599,17 @@ namespace MotionMatching{
         private void DrawInfo(){
             Color gizmoColor;
             if(showAgentSphere){
-                gizmoColor = new Color(1.0f, 88/255f, 85/255f);
+                if(socialRelations == SocialRelations.Couple){
+                    gizmoColor = new Color(1.0f, 0.0f, 0.0f); // red
+                }else if(socialRelations == SocialRelations.Friend){
+                    gizmoColor = new Color(0.0f, 1.0f, 0.0f); // green
+                }else if (socialRelations == SocialRelations.Family){
+                    gizmoColor = new Color(0.0f, 0.0f, 1.0f); // blue
+                }else if (socialRelations == SocialRelations.Coworker){
+                    gizmoColor = new Color(1.0f, 1.0f, 0.0f); // yellow
+                }else{
+                    gizmoColor = new Color(1.0f, 1.0f, 1.0f); // white
+                }
                 Draw.WireCylinder((Vector3)GetCurrentPosition(), Vector3.up, agentCollider.height, agentCollider.radius, gizmoColor);
             }
 
