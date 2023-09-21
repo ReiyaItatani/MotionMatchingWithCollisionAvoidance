@@ -52,6 +52,7 @@ public class AgentManager : MonoBehaviour
     public bool ShowUnalignedCollisionAvoidance = false;
     public bool ShowGoalDirection = false;
     public bool ShowCurrentDirection = false;
+    public bool ShowGroupForce = false;
 
     [Header("Motion Matching Controller Debug")]
     // public float SphereRadius;
@@ -195,6 +196,7 @@ public class AgentManager : MonoBehaviour
         pathController.showUnalignedCollisionAvoidance = ShowUnalignedCollisionAvoidance;
         pathController.showGoalDirection = ShowGoalDirection;
         pathController.showCurrentDirection = ShowCurrentDirection;
+        pathController.showGroupForce = ShowGroupForce;
     }
 
     private void SetMotionMatchingControllerParams(MotionMatchingController motionMatchingController){

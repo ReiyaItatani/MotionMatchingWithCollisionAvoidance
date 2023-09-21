@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System;
 using Drawing;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 
 namespace MotionMatching{
     using TrajectoryFeature = MotionMatchingData.TrajectoryFeature;
@@ -106,9 +107,14 @@ namespace MotionMatching{
         public bool showGoalDirection = false;
         [HideInInspector]
         public bool showCurrentDirection = false;
+        [HideInInspector]
+        public bool showGroupForce = false;
         // --------------------------------------------------------------------------
-        // Avoidance Force From Group ------------------------------------------------
+        // Force From Group --------------------------------------------------------
+        private Vector3 groupForce = Vector3.zero;
         public SocialRelations socialRelations;
+        [HideInInspector]
+        public float groupForceWeight = 1.0f;
         
 
         private void Start()
@@ -177,6 +183,7 @@ namespace MotionMatching{
             StartCoroutine(UpdateUnalignedAvoidanceAreaPos(0.9f));
             StartCoroutine(UpdateAvoidanceVector(0.1f, 0.5f));
             StartCoroutine(UpdateAvoidNeighborsVector(updateUnalignedAvoidanceTarget.GetOthersInUnalignedAvoidanceArea(), 0.1f, 0.3f));
+            StartCoroutine(UpdateGroupForce(0.1f));
 
             //If you wanna consider all of the other agents for unaligned collision avoidance use below
             //StartCoroutine(UpdateAvoidNeighborsVector(avatarCreator.GetAgents(), 0.1f, 0.3f));
@@ -212,7 +219,7 @@ namespace MotionMatching{
             currentSpeed = distanceToGoal < slowingRadius ? Mathf.Lerp(minSpeed, currentSpeed, distanceToGoal / slowingRadius) : currentSpeed;
 
             //Move Agent
-            direction = (toGoalWeight*toGoalVector + avoidanceWeight*avoidanceVector + avoidNeighborWeight*avoidNeighborsVector).normalized;
+            direction = (toGoalWeight*toGoalVector + avoidanceWeight*avoidanceVector + avoidNeighborWeight*avoidNeighborsVector + groupForce*groupForceWeight).normalized;
 
             //Check collision
             if(onCollide){
@@ -394,7 +401,7 @@ namespace MotionMatching{
                 }else{
                     if(Agents== null) yield return null;
                     Vector3 newavoidNeighborsVector = SteerToAvoidNeighbors(Agents, minTimeToCollision, collisionDangerThreshold);
-                    yield return StartCoroutine(AvoidNeighborsVectorGradualVectorTransition(transitionTime, avoidNeighborsVector, newavoidNeighborsVector));
+                    yield return StartCoroutine(AvoidNeighborsVectorGradualTransition(transitionTime, avoidNeighborsVector, newavoidNeighborsVector));
                 }
                 yield return new WaitForSeconds(updateTime);
             }
@@ -490,7 +497,7 @@ namespace MotionMatching{
 
             return Vector3.Distance(myFinal, otherFinal);
         }
-        private IEnumerator AvoidNeighborsVectorGradualVectorTransition(float duration, Vector3 initialVector, Vector3 targetVector){
+        private IEnumerator AvoidNeighborsVectorGradualTransition(float duration, Vector3 initialVector, Vector3 targetVector){
             float elapsedTime = 0.0f;
             Vector3 initialavoidNeighborsVector = initialVector;
             while(elapsedTime < duration){
@@ -511,6 +518,122 @@ namespace MotionMatching{
                 unalignedAvoidanceArea.transform.rotation = targetRotation;
                 yield return null;
             }
+        }
+
+        //Force from Group
+        //the greater headRot, the less comfortable is the turning for walking.Therefore, this is adjust the pos to reduce the headRotaion effect.
+
+        private IEnumerator UpdateGroupForce(float updateTime){
+            List<GameObject> groupAgents = avatarCreator.GetAgentsInCategory(socialRelations);
+            while(true){
+                Vector3 currentPosition = GetCurrentPosition();
+                Vector3 currentDirection = GetCurrentDirection();
+
+                float GazeAngle = CalculateGazingAngle(groupAgents, currentPosition, currentDirection, 90f);
+                Vector3 AdjustPosForce = CalculateAdjustPosForce(1.0f, GazeAngle, currentDirection);
+                Vector3 CohesionForce = CalculateCohesionForce(groupAgents, 0.5f, currentPosition);
+                Vector3 RepulsionForce = CalculateRepulsionForce(groupAgents, agentCollider.radius, 1.0f, currentPosition);
+
+                //AdjustPosForce
+                groupForce = (CohesionForce + RepulsionForce).normalized;
+                yield return new WaitForSeconds(updateTime);
+            }
+        }
+
+        private Vector3 CalculateAdjustPosForce(float socialInteractionWeight, float headRot, Vector3 currentDir){
+            float adjustment = 0.05f;
+            return -socialInteractionWeight * headRot * currentDir *adjustment;
+        }
+
+        private Vector3 test = Vector3.zero;
+
+        private Vector3 CalculateCohesionForce(List<GameObject> groupAgents, float cohesionWeight, Vector3 currentPos){
+            float threshold = (groupAgents.Count-1)/2;
+            Vector3 centerOfMass = CalculateCenterOfMass(groupAgents);
+            float dist = Vector3.Distance(currentPos, centerOfMass);
+            float judgeWithinThreshold = 0;
+            if(dist > threshold){
+                judgeWithinThreshold = 1;
+            }
+            Vector3 toCenterOfMassDir = (centerOfMass - currentPos).normalized;
+
+            return judgeWithinThreshold*cohesionWeight*toCenterOfMassDir;
+        }
+
+        private Vector3 CalculateRepulsionForce(List<GameObject> groupAgents, float agentRadius, float repulsionForceWeight, Vector3 currentPos){
+            Vector3 repulsionForceDir = Vector3.zero;
+            foreach(GameObject agent in groupAgents){
+                //skip myself
+                if(agent == agentCollider.gameObject) continue;
+                Vector3 toOtherDir = agent.transform.position - currentPos;
+                float dist = Vector3.Distance(currentPos, agent.transform.position);
+                float threshold = 0;
+                float safetyDistance = agentRadius;
+                if(dist < 2*agentRadius + safetyDistance){
+                    threshold = 1;
+                }
+                toOtherDir = toOtherDir.normalized;
+                repulsionForceDir += threshold*repulsionForceWeight*toOtherDir;
+            }
+            return -repulsionForceDir;
+        }
+
+        private Vector3 CalculateGazingDirection(List<GameObject> groupAgents, Vector3 currentPos, Vector3 currentDir, float neckRotationAngle)
+        {
+            Vector3 centerOfMass = CalculateCenterOfMass(groupAgents);
+            Vector3 directionToCenterOfMass = centerOfMass - currentPos;    
+            Vector3 crossProduct = Vector3.Cross(currentDir, directionToCenterOfMass);
+            Quaternion rotation = Quaternion.identity;
+            if (crossProduct.y > 0)
+            {
+                // directionToCenterOfMass is on your right side
+                rotation = Quaternion.Euler(0, neckRotationAngle, 0);
+            }
+            else if (crossProduct.y < 0)
+            {
+                // directionToCenterOfMass is on your left side
+                rotation = Quaternion.Euler(0, -neckRotationAngle, 0);
+            }
+
+            Vector3 rotatedVector = rotation * currentDir;
+
+            return rotatedVector.normalized;
+        }
+
+        private float CalculateGazingAngle(List<GameObject> groupAgents, Vector3 currentPos, Vector3 currentDir, float angleLimit)
+        {
+            Vector3 centerOfMass = CalculateCenterOfMass(groupAgents);
+            Vector3 directionToCenterOfMass = centerOfMass - currentPos;
+            float angle = Vector3.Angle(currentDir, directionToCenterOfMass);
+            float neckRotationAngle = 0f;
+
+            if (angle > angleLimit)
+            {
+                neckRotationAngle = angle - angleLimit;
+            }
+
+            return neckRotationAngle;
+        }
+
+        private Vector3 CalculateCenterOfMass(List<GameObject> groupAgents)
+        {
+            if (groupAgents == null || groupAgents.Count == 0)
+            {
+                return Vector3.zero;
+            }
+
+            Vector3 sumOfPositions = Vector3.zero;
+            int count = groupAgents.Count;
+
+            foreach (GameObject go in groupAgents)
+            {
+                if (go != null)
+                {
+                    sumOfPositions += go.transform.position;
+                }
+            }
+
+            return sumOfPositions / count;
         }
         
         //Get and Set
@@ -599,13 +722,13 @@ namespace MotionMatching{
         private void DrawInfo(){
             Color gizmoColor;
             if(showAgentSphere){
-                if(socialRelations == SocialRelations.Couple){
+                if (socialRelations == SocialRelations.Couple){
                     gizmoColor = new Color(1.0f, 0.0f, 0.0f); // red
-                }else if(socialRelations == SocialRelations.Friend){
+                }else if (socialRelations == SocialRelations.Friend){
                     gizmoColor = new Color(0.0f, 1.0f, 0.0f); // green
-                }else if (socialRelations == SocialRelations.Family){
+                }else if  (socialRelations == SocialRelations.Family){
                     gizmoColor = new Color(0.0f, 0.0f, 1.0f); // blue
-                }else if (socialRelations == SocialRelations.Coworker){
+                }else if  (socialRelations == SocialRelations.Coworker){
                     gizmoColor = new Color(1.0f, 1.0f, 0.0f); // yellow
                 }else{
                     gizmoColor = new Color(1.0f, 1.0f, 1.0f); // white
@@ -632,6 +755,13 @@ namespace MotionMatching{
                 gizmoColor = Color.green;
                 Draw.ArrowheadArc((Vector3)GetCurrentPosition(), avoidNeighborsVector, 0.55f, gizmoColor);
             }
+
+            if(showGroupForce){
+                gizmoColor = Color.cyan;
+                Draw.ArrowheadArc((Vector3)GetCurrentPosition(), groupForce, 0.55f, gizmoColor);
+            }
+                gizmoColor = Color.cyan;
+                Draw.ArrowheadArc((Vector3)GetCurrentPosition(), test, 0.55f, gizmoColor);
         }
 
 

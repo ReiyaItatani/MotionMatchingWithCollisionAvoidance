@@ -96,6 +96,18 @@ public class AvatarCreator : MonoBehaviour
         }
         instantiatedAvatars.Clear();
         pathVertices = new List<Vector3>();
+        InitializeDictionaries();
+    }
+    private void InitializeDictionaries()
+    {
+        categoryCounts = new Dictionary<SocialRelations, int>
+        {
+            { SocialRelations.Couple, 0 },
+            { SocialRelations.Family, 0 },
+            { SocialRelations.Friend, 0 },
+            { SocialRelations.Coworker, 0 },
+            { SocialRelations.Individual, 0 }
+        };
     }
 
     public List<Vector3> CalculatePath()
@@ -110,20 +122,31 @@ public class AvatarCreator : MonoBehaviour
                 pathVertices.Add(corner);
             }
         }
-
         return pathVertices;
     }
 
     public List<GameObject> GetAgents()
     {
         List<GameObject> agentsList = new List<GameObject>();
-
         for (int i = 0; i < instantiatedAvatars.Count; i++)
         {
             MotionMatchingSkinnedMeshRendererWithOCEAN component = instantiatedAvatars[i].GetComponentInChildren<MotionMatchingSkinnedMeshRendererWithOCEAN>();
             if (component != null)
             {
                 agentsList.Add(component.gameObject);
+            }
+        }
+        return agentsList;
+    }
+
+    public List<GameObject> GetAgentsInCategory(SocialRelations socialRelations){
+        List<GameObject> agentsList = new List<GameObject>();
+        for (int i = 0; i < instantiatedAvatars.Count; i++)
+        {
+            PathController pathController = instantiatedAvatars[i].GetComponentInChildren<PathController>();
+            if(pathController.socialRelations == socialRelations){
+                GameObject agent = instantiatedAvatars[i].GetComponentInChildren<MotionMatchingSkinnedMeshRendererWithOCEAN>().gameObject;
+                agentsList.Add(agent);
             }
         }
         return agentsList;
@@ -149,7 +172,7 @@ public class AvatarCreator : MonoBehaviour
             case SocialRelations.Family:
             case SocialRelations.Friend:
             case SocialRelations.Coworker:
-                return counts[relation] < 4;
+                return counts[relation] < 3;
             default:
                 return true;
         }
