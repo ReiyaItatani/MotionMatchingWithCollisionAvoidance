@@ -7,6 +7,7 @@ using System;
 using Drawing;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+using Unity.VisualScripting;
 
 namespace MotionMatching{
     using TrajectoryFeature = MotionMatchingData.TrajectoryFeature;
@@ -114,7 +115,7 @@ namespace MotionMatching{
         private Vector3 groupForce = Vector3.zero;
         public SocialRelations socialRelations;
         [HideInInspector]
-        public float groupForceWeight = 1.0f;
+        public float groupForceWeight = 0.7f;
         
 
         private void Start()
@@ -184,7 +185,7 @@ namespace MotionMatching{
             StartCoroutine(UpdateAvoidanceVector(0.1f, 0.5f));
             StartCoroutine(UpdateAvoidNeighborsVector(updateUnalignedAvoidanceTarget.GetOthersInUnalignedAvoidanceArea(), 0.1f, 0.3f));
             if(socialRelations != SocialRelations.Individual){
-                StartCoroutine(UpdateGroupForce(0.1f));
+                StartCoroutine(UpdateGroupForce(0.2f));
             }
 
             //If you wanna consider all of the other agents for unaligned collision avoidance use below
@@ -526,6 +527,7 @@ namespace MotionMatching{
         //Force from Group
         //the greater headRot, the less comfortable is the turning for walking.Therefore, this is adjust the pos to reduce the headRotaion effect.
 
+
         private IEnumerator UpdateGroupForce(float updateTime){
             List<GameObject> groupAgents = avatarCreator.GetAgentsInCategory(socialRelations);
             if(groupAgents.Count <= 1){
@@ -535,14 +537,15 @@ namespace MotionMatching{
                 while(true){
                     Vector3 currentPosition = GetCurrentPosition();
                     MotionMatchingSkinnedMeshRendererWithOCEAN motionMatchingSkinnedMeshRendererWithOCEAN = agentCollider.GetComponent<MotionMatchingSkinnedMeshRendererWithOCEAN>();      
-                    Vector3 headDirection = motionMatchingSkinnedMeshRendererWithOCEAN.t_Head.forward;
+                    Vector3 headDirection = motionMatchingSkinnedMeshRendererWithOCEAN.t_Hips.forward;
+                    test = headDirection;
+
                     float GazeAngle;
                     Vector3 GazeAngleDirection;
                     Vector3 AdjustPosForce = Vector3.zero;
                     if(headDirection!=null){
                         GazeAngle = CalculateGazingAngle(groupAgents, currentPosition, headDirection, 90f);
                         GazeAngleDirection = CalculateGazingDirection(groupAgents, currentPosition, headDirection, GazeAngle);
-                        test = GazeAngleDirection;
 
                         //This makes agent look at center of mass
                         motionMatchingSkinnedMeshRendererWithOCEAN.SetLookAtCenterOfMass(GazeAngleDirection);
@@ -554,10 +557,24 @@ namespace MotionMatching{
                     Vector3 RepulsionForce = CalculateRepulsionForce(groupAgents, agentCollider.radius, 1.0f, currentPosition);
 
                     //AdjustPosForce
-                    groupForce = (AdjustPosForce + CohesionForce + RepulsionForce).normalized;
+                    Vector3 newGroupForce = (AdjustPosForce + CohesionForce + RepulsionForce).normalized;
+                    StartCoroutine(GroupForceGradualTransition(updateTime, groupForce, newGroupForce));
                     yield return new WaitForSeconds(updateTime);
                 }
             }
+        }
+
+        private IEnumerator GroupForceGradualTransition(float duration, Vector3 initialVector, Vector3 targetVector){
+            float elapsedTime = 0.0f;
+            Vector3 initialGroupForce = initialVector;
+            while(elapsedTime < duration){
+                elapsedTime += Time.deltaTime;
+                groupForce = Vector3.Slerp(initialGroupForce, targetVector, elapsedTime/duration);
+                yield return new WaitForSeconds(Time.deltaTime);
+            }
+            groupForce = targetVector;
+
+            yield return null;
         }
 
         private Vector3 CalculateAdjustPosForce(float socialInteractionWeight, float headRot, Vector3 currentDir){
@@ -583,7 +600,7 @@ namespace MotionMatching{
         private Vector3 CalculateRepulsionForce(List<GameObject> groupAgents, float agentRadius, float repulsionForceWeight, Vector3 currentPos){
             Vector3 repulsionForceDir = Vector3.zero;
             foreach(GameObject agent in groupAgents){
-                //skip myself
+                //skip myselfVector3.Cross
                 if(agent == agentCollider.gameObject) continue;
                 Vector3 toOtherDir = agent.transform.position - currentPos;
                 float dist = Vector3.Distance(currentPos, agent.transform.position);
@@ -601,7 +618,7 @@ namespace MotionMatching{
         private Vector3 CalculateGazingDirection(List<GameObject> groupAgents, Vector3 currentPos, Vector3 currentDir, float neckRotationAngle)
         {
             Vector3 centerOfMass = CalculateCenterOfMass(groupAgents);
-            Vector3 directionToCenterOfMass = centerOfMass - currentPos;    
+            Vector3 directionToCenterOfMass = (centerOfMass - currentPos).normalized;    
             Vector3 crossProduct = Vector3.Cross(currentDir, directionToCenterOfMass);
             Quaternion rotation = Quaternion.identity;
             if (crossProduct.y > 0)
@@ -609,7 +626,7 @@ namespace MotionMatching{
                 // directionToCenterOfMass is on your right side
                 rotation = Quaternion.Euler(0, neckRotationAngle, 0);
             }
-            else if (crossProduct.y < 0)
+            else if (crossProduct.y <= 0)
             {
                 // directionToCenterOfMass is on your left side
                 rotation = Quaternion.Euler(0, -neckRotationAngle, 0);
@@ -783,7 +800,7 @@ namespace MotionMatching{
 
                 gizmoColor = Color.cyan;
                 Draw.ArrowheadArc((Vector3)GetCurrentPosition(), test, 0.55f, gizmoColor);
-                //Draw.WireSphere(test, 0.55f);
+                // Draw.WireSphere(test, 0.3f);
         }
 
 
