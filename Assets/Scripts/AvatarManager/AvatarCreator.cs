@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using  System;
 
+
 public enum SocialRelations
 {
     Couple,
@@ -73,6 +74,8 @@ public class AvatarCreator : MonoBehaviour
             GameObject randomAvatar = avatarPrefabs[UnityEngine.Random.Range(0, avatarPrefabs.Count)];
             GameObject instance = Instantiate(randomAvatar, this.transform);
             PathController pathController = instance.GetComponentInChildren<PathController>();
+            MotionMatchingController motionMatchingController = instance.GetComponentInChildren<MotionMatchingController>();
+            MotionMatchingSkinnedMeshRendererWithOCEAN motionMatchingSkinnedMeshRendererWithOCEAN = instance.GetComponentInChildren<MotionMatchingSkinnedMeshRendererWithOCEAN>();
 
             //Random Social Relations Allocation 
             Array values = Enum.GetValues(typeof(SocialRelations));
@@ -100,6 +103,10 @@ public class AvatarCreator : MonoBehaviour
             //pathController.Path[0] += GenerateRandomPointInCircle(startPointDeviation);
             pathController.Path[0] += GenerateRandomPointInCircleBasedOnSocialRelations(startPointDeviation, randomRelation);
             // pathController.Path[pathController.Path.Length-1] += GenerateRandomPointInCircle(radius);
+
+                //Move the agent to starting pos
+            motionMatchingController.transform.position = pathController.Path[0];
+            motionMatchingSkinnedMeshRendererWithOCEAN.transform.position = pathController.Path[0];
 
             //initial Speed
             if(randomRelation == SocialRelations.Individual){

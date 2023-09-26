@@ -69,6 +69,9 @@ namespace MotionMatching
             PreviousJointMask = new bool[BodyJoints.Length];
             PreviousJointRotations = new quaternion[BodyJoints.Length];
             OffsetJointRotations = new quaternion[BodyJoints.Length];
+
+            /*Ocean*/
+            GetBodyTransforms();
         }
 
         private void OnEnable()
@@ -97,7 +100,6 @@ namespace MotionMatching
             faceController.InitShapeKeys();
 
             // SinkPassInit();
-            GetBodyTransforms();
             FluctuatePassInit();
 
             // StartCoroutine(LookAtPass());

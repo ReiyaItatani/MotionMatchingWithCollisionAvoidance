@@ -238,7 +238,7 @@ namespace MotionMatching{
                     if (dotProduct <= -angle){
                         //anti-parallel
                         direction = CheckOppoentDir(myDir, myPos, otherDir, otherPos);
-                        nextPosition = currentPosition + direction * currentSpeed * time;
+                        nextPosition = currentPosition + direction * currentSpeed/2.0f * time;
                     }else{
                         //parallel
                         if(Vector3.Dot(offset, GetCurrentDirection())>0){
