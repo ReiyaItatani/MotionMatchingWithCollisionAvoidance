@@ -49,6 +49,25 @@ public class AvatarCreator : MonoBehaviour
     {
         CalculatePath();
 
+        //Set initial speed for each social relations
+        float coupleSpeed = UnityEngine.Random.Range(0.5f, 1.0f);
+        float familySpeed = UnityEngine.Random.Range(0.5f, 1.0f);
+        float friendSpeed = UnityEngine.Random.Range(0.5f, 1.0f);
+        float coworkerSpeed = UnityEngine.Random.Range(0.5f, 1.0f);
+
+        //Create Category Objects
+        foreach (SocialRelations relation in System.Enum.GetValues(typeof(SocialRelations)))
+        {
+            string relationName = relation.ToString();
+            Transform child = transform.Find(relationName);
+            
+            if (child == null)
+            {
+                GameObject newChild = new GameObject(relationName);
+                newChild.transform.SetParent(transform);
+            }
+        }
+
         for (int i = 0; i < spawnCount; i++)
         {
             GameObject randomAvatar = avatarPrefabs[UnityEngine.Random.Range(0, avatarPrefabs.Count)];
@@ -66,6 +85,10 @@ public class AvatarCreator : MonoBehaviour
             pathController.socialRelations = randomRelation;
             categoryCounts[randomRelation]++;
             
+            //Change object's name and parent object 
+            instance.name = randomRelation.ToString()+categoryCounts[randomRelation].ToString();
+            instance.transform.parent = this.transform.Find(randomRelation.ToString()).transform;
+            
             //Init Path Controller Params
             pathController.avatarCreator = this.GetComponent<AvatarCreator>();
             if(pathController != null)
@@ -74,11 +97,22 @@ public class AvatarCreator : MonoBehaviour
             }
 
             //Path Noise
-            pathController.Path[0] += GenerateRandomPointInCircle(startPointDeviation);
+            //pathController.Path[0] += GenerateRandomPointInCircle(startPointDeviation);
+            pathController.Path[0] += GenerateRandomPointInCircleBasedOnSocialRelations(startPointDeviation, randomRelation);
             // pathController.Path[pathController.Path.Length-1] += GenerateRandomPointInCircle(radius);
 
             //initial Speed
-            pathController.initialSpeed = UnityEngine.Random.Range(0.5f, 1.5f);
+            if(randomRelation == SocialRelations.Individual){
+                pathController.initialSpeed = UnityEngine.Random.Range(0.5f, 1.5f);
+            }else if(randomRelation == SocialRelations.Couple){
+                pathController.initialSpeed = coupleSpeed;
+            }else if(randomRelation == SocialRelations.Family){
+                pathController.initialSpeed = familySpeed;
+            }else if(randomRelation == SocialRelations.Friend){
+                pathController.initialSpeed = friendSpeed;
+            }else if(randomRelation == SocialRelations.Coworker){
+                pathController.initialSpeed = coworkerSpeed;
+            }
 
             //set goal size
             pathController.goalRadius = GoalRadius;
@@ -163,6 +197,22 @@ public class AvatarCreator : MonoBehaviour
         return new Vector3(x, 0f, z);
     }
 
+    public Vector3 GenerateRandomPointInCircleBasedOnSocialRelations(float r, SocialRelations relation)
+    {
+        int enumCount = System.Enum.GetValues(typeof(SocialRelations)).Length;
+        float segmentAngle = 360f / enumCount; 
+
+        float baseAngle = (int)relation * segmentAngle;
+        float angle = UnityEngine.Random.Range(baseAngle, baseAngle + segmentAngle) * Mathf.Deg2Rad;
+
+        float distance = Mathf.Sqrt(UnityEngine.Random.Range(0f, r * r));
+
+        float x = distance * Mathf.Cos(angle);
+        float z = distance * Mathf.Sin(angle);
+
+        return new Vector3(x, 0f, z);
+    }
+
     private bool IsValidRelation(SocialRelations relation, Dictionary<SocialRelations, int> counts)
     {
         switch (relation)
@@ -187,9 +237,9 @@ public class AvatarCreator : MonoBehaviour
             for (int i = 0; i < pathVertices.Count - 1; i++)
             {
                 Gizmos.DrawLine(pathVertices[i], pathVertices[i + 1]);
-                Gizmos.DrawSphere(pathVertices[i], 0.25f);
+                //Gizmos.DrawSphere(pathVertices[i], 0.25f);
             }
-            Gizmos.DrawSphere(pathVertices[pathVertices.Count - 1], 0.25f);
+            //Gizmos.DrawSphere(pathVertices[pathVertices.Count - 1], 0.25f);
         }
     }
 #endif

@@ -317,8 +317,15 @@ namespace MotionMatching
 
             //EyeLevel
             AdjustEyeLevelPass();
+            //Adjust Group Force
+            if(LookAtCenterOfMass!=null){
+                LookGroupCenterOfMass(LookAtCenterOfMass);
+            }
             //LookAt
             LookAtPass();
+            //LookAtAdjustmentPass
+            LookAtAdjustmentPass();
+
             //EyesMovement
             EyesMovementPass();
 
@@ -489,7 +496,8 @@ namespace MotionMatching
         private Transform t_Chest;
         private Transform t_UpperChest;
         private Transform t_Neck;
-        private Transform t_Head;
+        [HideInInspector]
+        public Transform t_Head;
         private Transform t_Hips;
 
         // fingers
@@ -752,7 +760,6 @@ namespace MotionMatching
             // otherHeadPosition.y += lookHeightOffset;
             Vector3 lookDirection = this.transform.InverseTransformDirection(otherHeadPosition - t_Head.transform.position);
             Quaternion fromTo = Quaternion.FromToRotation(t_Head.forward, lookDirection);
-            //Draw.ArrowheadArc(this.transform.position, t_Head.forward, 0.55f, Color.blue);
 
             // Limit
             float angle = Quaternion.Angle(Quaternion.identity, fromTo);
@@ -790,6 +797,40 @@ namespace MotionMatching
             Quaternion horizontalRotation = Quaternion.LookRotation(horizontalForward, Vector3.up);
             t_Head.localRotation *= Quaternion.Inverse(t_Head.rotation) * horizontalRotation;
             //t_Neck.localRotation *= Quaternion.Inverse(t_Head.rotation) * horizontalRotation;
+        }
+
+        private Vector3 LookAtCenterOfMass;
+        private void LookGroupCenterOfMass(Vector3 LookAtDirection){
+            Quaternion fromTo = Quaternion.FromToRotation(t_Head.forward, LookAtDirection);
+            float yRotation = fromTo.eulerAngles.y;
+            Quaternion yRotationOnly = Quaternion.Euler(0, yRotation, 0);
+            t_Neck.localRotation *= yRotationOnly;
+        }
+
+        public void SetLookAtCenterOfMass(Vector3 lookAtCenterOfMass){
+            LookAtCenterOfMass = lookAtCenterOfMass;
+        }
+
+        private void LookAtAdjustmentPass(float angleLimit = 60.0f){
+            t_Neck.localRotation = LimitRotation(t_Neck.localRotation, angleLimit);
+            t_Head.localRotation = LimitRotation(t_Head.localRotation, angleLimit);
+        }
+        public static Quaternion LimitRotation(Quaternion rotation, float angleLimit)
+        {
+            Vector3 eulerRotation = rotation.eulerAngles;
+
+            eulerRotation.x = ClampAngle(eulerRotation.x, angleLimit);
+            eulerRotation.y = ClampAngle(eulerRotation.y, angleLimit);
+            eulerRotation.z = ClampAngle(eulerRotation.z, angleLimit);
+
+            return Quaternion.Euler(eulerRotation);
+        }
+
+        private static float ClampAngle(float angle, float limit)
+        {
+            if (angle > 180f) angle -= 360f;
+
+            return Mathf.Clamp(angle, -limit, limit);
         }
 
         /* * *
@@ -894,12 +935,6 @@ namespace MotionMatching
     //         }
     //     }
     // }
-
-
-
-
-
-
 
         #region NEW ROTATE PASS
         private Vector3 nrp_spine;

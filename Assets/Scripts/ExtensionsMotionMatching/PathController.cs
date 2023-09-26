@@ -183,7 +183,9 @@ namespace MotionMatching{
             StartCoroutine(UpdateUnalignedAvoidanceAreaPos(0.9f));
             StartCoroutine(UpdateAvoidanceVector(0.1f, 0.5f));
             StartCoroutine(UpdateAvoidNeighborsVector(updateUnalignedAvoidanceTarget.GetOthersInUnalignedAvoidanceArea(), 0.1f, 0.3f));
-            StartCoroutine(UpdateGroupForce(0.1f));
+            if(socialRelations != SocialRelations.Individual){
+                StartCoroutine(UpdateGroupForce(0.1f));
+            }
 
             //If you wanna consider all of the other agents for unaligned collision avoidance use below
             //StartCoroutine(UpdateAvoidNeighborsVector(avatarCreator.GetAgents(), 0.1f, 0.3f));
@@ -220,6 +222,7 @@ namespace MotionMatching{
 
             //Move Agent
             direction = (toGoalWeight*toGoalVector + avoidanceWeight*avoidanceVector + avoidNeighborWeight*avoidNeighborsVector + groupForce*groupForceWeight).normalized;
+            direction = new Vector3(direction.x, 0f, direction.z);
 
             //Check collision
             if(onCollide){
@@ -525,18 +528,35 @@ namespace MotionMatching{
 
         private IEnumerator UpdateGroupForce(float updateTime){
             List<GameObject> groupAgents = avatarCreator.GetAgentsInCategory(socialRelations);
-            while(true){
-                Vector3 currentPosition = GetCurrentPosition();
-                Vector3 currentDirection = GetCurrentDirection();
+            if(groupAgents.Count <= 1){
+                groupForce = Vector3.zero;
+                yield return null;
+            }else{
+                while(true){
+                    Vector3 currentPosition = GetCurrentPosition();
+                    MotionMatchingSkinnedMeshRendererWithOCEAN motionMatchingSkinnedMeshRendererWithOCEAN = agentCollider.GetComponent<MotionMatchingSkinnedMeshRendererWithOCEAN>();      
+                    Vector3 headDirection = motionMatchingSkinnedMeshRendererWithOCEAN.t_Head.forward;
+                    float GazeAngle;
+                    Vector3 GazeAngleDirection;
+                    Vector3 AdjustPosForce = Vector3.zero;
+                    if(headDirection!=null){
+                        GazeAngle = CalculateGazingAngle(groupAgents, currentPosition, headDirection, 90f);
+                        GazeAngleDirection = CalculateGazingDirection(groupAgents, currentPosition, headDirection, GazeAngle);
+                        test = GazeAngleDirection;
 
-                float GazeAngle = CalculateGazingAngle(groupAgents, currentPosition, currentDirection, 90f);
-                Vector3 AdjustPosForce = CalculateAdjustPosForce(1.0f, GazeAngle, currentDirection);
-                Vector3 CohesionForce = CalculateCohesionForce(groupAgents, 0.5f, currentPosition);
-                Vector3 RepulsionForce = CalculateRepulsionForce(groupAgents, agentCollider.radius, 1.0f, currentPosition);
+                        //This makes agent look at center of mass
+                        motionMatchingSkinnedMeshRendererWithOCEAN.SetLookAtCenterOfMass(GazeAngleDirection);
 
-                //AdjustPosForce
-                groupForce = (CohesionForce + RepulsionForce).normalized;
-                yield return new WaitForSeconds(updateTime);
+                        AdjustPosForce = CalculateAdjustPosForce(1.0f, GazeAngle, headDirection);
+                    }
+
+                    Vector3 CohesionForce = CalculateCohesionForce(groupAgents, 0.5f, currentPosition);
+                    Vector3 RepulsionForce = CalculateRepulsionForce(groupAgents, agentCollider.radius, 1.0f, currentPosition);
+
+                    //AdjustPosForce
+                    groupForce = (AdjustPosForce + CohesionForce + RepulsionForce).normalized;
+                    yield return new WaitForSeconds(updateTime);
+                }
             }
         }
 
@@ -760,8 +780,10 @@ namespace MotionMatching{
                 gizmoColor = Color.cyan;
                 Draw.ArrowheadArc((Vector3)GetCurrentPosition(), groupForce, 0.55f, gizmoColor);
             }
+
                 gizmoColor = Color.cyan;
                 Draw.ArrowheadArc((Vector3)GetCurrentPosition(), test, 0.55f, gizmoColor);
+                //Draw.WireSphere(test, 0.55f);
         }
 
 
@@ -774,12 +796,29 @@ namespace MotionMatching{
             const float heightOffset = 0.01f;
 
             // Draw KeyPoints
-            Gizmos.color = Color.blue;
-            for (int i = 0; i < Path.Length; i++)
-            {
-                Vector3 pos = GetWorldPosition(transform, Path[i]);
-                Gizmos.DrawSphere(new Vector3(pos.x, heightOffset, pos.z), 0.1f);
+            // Gizmos.color = Color.blue;
+            // for (int i = 0; i < Path.Length; i++)
+            // {
+            //     Vector3 pos = GetWorldPosition(transform, Path[i]);
+            //     Gizmos.DrawSphere(new Vector3(pos.x, heightOffset, pos.z), 0.1f);
+            // }
+            //Draw OnlyStartPos
+            Color gizmoColor;
+            if (socialRelations == SocialRelations.Couple){
+                gizmoColor = new Color(1.0f, 0.0f, 0.0f); // red
+            }else if (socialRelations == SocialRelations.Friend){
+                gizmoColor = new Color(0.0f, 1.0f, 0.0f); // green
+            }else if  (socialRelations == SocialRelations.Family){
+                gizmoColor = new Color(0.0f, 0.0f, 1.0f); // blue
+            }else if  (socialRelations == SocialRelations.Coworker){
+                gizmoColor = new Color(1.0f, 1.0f, 0.0f); // yellow
+            }else{
+                gizmoColor = new Color(1.0f, 1.0f, 1.0f); // white
             }
+            Gizmos.color = gizmoColor;
+            Vector3 pos = GetWorldPosition(transform, Path[0]);
+            Gizmos.DrawSphere(new Vector3(pos.x, heightOffset, pos.z), 0.1f);
+            
             // Draw Path
             // Gizmos.color = new Color(0.5f, 0.0f, 0.0f, 1.0f);
             // for (int i = 0; i < Path.Length - 1; i++)
