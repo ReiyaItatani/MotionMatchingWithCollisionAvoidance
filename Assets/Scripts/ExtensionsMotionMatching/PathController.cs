@@ -239,7 +239,7 @@ namespace MotionMatching{
                     if (dotProduct <= -angle){
                         //anti-parallel
                         direction = CheckOppoentDir(myDir, myPos, otherDir, otherPos);
-                        nextPosition = currentPosition + direction * currentSpeed/2.0f * time;
+                        nextPosition = currentPosition + direction * 0.1f * time;
                     }else{
                         //parallel
                         if(Vector3.Dot(offset, GetCurrentDirection())>0){
@@ -799,7 +799,7 @@ namespace MotionMatching{
             }
 
                 gizmoColor = Color.cyan;
-                Draw.ArrowheadArc((Vector3)GetCurrentPosition(), test, 0.55f, gizmoColor);
+                //Draw.ArrowheadArc((Vector3)GetCurrentPosition(), test, 0.55f, gizmoColor);
                 // Draw.WireSphere(test, 0.3f);
         }
 

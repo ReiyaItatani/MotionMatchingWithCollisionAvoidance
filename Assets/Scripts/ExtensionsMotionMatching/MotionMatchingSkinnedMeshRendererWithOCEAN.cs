@@ -8,6 +8,7 @@ using UnityEngine.PlayerLoop;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 using Unity.VisualScripting;
+using System.Runtime.CompilerServices;
 namespace MotionMatching
 {
     [RequireComponent(typeof(Animator))]
@@ -320,13 +321,14 @@ namespace MotionMatching
             //EyeLevel
             AdjustEyeLevelPass();
             //Adjust Group Force
-            if(LookAtCenterOfMass!=null){
-                LookGroupCenterOfMass(LookAtCenterOfMass);
-            }
+            // if(LookAtCenterOfMass!=null){
+            //     LookGroupCenterOfMass(LookAtCenterOfMass);
+            // }
+            AttractionPointUpdater();
             //LookAt
-            LookAtPass();
+            LookAtPass(t_Head.forward, AttractionPoint);
             //LookAtAdjustmentPass
-            LookAtAdjustmentPass();
+            LookAtAdjustmentPass(60.0f);
 
             //EyesMovement
             EyesMovementPass();
@@ -499,7 +501,7 @@ namespace MotionMatching
         private Transform t_UpperChest;
         private Transform t_Neck;
         [HideInInspector]
-        private Transform t_Head;
+        public Transform t_Head;
         public Transform t_Hips;
 
         // fingers
@@ -745,54 +747,90 @@ namespace MotionMatching
         private bool startCoroutine = false;
         private float lookHeightOffset = 0.8f;
         private Vector3 otherHeadPosition;
+        private Vector3 currentAttractionPoint;
 
-        private void LookAtPass(){
-            if(lookObject == null){
-                if(startCoroutine == false){
-                    startCoroutine = true;
-                    StartCoroutine(LookAtWeightChanger(lookAtWeight, 0.0f, UnityEngine.Random.Range(0.1f, 0.5f), false));
-                }
-            }else{
-                if(startCoroutine == false){
-                    startCoroutine = true;
-                    StartCoroutine(LookAtWeightChanger(lookAtWeight, 1.0f, UnityEngine.Random.Range(0.1f, 0.5f), false));
-                    otherHeadPosition = lookObject.transform.position;
-                }
-            }
-            // otherHeadPosition.y += lookHeightOffset;
-            Vector3 lookDirection = this.transform.InverseTransformDirection(otherHeadPosition - t_Head.transform.position);
-            Quaternion fromTo = Quaternion.FromToRotation(t_Head.forward, lookDirection);
+        private void LookAtPass(Vector3 currentLookAtDir, Vector3 targetLookAtDir){
+            float rotationAngle = Vector3.Angle(currentLookAtDir, targetLookAtDir);
+            //t should be from 0.1~1;
+            float t = Mathf.Clamp01(0.9f * (1.0f - (rotationAngle / 180.0f)) + 0.1f);
+            Vector3 newLookAtDir = Vector3.Slerp(currentLookAtDir, targetLookAtDir, t);
 
-            // Limit
-            float angle = Quaternion.Angle(Quaternion.identity, fromTo);
-            float limit = 60.0f*lookAtWeight;
-            if (angle >= limit)
-            {
-                fromTo = Quaternion.RotateTowards(Quaternion.identity, fromTo, limit);
-            }
-            // Extract the rotation around the Z-axis
-            float yRotation = fromTo.eulerAngles.y;
-
-            // Create a new quaternion representing only the rotation around the Z-axis
+            Quaternion rotation = Quaternion.FromToRotation(currentLookAtDir, newLookAtDir);
+            float yRotation = rotation.eulerAngles.y;
             Quaternion yRotationOnly = Quaternion.Euler(0, yRotation, 0);
 
-            //t_Head.localRotation *= yRotationOnly;
             t_Neck.localRotation *= yRotationOnly;
-
         }
 
-        private IEnumerator LookAtWeightChanger(float originalWeight, float targetWeight, float duration, bool setBool){
-            float elapsedTime = 0;
-            float initialWeight = originalWeight;
-            while(elapsedTime<duration){
-                elapsedTime += Time.deltaTime;
-                lookAtWeight = Mathf.Lerp(initialWeight, targetWeight, elapsedTime/duration);
-                yield return new WaitForSeconds(Time.deltaTime);
+        private Vector3 AttractionPoint;
+
+        private void AttractionPointUpdater(float probLookForward = 0.1f){
+            //If collision happens
+            if(lookObject!=null){
+                AttractionPoint = (lookObject.transform.position - this.transform.position).normalized;
+            }else{
+                AttractionPoint = LookAtCenterOfMass;
             }
-            lookAtWeight = targetWeight;
-            startCoroutine = setBool;
-            yield return null;
-        }   
+            // if(UnityEngine.Random.Range(0,1f) <= 0.2){
+            //     //lookForward
+            //     return t_Hips.forward;
+            // }else{
+            //     //lookGroupAttractionPoint
+            //     return LookAtCenterOfMass;
+            // }
+
+            //Draw.ArrowheadArc(this.transform.position, AttractionPoint, 0.55f, Color.black);
+        }
+
+        // private void LookAtPass(){
+        //     if(lookObject == null){
+        //         //if there is "not" a look object(no attraction point)
+        //         if(startCoroutine == false){
+        //             startCoroutine = true;
+        //             StartCoroutine(LookAtWeightChanger(lookAtWeight, 0.0f, UnityEngine.Random.Range(0.1f, 0.5f), false));
+        //         }
+        //     }else{
+        //         //if there is a look object(attraction Point)
+        //         if(startCoroutine == false){
+        //             startCoroutine = true;
+        //             StartCoroutine(LookAtWeightChanger(lookAtWeight, 1.0f, UnityEngine.Random.Range(0.1f, 0.5f), false));
+        //             otherHeadPosition = lookObject.transform.position;
+        //         }
+        //     }
+        //     // otherHeadPosition.y += lookHeightOffset;
+        //     Vector3 lookDirection = this.transform.InverseTransformDirection(otherHeadPosition - t_Head.transform.position);
+        //     Quaternion fromTo = Quaternion.FromToRotation(t_Head.forward, lookDirection);
+
+        //     // Limit
+        //     float angle = Quaternion.Angle(Quaternion.identity, fromTo);
+        //     float limit = 60.0f*lookAtWeight;
+        //     if (angle >= limit)
+        //     {
+        //         fromTo = Quaternion.RotateTowards(Quaternion.identity, fromTo, limit);
+        //     }
+        //     // Extract the rotation around the Z-axis
+        //     float yRotation = fromTo.eulerAngles.y;
+
+        //     // Create a new quaternion representing only the rotation around the Z-axis
+        //     Quaternion yRotationOnly = Quaternion.Euler(0, yRotation, 0);
+
+        //     //t_Head.localRotation *= yRotationOnly;
+        //     t_Neck.localRotation *= yRotationOnly;
+
+        // }
+
+        // private IEnumerator LookAtWeightChanger(float originalWeight, float targetWeight, float duration, bool setBool){
+        //     float elapsedTime = 0;
+        //     float initialWeight = originalWeight;
+        //     while(elapsedTime<duration){
+        //         elapsedTime += Time.deltaTime;
+        //         lookAtWeight = Mathf.Lerp(initialWeight, targetWeight, elapsedTime/duration);
+        //         yield return new WaitForSeconds(Time.deltaTime);
+        //     }
+        //     lookAtWeight = targetWeight;
+        //     startCoroutine = setBool;
+        //     yield return null;
+        // }   
         
         private void AdjustEyeLevelPass(){
             Vector3 horizontalForward = new Vector3(t_Head.forward.x, 0, t_Head.forward.z).normalized;
@@ -802,12 +840,12 @@ namespace MotionMatching
         }
 
         private Vector3 LookAtCenterOfMass;
-        private void LookGroupCenterOfMass(Vector3 LookAtDirection){
-            Quaternion fromTo = Quaternion.FromToRotation(t_Head.forward, LookAtDirection);
-            float yRotation = fromTo.eulerAngles.y;
-            Quaternion yRotationOnly = Quaternion.Euler(0, yRotation, 0);
-            t_Neck.localRotation *= yRotationOnly;
-        }
+        // private void LookGroupCenterOfMass(Vector3 LookAtDirection){
+        //     Quaternion fromTo = Quaternion.FromToRotation(t_Head.forward, LookAtDirection);
+        //     float yRotation = fromTo.eulerAngles.y;
+        //     Quaternion yRotationOnly = Quaternion.Euler(0, yRotation, 0);
+        //     t_Neck.localRotation *= yRotationOnly;
+        // }
 
         public void SetLookAtCenterOfMass(Vector3 lookAtCenterOfMass){
             LookAtCenterOfMass = lookAtCenterOfMass;
