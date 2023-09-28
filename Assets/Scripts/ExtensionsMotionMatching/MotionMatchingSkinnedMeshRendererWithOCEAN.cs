@@ -497,9 +497,8 @@ namespace MotionMatching
         private Transform t_Chest;
         private Transform t_UpperChest;
         private Transform t_Neck;
-        [HideInInspector]
-        public Transform t_Head;
-        public Transform t_Hips;
+        private Transform t_Head;
+        private Transform t_Hips;
 
         // fingers
         private Transform t_LeftIndexDistal;
