@@ -326,10 +326,10 @@ namespace MotionMatching
             // }
             AttractionPointUpdater();
             //LookAt
-            Vector3 currentLookAtDir = saveLookAtRot * t_Head.forward;
-            LookAtPass(currentLookAtDir, AttractionPoint, 1.0f);
+            UpdateCurrentLookAt();
+            LookAtPass(currentLookAt, AttractionPoint, 1.0f);
             //LookAtAdjustmentPass
-            LookAtAdjustmentPass(60.0f);
+            LookAtAdjustmentPass(40.0f);
 
             //EyesMovement
             EyesMovementPass();
@@ -345,7 +345,6 @@ namespace MotionMatching
             SetBodyTransforms();
 
             // GetBodyTransforms();
-            // Draw.ArrowheadArc(this.transform.position, TargetBones[5].forward, 0.55f, Color.blue);
         }
 
         // Used for retargeting. First parent, then children
@@ -745,10 +744,10 @@ namespace MotionMatching
         [Header("Look At Params")]
         private Vector3 AttractionPoint;
         private Quaternion saveLookAtRot = Quaternion.identity;
+        private Vector3 currentLookAt = Vector3.zero;
 
         private void LookAtPass(Vector3 currentLookAtDir, Vector3 targetLookAtDir, float rotationSpeed){
             Vector3 crossResult = Vector3.Cross(currentLookAtDir, targetLookAtDir);
-
                 if (crossResult.y > 0)
                 {
                     saveLookAtRot *= Quaternion.Euler(0, rotationSpeed, 0);
@@ -764,12 +763,20 @@ namespace MotionMatching
             if(lookObject!=null){
                 AttractionPoint = (lookObject.transform.position - this.transform.position).normalized;
             }else{
-                if(UnityEngine.Random.Range(0,1f) <= 0.2){
+                if(UnityEngine.Random.Range(0,1f) <= probLookForward){
                     AttractionPoint = t_Head.forward;
                 }else{
                     AttractionPoint = LookAtCenterOfMass.normalized;
                 }  
             }
+        }
+
+        private void UpdateCurrentLookAt(){
+            currentLookAt = saveLookAtRot * t_Head.forward;
+        }
+
+        public Vector3 GetCurrentLookAt(){
+            return currentLookAt;
         }
         
         private void AdjustEyeLevelPass(){
@@ -785,7 +792,7 @@ namespace MotionMatching
             LookAtCenterOfMass = lookAtCenterOfMass;
         }
 
-        private void LookAtAdjustmentPass(float angleLimit = 60.0f){
+        private void LookAtAdjustmentPass(float angleLimit = 40.0f){
             t_Neck.localRotation = LimitRotation(t_Neck.localRotation, angleLimit);
             t_Head.localRotation = LimitRotation(t_Head.localRotation, angleLimit);
         }

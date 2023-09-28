@@ -537,7 +537,7 @@ namespace MotionMatching{
             }else{
                 while(true){
                     Vector3 currentPosition = GetCurrentPosition();   
-                    Vector3 headDirection = motionMatchingSkinnedMeshRendererWithOCEAN.t_Head.forward;
+                    Vector3 headDirection = motionMatchingSkinnedMeshRendererWithOCEAN.GetCurrentLookAt();
 
                     float GazeAngle;
                     Vector3 GazeAngleDirection;
@@ -580,8 +580,6 @@ namespace MotionMatching{
             float adjustment = 0.05f;
             return -socialInteractionWeight * headRot * currentDir *adjustment;
         }
-
-        private Vector3 test = Vector3.zero;
 
         private Vector3 CalculateCohesionForce(List<GameObject> groupAgents, float cohesionWeight, Vector3 currentPos){
             float threshold = (groupAgents.Count-1)/2;
@@ -796,10 +794,6 @@ namespace MotionMatching{
                 gizmoColor = Color.cyan;
                 Draw.ArrowheadArc((Vector3)GetCurrentPosition(), groupForce, 0.55f, gizmoColor);
             }
-
-                gizmoColor = Color.cyan;
-                //Draw.ArrowheadArc((Vector3)GetCurrentPosition(), test, 0.55f, gizmoColor);
-                // Draw.WireSphere(test, 0.3f);
         }
 
 
