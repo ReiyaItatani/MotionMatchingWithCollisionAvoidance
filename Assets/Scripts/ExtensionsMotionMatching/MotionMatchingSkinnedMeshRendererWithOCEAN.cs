@@ -320,12 +320,9 @@ namespace MotionMatching
 
             //EyeLevel
             AdjustEyeLevelPass();
-            //Adjust Group Force
-            // if(LookAtCenterOfMass!=null){
-            //     LookGroupCenterOfMass(LookAtCenterOfMass);
-            // }
-            AttractionPointUpdater();
+
             //LookAt
+            AttractionPointUpdater();
             UpdateCurrentLookAt();
             LookAtPass(currentLookAt, AttractionPoint, 1.0f);
             //LookAtAdjustmentPass
@@ -763,12 +760,15 @@ namespace MotionMatching
             if(lookObject!=null){
                 AttractionPoint = (lookObject.transform.position - this.transform.position).normalized;
             }else{
-                if(UnityEngine.Random.Range(0,1f) <= probLookForward){
-                    AttractionPoint = t_Head.forward;
-                }else{
-                    AttractionPoint = LookAtCenterOfMass.normalized;
-                }  
+                AttractionPoint = LookAtCenterOfMass.normalized;
+                //if you want to add forward force
+                // if(UnityEngine.Random.Range(0,1f) <= probLookForward){
+                //     AttractionPoint = t_Head.forward;
+                // }else{
+                //     AttractionPoint = LookAtCenterOfMass.normalized;
+                // }  
             }
+            Draw.ArrowheadArc(this.transform.position, AttractionPoint, 0.55f, Color.black);
         }
 
         private void UpdateCurrentLookAt(){

@@ -8,6 +8,8 @@ using Drawing;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using Unity.VisualScripting;
+using System.Data.SqlTypes;
+using Mono.Cecil;
 
 namespace MotionMatching{
     using TrajectoryFeature = MotionMatchingData.TrajectoryFeature;
@@ -34,7 +36,10 @@ namespace MotionMatching{
         private float currentSpeed = 1.0f; //Current speed of the agent
         [Range (0.0f, 1.5f), HideInInspector]
         public float initialSpeed = 1.0f; //Initial speed of the agent
-        private float minSpeed = 0.5f; //Minimum speed of the agent
+        [HideInInspector]
+        public float minSpeed = 0.5f; //Minimum speed of the agent
+        [HideInInspector]
+        public float maxSpeed = 1.2f; //Maximum speed of the agent
         // --------------------------------------------------------------------------
         // To Mange Agents -----------------------------------------------------------------
         public AvatarCreator avatarCreator; //Manager for all of the agents
@@ -115,7 +120,7 @@ namespace MotionMatching{
         private Vector3 groupForce = Vector3.zero;
         public SocialRelations socialRelations;
         [HideInInspector]
-        public float groupForceWeight = 0.7f;
+        public float groupForceWeight = 0.4f;
         
 
         private void Start()
@@ -187,6 +192,7 @@ namespace MotionMatching{
             if(socialRelations != SocialRelations.Individual){
                 StartCoroutine(UpdateGroupForce(0.2f));
             }
+            StartCoroutine(UpdateSpeed(avatarCreator.GetAgentsInCategory(socialRelations), agentCollider.gameObject, 1f, 0.5f));
 
             //If you wanna consider all of the other agents for unaligned collision avoidance use below
             //StartCoroutine(UpdateAvoidNeighborsVector(avatarCreator.GetAgents(), 0.1f, 0.3f));
@@ -332,9 +338,10 @@ namespace MotionMatching{
             if(currentGoalIndex < 0) currentGoalIndex = -currentGoalIndex;
 
             currentGoal = Path[currentGoalIndex];
-            StartCoroutine(GradualSpeedUp(3.0f, currentSpeed, initialSpeed));
+            StartCoroutine(SpeedChange(3.0f, currentSpeed, initialSpeed));
         }
-        private IEnumerator GradualSpeedUp(float duration, float _currentSpeed, float targetSpeed){
+
+        private IEnumerator SpeedChange(float duration, float _currentSpeed, float targetSpeed){
             float elapsedTime = 0.0f;
             while(elapsedTime < duration){
                 elapsedTime += Time.deltaTime;
@@ -530,7 +537,7 @@ namespace MotionMatching{
 
         private IEnumerator UpdateGroupForce(float updateTime){
             List<GameObject> groupAgents = avatarCreator.GetAgentsInCategory(socialRelations);
-                            MotionMatchingSkinnedMeshRendererWithOCEAN motionMatchingSkinnedMeshRendererWithOCEAN = agentCollider.GetComponent<MotionMatchingSkinnedMeshRendererWithOCEAN>(); 
+            MotionMatchingSkinnedMeshRendererWithOCEAN motionMatchingSkinnedMeshRendererWithOCEAN = agentCollider.GetComponent<MotionMatchingSkinnedMeshRendererWithOCEAN>(); 
             if(groupAgents.Count <= 1){
                 groupForce = Vector3.zero;
                 yield return null;
@@ -583,7 +590,7 @@ namespace MotionMatching{
 
         private Vector3 CalculateCohesionForce(List<GameObject> groupAgents, float cohesionWeight, Vector3 currentPos){
             float threshold = (groupAgents.Count-1)/2;
-            Vector3 centerOfMass = CalculateCenterOfMass(groupAgents);
+            Vector3 centerOfMass = CalculateCenterOfMass(groupAgents, agentCollider.gameObject);
             float dist = Vector3.Distance(currentPos, centerOfMass);
             float judgeWithinThreshold = 0;
             if(dist > threshold){
@@ -614,7 +621,7 @@ namespace MotionMatching{
 
         private Vector3 CalculateGazingDirection(List<GameObject> groupAgents, Vector3 currentPos, Vector3 currentDir, float neckRotationAngle)
         {
-            Vector3 centerOfMass = CalculateCenterOfMass(groupAgents);
+            Vector3 centerOfMass = CalculateCenterOfMass(groupAgents, agentCollider.gameObject);
             Vector3 directionToCenterOfMass = (centerOfMass - currentPos).normalized;    
             Vector3 crossProduct = Vector3.Cross(currentDir, directionToCenterOfMass);
             Quaternion rotation = Quaternion.identity;
@@ -636,7 +643,7 @@ namespace MotionMatching{
 
         private float CalculateGazingAngle(List<GameObject> groupAgents, Vector3 currentPos, Vector3 currentDir, float angleLimit)
         {
-            Vector3 centerOfMass = CalculateCenterOfMass(groupAgents);
+            Vector3 centerOfMass = CalculateCenterOfMass(groupAgents, agentCollider.gameObject);
             Vector3 directionToCenterOfMass = centerOfMass - currentPos;
             float angle = Vector3.Angle(currentDir, directionToCenterOfMass);
             float neckRotationAngle = 0f;
@@ -649,7 +656,7 @@ namespace MotionMatching{
             return neckRotationAngle;
         }
 
-        private Vector3 CalculateCenterOfMass(List<GameObject> groupAgents)
+        private Vector3 CalculateCenterOfMass(List<GameObject> groupAgents, GameObject myself)
         {
             if (groupAgents == null || groupAgents.Count == 0)
             {
@@ -657,17 +664,70 @@ namespace MotionMatching{
             }
 
             Vector3 sumOfPositions = Vector3.zero;
-            int count = groupAgents.Count;
+            int count = 0;
 
             foreach (GameObject go in groupAgents)
             {
-                if (go != null)
+                if (go != null && go != myself) 
                 {
                     sumOfPositions += go.transform.position;
+                    count++; 
                 }
             }
 
+            if (count == 0) 
+            {
+                return Vector3.zero;
+            }
+
             return sumOfPositions / count;
+        }
+
+        //SpeedAdjustment Function
+        private IEnumerator UpdateSpeed(List<GameObject> groupAgents, GameObject myself, float speedChangeDist = 1.0f, float updateTime = 0.5f){
+            if(groupAgents.Count == 1 || socialRelations == SocialRelations.Individual){
+                yield return null;
+            }
+
+            float averageSpeed = 0.0f;
+            foreach(GameObject go in groupAgents){
+                ParameterManager parameterManager = go.GetComponent<ParameterManager>();
+                averageSpeed += parameterManager.GetCurrentSpeed();
+            }
+            averageSpeed /= groupAgents.Count;
+
+            while(true){
+                Vector3 centerOfMass = CalculateCenterOfMass(groupAgents, myself);
+                Vector3 directionToCenterOfMass = (centerOfMass - (Vector3)GetCurrentPosition()).normalized;
+                Vector3 myForward = GetCurrentDirection();
+                float distFromMeToCenterOfMass = Vector3.Distance(GetCurrentPosition(), centerOfMass);
+
+                if(distFromMeToCenterOfMass > speedChangeDist){
+                    float dotProduct = Vector3.Dot(myForward, directionToCenterOfMass);
+                    //lowest speed or average speed?
+                    if (dotProduct > 0)
+                    {
+                        //accelerate when the center of mass is in front of me
+                        if(currentSpeed <= maxSpeed){
+                            currentSpeed += 0.1f; 
+                        }else{
+                            currentSpeed = maxSpeed;
+                        }
+                    }
+                    else
+                    {
+                        //decelerate when the center of mass is behind
+                        if(currentSpeed >= minSpeed){
+                            currentSpeed -= 0.1f;
+                        }else{
+                            currentSpeed = minSpeed;
+                        }
+                    }
+                }else{
+                    currentSpeed = averageSpeed;
+                }
+                yield return new WaitForSeconds(updateTime);
+            }
         }
         
         //Get and Set

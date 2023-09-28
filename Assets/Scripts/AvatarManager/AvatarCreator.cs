@@ -110,7 +110,7 @@ public class AvatarCreator : MonoBehaviour
 
             //initial Speed
             if(randomRelation == SocialRelations.Individual){
-                pathController.initialSpeed = UnityEngine.Random.Range(0.5f, 1.5f);
+                pathController.initialSpeed = UnityEngine.Random.Range(pathController.minSpeed, pathController.maxSpeed);
             }else if(randomRelation == SocialRelations.Couple){
                 pathController.initialSpeed = coupleSpeed;
             }else if(randomRelation == SocialRelations.Family){
