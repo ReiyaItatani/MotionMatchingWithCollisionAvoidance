@@ -530,21 +530,20 @@ namespace MotionMatching{
 
         private IEnumerator UpdateGroupForce(float updateTime){
             List<GameObject> groupAgents = avatarCreator.GetAgentsInCategory(socialRelations);
+                            MotionMatchingSkinnedMeshRendererWithOCEAN motionMatchingSkinnedMeshRendererWithOCEAN = agentCollider.GetComponent<MotionMatchingSkinnedMeshRendererWithOCEAN>(); 
             if(groupAgents.Count <= 1){
                 groupForce = Vector3.zero;
                 yield return null;
             }else{
                 while(true){
-                    Vector3 currentPosition = GetCurrentPosition();
-                    MotionMatchingSkinnedMeshRendererWithOCEAN motionMatchingSkinnedMeshRendererWithOCEAN = agentCollider.GetComponent<MotionMatchingSkinnedMeshRendererWithOCEAN>();      
-                    Vector3 headDirection = motionMatchingSkinnedMeshRendererWithOCEAN.t_Hips.forward;
-                    test = headDirection;
+                    Vector3 currentPosition = GetCurrentPosition();   
+                    Vector3 headDirection = motionMatchingSkinnedMeshRendererWithOCEAN.t_Head.forward;
 
                     float GazeAngle;
                     Vector3 GazeAngleDirection;
                     Vector3 AdjustPosForce = Vector3.zero;
                     if(headDirection!=null){
-                        GazeAngle = CalculateGazingAngle(groupAgents, currentPosition, headDirection, 90f);
+                        GazeAngle = CalculateGazingAngle(groupAgents, currentPosition, headDirection, 60f);
                         GazeAngleDirection = CalculateGazingDirection(groupAgents, currentPosition, headDirection, GazeAngle);
 
                         //This makes agent look at center of mass
