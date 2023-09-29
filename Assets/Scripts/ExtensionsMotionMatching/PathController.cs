@@ -583,7 +583,7 @@ namespace MotionMatching{
                     Vector3 headDirection = motionMatchingSkinnedMeshRendererWithOCEAN.GetCurrentLookAt();
 
                     Vector3 CohesionForce = CalculateCohesionForce(groupAgents, cohesionWeight, currentPosition);
-                    Vector3 RepulsionForce = CalculateRepulsionForce(groupAgents, repulsionForceWeight, agentCollider.radius, currentPosition);
+                    Vector3 RepulsionForce = CalculateRepulsionForce(groupAgents, repulsionForceWeight, agentCollider.gameObject, agentCollider.radius, currentPosition);
                     Vector3 AlignmentForce = CalculateAlignment(groupAgents, alignmentForceWeight, agentCollider.gameObject, currentDirection, agentCollider.radius);
                     Vector3 AdjustPosForce = Vector3.zero;
                     
@@ -598,8 +598,8 @@ namespace MotionMatching{
                     }
 
                     //Vector3 newGroupForce = (AdjustPosForce + CohesionForce + RepulsionForce + AlignmentForce).normalized;
-                    //Vector3 newGroupForce = (CohesionForce + RepulsionForce + AlignmentForce).normalized;
-                    Vector3 newGroupForce = (AlignmentForce).normalized;
+                    Vector3 newGroupForce = (CohesionForce + RepulsionForce + AlignmentForce).normalized;
+                    //Vector3 newGroupForce = (AlignmentForce).normalized;
 
                     StartCoroutine(GroupForceGradualTransition(updateTime, groupForce, newGroupForce));
 
@@ -663,17 +663,17 @@ namespace MotionMatching{
             return judgeWithinThreshold*cohesionWeight*toCenterOfMassDir;
         }
 
-        private Vector3 CalculateRepulsionForce(List<GameObject> groupAgents, float repulsionForceWeight, float agentRadius, Vector3 currentPos){
+        private Vector3 CalculateRepulsionForce(List<GameObject> groupAgents, float repulsionForceWeight, GameObject myself, float agentRadius, Vector3 currentPos){
             Vector3 repulsionForceDir = Vector3.zero;
             foreach(GameObject agent in groupAgents){
                 //skip myselfVector3.Cross
-                if(agent == agentCollider.gameObject) continue;
+                if(agent == myself) continue;
                 Vector3 toOtherDir = agent.transform.position - currentPos;
                 float dist = Vector3.Distance(currentPos, agent.transform.position);
                 float threshold = 0;
                 float safetyDistance = agentRadius;
                 if(dist < 2*agentRadius + safetyDistance){
-                    threshold = 1;
+                    threshold = 1.0f / dist;
                 }
                 toOtherDir = toOtherDir.normalized;
                 repulsionForceDir += threshold*repulsionForceWeight*toOtherDir;
