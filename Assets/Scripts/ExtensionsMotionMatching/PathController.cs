@@ -190,9 +190,7 @@ namespace MotionMatching{
             StartCoroutine(UpdateUnalignedAvoidanceAreaPos(0.9f));
             StartCoroutine(UpdateAvoidanceVector(0.1f, 0.5f));
             StartCoroutine(UpdateAvoidNeighborsVector(updateUnalignedAvoidanceTarget.GetOthersInUnalignedAvoidanceArea(), 0.1f, 0.3f));
-            if(socialRelations != SocialRelations.Individual){
-                StartCoroutine(UpdateGroupForce(0.2f));
-            }
+            StartCoroutine(UpdateGroupForce(0.2f, socialRelations));
             StartCoroutine(UpdateSpeed(avatarCreator.GetAgentsInCategory(socialRelations), agentCollider.gameObject, 1f, 0.5f));
 
             //If you wanna consider all of the other agents for unaligned collision avoidance use below
@@ -568,12 +566,16 @@ namespace MotionMatching{
         private float repulsionForceWeight = 1.0f;
         private float alignmentForceWeight = 0.3f;
 
-        private IEnumerator UpdateGroupForce(float updateTime){
+        private IEnumerator UpdateGroupForce(float updateTime, SocialRelations socialRelations){
             List<GameObject> groupAgents = avatarCreator.GetAgentsInCategory(socialRelations);
             MotionMatchingSkinnedMeshRendererWithOCEAN motionMatchingSkinnedMeshRendererWithOCEAN = agentCollider.GetComponent<MotionMatchingSkinnedMeshRendererWithOCEAN>(); 
-            if(groupAgents.Count <= 1){
+            if(groupAgents.Count <= 1 || socialRelations == SocialRelations.Individual){
                 groupForce = Vector3.zero;
-                yield return null;
+                while(true){
+                    Vector3 currentDirection = GetCurrentDirection();
+                    motionMatchingSkinnedMeshRendererWithOCEAN.SetLookAtCenterOfMass(currentDirection);
+                    yield return new WaitForSeconds(updateTime);
+                }
             }else{
                 while(true){
                     Vector3 currentPosition = GetCurrentPosition();   

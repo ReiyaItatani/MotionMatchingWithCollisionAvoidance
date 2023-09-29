@@ -1783,9 +1783,10 @@ MonoBehaviour:
   goalRadius: 2
   slowingRadius: 3
   unalignedAvoidanceColliderSize: {x: 4.5, y: 1.5, z: 6}
-  toGoalWeight: 1.7
-  avoidNeighborWeight: 1
-  avoidanceWeight: 1.5
+  toGoalWeight: 2
+  avoidNeighborWeight: 2
+  avoidanceWeight: 3
+  groupForceWeight: 1
   MaxDistanceMMAndCharacterController: 0.1
   PositionAdjustmentHalflife: 0.1
   PosMaximumAdjustmentRatio: 0.1

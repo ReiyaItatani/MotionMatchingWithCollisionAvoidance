@@ -756,7 +756,7 @@ namespace MotionMatching
         }
 
         private void AttractionPointUpdater(float probLookForward = 0.1f){
-            if(lookObject!=null){
+            if(lookObject != null){
                 AttractionPoint = (lookObject.transform.position - this.transform.position).normalized;
             }else{
                 AttractionPoint = LookAtCenterOfMass.normalized;
