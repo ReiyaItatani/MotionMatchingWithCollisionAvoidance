@@ -25,13 +25,16 @@ public class AgentManager : MonoBehaviour
 
     [Tooltip("Weight for moving towards the goal.")]
     [Range(0.0f, 5.0f)]
-    public float toGoalWeight = 1.7f;
+    public float toGoalWeight = 2.0f;
     [Tooltip("Weight to avoid neighbors.")]
     [Range(0.0f, 5.0f)]
-    public float avoidNeighborWeight = 1.0f;
+    public float avoidNeighborWeight = 2.0f;
     [Tooltip("Weight for general avoidance.")]
     [Range(0.0f, 5.0f)]
-    public float avoidanceWeight = 1.5f;
+    public float avoidanceWeight = 3.0f;
+    [Tooltip("Weight for group force.")]
+    [Range(0.0f, 5.0f)]
+    public float groupForceWeight = 1.0f;
 
     [Space]
 
@@ -184,6 +187,7 @@ public class AgentManager : MonoBehaviour
         pathController.toGoalWeight = toGoalWeight;
         pathController.avoidanceWeight = avoidanceWeight;
         pathController.avoidNeighborWeight = avoidNeighborWeight;
+        pathController.groupForceWeight = groupForceWeight;
 
         pathController.MaxDistanceMMAndCharacterController = MaxDistanceMMAndCharacterController;
         pathController.PositionAdjustmentHalflife = PositionAdjustmentHalflife;

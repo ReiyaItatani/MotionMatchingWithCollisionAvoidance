@@ -58,7 +58,7 @@ namespace MotionMatching{
         public Vector3 avoidanceColliderSize = new Vector3(1.5f, 1.5f, 2.0f); 
         private Vector3 avoidanceVector = Vector3.zero;//Direction of basic collision avoidance
         [HideInInspector]
-        public float avoidanceWeight = 1.5f;//Weight for basic collision avoidance
+        public float avoidanceWeight = 3.0f;//Weight for basic collision avoidance
         private GameObject currentAvoidanceTarget;
         public GameObject CurrentAvoidanceTarget{
             get => currentAvoidanceTarget;
@@ -73,7 +73,7 @@ namespace MotionMatching{
         private Vector3 currentGoal;
         private Vector3 toGoalVector = Vector3.zero;//Direction to goal
         [HideInInspector]
-        public float toGoalWeight = 1.7f;//Weight for goal direction
+        public float toGoalWeight = 2.0f;//Weight for goal direction
         private int currentGoalIndex = 1;//Current goal index num
         [HideInInspector]
         public float goalRadius = 0.5f;
@@ -88,7 +88,7 @@ namespace MotionMatching{
         private Vector3 avoidNeighborsVector = Vector3.zero;//Direction for unaligned collision avoidance
         private GameObject potentialAvoidanceTarget;
         [HideInInspector]
-        public float avoidNeighborWeight = 1.0f;//Weight for unaligned collision avoidance
+        public float avoidNeighborWeight = 2.0f;//Weight for unaligned collision avoidance
         private float minTimeToCollision =5.0f;
         private float collisionDangerThreshold = 4.0f;
         private BoxCollider unalignedAvoidanceCollider; //The area to trigger unaligned collision avoidance
@@ -117,10 +117,11 @@ namespace MotionMatching{
         public bool showGroupForce = false;
         // --------------------------------------------------------------------------
         // Force From Group --------------------------------------------------------
+        [Header("Group Force, Group Category")]
         private Vector3 groupForce = Vector3.zero;
         public SocialRelations socialRelations;
         [HideInInspector]
-        public float groupForceWeight = 0.4f;
+        public float groupForceWeight = 1.0f;
         
 
         private void Start()
@@ -238,9 +239,11 @@ namespace MotionMatching{
                 Vector3 otherDir = collidedAgent.GetComponent<ParameterManager>().GetCurrentDirection();
                 Vector3 otherPos = collidedAgent.GetComponent<ParameterManager>().GetCurrentPosition();
                 Vector3 offset = otherPos - myPos;
+
                 offset = new Vector3(offset.x, 0f, offset.z);
                 float dotProduct = Vector3.Dot(myDir, otherDir);
                 float angle = 0.1f;
+
                 if(onMoving){
                     if (dotProduct <= -angle){
                         //anti-parallel
@@ -248,7 +251,7 @@ namespace MotionMatching{
                         nextPosition = currentPosition + direction * 0.1f * time;
                     }else{
                         //parallel
-                        if(Vector3.Dot(offset, GetCurrentDirection())>0){
+                        if(Vector3.Dot(offset, GetCurrentDirection()) > 0){
                             //If the other agent is in front of you
                             nextPosition = currentPosition;
                         }else{
@@ -258,12 +261,14 @@ namespace MotionMatching{
                     }
                 }else{
                     //Take a step back
-                    nextPosition = currentPosition - offset * 0.3f * time;
+                    float speedOfStepBack = 0.3f;
+                    nextPosition = currentPosition - offset * speedOfStepBack * time;
                 }
             }else{
                 nextPosition = currentPosition + direction * currentSpeed * time;
             }
         }
+
         private Vector3 CheckOppoentDir(Vector3 myDirection, Vector3 myPosition, Vector3 otherDirection, Vector3 otherPosition){
             Vector3 offset = (otherPosition - myPosition).normalized;
             Vector3 right= Vector3.Cross(Vector3.up, offset);
@@ -273,6 +278,7 @@ namespace MotionMatching{
             }
             return myDirection;
         }
+
         public static Vector3 GetReflectionVector(Vector3 targetVector, Vector3 baseVector)
         {
             targetVector = targetVector.normalized;
@@ -299,6 +305,7 @@ namespace MotionMatching{
             // Move the simulation bone towards the simulation object
             MotionMatching.SetPosAdjustment(adjustmentPosition);
         }
+
         private void ClampSimulationBone()
         {
             // Clamp Position
@@ -311,13 +318,19 @@ namespace MotionMatching{
             }
         }
 
-        //To Update Goal Direction
+        /**********************************************************************************************
+        * Goal Direction Update:
+        * This section of the code is responsible for recalculating and adjusting the target direction.
+        * It ensures that the object is always oriented or moving towards its intended goal or target.
+        ***********************************************************************************************/
         private void CheckForGoalProximity(Vector3 _currentPosition, Vector3 _currentGoal, float _goalRadius)
         {
             float distanceToGoal = Vector3.Distance(_currentPosition, _currentGoal);
             if (distanceToGoal < _goalRadius) SelectRandomGoal();
         }
+
         private bool isIncreasing = true;
+
         private void SelectRandomGoal(){
 
             if(isIncreasing)
@@ -338,10 +351,10 @@ namespace MotionMatching{
             if(currentGoalIndex < 0) currentGoalIndex = -currentGoalIndex;
 
             currentGoal = Path[currentGoalIndex];
-            StartCoroutine(SpeedChange(3.0f, currentSpeed, initialSpeed));
+            StartCoroutine(SpeedChanger(3.0f, currentSpeed, initialSpeed));
         }
 
-        private IEnumerator SpeedChange(float duration, float _currentSpeed, float targetSpeed){
+        private IEnumerator SpeedChanger(float duration, float _currentSpeed, float targetSpeed){
             float elapsedTime = 0.0f;
             while(elapsedTime < duration){
                 elapsedTime += Time.deltaTime;
@@ -353,8 +366,11 @@ namespace MotionMatching{
             yield return null;
         }
 
-        //Basic Collision Avoidance
-        //※current avoidance target is the agent that has capsule collider
+        /***********************************************************************************************
+        * Collision Avoidance Logic:
+        * This section of the code ensures that objects do not overlap or intersect with each other.
+        * It provides basic mechanisms to detect potential collisions and take preventive actions.
+        ***********************************************************************************************/
         private IEnumerator UpdateAvoidanceVector(float updateTime, float transitionTime)
         {
             float elapsedTime = 0.0f;
@@ -380,13 +396,14 @@ namespace MotionMatching{
                 yield return new WaitForSeconds(updateTime);
             }
         }
+
         private Vector3 ComputeAvoidanceVector(GameObject avoidanceTarget, Vector3 currentDirection, Vector3 currentPosition)
         {
             Vector3 directionToAvoidanceTarget = (avoidanceTarget.transform.position - currentPosition).normalized;
             Vector3 upVector;
             if (Vector3.Dot(directionToAvoidanceTarget, currentDirection) >= 0.9748f)
             {
-                upVector = new Vector3(0.0f, 1.0f, 0.0f);
+                upVector = Vector3.up;
             }
             else
             {
@@ -394,6 +411,7 @@ namespace MotionMatching{
             }
             return Vector3.Cross(upVector, directionToAvoidanceTarget).normalized;
         }
+
         private IEnumerator UpdateBasicAvoidanceAreaPos(float AgentHeight){
             while(true){
                 Vector3 Center = (Vector3)GetCurrentPosition()+CurrentDirection.normalized*avoidanceCollider.size.z/2;
@@ -404,7 +422,10 @@ namespace MotionMatching{
             }
         }
 
-        //Unaligned Collision Avoidance
+        /***********************************************************************************************************
+        * Unaligned Collision Avoidance:
+        * This section of the code handles scenarios where objects might collide in the future(prediction).
+        ************************************************************************************************************/
         public IEnumerator UpdateAvoidNeighborsVector(List<GameObject> Agents , float updateTime, float transitionTime){
             while(true){
                 if(currentAvoidanceTarget != null){
@@ -417,6 +438,7 @@ namespace MotionMatching{
                 yield return new WaitForSeconds(updateTime);
             }
         }
+
         public Vector3 SteerToAvoidNeighbors (List<GameObject> others, float minTimeToCollision, float collisionDangerThreshold)
         {
             float steer = 0;
@@ -483,6 +505,7 @@ namespace MotionMatching{
             }
             return Vector3.Cross(CurrentDirection, Vector3.up) * steer;
         }
+
         private float PredictNearestApproachTime (Vector3 myDirection, Vector3 myPosition, float mySpeed, Vector3 otherDirection, Vector3 otherPosition, float otherSpeed)
         {
             Vector3 relVelocity = otherDirection*otherSpeed - myDirection*mySpeed;
@@ -494,13 +517,14 @@ namespace MotionMatching{
 
             return projection / relSpeed;
         }
+
         private float ComputeNearestApproachPositions (float time, Vector3 myPosition, Vector3 myDirection, float mySpeed, Vector3 otherPosition, Vector3 otherDirection, float otherSpeed)
         {
             Vector3    myTravel = myDirection * mySpeed * time;
             Vector3 otherTravel = otherDirection * otherSpeed * time;
 
             Vector3    myFinal =  myPosition +    myTravel;
-            Vector3 otherFinal = new Vector3(0f,0f,0f)+otherPosition + otherTravel;
+            Vector3 otherFinal = otherPosition + otherTravel;
 
             // xxx for annotation
             myPositionAtNearestApproach = myFinal;
@@ -508,6 +532,7 @@ namespace MotionMatching{
 
             return Vector3.Distance(myFinal, otherFinal);
         }
+
         private IEnumerator AvoidNeighborsVectorGradualTransition(float duration, Vector3 initialVector, Vector3 targetVector){
             float elapsedTime = 0.0f;
             Vector3 initialavoidNeighborsVector = initialVector;
@@ -531,9 +556,17 @@ namespace MotionMatching{
             }
         }
 
-        //Force from Group
-        //the greater headRot, the less comfortable is the turning for walking.Therefore, this is adjust the pos to reduce the headRotaion effect.
+        /******************************************************************************************************************************
+        * Force from Group:
+        * This section of the code calculates the collective force exerted by or on a group of objects.
+        * It takes into account the interactions and influences of multiple objects within a group to determine the overall force or direction.
+        ********************************************************************************************************************************/
+        private float fieldOfView = 60f;
 
+        private float socialInteractionWeight = 1.0f;
+        private float cohesionWeight = 0.5f;
+        private float repulsionForceWeight = 1.0f;
+        private float alignmentForceWeight = 0.3f;
 
         private IEnumerator UpdateGroupForce(float updateTime){
             List<GameObject> groupAgents = avatarCreator.GetAgentsInCategory(socialRelations);
@@ -544,79 +577,48 @@ namespace MotionMatching{
             }else{
                 while(true){
                     Vector3 currentPosition = GetCurrentPosition();   
+                    Vector3 currentDirection = GetCurrentDirection();  
                     Vector3 headDirection = motionMatchingSkinnedMeshRendererWithOCEAN.GetCurrentLookAt();
 
-                    float GazeAngle;
-                    Vector3 GazeAngleDirection;
+                    Vector3 CohesionForce = CalculateCohesionForce(groupAgents, cohesionWeight, currentPosition);
+                    Vector3 RepulsionForce = CalculateRepulsionForce(groupAgents, repulsionForceWeight, agentCollider.radius, currentPosition);
+                    Vector3 AlignmentForce = CalculateAlignment(groupAgents, alignmentForceWeight, agentCollider.gameObject, currentDirection, agentCollider.radius);
                     Vector3 AdjustPosForce = Vector3.zero;
+                    
                     if(headDirection!=null){
-                        GazeAngle = CalculateGazingAngle(groupAgents, currentPosition, headDirection, 60f);
-                        GazeAngleDirection = CalculateGazingDirection(groupAgents, currentPosition, headDirection, GazeAngle);
+                        float GazeAngle = CalculateGazingAngle(groupAgents, currentPosition, headDirection, fieldOfView);
+                        Vector3 GazeAngleDirection = CalculateGazingDirection(groupAgents, currentPosition, headDirection, GazeAngle);
 
                         //This makes agent look at center of mass
                         motionMatchingSkinnedMeshRendererWithOCEAN.SetLookAtCenterOfMass(GazeAngleDirection);
 
-                        AdjustPosForce = CalculateAdjustPosForce(1.0f, GazeAngle, headDirection);
+                        AdjustPosForce = CalculateAdjustPosForce(socialInteractionWeight, GazeAngle, headDirection);
                     }
 
-                    Vector3 CohesionForce = CalculateCohesionForce(groupAgents, 0.5f, currentPosition);
-                    Vector3 RepulsionForce = CalculateRepulsionForce(groupAgents, agentCollider.radius, 1.0f, currentPosition);
+                    //Vector3 newGroupForce = (AdjustPosForce + CohesionForce + RepulsionForce + AlignmentForce).normalized;
+                    //Vector3 newGroupForce = (CohesionForce + RepulsionForce + AlignmentForce).normalized;
+                    Vector3 newGroupForce = (AlignmentForce).normalized;
 
-                    //AdjustPosForce
-                    Vector3 newGroupForce = (AdjustPosForce + CohesionForce + RepulsionForce).normalized;
                     StartCoroutine(GroupForceGradualTransition(updateTime, groupForce, newGroupForce));
+
                     yield return new WaitForSeconds(updateTime);
                 }
             }
         }
 
-        private IEnumerator GroupForceGradualTransition(float duration, Vector3 initialVector, Vector3 targetVector){
-            float elapsedTime = 0.0f;
-            Vector3 initialGroupForce = initialVector;
-            while(elapsedTime < duration){
-                elapsedTime += Time.deltaTime;
-                groupForce = Vector3.Slerp(initialGroupForce, targetVector, elapsedTime/duration);
-                yield return new WaitForSeconds(Time.deltaTime);
-            }
-            groupForce = targetVector;
-
-            yield return null;
-        }
-
-        private Vector3 CalculateAdjustPosForce(float socialInteractionWeight, float headRot, Vector3 currentDir){
-            float adjustment = 0.05f;
-            return -socialInteractionWeight * headRot * currentDir *adjustment;
-        }
-
-        private Vector3 CalculateCohesionForce(List<GameObject> groupAgents, float cohesionWeight, Vector3 currentPos){
-            float threshold = (groupAgents.Count-1)/2;
+        private float CalculateGazingAngle(List<GameObject> groupAgents, Vector3 currentPos, Vector3 currentDir, float angleLimit)
+        {
             Vector3 centerOfMass = CalculateCenterOfMass(groupAgents, agentCollider.gameObject);
-            float dist = Vector3.Distance(currentPos, centerOfMass);
-            float judgeWithinThreshold = 0;
-            if(dist > threshold){
-                judgeWithinThreshold = 1;
-            }
-            Vector3 toCenterOfMassDir = (centerOfMass - currentPos).normalized;
+            Vector3 directionToCenterOfMass = centerOfMass - currentPos;
+            float angle = Vector3.Angle(currentDir, directionToCenterOfMass);
+            float neckRotationAngle = 0f;
 
-            return judgeWithinThreshold*cohesionWeight*toCenterOfMassDir;
-        }
-
-        private Vector3 CalculateRepulsionForce(List<GameObject> groupAgents, float agentRadius, float repulsionForceWeight, Vector3 currentPos){
-            Vector3 repulsionForceDir = Vector3.zero;
-            foreach(GameObject agent in groupAgents){
-                //skip myselfVector3.Cross
-                if(agent == agentCollider.gameObject) continue;
-                Vector3 toOtherDir = agent.transform.position - currentPos;
-                float dist = Vector3.Distance(currentPos, agent.transform.position);
-                float threshold = 0;
-                float safetyDistance = agentRadius;
-                if(dist < 2*agentRadius + safetyDistance){
-                    threshold = 1;
-                }
-                toOtherDir = toOtherDir.normalized;
-                repulsionForceDir += threshold*repulsionForceWeight*toOtherDir;
+            if (angle > angleLimit)
+            {
+                neckRotationAngle = angle - angleLimit;
             }
-            return -repulsionForceDir;
+
+            return neckRotationAngle;
         }
 
         private Vector3 CalculateGazingDirection(List<GameObject> groupAgents, Vector3 currentPos, Vector3 currentDir, float neckRotationAngle)
@@ -641,19 +643,98 @@ namespace MotionMatching{
             return rotatedVector.normalized;
         }
 
-        private float CalculateGazingAngle(List<GameObject> groupAgents, Vector3 currentPos, Vector3 currentDir, float angleLimit)
-        {
-            Vector3 centerOfMass = CalculateCenterOfMass(groupAgents, agentCollider.gameObject);
-            Vector3 directionToCenterOfMass = centerOfMass - currentPos;
-            float angle = Vector3.Angle(currentDir, directionToCenterOfMass);
-            float neckRotationAngle = 0f;
+        private Vector3 CalculateAdjustPosForce(float socialInteractionWeight, float headRot, Vector3 currentDir){
+            float adjustment = 0.05f;
+            return -socialInteractionWeight * headRot * currentDir *adjustment;
+        }
 
-            if (angle > angleLimit)
+        private Vector3 CalculateCohesionForce(List<GameObject> groupAgents, float cohesionWeight, Vector3 currentPos){
+            float threshold = (groupAgents.Count-1)/2;
+            Vector3 centerOfMass = CalculateCenterOfMass(groupAgents, agentCollider.gameObject);
+            float dist = Vector3.Distance(currentPos, centerOfMass);
+            float judgeWithinThreshold = 0;
+            if(dist > threshold){
+                judgeWithinThreshold = 1;
+            }
+            Vector3 toCenterOfMassDir = (centerOfMass - currentPos).normalized;
+
+            return judgeWithinThreshold*cohesionWeight*toCenterOfMassDir;
+        }
+
+        private Vector3 CalculateRepulsionForce(List<GameObject> groupAgents, float repulsionForceWeight, float agentRadius, Vector3 currentPos){
+            Vector3 repulsionForceDir = Vector3.zero;
+            foreach(GameObject agent in groupAgents){
+                //skip myselfVector3.Cross
+                if(agent == agentCollider.gameObject) continue;
+                Vector3 toOtherDir = agent.transform.position - currentPos;
+                float dist = Vector3.Distance(currentPos, agent.transform.position);
+                float threshold = 0;
+                float safetyDistance = agentRadius;
+                if(dist < 2*agentRadius + safetyDistance){
+                    threshold = 1;
+                }
+                toOtherDir = toOtherDir.normalized;
+                repulsionForceDir += threshold*repulsionForceWeight*toOtherDir;
+            }
+            return -repulsionForceDir;
+        }
+
+        public Vector3 CalculateAlignment(List<GameObject> groupAgents, float alignmentForceWeight, GameObject myself, Vector3 currentDirection, float agentRadius){
+            Vector3 steering = Vector3.zero;
+            int neighborsCount = 0;
+
+            foreach (GameObject go in groupAgents)
             {
-                neckRotationAngle = angle - angleLimit;
+                // if (go != myself)
+                // {
+                //     Vector3 otherDirection = go.GetComponent<ParameterManager>().GetCurrentDirection();
+                //     steering += otherDirection;
+                //     neighborsCount++;
+                // }else{
+                //     currentDirection = go.GetComponent<ParameterManager>().GetCurrentDirection();
+                // }
+                float alignmentAngle  = 0.7f;
+                if (InBoidNeighborhood(go, myself, agentRadius * 3, agentRadius * 6, alignmentAngle, currentDirection))
+                {
+                    Vector3 otherDirection = go.GetComponent<ParameterManager>().GetCurrentDirection();
+                    steering += otherDirection;
+                    neighborsCount++;
+                }
             }
 
-            return neckRotationAngle;
+            if (neighborsCount > 0)
+            {
+                steering = ((steering / neighborsCount) - currentDirection).normalized;
+            }
+
+            return steering * alignmentForceWeight;
+        }
+
+        public bool InBoidNeighborhood(GameObject other, GameObject myself, float minDistance, float maxDistance, float cosMaxAngle, Vector3 currentDirection){
+            if (other == myself)
+            {
+                return false;
+            }
+            else
+            {
+                float dist = Vector3.Distance(other.transform.position, myself.transform.position);
+                Vector3 offset = other.transform.position - myself.transform.position;
+
+                if (dist <minDistance)
+                {
+                    return true;
+                }
+                else if (dist > maxDistance)
+                {
+                    return false;
+                }
+                else
+                {
+                    Vector3 unitOffset = offset.normalized;
+                    float forwardness = Vector3.Dot(currentDirection, unitOffset);
+                    return forwardness > cosMaxAngle;
+                }
+            }
         }
 
         private Vector3 CalculateCenterOfMass(List<GameObject> groupAgents, GameObject myself)
@@ -683,8 +764,25 @@ namespace MotionMatching{
             return sumOfPositions / count;
         }
 
-        //SpeedAdjustment Function
-        private IEnumerator UpdateSpeed(List<GameObject> groupAgents, GameObject myself, float speedChangeDist = 1.0f, float updateTime = 0.5f){
+        private IEnumerator GroupForceGradualTransition(float duration, Vector3 initialVector, Vector3 targetVector){
+            float elapsedTime = 0.0f;
+            Vector3 initialGroupForce = initialVector;
+            while(elapsedTime < duration){
+                elapsedTime += Time.deltaTime;
+                groupForce = Vector3.Slerp(initialGroupForce, targetVector, elapsedTime/duration);
+                yield return new WaitForSeconds(Time.deltaTime);
+            }
+            groupForce = targetVector;
+
+            yield return null;
+        }
+
+        /********************************************************************************************************************************
+        * Speed Adjustment Function:
+        * This section of the code is dedicated to modifying the speed of an object based on certain conditions or criteria.
+        * It ensures that the object maintains an appropriate speed, possibly in response to environmental factors, obstacles, or other objects.
+        ********************************************************************************************************************************/
+        private IEnumerator UpdateSpeed(List<GameObject> groupAgents, GameObject myself, float speedChangeDist = 1.0f, float updateTime = 0.5f, float speedChangeRate = 0.1f){
             if(groupAgents.Count == 1 || socialRelations == SocialRelations.Individual){
                 yield return null;
             }
@@ -709,7 +807,7 @@ namespace MotionMatching{
                     {
                         //accelerate when the center of mass is in front of me
                         if(currentSpeed <= maxSpeed){
-                            currentSpeed += 0.1f; 
+                            currentSpeed += speedChangeRate; 
                         }else{
                             currentSpeed = maxSpeed;
                         }
@@ -718,7 +816,7 @@ namespace MotionMatching{
                     {
                         //decelerate when the center of mass is behind
                         if(currentSpeed >= minSpeed){
-                            currentSpeed -= 0.1f;
+                            currentSpeed -= speedChangeRate;
                         }else{
                             currentSpeed = minSpeed;
                         }
@@ -730,7 +828,11 @@ namespace MotionMatching{
             }
         }
         
-        //Get and Set
+        /********************************************************************************************************************************
+        * Get and Set Methods:
+        * This section of the code contains methods to retrieve (get) and update (set) the values of properties or attributes of an object.
+        * These methods ensure controlled access and potential validation when changing the state of the object.
+        ********************************************************************************************************************************/
         public override void GetTrajectoryFeature(TrajectoryFeature feature, int index, Transform character, NativeArray<float> output)
         {
             if (!feature.SimulationBone) Debug.Assert(false, "Trajectory should be computed using the SimulationBone");
@@ -813,6 +915,11 @@ namespace MotionMatching{
             _collidedAgent.GetComponent<ParameterManager>().SetOnMoving(onMoving);
         }
 
+        /******************************************************************************************************************************
+        * Gizmos and Drawing:
+        * This section of the code is dedicated to visual debugging and representation in the Unity editor.
+        * It contains methods and logic to draw gizmos, shapes, and other visual aids that help in understanding and debugging the scene or object behaviors.
+        ******************************************************************************************************************************/
         private void DrawInfo(){
             Color gizmoColor;
             if(showAgentSphere){
