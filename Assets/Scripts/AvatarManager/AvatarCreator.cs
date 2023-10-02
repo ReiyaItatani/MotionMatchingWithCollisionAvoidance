@@ -20,6 +20,7 @@ public class AvatarCreator : MonoBehaviour
 {
     public List<GameObject> avatarPrefabs = new List<GameObject>();
     public List<GameObject> instantiatedAvatars = new List<GameObject>();
+    public List<GameObject> categoryGameObjects = new List<GameObject>();
     public int spawnCount = 1;    
 
     [Header("Agent's Path")]
@@ -45,6 +46,10 @@ public class AvatarCreator : MonoBehaviour
         { SocialRelations.Individual, 0 }
     };
 
+    //To make center of mass
+    public float agentHeight = 1.8f;
+    public float agentRadius = 0.3f;
+
 
     public void InstantiateAvatars()
     {
@@ -64,11 +69,33 @@ public class AvatarCreator : MonoBehaviour
             
             if (child == null)
             {
-                GameObject newChild = new GameObject(relationName);
-                newChild.transform.SetParent(transform);
+                GameObject categoryGameObject = new GameObject(relationName);
+                categoryGameObjects.Add(categoryGameObject);
+                categoryGameObject.transform.SetParent(transform);
+
+                //To make center of mass collider
+                if (relation != SocialRelations.Individual){
+                    GameObject centerMassObj = new GameObject("GroupCollider");
+                    centerMassObj.transform.SetParent(categoryGameObject.transform);
+
+                    centerMassObj.tag = "Group";
+                    CapsuleCollider groupCollider = centerMassObj.AddComponent<CapsuleCollider>();
+                    centerMassObj.AddComponent<Rigidbody>();
+                    groupCollider.height = agentHeight;
+                    
+                    Vector3 newCenter = groupCollider.center;
+                    newCenter.y = agentHeight / 2f;
+                    groupCollider.center = newCenter;
+                    groupCollider.isTrigger = true;
+
+                    UpdateGroupCollider updateCenterOfMassPos = centerMassObj.AddComponent<UpdateGroupCollider>();
+                    updateCenterOfMassPos.AvatarCreator = this.transform.GetComponent<AvatarCreator>();
+                    updateCenterOfMassPos.AgentRadius = agentRadius;
+                }
             }
         }
-
+        
+        //Create Agents and Change Hierarchy
         for (int i = 0; i < spawnCount; i++)
         {
             GameObject randomAvatar = avatarPrefabs[UnityEngine.Random.Range(0, avatarPrefabs.Count)];
@@ -125,8 +152,43 @@ public class AvatarCreator : MonoBehaviour
             pathController.goalRadius = GoalRadius;
             pathController.slowingRadius = SlowingRadius;
 
+            //set group collider
+
+            if (randomRelation != SocialRelations.Individual)
+            {
+                GameObject relationGameObject = transform.Find(randomRelation.ToString()).gameObject;
+                GameObject groupCollider = relationGameObject.transform.Find("GroupCollider").gameObject;
+
+                if (groupCollider != null)
+                {
+                    pathController.groupCollider = groupCollider.GetComponent<CapsuleCollider>();
+                }
+            }
+            
+
             instantiatedAvatars.Add(instance);
         }
+
+        //Destroy Group Collider if the number of agents is less than 1
+        foreach (KeyValuePair<SocialRelations, int> entry in categoryCounts)
+        {
+            if(entry.Key == SocialRelations.Individual) return; 
+            if (entry.Value <= 1)
+            {
+                GameObject relationGameObject = transform.Find(entry.Key.ToString()).gameObject;
+
+                if (relationGameObject != null)
+                {
+                    GameObject groupCollider = relationGameObject.transform.Find("GroupCollider").gameObject;
+
+                    if (groupCollider != null)
+                    {
+                        DestroyImmediate(groupCollider);
+                    }
+                }
+            }
+        }
+
     }
 
     public void DeleteAvatars()
@@ -135,7 +197,11 @@ public class AvatarCreator : MonoBehaviour
         {
             DestroyImmediate(avatar);
         }
+        foreach (GameObject categoryGameObject in categoryGameObjects){
+            DestroyImmediate(categoryGameObject);
+        }
         instantiatedAvatars.Clear();
+        categoryGameObjects.Clear();
         pathVertices = new List<Vector3>();
         InitializeDictionaries();
     }
@@ -193,6 +259,22 @@ public class AvatarCreator : MonoBehaviour
         return agentsList;
     }
 
+    public List<PathController> GetPathControllersInCategory(SocialRelations socialRelations)
+    {
+        List<PathController> pathControllersList = new List<PathController>();
+        
+        foreach (GameObject avatar in instantiatedAvatars)
+        {
+            PathController pathController = avatar.GetComponentInChildren<PathController>();
+            if (pathController && pathController.socialRelations == socialRelations)
+            {
+                pathControllersList.Add(pathController);
+            }
+        }
+        
+        return pathControllersList;
+    }
+
     Vector3 GenerateRandomPointInCircle(float r)
     {
         float angle = UnityEngine.Random.Range(0f, 2f * Mathf.PI); 
@@ -232,6 +314,18 @@ public class AvatarCreator : MonoBehaviour
                 return counts[relation] < 3;
             default:
                 return true;
+        }
+    }
+
+    public SocialRelations StringToSocialRelations(string relationName)
+    {
+        if (Enum.IsDefined(typeof(SocialRelations), relationName))
+        {
+            return (SocialRelations)Enum.Parse(typeof(SocialRelations), relationName);
+        }
+        else
+        {
+            throw new ArgumentException($"'{relationName}' is not a valid SocialRelations name.");
         }
     }
 

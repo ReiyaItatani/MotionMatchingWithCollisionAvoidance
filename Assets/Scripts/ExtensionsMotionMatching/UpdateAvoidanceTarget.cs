@@ -7,15 +7,18 @@ public class UpdateAvoidanceTarget : MonoBehaviour
 {
     private PathController pathCharacterController;
     private CapsuleCollider colliderMySelf;
+    private CapsuleCollider colliderMyGroup;
     
     void Start(){
         pathCharacterController = this.transform.parent.GetComponent<PathController>();
         colliderMySelf = pathCharacterController.agentCollider;
+        colliderMyGroup = pathCharacterController.groupCollider;
     }
     void OnTriggerStay(Collider other)
     {
         if(pathCharacterController == null) return;
-        if(!other.Equals(colliderMySelf) && other.gameObject.CompareTag("Agent")) 
+        if(!other.Equals(colliderMySelf) && other.gameObject.CompareTag("Agent") || 
+        colliderMyGroup!=null && !other.Equals(colliderMyGroup) && other.gameObject.CompareTag("Group")) 
         {
             if (pathCharacterController.CurrentAvoidanceTarget == null || Vector3.Distance(pathCharacterController.GetCurrentPosition(), pathCharacterController.CurrentAvoidanceTarget.transform.position) > Vector3.Distance(pathCharacterController.GetCurrentPosition(), other.transform.position))
             {

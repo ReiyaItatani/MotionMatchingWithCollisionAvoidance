@@ -768,7 +768,7 @@ namespace MotionMatching
                     attractionPoint = lookAtCenterOfMass.normalized;
                 }
             }
-            Draw.ArrowheadArc(this.transform.position, attractionPoint, 0.55f, Color.black);
+            //Draw.ArrowheadArc(this.transform.position, attractionPoint, 0.55f, Color.black);
         }
 
         private void CheckNeckRotation(Vector3 _currentLookAt, Vector3 myDirection, float _neckRotationLimit, float probability = 0.1f){

@@ -59,7 +59,7 @@ namespace MotionMatching{
         private Vector3 avoidanceVector = Vector3.zero;//Direction of basic collision avoidance
         [HideInInspector]
         public float avoidanceWeight = 3.0f;//Weight for basic collision avoidance
-        private GameObject currentAvoidanceTarget;
+        public GameObject currentAvoidanceTarget;
         public GameObject CurrentAvoidanceTarget{
             get => currentAvoidanceTarget;
             set => currentAvoidanceTarget = value;
@@ -67,6 +67,12 @@ namespace MotionMatching{
         public CapsuleCollider agentCollider; //Collider of the agent
         private BoxCollider avoidanceCollider; //The area to trigger basic collision avoidance
         private GameObject basicAvoidanceArea;
+        private UpdateAvoidanceTarget updateAvoidanceTarget;
+        public UpdateAvoidanceTarget UpdateAvoidanceTarget
+        {
+            get { return updateAvoidanceTarget; }
+            set { updateAvoidanceTarget = value; } 
+        }
         // --------------------------------------------------------------------------
         // To Goal Direction --------------------------------------------------------
         [Header("Parameters For Goal Direction")]
@@ -122,6 +128,7 @@ namespace MotionMatching{
         public SocialRelations socialRelations;
         [HideInInspector]
         public float groupForceWeight = 1.0f;
+        public CapsuleCollider groupCollider;
         
 
         private void Start()
@@ -132,7 +139,7 @@ namespace MotionMatching{
             avoidanceCollider = basicAvoidanceArea.AddComponent<BoxCollider>();
             avoidanceCollider.size = avoidanceColliderSize;
             avoidanceCollider.isTrigger = true;
-            basicAvoidanceArea.AddComponent<UpdateAvoidanceTarget>();
+            updateAvoidanceTarget = basicAvoidanceArea.AddComponent<UpdateAvoidanceTarget>();
 
             //Create Box Collider for Unaligned Collision Avoidance Force
             unalignedAvoidanceArea = new GameObject("UnalignedCollisionAvoidanceArea");
@@ -563,7 +570,7 @@ namespace MotionMatching{
 
         private float socialInteractionWeight = 1.0f;
         private float cohesionWeight = 0.5f;
-        private float repulsionForceWeight = 1.0f;
+        private float repulsionForceWeight = 1.5f;
         private float alignmentForceWeight = 0.3f;
 
         private IEnumerator UpdateGroupForce(float updateTime, SocialRelations socialRelations){
