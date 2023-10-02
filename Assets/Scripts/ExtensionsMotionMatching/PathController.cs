@@ -217,13 +217,13 @@ namespace MotionMatching{
             DrawInfo();
         }
 
-        private void SimulatePath(float time, Vector3 currentPosition, out Vector3 nextPosition, out Vector3 direction)
+        private void SimulatePath(float time, Vector3 _currentPosition, out Vector3 nextPosition, out Vector3 direction)
         {
             //Update ToGoalVector
-            toGoalVector = (currentGoal - currentPosition).normalized;
+            toGoalVector = (currentGoal - _currentPosition).normalized;
 
             //Gradually decrease speed
-            float distanceToGoal = Vector3.Distance(currentPosition, currentGoal);
+            float distanceToGoal = Vector3.Distance(_currentPosition, currentGoal);
             currentSpeed = distanceToGoal < slowingRadius ? Mathf.Lerp(minSpeed, currentSpeed, distanceToGoal / slowingRadius) : currentSpeed;
 
             //Move Agent
@@ -246,24 +246,24 @@ namespace MotionMatching{
                     if (dotProduct <= -angle){
                         //anti-parallel
                         direction = CheckOppoentDir(myDir, myPos, otherDir, otherPos);
-                        nextPosition = currentPosition + direction * 0.1f * time;
+                        nextPosition = _currentPosition + direction * 0.1f * time;
                     }else{
                         //parallel
                         if(Vector3.Dot(offset, GetCurrentDirection()) > 0){
                             //If the other agent is in front of you
-                            nextPosition = currentPosition;
+                            nextPosition = _currentPosition;
                         }else{
                             //If you are in front of the other agent
-                            nextPosition = currentPosition + direction * currentSpeed * time;
+                            nextPosition = _currentPosition + direction * currentSpeed * time;
                         }
                     }
                 }else{
                     //Take a step back
                     float speedOfStepBack = 0.3f;
-                    nextPosition = currentPosition - offset * speedOfStepBack * time;
+                    nextPosition = _currentPosition - offset * speedOfStepBack * time;
                 }
             }else{
-                nextPosition = currentPosition + direction * currentSpeed * time;
+                nextPosition = _currentPosition + direction * currentSpeed * time;
             }
         }
 
@@ -349,7 +349,7 @@ namespace MotionMatching{
             if(currentGoalIndex < 0) currentGoalIndex = -currentGoalIndex;
 
             currentGoal = Path[currentGoalIndex];
-            StartCoroutine(SpeedChanger(3.0f, currentSpeed, initialSpeed));
+            StartCoroutine(SpeedChanger(3.0f, GetCurrentSpeed(), initialSpeed));
         }
 
         private IEnumerator SpeedChanger(float duration, float _currentSpeed, float targetSpeed){
@@ -375,7 +375,7 @@ namespace MotionMatching{
             while(true){
                 if (currentAvoidanceTarget != null)
                 {
-                    avoidanceVector = ComputeAvoidanceVector(currentAvoidanceTarget, CurrentDirection, GetCurrentPosition());
+                    avoidanceVector = ComputeAvoidanceVector(currentAvoidanceTarget, GetCurrentDirection(), GetCurrentPosition());
                     //gradually increase the avoidance force considering the distance 
                     avoidanceVector = avoidanceVector*(1.0f-Vector3.Distance(currentAvoidanceTarget.transform.position, GetCurrentPosition())/(Mathf.Sqrt(avoidanceColliderSize.x/2*avoidanceColliderSize.x/2+avoidanceColliderSize.z*avoidanceColliderSize.z)+agentCollider.radius*2));
                     elapsedTime = 0.0f;
@@ -395,26 +395,26 @@ namespace MotionMatching{
             }
         }
 
-        private Vector3 ComputeAvoidanceVector(GameObject avoidanceTarget, Vector3 currentDirection, Vector3 currentPosition)
+        private Vector3 ComputeAvoidanceVector(GameObject avoidanceTarget, Vector3 _currentDirection, Vector3 _currentPosition)
         {
-            Vector3 directionToAvoidanceTarget = (avoidanceTarget.transform.position - currentPosition).normalized;
+            Vector3 directionToAvoidanceTarget = (avoidanceTarget.transform.position - _currentPosition).normalized;
             Vector3 upVector;
-            if (Vector3.Dot(directionToAvoidanceTarget, currentDirection) >= 0.9748f)
+            if (Vector3.Dot(directionToAvoidanceTarget, _currentDirection) >= 0.9748f)
             {
                 upVector = Vector3.up;
             }
             else
             {
-                upVector = Vector3.Cross(directionToAvoidanceTarget, currentDirection);
+                upVector = Vector3.Cross(directionToAvoidanceTarget, _currentDirection);
             }
             return Vector3.Cross(upVector, directionToAvoidanceTarget).normalized;
         }
 
         private IEnumerator UpdateBasicAvoidanceAreaPos(float AgentHeight){
             while(true){
-                Vector3 Center = (Vector3)GetCurrentPosition()+CurrentDirection.normalized*avoidanceCollider.size.z/2;
+                Vector3 Center = (Vector3)GetCurrentPosition() + GetCurrentDirection().normalized * avoidanceCollider.size.z/2;
                 basicAvoidanceArea.transform.position = new Vector3(Center.x, AgentHeight, Center.z);
-                Quaternion targetRotation = Quaternion.LookRotation(CurrentDirection);
+                Quaternion targetRotation = Quaternion.LookRotation(GetCurrentDirection());
                 basicAvoidanceArea.transform.rotation = targetRotation;
                 yield return null;
             }
@@ -450,11 +450,11 @@ namespace MotionMatching{
                 ParameterManager otherParameterManager = other.GetComponent<ParameterManager>();
 
                 // predicted time until nearest approach of "this" and "other"
-                float time = PredictNearestApproachTime (CurrentDirection, GetCurrentPosition(), currentSpeed, otherParameterManager.GetCurrentDirection(), otherParameterManager.GetCurrentPosition(), otherParameterManager.GetCurrentSpeed());
+                float time = PredictNearestApproachTime (GetCurrentDirection(), GetCurrentPosition(), GetCurrentSpeed(), otherParameterManager.GetCurrentDirection(), otherParameterManager.GetCurrentPosition(), otherParameterManager.GetCurrentSpeed());
                 //Debug.Log("time:"+time);
                 if ((time >= 0) && (time < minTimeToCollision)){
                     //Debug.Log("Distance:"+computeNearestApproachPositions (time, CurrentPosition, CurrentDirection, CurrentSpeed, otherParameterManager.GetRawCurrentPosition(), otherParameterManager.GetCurrentDirection(), otherParameterManager.GetCurrentSpeed()));
-                    if (ComputeNearestApproachPositions (time, GetCurrentPosition(), CurrentDirection, currentSpeed, otherParameterManager.GetCurrentPosition(), otherParameterManager.GetCurrentDirection(), otherParameterManager.GetCurrentSpeed()) < collisionDangerThreshold)
+                    if (ComputeNearestApproachPositions (time, GetCurrentPosition(), GetCurrentDirection(), GetCurrentSpeed(), otherParameterManager.GetCurrentPosition(), otherParameterManager.GetCurrentDirection(), otherParameterManager.GetCurrentSpeed()) < collisionDangerThreshold)
                     {
                         minTimeToCollision = time;
                         potentialAvoidanceTarget = other;
@@ -464,7 +464,7 @@ namespace MotionMatching{
 
             if(potentialAvoidanceTarget != null){
                 // parallel: +1, perpendicular: 0, anti-parallel: -1
-                float parallelness = Vector3.Dot(CurrentDirection, potentialAvoidanceTarget.GetComponent<ParameterManager>().GetCurrentDirection());
+                float parallelness = Vector3.Dot(GetCurrentDirection(), potentialAvoidanceTarget.GetComponent<ParameterManager>().GetCurrentDirection());
                 float angle = 0.707f;
 
                 if (parallelness < -angle)
@@ -472,7 +472,7 @@ namespace MotionMatching{
                     // anti-parallel "head on" paths:
                     // steer away from future threat position
                     Vector3 offset = otherPositionAtNearestApproach - (Vector3)GetCurrentPosition();
-                    Vector3 rightVector = Vector3.Cross(CurrentDirection, Vector3.up);
+                    Vector3 rightVector = Vector3.Cross(GetCurrentDirection(), Vector3.up);
 
                     float sideDot = Vector3.Dot(offset, rightVector);
                     //If there is the predicted potential collision agent on your right side:SideDot>0, steer should be -1(left side)
@@ -484,7 +484,7 @@ namespace MotionMatching{
                     {
                         // parallel paths: steer away from threat
                         Vector3 offset = potentialAvoidanceTarget.GetComponent<ParameterManager>().GetCurrentPosition() - (Vector3)GetCurrentPosition();
-                        Vector3 rightVector = Vector3.Cross(CurrentDirection, Vector3.up);
+                        Vector3 rightVector = Vector3.Cross(GetCurrentDirection(), Vector3.up);
 
                         float sideDot = Vector3.Dot(offset, rightVector);
                         steer = (sideDot > 0) ? -1.0f : 1.0f;
@@ -493,15 +493,15 @@ namespace MotionMatching{
                     {
                         // perpendicular paths: steer behind threat
                         // (only the slower of the two does this)
-                        if(potentialAvoidanceTarget.GetComponent<ParameterManager>().GetCurrentSpeed() <= currentSpeed){
-                            Vector3 rightVector = Vector3.Cross(CurrentDirection, Vector3.up);
+                        if(potentialAvoidanceTarget.GetComponent<ParameterManager>().GetCurrentSpeed() <= GetCurrentSpeed()){
+                            Vector3 rightVector = Vector3.Cross(GetCurrentDirection(), Vector3.up);
                             float sideDot = Vector3.Dot(rightVector, potentialAvoidanceTarget.GetComponent<ParameterManager>().GetCurrentDirection());
                             steer = (sideDot > 0) ? -1.0f : 1.0f;
                         }
                     }
                 }
             }
-            return Vector3.Cross(CurrentDirection, Vector3.up) * steer;
+            return Vector3.Cross(GetCurrentDirection(), Vector3.up) * steer;
         }
 
         private float PredictNearestApproachTime (Vector3 myDirection, Vector3 myPosition, float mySpeed, Vector3 otherDirection, Vector3 otherPosition, float otherSpeed)
@@ -546,9 +546,9 @@ namespace MotionMatching{
 
         private IEnumerator UpdateUnalignedAvoidanceAreaPos(float AgentHeight){
             while(true){
-                Vector3 Center = (Vector3)GetCurrentPosition() + CurrentDirection.normalized*unalignedAvoidanceCollider.size.z/2;
+                Vector3 Center = (Vector3)GetCurrentPosition() + GetCurrentDirection().normalized*unalignedAvoidanceCollider.size.z/2;
                 unalignedAvoidanceArea.transform.position = new Vector3(Center.x, AgentHeight, Center.z);
-                Quaternion targetRotation = Quaternion.LookRotation(CurrentDirection);
+                Quaternion targetRotation = Quaternion.LookRotation(GetCurrentDirection());
                 unalignedAvoidanceArea.transform.rotation = targetRotation;
                 yield return null;
             }
@@ -571,35 +571,35 @@ namespace MotionMatching{
             MotionMatchingSkinnedMeshRendererWithOCEAN motionMatchingSkinnedMeshRendererWithOCEAN = agentCollider.GetComponent<MotionMatchingSkinnedMeshRendererWithOCEAN>(); 
             if(groupAgents.Count <= 1 || socialRelations == SocialRelations.Individual){
                 groupForce = Vector3.zero;
+                motionMatchingSkinnedMeshRendererWithOCEAN.SetLookForward(true);
                 while(true){
-                    Vector3 currentDirection = GetCurrentDirection();
-                    motionMatchingSkinnedMeshRendererWithOCEAN.SetLookAtCenterOfMass(currentDirection);
+                    Vector3 _currentDirection = GetCurrentDirection();
+                    motionMatchingSkinnedMeshRendererWithOCEAN.SetAgentDirection(_currentDirection);
                     yield return new WaitForSeconds(updateTime);
                 }
             }else{
+                motionMatchingSkinnedMeshRendererWithOCEAN.SetLookForward(false);
                 while(true){
-                    Vector3 currentPosition = GetCurrentPosition();   
-                    Vector3 currentDirection = GetCurrentDirection();  
+                    Vector3 _currentPosition = GetCurrentPosition();   
+                    Vector3 _currentDirection = GetCurrentDirection();  
+                    motionMatchingSkinnedMeshRendererWithOCEAN.SetAgentDirection(_currentDirection);
                     Vector3 headDirection = motionMatchingSkinnedMeshRendererWithOCEAN.GetCurrentLookAt();
 
-                    Vector3 CohesionForce = CalculateCohesionForce(groupAgents, cohesionWeight, currentPosition);
-                    Vector3 RepulsionForce = CalculateRepulsionForce(groupAgents, repulsionForceWeight, agentCollider.gameObject, agentCollider.radius, currentPosition);
-                    Vector3 AlignmentForce = CalculateAlignment(groupAgents, alignmentForceWeight, agentCollider.gameObject, currentDirection, agentCollider.radius);
-                    Vector3 AdjustPosForce = Vector3.zero;
+                    Vector3 cohesionForce = CalculateCohesionForce(groupAgents, cohesionWeight, _currentPosition);
+                    Vector3 repulsionForce = CalculateRepulsionForce(groupAgents, repulsionForceWeight, agentCollider.gameObject, agentCollider.radius, _currentPosition);
+                    Vector3 alignmentForce = CalculateAlignment(groupAgents, alignmentForceWeight, agentCollider.gameObject, _currentDirection, agentCollider.radius);
+                    //Vector3 AdjustPosForce = Vector3.zero;
                     
                     if(headDirection!=null){
-                        float GazeAngle = CalculateGazingAngle(groupAgents, currentPosition, headDirection, fieldOfView);
-                        Vector3 GazeAngleDirection = CalculateGazingDirection(groupAgents, currentPosition, headDirection, GazeAngle);
-
-                        //This makes agent look at center of mass
+                        //float GazeAngle = CalculateGazingAngle(groupAgents, _currentPosition, headDirection, fieldOfView);
+                        Vector3 GazeAngleDirection = CalculateGazingDirection(groupAgents, _currentPosition, headDirection, agentCollider.gameObject, fieldOfView);
                         motionMatchingSkinnedMeshRendererWithOCEAN.SetLookAtCenterOfMass(GazeAngleDirection);
 
-                        AdjustPosForce = CalculateAdjustPosForce(socialInteractionWeight, GazeAngle, headDirection);
+                        //AdjustPosForce = CalculateAdjustPosForce(socialInteractionWeight, GazeAngle, headDirection);
                     }
 
-                    //Vector3 newGroupForce = (AdjustPosForce + CohesionForce + RepulsionForce + AlignmentForce).normalized;
-                    Vector3 newGroupForce = (CohesionForce + RepulsionForce + AlignmentForce).normalized;
-                    //Vector3 newGroupForce = (AlignmentForce).normalized;
+                    //Vector3 newGroupForce = (AdjustPosForce + cohesionForce + repulsionForce + alignmentForce).normalized;
+                    Vector3 newGroupForce = (cohesionForce + repulsionForce + alignmentForce).normalized;
 
                     StartCoroutine(GroupForceGradualTransition(updateTime, groupForce, newGroupForce));
 
@@ -608,7 +608,7 @@ namespace MotionMatching{
             }
         }
 
-        private float CalculateGazingAngle(List<GameObject> groupAgents, Vector3 currentPos, Vector3 currentDir, float angleLimit)
+        private float CalculateGazingAngle(List<GameObject> groupAgents, Vector3 currentPos, Vector3 currentDir, float angleLimit, GameObject myself)
         {
             Vector3 centerOfMass = CalculateCenterOfMass(groupAgents, agentCollider.gameObject);
             Vector3 directionToCenterOfMass = centerOfMass - currentPos;
@@ -623,11 +623,20 @@ namespace MotionMatching{
             return neckRotationAngle;
         }
 
-        private Vector3 CalculateGazingDirection(List<GameObject> groupAgents, Vector3 currentPos, Vector3 currentDir, float neckRotationAngle)
+        private Vector3 CalculateGazingDirection(List<GameObject> groupAgents, Vector3 currentPos, Vector3 currentLookDir, GameObject myself, float angleLimit)
         {
-            Vector3 centerOfMass = CalculateCenterOfMass(groupAgents, agentCollider.gameObject);
+            Vector3 centerOfMass = CalculateCenterOfMass(groupAgents, myself);
             Vector3 directionToCenterOfMass = (centerOfMass - currentPos).normalized;    
-            Vector3 crossProduct = Vector3.Cross(currentDir, directionToCenterOfMass);
+
+            float angle = Vector3.Angle(currentLookDir, directionToCenterOfMass);
+            float neckRotationAngle = 0f;
+
+            if (angle > angleLimit)
+            {
+                neckRotationAngle = angle - angleLimit;
+            }
+
+            Vector3 crossProduct = Vector3.Cross(currentLookDir, directionToCenterOfMass);
             Quaternion rotation = Quaternion.identity;
             if (crossProduct.y > 0)
             {
@@ -640,7 +649,7 @@ namespace MotionMatching{
                 rotation = Quaternion.Euler(0, -neckRotationAngle, 0);
             }
 
-            Vector3 rotatedVector = rotation * currentDir;
+            Vector3 rotatedVector = rotation * currentLookDir;
 
             return rotatedVector.normalized;
         }
@@ -808,7 +817,7 @@ namespace MotionMatching{
                     if (dotProduct > 0)
                     {
                         //accelerate when the center of mass is in front of me
-                        if(currentSpeed <= maxSpeed){
+                        if(GetCurrentSpeed() <= maxSpeed){
                             currentSpeed += speedChangeRate; 
                         }else{
                             currentSpeed = maxSpeed;
@@ -817,7 +826,7 @@ namespace MotionMatching{
                     else
                     {
                         //decelerate when the center of mass is behind
-                        if(currentSpeed >= minSpeed){
+                        if(GetCurrentSpeed() >= minSpeed){
                             currentSpeed -= speedChangeRate;
                         }else{
                             currentSpeed = minSpeed;

@@ -322,11 +322,12 @@ namespace MotionMatching
             AdjustEyeLevelPass();
 
             //LookAt
+            CheckNeckRotation(GetCurrentLookAt(), GetAgentDirection(), neckRotationLimit);
             AttractionPointUpdater();
             UpdateCurrentLookAt();
-            LookAtPass(currentLookAt, AttractionPoint, 1.0f);
+            LookAtPass(currentLookAt, attractionPoint, 1.0f);
             //LookAtAdjustmentPass
-            LookAtAdjustmentPass(40.0f);
+            LookAtAdjustmentPass(neckRotationLimit);
 
             //EyesMovement
             EyesMovementPass();
@@ -738,36 +739,58 @@ namespace MotionMatching
         * 
         * * */
         [Header("Look At Params")]
-        private Vector3 AttractionPoint;
+        private Vector3 attractionPoint;
         private Quaternion saveLookAtRot = Quaternion.identity;
         private Vector3 currentLookAt = Vector3.zero;
+        public bool lookAtForward = false;
+        private float neckRotationLimit = 40.0f;
 
         private void LookAtPass(Vector3 currentLookAtDir, Vector3 targetLookAtDir, float rotationSpeed){
             Vector3 crossResult = Vector3.Cross(currentLookAtDir, targetLookAtDir);
-                if (crossResult.y > 0)
-                {
-                    saveLookAtRot *= Quaternion.Euler(0, rotationSpeed, 0);
-                }
-                else if (crossResult.y < 0)
-                {
-                    saveLookAtRot *= Quaternion.Euler(0, -rotationSpeed, 0);
-                }
+            if (crossResult.y > 0)
+            {
+                saveLookAtRot *= Quaternion.Euler(0, rotationSpeed, 0);
+            }
+            else if (crossResult.y < 0)
+            {
+                saveLookAtRot *= Quaternion.Euler(0, -rotationSpeed, 0);
+            }
             t_Neck.localRotation *= saveLookAtRot;
         }
 
-        private void AttractionPointUpdater(float probLookForward = 0.1f){
+        private void AttractionPointUpdater(){
             if(lookObject != null){
-                AttractionPoint = (lookObject.transform.position - this.transform.position).normalized;
+                attractionPoint = (lookObject.transform.position - this.transform.position).normalized;
             }else{
-                AttractionPoint = LookAtCenterOfMass.normalized;
-                //if you want to add forward force
-                // if(UnityEngine.Random.Range(0,1f) <= probLookForward){
-                //     AttractionPoint = t_Head.forward;
-                // }else{
-                //     AttractionPoint = LookAtCenterOfMass.normalized;
-                // }  
+                if(lookAtForward){
+                    attractionPoint = agentDirection;
+                }else{
+                    attractionPoint = lookAtCenterOfMass.normalized;
+                }
             }
-            Draw.ArrowheadArc(this.transform.position, AttractionPoint, 0.55f, Color.black);
+            Draw.ArrowheadArc(this.transform.position, attractionPoint, 0.55f, Color.black);
+        }
+
+        private void CheckNeckRotation(Vector3 _currentLookAt, Vector3 myDirection, float _neckRotationLimit, float probability = 0.1f){
+            float currentNeckRotation = Vector3.Angle(_currentLookAt, myDirection);
+            if(probability >= UnityEngine.Random.Range(0.0f, 1.0f)){
+                if(currentNeckRotation >= _neckRotationLimit && coroutineLooForwardIsFinished == true){
+                    float lookAtForwardDuration = 2.0f;
+                    StartCoroutine(TemporalLookAtForward(lookAtForwardDuration));
+                }
+            }
+        }
+
+        private bool coroutineLooForwardIsFinished = true;
+        private IEnumerator TemporalLookAtForward(float duration){
+            if(lookAtForward == false  && coroutineLooForwardIsFinished == true){
+                coroutineLooForwardIsFinished = false;
+                lookAtForward = true;
+                yield return new WaitForSeconds(duration);
+                lookAtForward = false;
+                coroutineLooForwardIsFinished = true;
+            }
+            yield return null;
         }
 
         private void UpdateCurrentLookAt(){
@@ -785,10 +808,24 @@ namespace MotionMatching
             //t_Neck.localRotation *= Quaternion.Inverse(t_Neck.rotation) * horizontalRotation;
         }
 
-        private Vector3 LookAtCenterOfMass = Vector3.zero;
+        private Vector3 lookAtCenterOfMass = Vector3.zero;
 
-        public void SetLookAtCenterOfMass(Vector3 lookAtCenterOfMass){
-            LookAtCenterOfMass = lookAtCenterOfMass;
+        public void SetLookAtCenterOfMass(Vector3 _lookAtCenterOfMass){
+            lookAtCenterOfMass = _lookAtCenterOfMass;
+        }
+
+        private Vector3 agentDirection = Vector3.zero;
+
+        public void SetAgentDirection(Vector3 _agentDirection){
+            agentDirection = _agentDirection;
+        }
+
+        public Vector3 GetAgentDirection(){
+            return agentDirection;
+        }
+
+        public void SetLookForward(bool _lookAtForward){
+            lookAtForward = _lookAtForward;
         }
 
         private void LookAtAdjustmentPass(float angleLimit = 40.0f){
@@ -799,9 +836,9 @@ namespace MotionMatching
         {
             Vector3 eulerRotation = rotation.eulerAngles;
 
-            eulerRotation.x = ClampAngle(eulerRotation.x, angleLimit);
+            //eulerRotation.x = ClampAngle(eulerRotation.x, angleLimit);
             eulerRotation.y = ClampAngle(eulerRotation.y, angleLimit);
-            eulerRotation.z = ClampAngle(eulerRotation.z, angleLimit);
+            //eulerRotation.z = ClampAngle(eulerRotation.z, angleLimit);
 
             return Quaternion.Euler(eulerRotation);
         }
@@ -826,19 +863,7 @@ namespace MotionMatching
 
         private void EyesMovementPass()
         {
-            if (lookObject == null)
-            {
-                ResetEyesBlendShape();
-                if (startEyeWeightCoroutine)
-                {
-                    startEyeWeightCoroutine = false;
-                    StartCoroutine(EyesWeightChanger(blendValue, 0, UnityEngine.Random.Range(0.1f, 0.5f)));
-                }
-            }
-            else
-            {
-                CalculateBlendValueBasedOnDirection(lookObject.transform.position - this.transform.position);
-            }
+            CalculateBlendValueBasedOnDirection(GetCurrentLookAt(), attractionPoint);
         }
 
         private void ResetEyesBlendShape()
@@ -853,14 +878,14 @@ namespace MotionMatching
             }
         }
 
-        private void CalculateBlendValueBasedOnDirection(Vector3 direction)
+        private void CalculateBlendValueBasedOnDirection(Vector3 currentDirection, Vector3 targetDirection)
         {
-            float angle = Vector3.Angle(t_Head.forward, direction);
-            float sign = Mathf.Sign(Vector3.Cross(t_Head.forward, direction).y);
+            float angle = Vector3.Angle(currentDirection, targetDirection);
+            float sign = Mathf.Sign(Vector3.Cross(currentDirection, targetDirection).y);
 
             blendValue = Mathf.Clamp(angle / 90.0f * 100.0f, 0.0f, 100.0f);
 
-            // Sign indicates direction (1 for right, -1 for left)
+            // Sign indicates targetDirection (1 for right, -1 for left)
             if (sign >= 0)
             {
                 SetEyesBlendShape(lookLeft_Eyes, 0);
@@ -894,27 +919,6 @@ namespace MotionMatching
 
             blendValue = targetWeight;
         }
-
-        
-    //     float rotateSpeed = 1.0f; 
-
-    //     private IEnumerator LookAtPass() {
-    //     while (true) {
-    //         if(lookObject == null) yield return null;
-        
-    //         Vector3 lookDirection = this.transform.InverseTransformDirection(lookObject.transform.position - this.transform.position);
-    //         Quaternion fromTo = Quaternion.FromToRotation(t_Head.forward, lookDirection);
-
-    //         // Rotate over time
-    //         Quaternion targetRotationHead = t_Head.localRotation * fromTo;
-    //         Quaternion targetRotationNeck = t_Neck.localRotation * fromTo;
-    //         while (Quaternion.Angle(t_Head.localRotation, targetRotationHead) > 0.1f) {
-    //             t_Head.localRotation = Quaternion.RotateTowards(t_Head.localRotation, targetRotationHead, Time.deltaTime * rotateSpeed);
-    //             t_Neck.localRotation = Quaternion.RotateTowards(t_Neck.localRotation, targetRotationNeck, Time.deltaTime * rotateSpeed);
-    //             yield return null;
-    //         }
-    //     }
-    // }
 
         #region NEW ROTATE PASS
         private Vector3 nrp_spine;
