@@ -52,7 +52,12 @@ namespace MotionMatching{
                     maxDistance = distance;
                 }
             }
-            groupCollider.radius = maxDistance + agentRadius;
+            if(maxDistance <= (agentsInCategory.Count)/2){
+                groupCollider.enabled = true;
+                groupCollider.radius = maxDistance + agentRadius;    
+            }else{
+                groupCollider.enabled = false;
+            }
         }
     }
 }

@@ -8,18 +8,21 @@ public class UpdateUnalignedAvoidanceTarget : MonoBehaviour
     private PathController pathCharacterController;
     private CapsuleCollider myCapsuleCollider;
     public List<GameObject> othersInUnalignedAvoidanceArea;
+    private CapsuleCollider colliderMyGroup;
 
     
     void Awake(){
         pathCharacterController = this.transform.parent.GetComponent<PathController>();
         myCapsuleCollider = pathCharacterController.agentCollider;
+        colliderMyGroup = pathCharacterController.groupCollider;
         othersInUnalignedAvoidanceArea = new List<GameObject>();
     }
 
     void OnTriggerStay(Collider other)
     {
         if(pathCharacterController == null) return;
-        if(!other.Equals(myCapsuleCollider) && other.gameObject.CompareTag("Agent")) 
+        if(!other.Equals(myCapsuleCollider) && other.gameObject.CompareTag("Agent") || 
+           !other.Equals(colliderMyGroup) && other.gameObject.CompareTag("Group")) 
         {
             if (!othersInUnalignedAvoidanceArea.Contains(other.gameObject))
             {
@@ -31,7 +34,8 @@ public class UpdateUnalignedAvoidanceTarget : MonoBehaviour
     void OnTriggerExit(Collider other)
     {
         if(pathCharacterController == null) return;
-        if(!other.Equals(myCapsuleCollider) && other.gameObject.CompareTag("Agent")){
+        if(!other.Equals(myCapsuleCollider) && other.gameObject.CompareTag("Agent") || 
+           !other.Equals(colliderMyGroup) && other.gameObject.CompareTag("Group")){
             if (othersInUnalignedAvoidanceArea.Contains(other.gameObject))
             {
                 othersInUnalignedAvoidanceArea.Remove(other.gameObject);

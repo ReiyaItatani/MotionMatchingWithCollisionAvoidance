@@ -38,8 +38,8 @@ public class AgentCollisionDetection : MonoBehaviour
         {
             onCollide = false;
             onMoving = false;
-            pathController.SetOnCollide(onCollide, collider.gameObject);
-            pathController.SetOnMoving(onMoving, collider.gameObject);
+            pathController.SetOnCollide(onCollide);
+            pathController.SetOnMoving(onMoving);
             pathController.SetCollidedAgent(collider.gameObject);
             if(socialBehaviour != null && 
             motionMatchingSkinnedMeshRendererWithOCEAN != null) StartCoroutine(WaitTime(Random.Range(3f, 7f), collider.gameObject));
@@ -73,7 +73,7 @@ public class AgentCollisionDetection : MonoBehaviour
     {
         //Start wait
         onCollide = true;
-        pathController.SetOnCollide(onCollide, _collidedAgent);
+        pathController.SetOnCollide(onCollide);
         //Look at
         socialBehaviour.LookAtTarget(_collidedAgent);
         //Start talk
@@ -88,14 +88,14 @@ public class AgentCollisionDetection : MonoBehaviour
         socialBehaviour.FollowMotionMacthing();
         //StartMove
         onMoving = true;
-        pathController.SetOnMoving(onMoving, _collidedAgent);
+        pathController.SetOnMoving(onMoving);
         yield return new WaitForSeconds(time - time/2.0f);
 
         //Back to normal
         onCollide = false;
         onMoving = false;
-        pathController.SetOnCollide(onCollide, _collidedAgent);
-        pathController.SetOnMoving(onMoving, _collidedAgent);
+        pathController.SetOnCollide(onCollide);
+        pathController.SetOnMoving(onMoving);
         yield return null;
     }
 }

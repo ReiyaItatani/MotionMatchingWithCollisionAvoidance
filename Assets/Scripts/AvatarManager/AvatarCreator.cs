@@ -46,7 +46,7 @@ public class AvatarCreator : MonoBehaviour
         { SocialRelations.Individual, 0 }
     };
 
-    //To make center of mass
+    [Header("Agent Info")]
     public float agentHeight = 1.8f;
     public float agentRadius = 0.3f;
 
@@ -56,10 +56,10 @@ public class AvatarCreator : MonoBehaviour
         CalculatePath();
 
         //Set initial speed for each social relations
-        float coupleSpeed = UnityEngine.Random.Range(0.5f, 1.0f);
-        float familySpeed = UnityEngine.Random.Range(0.5f, 1.0f);
-        float friendSpeed = UnityEngine.Random.Range(0.5f, 1.0f);
-        float coworkerSpeed = UnityEngine.Random.Range(0.5f, 1.0f);
+        float coupleSpeed = UnityEngine.Random.Range(0.5f, 0.8f);
+        float familySpeed = UnityEngine.Random.Range(0.5f, 0.8f);
+        float friendSpeed = UnityEngine.Random.Range(0.5f, 0.8f);
+        float coworkerSpeed = UnityEngine.Random.Range(0.5f, 0.8f);
 
         //Create Category Objects
         foreach (SocialRelations relation in System.Enum.GetValues(typeof(SocialRelations)))
@@ -91,6 +91,8 @@ public class AvatarCreator : MonoBehaviour
                     UpdateGroupCollider updateCenterOfMassPos = centerMassObj.AddComponent<UpdateGroupCollider>();
                     updateCenterOfMassPos.AvatarCreator = this.transform.GetComponent<AvatarCreator>();
                     updateCenterOfMassPos.AgentRadius = agentRadius;
+
+                    centerMassObj.AddComponent<ParameterManager>();
                 }
             }
         }
@@ -152,8 +154,7 @@ public class AvatarCreator : MonoBehaviour
             pathController.goalRadius = GoalRadius;
             pathController.slowingRadius = SlowingRadius;
 
-            //set group collider
-
+            //set group collider and save pathmanager
             if (randomRelation != SocialRelations.Individual)
             {
                 GameObject relationGameObject = transform.Find(randomRelation.ToString()).gameObject;
@@ -161,6 +162,8 @@ public class AvatarCreator : MonoBehaviour
 
                 if (groupCollider != null)
                 {
+                    ParameterManager groupParameterManager = groupCollider.GetComponent<ParameterManager>();
+                    groupParameterManager.pathControllers.Add(pathController);
                     pathController.groupCollider = groupCollider.GetComponent<CapsuleCollider>();
                 }
             }

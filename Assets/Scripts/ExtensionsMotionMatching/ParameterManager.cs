@@ -5,38 +5,41 @@ using MotionMatching;
 
 public class ParameterManager : MonoBehaviour
 {
-    public PathController pathController;
-    private bool onCollide = false;
-    private bool onMoving = false;
+    public List<PathController> pathControllers = new List<PathController>();
+
     public Vector3 GetCurrentDirection(){
-        return pathController.GetCurrentDirection();
-    }
-    
-    public Vector3 GetRawCurrentPosition(){
-        return pathController.GetRawCurrentPosition();
+        if(pathControllers.Count <= 1){
+            return pathControllers[0].GetCurrentDirection();           
+        }else{
+            Vector3 currentDirectionAverage = Vector3.zero;  
+            foreach(PathController pathController in pathControllers){
+                currentDirectionAverage += pathController.GetCurrentDirection();
+            }
+            return currentDirectionAverage.normalized;
+        }
     }
 
     public Vector3 GetCurrentPosition(){
-        return pathController.GetCurrentPosition();
+        if(pathControllers.Count <= 1){
+            return pathControllers[0].GetCurrentPosition();           
+        }else{
+            Vector3 currentPositionAverage = Vector3.zero;  
+            foreach(PathController pathController in pathControllers){
+                currentPositionAverage += (Vector3)pathController.GetCurrentPosition();
+            }
+            return currentPositionAverage/pathControllers.Count;
+        }
     }
 
     public float GetCurrentSpeed(){
-        return pathController.GetCurrentSpeed();
-    }
-
-    public void SetOnCollide(bool _onCollide){
-        onCollide = _onCollide;
-    }
-
-    public void SetOnMoving(bool _onMoving){
-        onMoving = _onMoving;
-    }
-
-    public bool GetoOnCollide(){
-        return onCollide;
-    }
-
-    public bool GetOnMoving(){
-        return onMoving;
+        if(pathControllers.Count <= 1){
+            return pathControllers[0].GetCurrentSpeed();           
+        }else{
+            float currentSpeedAverage = 0f;  
+            foreach(PathController pathController in pathControllers){
+                currentSpeedAverage += pathController.GetCurrentSpeed();
+            }
+            return currentSpeedAverage/pathControllers.Count;
+        }
     }
 }

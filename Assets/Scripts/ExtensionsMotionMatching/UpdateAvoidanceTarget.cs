@@ -18,7 +18,7 @@ public class UpdateAvoidanceTarget : MonoBehaviour
     {
         if(pathCharacterController == null) return;
         if(!other.Equals(colliderMySelf) && other.gameObject.CompareTag("Agent") || 
-        colliderMyGroup!=null && !other.Equals(colliderMyGroup) && other.gameObject.CompareTag("Group")) 
+           !other.Equals(colliderMyGroup) && other.gameObject.CompareTag("Group")) 
         {
             if (pathCharacterController.CurrentAvoidanceTarget == null || Vector3.Distance(pathCharacterController.GetCurrentPosition(), pathCharacterController.CurrentAvoidanceTarget.transform.position) > Vector3.Distance(pathCharacterController.GetCurrentPosition(), other.transform.position))
             {

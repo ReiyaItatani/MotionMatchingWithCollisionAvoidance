@@ -1899,7 +1899,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22e7640aeefc8564bbdbc7602767de8b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pathController: {fileID: 8534726784994661193}
+  pathControllers:
+  - {fileID: 8534726784994661193}
 --- !u!114 &5501216699893442129
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1955,7 +1956,7 @@ MonoBehaviour:
   head_bend: 0
   lookObject: {fileID: 0}
   faceController: {fileID: 0}
-  lookAtWeight: 0
+  lookAtForward: 0
 --- !u!114 &8534726784215831859
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2487,10 +2488,14 @@ MonoBehaviour:
   MaxDistanceMMAndCharacterController: 0.1
   PositionAdjustmentHalflife: 0.1
   PosMaximumAdjustmentRatio: 0.1
+  currentSpeed: 1
   initialSpeed: 1.2
+  minSpeed: 0.5
+  maxSpeed: 1
   avatarCreator: {fileID: 0}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
   avoidanceWeight: 1.5
+  currentAvoidanceTarget: {fileID: 0}
   agentCollider: {fileID: 8774337926849790458}
   toGoalWeight: 1.7
   goalRadius: 0.5
@@ -2502,6 +2507,10 @@ MonoBehaviour:
   showUnalignedCollisionAvoidance: 0
   showGoalDirection: 0
   showCurrentDirection: 0
+  showGroupForce: 0
+  socialRelations: 0
+  groupForceWeight: 0.5
+  groupCollider: {fileID: 0}
 --- !u!1 &8535031327892083923
 GameObject:
   m_ObjectHideFlags: 0

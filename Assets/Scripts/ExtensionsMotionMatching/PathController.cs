@@ -33,13 +33,13 @@ namespace MotionMatching{
         public float PosMaximumAdjustmentRatio = 0.1f; // Ratio between the adjustment and the character's velocity to clamp the adjustment
         // Speed Of Agents -----------------------------------------------------------------
         [Header("Speed")]
-        private float currentSpeed = 1.0f; //Current speed of the agent
-        [Range (0.0f, 1.5f), HideInInspector]
-        public float initialSpeed = 1.0f; //Initial speed of the agent
+        public float currentSpeed = 1.0f; //Current speed of the agent
+        [Range (0.0f, 1.0f), HideInInspector]
+        public float initialSpeed = 0.7f; //Initial speed of the agent
         [HideInInspector]
         public float minSpeed = 0.5f; //Minimum speed of the agent
         [HideInInspector]
-        public float maxSpeed = 1.2f; //Maximum speed of the agent
+        public float maxSpeed = 1.0f; //Maximum speed of the agent
         // --------------------------------------------------------------------------
         // To Mange Agents -----------------------------------------------------------------
         public AvatarCreator avatarCreator; //Manager for all of the agents
@@ -58,7 +58,7 @@ namespace MotionMatching{
         public Vector3 avoidanceColliderSize = new Vector3(1.5f, 1.5f, 2.0f); 
         private Vector3 avoidanceVector = Vector3.zero;//Direction of basic collision avoidance
         [HideInInspector]
-        public float avoidanceWeight = 3.0f;//Weight for basic collision avoidance
+        public float avoidanceWeight = 2.0f;//Weight for basic collision avoidance
         public GameObject currentAvoidanceTarget;
         public GameObject CurrentAvoidanceTarget{
             get => currentAvoidanceTarget;
@@ -127,7 +127,7 @@ namespace MotionMatching{
         private Vector3 groupForce = Vector3.zero;
         public SocialRelations socialRelations;
         [HideInInspector]
-        public float groupForceWeight = 1.0f;
+        public float groupForceWeight = 0.5f;
         public CapsuleCollider groupCollider;
         
 
@@ -198,7 +198,7 @@ namespace MotionMatching{
             StartCoroutine(UpdateAvoidanceVector(0.1f, 0.5f));
             StartCoroutine(UpdateAvoidNeighborsVector(updateUnalignedAvoidanceTarget.GetOthersInUnalignedAvoidanceArea(), 0.1f, 0.3f));
             StartCoroutine(UpdateGroupForce(0.2f, socialRelations));
-            StartCoroutine(UpdateSpeed(avatarCreator.GetAgentsInCategory(socialRelations), agentCollider.gameObject, 1f, 0.5f));
+            StartCoroutine(UpdateSpeed(avatarCreator.GetAgentsInCategory(socialRelations), agentCollider.gameObject));
 
             //If you wanna consider all of the other agents for unaligned collision avoidance use below
             //StartCoroutine(UpdateAvoidNeighborsVector(avatarCreator.GetAgents(), 0.1f, 0.3f));
@@ -419,6 +419,7 @@ namespace MotionMatching{
 
         private IEnumerator UpdateBasicAvoidanceAreaPos(float AgentHeight){
             while(true){
+                if(GetCurrentDirection() == Vector3.zero) yield return null;
                 Vector3 Center = (Vector3)GetCurrentPosition() + GetCurrentDirection().normalized * avoidanceCollider.size.z/2;
                 basicAvoidanceArea.transform.position = new Vector3(Center.x, AgentHeight, Center.z);
                 Quaternion targetRotation = Quaternion.LookRotation(GetCurrentDirection());
@@ -457,11 +458,23 @@ namespace MotionMatching{
                 ParameterManager otherParameterManager = other.GetComponent<ParameterManager>();
 
                 // predicted time until nearest approach of "this" and "other"
-                float time = PredictNearestApproachTime (GetCurrentDirection(), GetCurrentPosition(), GetCurrentSpeed(), otherParameterManager.GetCurrentDirection(), otherParameterManager.GetCurrentPosition(), otherParameterManager.GetCurrentSpeed());
+                float time = PredictNearestApproachTime (GetCurrentDirection(), 
+                                                         GetCurrentPosition(), 
+                                                         GetCurrentSpeed(), 
+                                                         otherParameterManager.GetCurrentDirection(), 
+                                                         otherParameterManager.GetCurrentPosition(), 
+                                                         otherParameterManager.GetCurrentSpeed());
                 //Debug.Log("time:"+time);
                 if ((time >= 0) && (time < minTimeToCollision)){
                     //Debug.Log("Distance:"+computeNearestApproachPositions (time, CurrentPosition, CurrentDirection, CurrentSpeed, otherParameterManager.GetRawCurrentPosition(), otherParameterManager.GetCurrentDirection(), otherParameterManager.GetCurrentSpeed()));
-                    if (ComputeNearestApproachPositions (time, GetCurrentPosition(), GetCurrentDirection(), GetCurrentSpeed(), otherParameterManager.GetCurrentPosition(), otherParameterManager.GetCurrentDirection(), otherParameterManager.GetCurrentSpeed()) < collisionDangerThreshold)
+                    if (ComputeNearestApproachPositions (time, 
+                                                         GetCurrentPosition(), 
+                                                         GetCurrentDirection(), 
+                                                         GetCurrentSpeed(), 
+                                                         otherParameterManager.GetCurrentPosition(), 
+                                                         otherParameterManager.GetCurrentDirection(), 
+                                                         otherParameterManager.GetCurrentSpeed()) 
+                                                         < collisionDangerThreshold)
                     {
                         minTimeToCollision = time;
                         potentialAvoidanceTarget = other;
@@ -553,6 +566,7 @@ namespace MotionMatching{
 
         private IEnumerator UpdateUnalignedAvoidanceAreaPos(float AgentHeight){
             while(true){
+                if(GetCurrentDirection() == Vector3.zero) yield return null;
                 Vector3 Center = (Vector3)GetCurrentPosition() + GetCurrentDirection().normalized*unalignedAvoidanceCollider.size.z/2;
                 unalignedAvoidanceArea.transform.position = new Vector3(Center.x, AgentHeight, Center.z);
                 Quaternion targetRotation = Quaternion.LookRotation(GetCurrentDirection());
@@ -568,7 +582,7 @@ namespace MotionMatching{
         ********************************************************************************************************************************/
         private float fieldOfView = 60f;
 
-        private float socialInteractionWeight = 1.0f;
+        //private float socialInteractionWeight = 1.0f;
         private float cohesionWeight = 0.5f;
         private float repulsionForceWeight = 1.5f;
         private float alignmentForceWeight = 0.3f;
@@ -800,7 +814,7 @@ namespace MotionMatching{
         * This section of the code is dedicated to modifying the speed of an object based on certain conditions or criteria.
         * It ensures that the object maintains an appropriate speed, possibly in response to environmental factors, obstacles, or other objects.
         ********************************************************************************************************************************/
-        private IEnumerator UpdateSpeed(List<GameObject> groupAgents, GameObject myself, float speedChangeDist = 1.0f, float updateTime = 0.5f, float speedChangeRate = 0.1f){
+        private IEnumerator UpdateSpeed(List<GameObject> groupAgents, GameObject myself, float updateTime = 0.5f, float speedChangeRate = 0.05f){
             if(groupAgents.Count == 1 || socialRelations == SocialRelations.Individual){
                 yield return null;
             }
@@ -817,6 +831,7 @@ namespace MotionMatching{
                 Vector3 directionToCenterOfMass = (centerOfMass - (Vector3)GetCurrentPosition()).normalized;
                 Vector3 myForward = GetCurrentDirection();
                 float distFromMeToCenterOfMass = Vector3.Distance(GetCurrentPosition(), centerOfMass);
+                float speedChangeDist = groupAgents.Count/2;
 
                 if(distFromMeToCenterOfMass > speedChangeDist){
                     float dotProduct = Vector3.Dot(myForward, directionToCenterOfMass);
@@ -923,14 +938,12 @@ namespace MotionMatching{
             collidedAgent = _collidedAgent;
         }
         
-        public void SetOnCollide(bool _onCollide, GameObject _collidedAgent){
+        public void SetOnCollide(bool _onCollide){
             onCollide = _onCollide;
-            _collidedAgent.GetComponent<ParameterManager>().SetOnCollide(onCollide);
         }
 
-        public void SetOnMoving(bool _onMoving, GameObject _collidedAgent){
+        public void SetOnMoving(bool _onMoving){
             onMoving = _onMoving;
-            _collidedAgent.GetComponent<ParameterManager>().SetOnMoving(onMoving);
         }
 
         /******************************************************************************************************************************

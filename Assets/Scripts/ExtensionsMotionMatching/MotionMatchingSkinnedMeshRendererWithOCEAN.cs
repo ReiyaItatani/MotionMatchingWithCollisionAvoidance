@@ -859,7 +859,6 @@ namespace MotionMatching
         private int lookRight_Eyes = 112;
         private int lookLeft_Eyes = 111;
         private float blendValue;
-        private bool startEyeWeightCoroutine = false;
 
         private void EyesMovementPass()
         {
@@ -896,8 +895,6 @@ namespace MotionMatching
                 SetEyesBlendShape(lookLeft_Eyes, blendValue);
                 SetEyesBlendShape(lookRight_Eyes, 0);
             }
-            
-            startEyeWeightCoroutine = true;
         }
 
         private void SetEyesBlendShape(int blendShapeIndex, float value)

@@ -129,7 +129,7 @@ public class AnimatorInspector : MonoBehaviour
     //     }
     // }
 
-    private AnimationInfo last_aniInfo_deltaHandsToLines = null;
+    //private AnimationInfo last_aniInfo_deltaHandsToLines = null;
 
     // public void DeltaHandsToLines(Animator a)
     // {
