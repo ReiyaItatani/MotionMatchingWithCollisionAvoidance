@@ -53,10 +53,7 @@ namespace MotionMatching{
                 }
             }
             if(maxDistance <= (agentsInCategory.Count)/2){
-                groupCollider.enabled = true;
                 groupCollider.radius = maxDistance + agentRadius;    
-            }else{
-                groupCollider.enabled = false;
             }
         }
     }

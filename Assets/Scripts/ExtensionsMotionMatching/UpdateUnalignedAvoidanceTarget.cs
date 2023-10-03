@@ -22,7 +22,7 @@ public class UpdateUnalignedAvoidanceTarget : MonoBehaviour
     {
         if(pathCharacterController == null) return;
         if(!other.Equals(myCapsuleCollider) && other.gameObject.CompareTag("Agent") || 
-           !other.Equals(colliderMyGroup) && other.gameObject.CompareTag("Group")) 
+           !other.Equals(colliderMyGroup) && other.gameObject.CompareTag("Group"))
         {
             if (!othersInUnalignedAvoidanceArea.Contains(other.gameObject))
             {
