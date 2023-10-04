@@ -391,7 +391,7 @@ namespace MotionMatching{
                     avoidanceVector = ComputeAvoidanceVector(currentAvoidanceTarget, GetCurrentDirection(), GetCurrentPosition());
                     //gradually increase the avoidance force considering the distance 
                     avoidanceVector = avoidanceVector*(1.0f-Vector3.Distance(currentAvoidanceTarget.transform.position, GetCurrentPosition())/(Mathf.Sqrt(avoidanceColliderSize.x/2*avoidanceColliderSize.x/2+avoidanceColliderSize.z*avoidanceColliderSize.z)+agentCollider.radius*2));
-                    avoidanceVector *= CurrentAvoidanceTargetTagChecker(currentAvoidanceTarget);
+                    avoidanceVector *= TagChecker(currentAvoidanceTarget);
                     elapsedTime = 0.0f;
                 }
                 else
@@ -435,12 +435,12 @@ namespace MotionMatching{
             }
         }
 
-        private float CurrentAvoidanceTargetTagChecker(GameObject _currentAvoidanceTarget){
-            if(_currentAvoidanceTarget.CompareTag("Group")){
-                _currentAvoidanceTarget.GetComponent<CapsuleCollider>();
-                float radius = _currentAvoidanceTarget.GetComponent<CapsuleCollider>().radius;
+        private float TagChecker(GameObject Target){
+            if(Target.CompareTag("Group")){
+                Target.GetComponent<CapsuleCollider>();
+                float radius = Target.GetComponent<CapsuleCollider>().radius;
                 return radius + 1f;
-            }else if(_currentAvoidanceTarget.CompareTag("Agent")){
+            }else if(Target.CompareTag("Agent")){
                 return 1f;
             }
             return 1f;
@@ -455,9 +455,12 @@ namespace MotionMatching{
                 if(currentAvoidanceTarget != null){
                     avoidNeighborsVector = Vector3.zero;
                 }else{
-                    if(Agents== null) yield return null;
-                    Vector3 newavoidNeighborsVector = SteerToAvoidNeighbors(Agents, minTimeToCollision, collisionDangerThreshold);
-                    yield return StartCoroutine(AvoidNeighborsVectorGradualTransition(transitionTime, avoidNeighborsVector, newavoidNeighborsVector));
+                    if(Agents == null) yield return null;
+                    Vector3 newAvoidNeighborsVector = SteerToAvoidNeighbors(Agents, minTimeToCollision, collisionDangerThreshold);
+                    if(potentialAvoidanceTarget != null){
+                        newAvoidNeighborsVector *= TagChecker(potentialAvoidanceTarget);
+                    }
+                    yield return StartCoroutine(AvoidNeighborsVectorGradualTransition(transitionTime, avoidNeighborsVector, newAvoidNeighborsVector));
                 }
                 yield return new WaitForSeconds(updateTime);
             }

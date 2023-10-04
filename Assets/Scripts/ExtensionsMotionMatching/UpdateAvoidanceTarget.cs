@@ -17,7 +17,7 @@ public class UpdateAvoidanceTarget : MonoBehaviour
     }
 
     private void Update(){
-        CheckAvoidanceTarget();
+        AvoidanceTargetActiveChecker();
     }
 
     void OnTriggerStay(Collider other)
@@ -44,10 +44,12 @@ public class UpdateAvoidanceTarget : MonoBehaviour
         }
     }
 
-    private void CheckAvoidanceTarget(){
-        if(!currentAvoidanceTarget.activeInHierarchy){
-            currentAvoidanceTarget = null;
-            pathCharacterController.CurrentAvoidanceTarget = null;
+    private void AvoidanceTargetActiveChecker(){
+        if(currentAvoidanceTarget != null){
+            if(!currentAvoidanceTarget.activeInHierarchy){
+                currentAvoidanceTarget = null;
+                pathCharacterController.CurrentAvoidanceTarget = null;
+            }
         }
     }
 }
