@@ -4,20 +4,10 @@ using UnityEngine;
 namespace MotionMatching{
     public class UpdateGroupCollider : MonoBehaviour
     {
-        public AvatarCreator avatarCreator;
-        public AvatarCreator AvatarCreator
-        {
-            get { return avatarCreator; }
-            set { avatarCreator = value; }
-        }     
+        public AvatarCreator avatarCreator; 
         private List<GameObject> agentsInCategory = new List<GameObject>();
         private CapsuleCollider groupCollider;
-        private float agentRadius = 0.3f;
-        public float AgentRadius
-        {
-            get { return agentRadius; }
-            set { agentRadius = value; }
-        }
+        public float agentRadius = 0.3f;
 
         void Start()
         {

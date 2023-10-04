@@ -2159,7 +2159,7 @@ MonoBehaviour:
   slowingRadius: 3
   unalignedAvoidanceColliderSize: {x: 4.5, y: 1.5, z: 6}
   toGoalWeight: 1.5
-  avoidNeighborWeight: 1.7
+  avoidNeighborWeight: 1.3
   avoidanceWeight: 2
   groupForceWeight: 1
   MaxDistanceMMAndCharacterController: 0.1
@@ -2167,11 +2167,11 @@ MonoBehaviour:
   PosMaximumAdjustmentRatio: 0.1
   CapsuleColliderRadius: 0.3
   showAgentSphere: 1
-  ShowAvoidanceForce: 0
-  ShowUnalignedCollisionAvoidance: 0
-  ShowGoalDirection: 0
-  ShowCurrentDirection: 0
-  ShowGroupForce: 0
+  ShowAvoidanceForce: 1
+  ShowUnalignedCollisionAvoidance: 1
+  ShowGoalDirection: 1
+  ShowCurrentDirection: 1
+  ShowGroupForce: 1
   DebugSkeleton: 0
   DebugCurrent: 0
   DebugPose: 0

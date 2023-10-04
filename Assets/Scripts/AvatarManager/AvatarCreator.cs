@@ -75,24 +75,31 @@ public class AvatarCreator : MonoBehaviour
 
                 //To make center of mass collider
                 if (relation != SocialRelations.Individual){
-                    GameObject centerMassObj = new GameObject("GroupCollider");
-                    centerMassObj.transform.SetParent(categoryGameObject.transform);
 
-                    centerMassObj.tag = "Group";
-                    CapsuleCollider groupCollider = centerMassObj.AddComponent<CapsuleCollider>();
-                    centerMassObj.AddComponent<Rigidbody>();
+                    GameObject groupColliderGameObject = new GameObject("GroupCollider");
+                    groupColliderGameObject.transform.SetParent(categoryGameObject.transform);
+
+                    groupColliderGameObject.tag = "Group";
+                    CapsuleCollider groupCollider = groupColliderGameObject.AddComponent<CapsuleCollider>();
+                    groupColliderGameObject.AddComponent<Rigidbody>();
                     groupCollider.height = agentHeight;
-                    
                     Vector3 newCenter = groupCollider.center;
                     newCenter.y = agentHeight / 2f;
                     groupCollider.center = newCenter;
                     groupCollider.isTrigger = true;
 
-                    UpdateGroupCollider updateCenterOfMassPos = centerMassObj.AddComponent<UpdateGroupCollider>();
-                    updateCenterOfMassPos.AvatarCreator = this.transform.GetComponent<AvatarCreator>();
-                    updateCenterOfMassPos.AgentRadius = agentRadius;
+                    UpdateGroupCollider updateCenterOfMassPos = groupColliderGameObject.AddComponent<UpdateGroupCollider>();
+                    updateCenterOfMassPos.avatarCreator = this.transform.GetComponent<AvatarCreator>();
+                    updateCenterOfMassPos.agentRadius = agentRadius;
 
-                    centerMassObj.AddComponent<ParameterManager>();
+                    groupColliderGameObject.AddComponent<ParameterManager>();
+
+                    GameObject groupColliderActiveManager = new GameObject("GroupColliderManager");
+                    groupColliderActiveManager.transform.SetParent(categoryGameObject.transform);
+                    GroupColliderManager groupColliderManager = groupColliderActiveManager.AddComponent<GroupColliderManager>();
+                    groupColliderManager.socialRelations = relation;
+                    groupColliderManager.avatarCreator = this.transform.GetComponent<AvatarCreator>();
+                    groupColliderManager.groupColliderGameObject = groupColliderGameObject;
                 }
             }
         }
@@ -172,7 +179,7 @@ public class AvatarCreator : MonoBehaviour
             instantiatedAvatars.Add(instance);
         }
 
-        //Destroy Group Collider if the number of agents is less than 1
+        //Destroy Group Collider and its manager if the number of agents is less than 1
         foreach (KeyValuePair<SocialRelations, int> entry in categoryCounts)
         {
             if(entry.Key == SocialRelations.Individual) return; 
@@ -183,10 +190,12 @@ public class AvatarCreator : MonoBehaviour
                 if (relationGameObject != null)
                 {
                     GameObject groupCollider = relationGameObject.transform.Find("GroupCollider").gameObject;
+                    GameObject groupColliderManager = relationGameObject.transform.Find("GroupColliderManager").gameObject;
 
                     if (groupCollider != null)
                     {
                         DestroyImmediate(groupCollider);
+                        DestroyImmediate(groupColliderManager);
                     }
                 }
             }
