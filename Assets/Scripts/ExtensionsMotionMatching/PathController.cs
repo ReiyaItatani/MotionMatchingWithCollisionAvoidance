@@ -391,6 +391,7 @@ namespace MotionMatching{
                     avoidanceVector = ComputeAvoidanceVector(currentAvoidanceTarget, GetCurrentDirection(), GetCurrentPosition());
                     //gradually increase the avoidance force considering the distance 
                     avoidanceVector = avoidanceVector*(1.0f-Vector3.Distance(currentAvoidanceTarget.transform.position, GetCurrentPosition())/(Mathf.Sqrt(avoidanceColliderSize.x/2*avoidanceColliderSize.x/2+avoidanceColliderSize.z*avoidanceColliderSize.z)+agentCollider.radius*2));
+                    avoidanceVector *= CurrentAvoidanceTargetTagChecker(currentAvoidanceTarget);
                     elapsedTime = 0.0f;
                 }
                 else
@@ -432,6 +433,17 @@ namespace MotionMatching{
                 basicAvoidanceArea.transform.rotation = targetRotation;
                 yield return null;
             }
+        }
+
+        private float CurrentAvoidanceTargetTagChecker(GameObject _currentAvoidanceTarget){
+            if(_currentAvoidanceTarget.CompareTag("Group")){
+                _currentAvoidanceTarget.GetComponent<CapsuleCollider>();
+                float radius = _currentAvoidanceTarget.GetComponent<CapsuleCollider>().radius;
+                return radius + 1f;
+            }else if(_currentAvoidanceTarget.CompareTag("Agent")){
+                return 1f;
+            }
+            return 1f;
         }
 
         /***********************************************************************************************************

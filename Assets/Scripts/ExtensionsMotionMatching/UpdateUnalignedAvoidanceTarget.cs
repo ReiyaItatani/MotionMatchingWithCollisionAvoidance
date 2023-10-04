@@ -19,7 +19,7 @@ public class UpdateUnalignedAvoidanceTarget : MonoBehaviour
     }
 
     void Update(){
-        CheckList();
+        CheckUnalignedAvoidanceTarget();
     }
 
     void OnTriggerStay(Collider other)
@@ -51,7 +51,7 @@ public class UpdateUnalignedAvoidanceTarget : MonoBehaviour
         return othersInUnalignedAvoidanceArea;
     }
 
-    private void CheckList(){
+    private void CheckUnalignedAvoidanceTarget(){
         othersInUnalignedAvoidanceArea.RemoveAll(gameObject => !gameObject.activeInHierarchy);
     }
 }

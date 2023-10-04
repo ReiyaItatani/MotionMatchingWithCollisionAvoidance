@@ -8,12 +8,18 @@ public class UpdateAvoidanceTarget : MonoBehaviour
     private PathController pathCharacterController;
     private CapsuleCollider colliderMySelf;
     private CapsuleCollider colliderMyGroup;
+    private GameObject currentAvoidanceTarget;
     
     void Start(){
         pathCharacterController = this.transform.parent.GetComponent<PathController>();
         colliderMySelf = pathCharacterController.agentCollider;
         colliderMyGroup = pathCharacterController.groupCollider;
     }
+
+    private void Update(){
+        CheckAvoidanceTarget();
+    }
+
     void OnTriggerStay(Collider other)
     {
         if(pathCharacterController == null) return;
@@ -23,6 +29,7 @@ public class UpdateAvoidanceTarget : MonoBehaviour
             if (pathCharacterController.CurrentAvoidanceTarget == null || Vector3.Distance(pathCharacterController.GetCurrentPosition(), pathCharacterController.CurrentAvoidanceTarget.transform.position) > Vector3.Distance(pathCharacterController.GetCurrentPosition(), other.transform.position))
             {
                 pathCharacterController.CurrentAvoidanceTarget = other.gameObject;
+                currentAvoidanceTarget = other.gameObject;
             }
         }   
     }
@@ -32,6 +39,14 @@ public class UpdateAvoidanceTarget : MonoBehaviour
         if(pathCharacterController == null) return;
         if (pathCharacterController.CurrentAvoidanceTarget!=null && pathCharacterController.CurrentAvoidanceTarget.Equals(other.gameObject))
         {
+            currentAvoidanceTarget = null;
+            pathCharacterController.CurrentAvoidanceTarget = null;
+        }
+    }
+
+    private void CheckAvoidanceTarget(){
+        if(!currentAvoidanceTarget.activeInHierarchy){
+            currentAvoidanceTarget = null;
             pathCharacterController.CurrentAvoidanceTarget = null;
         }
     }
