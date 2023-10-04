@@ -18,6 +18,10 @@ public class UpdateUnalignedAvoidanceTarget : MonoBehaviour
         othersInUnalignedAvoidanceArea = new List<GameObject>();
     }
 
+    void Update(){
+        CheckList();
+    }
+
     void OnTriggerStay(Collider other)
     {
         if(pathCharacterController == null) return;
@@ -45,5 +49,9 @@ public class UpdateUnalignedAvoidanceTarget : MonoBehaviour
 
     public List<GameObject> GetOthersInUnalignedAvoidanceArea(){
         return othersInUnalignedAvoidanceArea;
+    }
+
+    private void CheckList(){
+        othersInUnalignedAvoidanceArea.RemoveAll(gameObject => !gameObject.activeInHierarchy);
     }
 }
