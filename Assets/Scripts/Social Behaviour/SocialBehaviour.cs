@@ -27,11 +27,11 @@ public class SocialBehaviour : MonoBehaviour
     }
 
     public void LookAtTarget(GameObject LookAtTarget){
-        motionMatchingSkinnedMeshRendererWithOCEAN.lookObject = LookAtTarget;
+        motionMatchingSkinnedMeshRendererWithOCEAN.LookObject = LookAtTarget;
     }
 
-    public void LookForward(){
-        motionMatchingSkinnedMeshRendererWithOCEAN.lookObject = null;
+    public void DeleteLookObject(){
+        motionMatchingSkinnedMeshRendererWithOCEAN.LookObject = null;
     }
 
     public void FollowMotionMacthing(){

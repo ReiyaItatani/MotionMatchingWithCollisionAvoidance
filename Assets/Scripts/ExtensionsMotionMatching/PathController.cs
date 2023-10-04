@@ -33,7 +33,7 @@ namespace MotionMatching{
         public float PosMaximumAdjustmentRatio = 0.1f; // Ratio between the adjustment and the character's velocity to clamp the adjustment
         // Speed Of Agents -----------------------------------------------------------------
         [Header("Speed")]
-        public float currentSpeed = 1.0f; //Current speed of the agent
+        private float currentSpeed = 1.0f; //Current speed of the agent
         [Range (0.0f, 1.0f), HideInInspector]
         public float initialSpeed = 0.7f; //Initial speed of the agent
         [HideInInspector]
@@ -59,7 +59,7 @@ namespace MotionMatching{
         private Vector3 avoidanceVector = Vector3.zero;//Direction of basic collision avoidance
         [HideInInspector]
         public float avoidanceWeight = 2.0f;//Weight for basic collision avoidance
-        public GameObject currentAvoidanceTarget;
+        private GameObject currentAvoidanceTarget;
         public GameObject CurrentAvoidanceTarget{
             get => currentAvoidanceTarget;
             set => currentAvoidanceTarget = value;
@@ -195,6 +195,7 @@ namespace MotionMatching{
 
             StartCoroutine(UpdateBasicAvoidanceAreaPos(0.9f));
             StartCoroutine(UpdateUnalignedAvoidanceAreaPos(0.9f));
+            StartCoroutine(UpdateToGoalVector(0.1f));
             StartCoroutine(UpdateAvoidanceVector(0.1f, 0.5f));
             StartCoroutine(UpdateAvoidNeighborsVector(updateUnalignedAvoidanceTarget.GetOthersInUnalignedAvoidanceArea(), 0.1f, 0.3f));
             StartCoroutine(UpdateGroupForce(0.2f, socialRelations));
@@ -226,9 +227,6 @@ namespace MotionMatching{
 
         private void SimulatePath(float time, Vector3 _currentPosition, out Vector3 nextPosition, out Vector3 direction)
         {
-            //Update ToGoalVector
-            toGoalVector = (currentGoal - _currentPosition).normalized;
-
             //Gradually decrease speed
             float distanceToGoal = Vector3.Distance(_currentPosition, currentGoal);
             currentSpeed = distanceToGoal < slowingRadius ? Mathf.Lerp(minSpeed, currentSpeed, distanceToGoal / slowingRadius) : currentSpeed;
@@ -328,6 +326,14 @@ namespace MotionMatching{
         * This section of the code is responsible for recalculating and adjusting the target direction.
         * It ensures that the object is always oriented or moving towards its intended goal or target.
         ***********************************************************************************************/
+
+        private IEnumerator UpdateToGoalVector(float updateTime){
+            while(true){
+                toGoalVector = (GetCurrentGoal() - (Vector3)GetCurrentPosition()).normalized;
+                yield return new WaitForSeconds(updateTime);
+            }
+        }
+
         private void CheckForGoalProximity(Vector3 _currentPosition, Vector3 _currentGoal, float _goalRadius)
         {
             float distanceToGoal = Vector3.Distance(_currentPosition, _currentGoal);
@@ -580,7 +586,7 @@ namespace MotionMatching{
         * This section of the code calculates the collective force exerted by or on a group of objects.
         * It takes into account the interactions and influences of multiple objects within a group to determine the overall force or direction.
         ********************************************************************************************************************************/
-        private float fieldOfView = 60f;
+        private float fieldOfView = 45f;
 
         //private float socialInteractionWeight = 1.0f;
         private float cohesionWeight = 0.5f;
@@ -932,6 +938,9 @@ namespace MotionMatching{
         }
         public float GetCurrentSpeed(){
             return currentSpeed;
+        }
+        public Vector3 GetCurrentGoal(){
+            return currentGoal;
         }
 
         public void SetCollidedAgent(GameObject _collidedAgent){

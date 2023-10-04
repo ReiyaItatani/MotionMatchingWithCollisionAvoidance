@@ -83,7 +83,7 @@ public class AgentCollisionDetection : MonoBehaviour
         yield return new WaitForSeconds(time/2.0f);
 
         //Look at forward
-        socialBehaviour.LookForward();
+        socialBehaviour.DeleteLookObject();
         //Stop Animaiton
         socialBehaviour.FollowMotionMacthing();
         //StartMove

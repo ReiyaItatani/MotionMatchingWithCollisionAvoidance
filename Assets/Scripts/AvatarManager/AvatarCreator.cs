@@ -32,10 +32,6 @@ public class AvatarCreator : MonoBehaviour
     [Tooltip("This is a parameter to scatter the start and end positions of the path. The larger the value, the more the start and end positions of the path will deviate.")]
     public float startPointDeviation = 1f;
 
-    [Header("Goal Size")]
-    public float GoalRadius = 2f;
-    public float SlowingRadius = 3f;
-
     [Header("Social Relations")]
     private Dictionary<SocialRelations, int> categoryCounts = new Dictionary<SocialRelations, int>
     {
@@ -156,10 +152,6 @@ public class AvatarCreator : MonoBehaviour
             }else if(randomRelation == SocialRelations.Coworker){
                 pathController.initialSpeed = coworkerSpeed;
             }
-
-            //set goal size
-            pathController.goalRadius = GoalRadius;
-            pathController.slowingRadius = SlowingRadius;
 
             //set group collider and save pathmanager
             if (randomRelation != SocialRelations.Individual)

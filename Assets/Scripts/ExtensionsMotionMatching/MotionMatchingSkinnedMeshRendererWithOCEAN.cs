@@ -408,11 +408,11 @@ namespace MotionMatching
         public bool Map_OCEAN_to_Additional = true;
 
         [Header("OCEAN Parameters")]
-        [Range(-1f, 1f)] public float openness = 0f;
-        [Range(-1f, 1f)] public float conscientiousness = 0f;
+        [Range(-1f, 1f), HideInInspector] public float openness = 0f;
+        [Range(-1f, 1f), HideInInspector] public float conscientiousness = 0f;
         [Range(-1f, 1f)] public float extraversion = 0f;
-        [Range(-1f, 1f)] public float agreeableness = 0f;
-        [Range(-1f, 1f)] public float neuroticism = 0f;
+        [Range(-1f, 1f), HideInInspector] public float agreeableness = 0f;
+        [Range(-1f, 1f), HideInInspector] public float neuroticism = 0f;
 
         [Header("Laban Effort Parameters")]
         [Range(-1f, 1f), HideInInspector] public float space = 0f;
@@ -457,8 +457,6 @@ namespace MotionMatching
         private readonly float head_min = -5f;
 
         private readonly float multiplyRotationFactor = 1f;
-
-        public GameObject lookObject;
 
         // distances of body parts
         // float d_upperArm, d_lowerArm, d_hand;
@@ -739,6 +737,12 @@ namespace MotionMatching
         * 
         * * */
         [Header("Look At Params")]
+        private GameObject lookObject;
+        public GameObject LookObject
+        {
+            get{ return lookObject; }
+            set{ lookObject = value; }
+        }
         private Vector3 attractionPoint;
         private Quaternion saveLookAtRot = Quaternion.identity;
         private Vector3 currentLookAt = Vector3.zero;
@@ -773,7 +777,7 @@ namespace MotionMatching
 
         private void CheckNeckRotation(Vector3 _currentLookAt, Vector3 myDirection, float _neckRotationLimit, float probability = 0.1f){
             float currentNeckRotation = Vector3.Angle(_currentLookAt, myDirection);
-            if(probability >= UnityEngine.Random.Range(0.0f, 1.0f)){
+            if(probability >= UnityEngine.Random.Range(0.0f, 10.0f)){
                 if(currentNeckRotation >= _neckRotationLimit && coroutineLooForwardIsFinished == true){
                     float lookAtForwardDuration = 2.0f;
                     StartCoroutine(TemporalLookAtForward(lookAtForwardDuration));
