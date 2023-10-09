@@ -1,13 +1,12 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using MotionMatching;
 
+// AgentManager is a class that manages various parameters and settings for agents in a simulation.
 public class AgentManager : MonoBehaviour
 {
-
+    // Basic Collision Avoidance Parameters: Parameters that define how agents avoid collisions.
     [Header("Basic Collision Avoidance Parameters")]
-
     [Tooltip("Size of the avoidance collider.")]
     public Vector3 avoidanceColliderSize = new Vector3(1.5f, 1.5f, 2.0f);
     [Tooltip("Radius to consider as the goal.")]
@@ -17,12 +16,13 @@ public class AgentManager : MonoBehaviour
     [Range(0.1f, 5.0f)]
     public float slowingRadius = 2.0f;
 
+    // Parameters For Unaligned Collision Avoidance: Parameters that define how agents avoid collisions when they are not aligned.
     [Header("Parameters For Unaligned Collision Avoidance")]
     [Tooltip("Size of the unaligned avoidance collider.")]
     public Vector3 unalignedAvoidanceColliderSize = new Vector3(4.5f, 1.5f, 6.0f); 
 
+    // Weights for various forces influencing agent movement.
     [Space]
-
     [Tooltip("Weight for moving towards the goal.")]
     [Range(0.0f, 5.0f)]
     public float toGoalWeight = 2.0f;
@@ -36,8 +36,8 @@ public class AgentManager : MonoBehaviour
     [Range(0.0f, 5.0f)]
     public float groupForceWeight = 1.0f;
 
+    // Parameters related to the adjustment of the position of the SimulationBone and SimulationObject.
     [Space]
-
     [Range(0.0f, 2.0f), Tooltip("Max distance between SimulationBone and SimulationObject")] 
     public float MaxDistanceMMAndCharacterController = 0.1f;
     [Range(0.0f, 2.0f), Tooltip("Time needed to move half of the distance between SimulationBone and SimulationObject")] 
@@ -45,10 +45,12 @@ public class AgentManager : MonoBehaviour
     [Range(0.0f, 2.0f), Tooltip("Ratio between the adjustment and the character's velocity to clamp the adjustment")] 
     public float PosMaximumAdjustmentRatio = 0.1f;
 
+    // Parameters defining the size of the agent's capsule collider.
     [Header("Agent Capsule Collider Size")]
     [Range(0.0f, 1.0f)]
     public float CapsuleColliderRadius = 0.25f; 
 
+    // Parameters to control the display of various debug gizmos in the Unity Editor.
     [Header("Controll Gizmos Parameters")]
     public bool showAgentSphere = false;
     public bool ShowAvoidanceForce = false;
@@ -57,22 +59,23 @@ public class AgentManager : MonoBehaviour
     public bool ShowCurrentDirection = false;
     public bool ShowGroupForce = false;
 
+    // Parameters for debugging the Motion Matching Controller.
     [Header("Motion Matching Controller Debug")]
-    // public float SphereRadius;
     public bool DebugSkeleton = false;
     public bool DebugCurrent = false;
     public bool DebugPose = false;
     public bool DebugTrajectory = false;
     public bool DebugContacts = false;
 
+    // OCEAN Personality Model Parameters: Parameters that define the personality of the agent according to the OCEAN model.
     [Header("OCEAN Parameters")]
     [Range(-1f, 1f),HideInInspector] public float openness = 0f;
     [Range(-1f, 1f),HideInInspector] public float conscientiousness = 0f;
-    [Header("OCEAN Parameters")]
     [Range(-1f, 1f)] public float Negative_Positive = 0f;
     [Range(-1f, 1f),HideInInspector] public float agreeableness = 0f;
     [Range(-1f, 1f),HideInInspector] public float neuroticism = 0f;
 
+    // Emotion Parameters: Parameters that define the emotional state of the agent.
     [Header("Emotion Parameters")]
     [Range(0f, 1f)] public float e_happy = 0f;
     [Range(0f, 1f)] public float e_sad = 0f;
@@ -81,61 +84,64 @@ public class AgentManager : MonoBehaviour
     [Range(0f, 1f)] public float e_fear = 0f;
     [Range(0f, 1f)] public float e_shock = 0f;
 
+    // Lists to store references to various controller game objects.
     private List<GameObject> PathControllers = new List<GameObject>();
     private List<GameObject> MotionMatchingControllers = new List<GameObject>();
     private List<GameObject> MotionMatchingSkinnedMeshRendererWithOCEANs = new List<GameObject>();
     private List<GameObject> Avatars = new List<GameObject>();
-    private AvatarCreator avatarCreator;
+    private AvatarCreatorBase avatarCreator;
 
+    // Parameters related to social behavior of the agent.
     [Header("Social Behaviour")]
     public bool onTalk = false;
     public bool onAnimation = true;
 
-    //private params
-    private int OceanToAtomosphere = 0;
-    private int FeelIndex =0;
-
+    // Parameters related to collision detection.
     [Header("Collision Detection")]
     public Camera collisionDetectionCam;
 
+    // Awake is called when the script instance is being loaded.
     void Awake(){
-        avatarCreator = this.GetComponent<AvatarCreator>();
+        // Get a reference to the AvatarCreatorBase component.
+        avatarCreator = this.GetComponent<AvatarCreatorBase>();
+        // Get a list of instantiated avatars from the AvatarCreatorBase.
         Avatars = avatarCreator.instantiatedAvatars; 
-        OceanToAtomosphere = Random.Range(0, 5); 
-        FeelIndex = Random.Range(0, 6); 
     }
 
+    // Start is called before the first frame update.
     void Start()
     {
+        // Loop through all avatars and set their parameters.
         for (int i = 0; i < Avatars.Count; i++)
         {
-            // Get PathController gameobjects
+            // Get and set PathController parameters.
             PathController pathController = Avatars[i].GetComponentInChildren<PathController>();
             if(pathController != null) {
                 SetPathControllerParams(pathController);
                 PathControllers.Add(pathController.gameObject);
             }
 
-            // Get MotionMatchingController gameobjects
+            // Get and set MotionMatchingController parameters.
             MotionMatchingController motionMatchingController = Avatars[i].GetComponentInChildren<MotionMatchingController>();
             if(motionMatchingController != null) {
                 SetMotionMatchingControllerParams(motionMatchingController);
                 MotionMatchingControllers.Add(motionMatchingController.gameObject);
             }
 
-            // Get MotionMatchingSkinnedMeshRendererWithOCEAN gameobjects
+            // Get and set MotionMatchingSkinnedMeshRendererWithOCEAN parameters.
             MotionMatchingSkinnedMeshRendererWithOCEAN mmSMRWithOCEAN = Avatars[i].GetComponentInChildren<MotionMatchingSkinnedMeshRendererWithOCEAN>();
             if(mmSMRWithOCEAN != null) {
                 SetMotionMatchingSkinnedMeshRendererWithOCEANParams(mmSMRWithOCEAN);
                 MotionMatchingSkinnedMeshRendererWithOCEANs.Add(mmSMRWithOCEAN.gameObject);
             }
 
-            // Get SocialBehaviour gameobjects
+            // Get and set SocialBehaviour parameters.
             SocialBehaviour socialBehaviour = Avatars[i].GetComponentInChildren<SocialBehaviour>();
             if(socialBehaviour != null) {
                 SetSocialBehaviourParams(socialBehaviour);
             }     
 
+            // Get and set AgentCollisionDetection parameters.
             AgentCollisionDetection agentCollisionDetection = Avatars[i].GetComponentInChildren<AgentCollisionDetection>();
             if(agentCollisionDetection != null){
                 SetCollisionDetectionParams(agentCollisionDetection);
@@ -143,7 +149,9 @@ public class AgentManager : MonoBehaviour
         }
     }
 
+    // OnValidate is called when the script is loaded or a value is changed in the Inspector.
     private void OnValidate() {
+        // Loop through all PathControllers and set their parameters.
         foreach(GameObject controllerObject in PathControllers) 
         {
             PathController pathController = controllerObject.GetComponent<PathController>();
@@ -153,6 +161,7 @@ public class AgentManager : MonoBehaviour
             }
         }
 
+        // Loop through all MotionMatchingControllers and set their parameters.
         foreach(GameObject controllerObject in MotionMatchingControllers) 
         {
             MotionMatchingController motionMatchingController = controllerObject.GetComponent<MotionMatchingController>();
@@ -162,13 +171,13 @@ public class AgentManager : MonoBehaviour
             }
         }
 
+        // Loop through all MotionMatchingSkinnedMeshRendererWithOCEANs and set their parameters.
         foreach(GameObject controllerObject in MotionMatchingSkinnedMeshRendererWithOCEANs) 
         {
             MotionMatchingSkinnedMeshRendererWithOCEAN mmSMRWithOCEAN = controllerObject.GetComponent<MotionMatchingSkinnedMeshRendererWithOCEAN>();
             if(mmSMRWithOCEAN != null) 
             {
                 SetMotionMatchingSkinnedMeshRendererWithOCEANParams(mmSMRWithOCEAN);
-                //SetRandomValueBasedOnAtomosphere(mmSMRWithOCEAN);
             }
             SocialBehaviour socialBehaviour = controllerObject.GetComponent<SocialBehaviour>();
             if(socialBehaviour != null) {
@@ -177,6 +186,7 @@ public class AgentManager : MonoBehaviour
         }
     }
 
+    // Method to set parameters for PathController.
     private void SetPathControllerParams(PathController pathController){
         pathController.avoidanceColliderSize = avoidanceColliderSize;
         pathController.unalignedAvoidanceColliderSize = unalignedAvoidanceColliderSize;
@@ -228,80 +238,6 @@ public class AgentManager : MonoBehaviour
 
     private void SetCollisionDetectionParams(AgentCollisionDetection agentCollisionDetection){
         agentCollisionDetection.collisionDetectionCam = collisionDetectionCam;
-    }
-
-    // [Header("Crowd Atomosphere")]
-    // [Tooltip("Positive:+, Negative:-")]
-    // [Range(-1,1)]
-    // public float Atomosphere = 0.0f;
-
-    // private void SetRandomValueBasedOnAtomosphere(MotionMatchingSkinnedMeshRendererWithOCEAN mmSMRWithOCEAN){
-    //     //Positive:Openness → +, conscientiousness → +, extraversion → +, agreebleness → +, neuroticism →　-
-    //     //Openness → Range(-0.3f, 1.0f);
-    //     //Conscientiousness → Range(-1.0f, 1.0f);
-    //     //Extraversion → Range(-0.3f, 1.0f);
-    //     //Agreebleness → Range(-1.0f, 1.0f);
-    //     //Neuroticism →　Range(-1.0f, 1.0f);
-
-    //     OceanToAtomosphere = Random.Range(0, 5); 
-    //     FeelIndex = Random.Range(0, 6); 
-
-    //     //Posture
-    //     if(OceanToAtomosphere == 0){
-    //         mmSMRWithOCEAN.openness = ConvertAtomosphere(Atomosphere);
-    //     }else if(OceanToAtomosphere == 1){
-    //         mmSMRWithOCEAN.conscientiousness = Atomosphere;
-    //     }else if(OceanToAtomosphere == 2){
-    //         mmSMRWithOCEAN.extraversion = ConvertAtomosphere(Atomosphere);
-    //     }else if(OceanToAtomosphere == 3){
-    //         mmSMRWithOCEAN.agreeableness = Atomosphere;
-    //     }else if(OceanToAtomosphere == 4){
-    //         mmSMRWithOCEAN.neuroticism = -Atomosphere;
-    //     }
-
-    //     //Positive emotion
-    //     if(Atomosphere >= 0){
-    //         int Probability = Random.Range(0, 5);
-    //         if(Probability != 0){
-    //             mmSMRWithOCEAN.e_happy = Atomosphere;
-    //         } 
-    //     }
-
-    //     //Negative emotion
-    //     if(FeelIndex == 1){
-    //         if(Atomosphere <= 0){
-    //             mmSMRWithOCEAN.e_sad = -Atomosphere;
-    //         }
-    //     }else if(FeelIndex == 2){
-    //         if(Atomosphere <= 0){
-    //             mmSMRWithOCEAN.e_angry = -Atomosphere;
-    //         }
-    //     }else if(FeelIndex == 3){
-    //         if(Atomosphere <= 0){
-    //             mmSMRWithOCEAN.e_disgust = -Atomosphere;
-    //         }
-    //     }else if(FeelIndex == 4){
-    //         if(Atomosphere <= 0){
-    //             mmSMRWithOCEAN.e_fear = -Atomosphere;
-    //         }
-    //     }else if(FeelIndex == 5){
-    //         if(Atomosphere <= 0){
-    //             mmSMRWithOCEAN.e_shock = -Atomosphere;
-    //         }       
-    //     }
-    // }
-
-    private float ConvertAtomosphere(float atomosphere)
-    {
-        if (atomosphere >= 0)
-        {
-            return atomosphere * 1.0f; // 0 to 1 remains the same
-        }
-        else
-        {
-            // Convert -1 to -0.3
-            return atomosphere * 0.3f;
-        }
     }
 
     private void SetSocialBehaviourParams(SocialBehaviour socialBehaviour){

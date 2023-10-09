@@ -975,8 +975,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22e7640aeefc8564bbdbc7602767de8b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pathControllers:
-  - {fileID: 5843738536221832561}
+  pathController: {fileID: 5843738536221832561}
 --- !u!114 &7498039507207326616
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1030,7 +1029,6 @@ MonoBehaviour:
   spine_bend: 0
   sink_bend: 0
   head_bend: 0
-  lookObject: {fileID: 0}
   faceController: {fileID: 0}
   lookAtForward: 0
 --- !u!114 &5843738535743112442
@@ -2135,14 +2133,12 @@ MonoBehaviour:
   MaxDistanceMMAndCharacterController: 0.1
   PositionAdjustmentHalflife: 0.1
   PosMaximumAdjustmentRatio: 0.1
-  currentSpeed: 1
   initialSpeed: 1.2
   minSpeed: 0.5
   maxSpeed: 1
   avatarCreator: {fileID: 0}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
   avoidanceWeight: 1.5
-  currentAvoidanceTarget: {fileID: 0}
   agentCollider: {fileID: 1115197719686826436}
   toGoalWeight: 1.7
   goalRadius: 0.5

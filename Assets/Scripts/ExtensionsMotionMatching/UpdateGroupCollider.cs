@@ -4,7 +4,7 @@ using UnityEngine;
 namespace MotionMatching{
     public class UpdateGroupCollider : MonoBehaviour
     {
-        public AvatarCreator avatarCreator; 
+        public AvatarCreatorBase avatarCreator; 
         private List<GameObject> agentsInCategory = new List<GameObject>();
         private CapsuleCollider groupCollider;
         public float agentRadius = 0.3f;

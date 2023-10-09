@@ -1,14 +1,14 @@
 using UnityEditor;
 using UnityEngine;
 
-[CustomEditor(typeof(AvatarCreator))]
+[CustomEditor(typeof(AvatarCreatorBase), true)]
 public class AvatarCreatorEditor : Editor
 {
     public override void OnInspectorGUI()
     {
         DrawDefaultInspector(); 
 
-        AvatarCreator script = (AvatarCreator)target;
+        AvatarCreatorBase script = (AvatarCreatorBase)target;
 
         GUILayout.BeginVertical("box");
 
@@ -24,20 +24,20 @@ public class AvatarCreatorEditor : Editor
             script.DeleteAvatars();
         }
 
-        GUILayout.Space(10);
+        // GUILayout.Space(10);
 
-        GUILayout.Label("Avatar Create Buttons In Corridor", EditorStyles.boldLabel);
+        // GUILayout.Label("Avatar Create Buttons In Corridor", EditorStyles.boldLabel);
 
-        GUI.backgroundColor = Color.yellow;
-        if (GUILayout.Button(new GUIContent("Instantiate Avatars In Corridor", "Use this for debugging purposes")))
-        {
-            script.InstantiateAvatarsCorridor();
-        }
-        if (GUILayout.Button("Delete Avatars In Corridor"))
-        {
-            script.DeleteAvatarsCorridor();
-        }
-        GUI.backgroundColor = Color.white;
+        // GUI.backgroundColor = Color.yellow;
+        // if (GUILayout.Button(new GUIContent("Instantiate Avatars In Corridor", "Use this for debugging purposes")))
+        // {
+        //     script.InstantiateAvatarsCorridor();
+        // }
+        // if (GUILayout.Button("Delete Avatars In Corridor"))
+        // {
+        //     script.DeleteAvatarsCorridor();
+        // }
+        // GUI.backgroundColor = Color.white;
 
         GUILayout.EndVertical();
     }

@@ -1,12 +1,10 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class GroupColliderManager : MonoBehaviour
 {
     public SocialRelations socialRelations;
-    public AvatarCreator avatarCreator;
+    public AvatarCreatorBase avatarCreator;
     public GameObject groupColliderGameObject;
 
     private List<GameObject> agentsInCategory = new List<GameObject>();

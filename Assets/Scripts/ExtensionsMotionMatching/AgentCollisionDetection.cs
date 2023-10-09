@@ -9,7 +9,6 @@ public class AgentCollisionDetection : MonoBehaviour
 {
     private PathController pathController;
     private CapsuleCollider capsuleCollider;
-    private MotionMatchingSkinnedMeshRendererWithOCEAN motionMatchingSkinnedMeshRendererWithOCEAN;
     private bool onCollide = false;
     private bool onMoving = false;
     public SocialBehaviour socialBehaviour;
@@ -19,7 +18,7 @@ public class AgentCollisionDetection : MonoBehaviour
     public Camera collisionDetectionCam;
 
     void Awake(){
-        motionMatchingSkinnedMeshRendererWithOCEAN = this.gameObject.GetComponent<MotionMatchingSkinnedMeshRendererWithOCEAN>();
+        //motionMatchingSkinnedMeshRendererWithOCEAN = this.gameObject.GetComponent<MotionMatchingSkinnedMeshRendererWithOCEAN>();
         socialBehaviour = this.gameObject.GetComponent<SocialBehaviour>();
     }
 
@@ -41,8 +40,7 @@ public class AgentCollisionDetection : MonoBehaviour
             pathController.SetOnCollide(onCollide);
             pathController.SetOnMoving(onMoving);
             pathController.SetCollidedAgent(collider.gameObject);
-            if(socialBehaviour != null && 
-            motionMatchingSkinnedMeshRendererWithOCEAN != null) StartCoroutine(WaitTime(Random.Range(3f, 7f), collider.gameObject));
+            if(socialBehaviour != null) StartCoroutine(ReactionToCollision(Random.Range(3f, 7f), collider.gameObject));
             
             //CamPos For Debugging(Delete here)
             if(collisionDetectionCam != null){
@@ -69,7 +67,7 @@ public class AgentCollisionDetection : MonoBehaviour
         capsuleCollider = _capsuleCollider;
     }
 
-    public IEnumerator WaitTime(float time, GameObject _collidedAgent)
+    public IEnumerator ReactionToCollision(float time, GameObject _collidedAgent)
     {
         //Start wait
         onCollide = true;

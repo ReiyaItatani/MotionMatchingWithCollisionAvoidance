@@ -42,7 +42,7 @@ namespace MotionMatching{
         public float maxSpeed = 1.0f; //Maximum speed of the agent
         // --------------------------------------------------------------------------
         // To Mange Agents -----------------------------------------------------------------
-        public AvatarCreator avatarCreator; //Manager for all of the agents
+        public AvatarCreatorBase avatarCreator; //Manager for all of the agents
         // --------------------------------------------------------------------------
         // Features -----------------------------------------------------------------
         [Header("Features For Motion Matching")]
@@ -237,8 +237,8 @@ namespace MotionMatching{
             if(onCollide){
                 Vector3    myDir = GetCurrentDirection();
                 Vector3    myPos = GetCurrentPosition();
-                Vector3 otherDir = collidedAgent.GetComponent<ParameterManager>().GetCurrentDirection();
-                Vector3 otherPos = collidedAgent.GetComponent<ParameterManager>().GetCurrentPosition();
+                Vector3 otherDir = collidedAgent.GetComponent<IParameterManager>().GetCurrentDirection();
+                Vector3 otherPos = collidedAgent.GetComponent<IParameterManager>().GetCurrentPosition();
                 Vector3   offset = otherPos - myPos;
 
                 offset = new Vector3(offset.x, 0f, offset.z);
@@ -476,7 +476,7 @@ namespace MotionMatching{
                 if(other == agentCollider.gameObject){
                     continue;
                 }
-                ParameterManager otherParameterManager = other.GetComponent<ParameterManager>();
+                IParameterManager otherParameterManager = other.GetComponent<IParameterManager>();
 
                 // predicted time until nearest approach of "this" and "other"
                 float time = PredictNearestApproachTime (GetCurrentDirection(), 
@@ -505,7 +505,7 @@ namespace MotionMatching{
 
             if(potentialAvoidanceTarget != null){
                 // parallel: +1, perpendicular: 0, anti-parallel: -1
-                float parallelness = Vector3.Dot(GetCurrentDirection(), potentialAvoidanceTarget.GetComponent<ParameterManager>().GetCurrentDirection());
+                float parallelness = Vector3.Dot(GetCurrentDirection(), potentialAvoidanceTarget.GetComponent<IParameterManager>().GetCurrentDirection());
                 float angle = 0.707f;
 
                 if (parallelness < -angle)
@@ -524,7 +524,7 @@ namespace MotionMatching{
                     if (parallelness > angle)
                     {
                         // parallel paths: steer away from threat
-                        Vector3 offset = potentialAvoidanceTarget.GetComponent<ParameterManager>().GetCurrentPosition() - (Vector3)GetCurrentPosition();
+                        Vector3 offset = potentialAvoidanceTarget.GetComponent<IParameterManager>().GetCurrentPosition() - (Vector3)GetCurrentPosition();
                         Vector3 rightVector = Vector3.Cross(GetCurrentDirection(), Vector3.up);
 
                         float sideDot = Vector3.Dot(offset, rightVector);
@@ -534,9 +534,9 @@ namespace MotionMatching{
                     {
                         // perpendicular paths: steer behind threat
                         // (only the slower of the two does this)
-                        if(potentialAvoidanceTarget.GetComponent<ParameterManager>().GetCurrentSpeed() <= GetCurrentSpeed()){
+                        if(potentialAvoidanceTarget.GetComponent<IParameterManager>().GetCurrentSpeed() <= GetCurrentSpeed()){
                             Vector3 rightVector = Vector3.Cross(GetCurrentDirection(), Vector3.up);
-                            float sideDot = Vector3.Dot(rightVector, potentialAvoidanceTarget.GetComponent<ParameterManager>().GetCurrentDirection());
+                            float sideDot = Vector3.Dot(rightVector, potentialAvoidanceTarget.GetComponent<IParameterManager>().GetCurrentDirection());
                             steer = (sideDot > 0) ? -1.0f : 1.0f;
                         }
                     }
@@ -742,16 +742,16 @@ namespace MotionMatching{
             {
                 // if (go != myself)
                 // {
-                //     Vector3 otherDirection = go.GetComponent<ParameterManager>().GetCurrentDirection();
+                //     Vector3 otherDirection = go.GetComponent<IParameterManager>().GetCurrentDirection();
                 //     steering += otherDirection;
                 //     neighborsCount++;
                 // }else{
-                //     currentDirection = go.GetComponent<ParameterManager>().GetCurrentDirection();
+                //     currentDirection = go.GetComponent<IParameterManager>().GetCurrentDirection();
                 // }
                 float alignmentAngle  = 0.7f;
                 if (InBoidNeighborhood(go, myself, agentRadius * 3, agentRadius * 6, alignmentAngle, currentDirection))
                 {
-                    Vector3 otherDirection = go.GetComponent<ParameterManager>().GetCurrentDirection();
+                    Vector3 otherDirection = go.GetComponent<IParameterManager>().GetCurrentDirection();
                     steering += otherDirection;
                     neighborsCount++;
                 }
@@ -844,7 +844,7 @@ namespace MotionMatching{
 
             float averageSpeed = 0.0f;
             foreach(GameObject go in groupAgents){
-                ParameterManager parameterManager = go.GetComponent<ParameterManager>();
+                IParameterManager parameterManager = go.GetComponent<IParameterManager>();
                 averageSpeed += parameterManager.GetCurrentSpeed();
             }
             averageSpeed /= groupAgents.Count;

@@ -50,7 +50,14 @@ public class SocialBehaviour : MonoBehaviour
             audioSource.clip = audioClips[randomIndex];
             audioSource.Play();
         }
+    }
 
+    public void SetLookForward(bool lookForward){
+        motionMatchingSkinnedMeshRendererWithOCEAN.SetLookForward(lookForward);
+    }
+
+    public void SetAgentCurrentDirection(Vector3 currentDirection){
+        motionMatchingSkinnedMeshRendererWithOCEAN.SetAgentDirection(currentDirection);
     }
 
 }
