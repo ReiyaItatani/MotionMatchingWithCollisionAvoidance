@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using MotionMatching;
+using System.Security.Cryptography;
 
 // AgentManager is a class that manages various parameters and settings for agents in a simulation.
 public class AgentManager : MonoBehaviour
@@ -87,6 +88,7 @@ public class AgentManager : MonoBehaviour
     // Lists to store references to various controller game objects.
     private List<GameObject> PathControllers = new List<GameObject>();
     private List<GameObject> MotionMatchingControllers = new List<GameObject>();
+    private List<GameObject> CollisionAvoidanceControllers = new List<GameObject>();
     private List<GameObject> MotionMatchingSkinnedMeshRendererWithOCEANs = new List<GameObject>();
     private List<GameObject> Avatars = new List<GameObject>();
     private AvatarCreatorBase avatarCreator;
@@ -126,6 +128,13 @@ public class AgentManager : MonoBehaviour
             if(motionMatchingController != null) {
                 SetMotionMatchingControllerParams(motionMatchingController);
                 MotionMatchingControllers.Add(motionMatchingController.gameObject);
+            }
+
+            // Get and set CollisionAvoidance parameters.
+            CollisionAvoidanceController collisionAvoidanceController = Avatars[i].GetComponentInChildren<CollisionAvoidanceController>();
+            if(collisionAvoidanceController != null) {
+                SetCollisionAvoidanceControllerParams(collisionAvoidanceController);
+                CollisionAvoidanceControllers.Add(collisionAvoidanceController.gameObject);
             }
 
             // Get and set MotionMatchingSkinnedMeshRendererWithOCEAN parameters.
@@ -171,6 +180,16 @@ public class AgentManager : MonoBehaviour
             }
         }
 
+        // Loop through all CollisionAvoidanceControllers and set their parameters.
+        foreach(GameObject controllerObject in CollisionAvoidanceControllers) 
+        {
+            CollisionAvoidanceController collisionAvoidanceController = controllerObject.GetComponent<CollisionAvoidanceController>();
+            if(collisionAvoidanceController != null) 
+            {
+                SetCollisionAvoidanceControllerParams(collisionAvoidanceController);
+            }
+        }
+
         // Loop through all MotionMatchingSkinnedMeshRendererWithOCEANs and set their parameters.
         foreach(GameObject controllerObject in MotionMatchingSkinnedMeshRendererWithOCEANs) 
         {
@@ -188,9 +207,6 @@ public class AgentManager : MonoBehaviour
 
     // Method to set parameters for PathController.
     private void SetPathControllerParams(PathController pathController){
-        pathController.avoidanceColliderSize = avoidanceColliderSize;
-        pathController.unalignedAvoidanceColliderSize = unalignedAvoidanceColliderSize;
-
         pathController.goalRadius = goalRadius;
         pathController.slowingRadius = slowingRadius;
 
@@ -203,9 +219,6 @@ public class AgentManager : MonoBehaviour
         pathController.PositionAdjustmentHalflife = PositionAdjustmentHalflife;
         pathController.PosMaximumAdjustmentRatio = PosMaximumAdjustmentRatio;
 
-        pathController.agentCollider.radius = CapsuleColliderRadius;
-
-        pathController.showAgentSphere = showAgentSphere;
         pathController.showAvoidanceForce = ShowAvoidanceForce;
         pathController.showUnalignedCollisionAvoidance = ShowUnalignedCollisionAvoidance;
         pathController.showGoalDirection = ShowGoalDirection;
@@ -220,6 +233,13 @@ public class AgentManager : MonoBehaviour
         motionMatchingController.DebugPose = DebugPose;
         motionMatchingController.DebugTrajectory = DebugTrajectory;
         motionMatchingController.DebugContacts = DebugContacts;
+    }
+
+    private void SetCollisionAvoidanceControllerParams(CollisionAvoidanceController collisionAvoidanceController){
+        collisionAvoidanceController.avoidanceColliderSize = avoidanceColliderSize;
+        collisionAvoidanceController.unalignedAvoidanceColliderSize = unalignedAvoidanceColliderSize;
+        collisionAvoidanceController.agentCollider.radius = CapsuleColliderRadius;
+        collisionAvoidanceController.showAgentSphere = showAgentSphere;
     }
 
     private void SetMotionMatchingSkinnedMeshRendererWithOCEANParams(MotionMatchingSkinnedMeshRendererWithOCEAN mmSMRWithOCEAN){

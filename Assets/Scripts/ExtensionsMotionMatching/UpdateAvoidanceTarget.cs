@@ -5,16 +5,10 @@ using MotionMatching;
 
 public class UpdateAvoidanceTarget : MonoBehaviour
 {
-    private PathController pathCharacterController;
-    private CapsuleCollider colliderMySelf;
-    private CapsuleCollider colliderMyGroup;
+    private PathController pathController;
+    private CapsuleCollider myAgentCollider;
+    private CapsuleCollider myGroupCollider;
     private GameObject currentAvoidanceTarget;
-    
-    void Start(){
-        pathCharacterController = this.transform.parent.GetComponent<PathController>();
-        colliderMySelf = pathCharacterController.agentCollider;
-        colliderMyGroup = pathCharacterController.groupCollider;
-    }
 
     private void Update(){
         AvoidanceTargetActiveChecker();
@@ -22,13 +16,13 @@ public class UpdateAvoidanceTarget : MonoBehaviour
 
     void OnTriggerStay(Collider other)
     {
-        if(pathCharacterController == null) return;
-        if(!other.Equals(colliderMySelf) && other.gameObject.CompareTag("Agent") || 
-           !other.Equals(colliderMyGroup) && other.gameObject.CompareTag("Group")) 
+        if(pathController == null) return;
+        if(!other.Equals(myAgentCollider) && other.gameObject.CompareTag("Agent") || 
+           !other.Equals(myGroupCollider) && other.gameObject.CompareTag("Group")) 
         {
-            if (pathCharacterController.CurrentAvoidanceTarget == null || Vector3.Distance(pathCharacterController.GetCurrentPosition(), pathCharacterController.CurrentAvoidanceTarget.transform.position) > Vector3.Distance(pathCharacterController.GetCurrentPosition(), other.transform.position))
+            if (pathController.CurrentAvoidanceTarget == null || Vector3.Distance(pathController.GetCurrentPosition(), pathController.CurrentAvoidanceTarget.transform.position) > Vector3.Distance(pathController.GetCurrentPosition(), other.transform.position))
             {
-                pathCharacterController.CurrentAvoidanceTarget = other.gameObject;
+                pathController.CurrentAvoidanceTarget = other.gameObject;
                 currentAvoidanceTarget = other.gameObject;
             }
         }   
@@ -36,20 +30,27 @@ public class UpdateAvoidanceTarget : MonoBehaviour
 
     void OnTriggerExit(Collider other)
     {
-        if(pathCharacterController == null) return;
-        if (pathCharacterController.CurrentAvoidanceTarget!=null && pathCharacterController.CurrentAvoidanceTarget.Equals(other.gameObject))
+        if(pathController == null) return;
+        if (pathController.CurrentAvoidanceTarget!=null && pathController.CurrentAvoidanceTarget.Equals(other.gameObject))
         {
             currentAvoidanceTarget = null;
-            pathCharacterController.CurrentAvoidanceTarget = null;
+            pathController.CurrentAvoidanceTarget = null;
         }
     }
 
+    //Group Colldier wil be inactive so in that case this will help 
     private void AvoidanceTargetActiveChecker(){
         if(currentAvoidanceTarget != null){
             if(!currentAvoidanceTarget.activeInHierarchy){
                 currentAvoidanceTarget = null;
-                pathCharacterController.CurrentAvoidanceTarget = null;
+                pathController.CurrentAvoidanceTarget = null;
             }
         }
+    }
+
+    public void InitParameter(PathController _pathController, CapsuleCollider _myAgentCollider, CapsuleCollider _myGroupCollider){
+        pathController = _pathController;
+        myAgentCollider = _myAgentCollider;
+        myGroupCollider = _myGroupCollider;
     }
 }

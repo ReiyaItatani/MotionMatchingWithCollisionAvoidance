@@ -5,18 +5,10 @@ using MotionMatching;
 
 public class UpdateUnalignedAvoidanceTarget : MonoBehaviour
 {
-    private PathController pathCharacterController;
-    private CapsuleCollider myCapsuleCollider;
-    public List<GameObject> othersInUnalignedAvoidanceArea;
-    private CapsuleCollider colliderMyGroup;
-
-    
-    void Awake(){
-        pathCharacterController = this.transform.parent.GetComponent<PathController>();
-        myCapsuleCollider = pathCharacterController.agentCollider;
-        colliderMyGroup = pathCharacterController.groupCollider;
-        othersInUnalignedAvoidanceArea = new List<GameObject>();
-    }
+    private PathController pathController;
+    private CapsuleCollider myAgentCollider;
+    private CapsuleCollider myGroupCollider;
+    public List<GameObject> othersInUnalignedAvoidanceArea = new List<GameObject>();
 
     void Update(){
         UnalignedAvoidanceTargetActiveChecker();
@@ -24,9 +16,9 @@ public class UpdateUnalignedAvoidanceTarget : MonoBehaviour
 
     void OnTriggerStay(Collider other)
     {
-        if(pathCharacterController == null) return;
-        if(!other.Equals(myCapsuleCollider) && other.gameObject.CompareTag("Agent") || 
-           !other.Equals(colliderMyGroup) && other.gameObject.CompareTag("Group"))
+        if(pathController == null) return;
+        if(!other.Equals(myAgentCollider) && other.gameObject.CompareTag("Agent") || 
+           !other.Equals(myGroupCollider) && other.gameObject.CompareTag("Group"))
         {
             if (!othersInUnalignedAvoidanceArea.Contains(other.gameObject))
             {
@@ -37,9 +29,9 @@ public class UpdateUnalignedAvoidanceTarget : MonoBehaviour
 
     void OnTriggerExit(Collider other)
     {
-        if(pathCharacterController == null) return;
-        if(!other.Equals(myCapsuleCollider) && other.gameObject.CompareTag("Agent") || 
-           !other.Equals(colliderMyGroup) && other.gameObject.CompareTag("Group")){
+        if(pathController == null) return;
+        if(!other.Equals(myAgentCollider) && other.gameObject.CompareTag("Agent") || 
+           !other.Equals(myGroupCollider) && other.gameObject.CompareTag("Group")){
             if (othersInUnalignedAvoidanceArea.Contains(other.gameObject))
             {
                 othersInUnalignedAvoidanceArea.Remove(other.gameObject);
@@ -53,5 +45,11 @@ public class UpdateUnalignedAvoidanceTarget : MonoBehaviour
 
     private void UnalignedAvoidanceTargetActiveChecker(){
         othersInUnalignedAvoidanceArea.RemoveAll(gameObject => !gameObject.activeInHierarchy);
+    }
+    
+    public void InitParameter(PathController _pathController, CapsuleCollider _myAgentCollider, CapsuleCollider _myGroupCollider){
+        pathController = _pathController;
+        myAgentCollider = _myAgentCollider;
+        myGroupCollider = _myGroupCollider;
     }
 }

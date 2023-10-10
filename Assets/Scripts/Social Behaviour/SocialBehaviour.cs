@@ -56,8 +56,16 @@ public class SocialBehaviour : MonoBehaviour
         motionMatchingSkinnedMeshRendererWithOCEAN.SetLookForward(lookForward);
     }
 
-    public void SetAgentCurrentDirection(Vector3 currentDirection){
+    public void SetCurrentDirection(Vector3 currentDirection){
         motionMatchingSkinnedMeshRendererWithOCEAN.SetAgentDirection(currentDirection);
+    }
+
+    public Vector3 GetCurrentLookAt(){
+        return motionMatchingSkinnedMeshRendererWithOCEAN.GetCurrentLookAt();
+    }
+
+    public void SetLookAtCenterOfMass(Vector3 _lookAtCenterOfMass){
+        motionMatchingSkinnedMeshRendererWithOCEAN.SetLookAtCenterOfMass(_lookAtCenterOfMass);
     }
 
 }

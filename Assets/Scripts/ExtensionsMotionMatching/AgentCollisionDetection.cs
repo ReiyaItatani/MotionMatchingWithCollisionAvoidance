@@ -5,6 +5,7 @@ using MotionMatching;
 using Unity.VisualScripting;
 
 [RequireComponent(typeof(UnityEngine.CapsuleCollider))]
+[RequireComponent(typeof(SocialBehaviour))]
 public class AgentCollisionDetection : MonoBehaviour
 {
     private PathController pathController;
@@ -67,13 +68,13 @@ public class AgentCollisionDetection : MonoBehaviour
         capsuleCollider = _capsuleCollider;
     }
 
-    public IEnumerator ReactionToCollision(float time, GameObject _collidedAgent)
+    public IEnumerator ReactionToCollision(float time, GameObject collidedAgent)
     {
         //Start wait
         onCollide = true;
         pathController.SetOnCollide(onCollide);
         //Look at
-        socialBehaviour.LookAtTarget(_collidedAgent);
+        socialBehaviour.LookAtTarget(collidedAgent);
         //Start talk
         socialBehaviour.TryPlayAudio();
         //Start Animation

@@ -69,6 +69,7 @@ public class AvatarCreator : AvatarCreatorBase
             GameObject instance = Instantiate(randomAvatar, this.transform);
             PathController pathController = instance.GetComponentInChildren<PathController>();
             MotionMatchingController motionMatchingController = instance.GetComponentInChildren<MotionMatchingController>();
+            CollisionAvoidanceController collisionAvoidanceController = instance.GetComponentInChildren<CollisionAvoidanceController>();
             MotionMatchingSkinnedMeshRendererWithOCEAN motionMatchingSkinnedMeshRendererWithOCEAN = instance.GetComponentInChildren<MotionMatchingSkinnedMeshRendererWithOCEAN>();
 
             //Random Social Relations Allocation 
@@ -125,7 +126,7 @@ public class AvatarCreator : AvatarCreatorBase
                 {
                     GroupParameterManager groupParameterManager = groupCollider.GetComponent<GroupParameterManager>();
                     groupParameterManager.pathControllers.Add(pathController);
-                    pathController.groupCollider = groupCollider.GetComponent<CapsuleCollider>();
+                    collisionAvoidanceController.groupCollider = groupCollider.GetComponent<CapsuleCollider>();
                 }
             }
             

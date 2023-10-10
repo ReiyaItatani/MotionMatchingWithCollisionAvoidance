@@ -55,7 +55,6 @@ public class PathController : MotionMatchingCharacterController
     // --------------------------------------------------------------------------
     // Collision Avoidance Force ------------------------------------------------
     [Header("Parameters For Basic Collision Avoidance"), HideInInspector]
-    public Vector3 avoidanceColliderSize = new Vector3(1.5f, 1.5f, 2.0f); 
     private Vector3 avoidanceVector = Vector3.zero;//Direction of basic collision avoidance
     [HideInInspector]
     public float avoidanceWeight = 2.0f;//Weight for basic collision avoidance
@@ -64,10 +63,6 @@ public class PathController : MotionMatchingCharacterController
         get => currentAvoidanceTarget;
         set => currentAvoidanceTarget = value;
     }
-    public CapsuleCollider agentCollider; //Collider of the agent
-    private BoxCollider avoidanceCollider; //The area to trigger basic collision avoidance
-    private GameObject basicAvoidanceArea;
-    private UpdateAvoidanceTarget updateAvoidanceTarget;
     // --------------------------------------------------------------------------
     // To Goal Direction --------------------------------------------------------
     [Header("Parameters For Goal Direction")]
@@ -83,7 +78,6 @@ public class PathController : MotionMatchingCharacterController
     // --------------------------------------------------------------------------
     // Unaligned Collision Avoidance -------------------------------------------
     [Header("Parameters For Unaligned Collision Avoidance"), HideInInspector]
-    public Vector3 unalignedAvoidanceColliderSize = new Vector3(4.5f, 1.5f, 6.0f); 
     private Vector3 otherPositionAtNearestApproach;
     private Vector3 myPositionAtNearestApproach;
     private Vector3 avoidNeighborsVector = Vector3.zero;//Direction for unaligned collision avoidance
@@ -92,9 +86,6 @@ public class PathController : MotionMatchingCharacterController
     public float avoidNeighborWeight = 2.0f;//Weight for unaligned collision avoidance
     private float minTimeToCollision =5.0f;
     private float collisionDangerThreshold = 4.0f;
-    private BoxCollider unalignedAvoidanceCollider; //The area to trigger unaligned collision avoidance
-    private GameObject unalignedAvoidanceArea;
-    private UpdateUnalignedAvoidanceTarget updateUnalignedAvoidanceTarget;
     // --------------------------------------------------------------------------
     // When Collide each other -----------------------------------------------------
     [Header("Social Behaviour, Non-verbal Communication")]
@@ -104,8 +95,6 @@ public class PathController : MotionMatchingCharacterController
     // --------------------------------------------------------------------------
     // Gizmo Parameters -------------------------------------------------------------
     [Header("Controll Gizmos")]
-    [HideInInspector]
-    public bool showAgentSphere = false;
     [HideInInspector]
     public bool showAvoidanceForce = false;
     [HideInInspector]
@@ -123,28 +112,13 @@ public class PathController : MotionMatchingCharacterController
     public SocialRelations socialRelations;
     [HideInInspector]
     public float groupForceWeight = 0.5f;
-    public CapsuleCollider groupCollider;
+    // --------------------------------------------------------------------------
+    // Collision Avoidance manager ----------------------------------------------
+    public CollisionAvoidanceController collisionAvoidance;
     
 
     private void Start()
     {
-        //Create Box Collider for Collision Avoidance Force
-        basicAvoidanceArea                  = new GameObject("BasicCollisionAvoidanceArea");
-        basicAvoidanceArea.transform.parent = this.transform;
-        updateAvoidanceTarget               = basicAvoidanceArea.AddComponent<UpdateAvoidanceTarget>();
-        avoidanceCollider                   = basicAvoidanceArea.AddComponent<BoxCollider>();
-        avoidanceCollider.size              = avoidanceColliderSize;
-        avoidanceCollider.isTrigger         = true;
-
-
-        //Create Box Collider for Unaligned Collision Avoidance Force
-        unalignedAvoidanceArea                  = new GameObject("UnalignedCollisionAvoidanceArea");
-        unalignedAvoidanceArea.transform.parent = this.transform;
-        updateUnalignedAvoidanceTarget          = unalignedAvoidanceArea.AddComponent<UpdateUnalignedAvoidanceTarget>();
-        unalignedAvoidanceCollider              = unalignedAvoidanceArea.AddComponent<BoxCollider>();
-        unalignedAvoidanceCollider.size         = unalignedAvoidanceColliderSize;
-        unalignedAvoidanceCollider.isTrigger    = true;
-
         //Init
         currentSpeed = initialSpeed;
         if (initialSpeed < minSpeed)
@@ -153,17 +127,6 @@ public class PathController : MotionMatchingCharacterController
         }
         CurrentPosition = Path[0];
         currentGoal = Path[currentGoalIndex];            
-        
-
-        //Create Agent Collision Detection
-        AgentCollisionDetection agentCollisionDetection = agentCollider.GetComponent<AgentCollisionDetection>();
-        if (agentCollisionDetection == null)
-        {
-            agentCollisionDetection = agentCollider.gameObject.AddComponent<AgentCollisionDetection>();
-            Debug.Log("AgentCollisionDetection script added");
-        }
-        agentCollisionDetection.InitParameter(this.gameObject.GetComponent<PathController>(), agentCollider);
-
 
         // Get the feature indices
         TrajectoryPosFeatureIndex = -1;
@@ -188,17 +151,15 @@ public class PathController : MotionMatchingCharacterController
         PredictedPositions  = new Vector3[NumberPredictionPos];
         PredictedDirections = new Vector3[NumberPredictionRot];
         
+        UpdateCollisionAvoidance();
+    }
 
-        //Update AvoidanceArea
-        StartCoroutine(UpdateBasicAvoidanceAreaPos(agentCollider.height/2));
-        StartCoroutine(UpdateUnalignedAvoidanceAreaPos(agentCollider.height/2));
-        //Update Vector3
+    private void UpdateCollisionAvoidance(){
         StartCoroutine(UpdateToGoalVector(0.1f));
         StartCoroutine(UpdateAvoidanceVector(0.1f, 0.5f));
-        StartCoroutine(UpdateAvoidNeighborsVector(updateUnalignedAvoidanceTarget.GetOthersInUnalignedAvoidanceArea(), 0.1f, 0.3f));
+        StartCoroutine(UpdateAvoidNeighborsVector(0.1f, 0.3f));
         StartCoroutine(UpdateGroupForce(0.2f, socialRelations));
-        StartCoroutine(UpdateSpeed(avatarCreator.GetAgentsInCategory(socialRelations), agentCollider.gameObject));
-
+        StartCoroutine(UpdateSpeed(avatarCreator.GetAgentsInCategory(socialRelations), collisionAvoidance.GetAgentGameObject()));
         //If you wanna consider all of the other agents for unaligned collision avoidance use below
         //StartCoroutine(UpdateAvoidNeighborsVector(avatarCreator.GetAgents(), 0.1f, 0.3f));
     }
@@ -388,7 +349,10 @@ public class PathController : MotionMatchingCharacterController
             {
                 avoidanceVector = ComputeAvoidanceVector(currentAvoidanceTarget, GetCurrentDirection(), GetCurrentPosition());
                 //gradually increase the avoidance force considering the distance 
-                avoidanceVector = avoidanceVector*(1.0f-Vector3.Distance(currentAvoidanceTarget.transform.position, GetCurrentPosition())/(Mathf.Sqrt(avoidanceColliderSize.x/2*avoidanceColliderSize.x/2+avoidanceColliderSize.z*avoidanceColliderSize.z)+agentCollider.radius*2));
+                Vector3 colliderSize = collisionAvoidance.GetAvoidanceColliderSize();
+                float agentRadius = collisionAvoidance.GetAgentCollider().radius;
+                avoidanceVector = avoidanceVector*(1.0f-Vector3.Distance(currentAvoidanceTarget.transform.position, 
+                                                                         GetCurrentPosition())/(Mathf.Sqrt(colliderSize.x/2*colliderSize.x/2+colliderSize.z*colliderSize.z)+agentRadius*2));
                 avoidanceVector *= TagChecker(currentAvoidanceTarget);
                 elapsedTime = 0.0f;
             }
@@ -424,17 +388,6 @@ public class PathController : MotionMatchingCharacterController
         return Vector3.Cross(upVector, directionToAvoidanceTarget).normalized;
     }
 
-    private IEnumerator UpdateBasicAvoidanceAreaPos(float AgentHeight){
-        while(true){
-            if(GetCurrentDirection() == Vector3.zero) yield return null;
-            Vector3 Center = (Vector3)GetCurrentPosition() + GetCurrentDirection().normalized * avoidanceCollider.size.z/2;
-            basicAvoidanceArea.transform.position = new Vector3(Center.x, AgentHeight, Center.z);
-            Quaternion targetRotation = Quaternion.LookRotation(GetCurrentDirection());
-            basicAvoidanceArea.transform.rotation = targetRotation;
-            yield return null;
-        }
-    }
-
     private float TagChecker(GameObject Target){
         if(Target.CompareTag("Group")){
             Target.GetComponent<CapsuleCollider>();
@@ -450,11 +403,12 @@ public class PathController : MotionMatchingCharacterController
     * Unaligned Collision Avoidance:
     * This section of the code handles scenarios where objects might collide in the future(prediction).
     ************************************************************************************************************/
-    public IEnumerator UpdateAvoidNeighborsVector(List<GameObject> Agents , float updateTime, float transitionTime){
+    public IEnumerator UpdateAvoidNeighborsVector(float updateTime, float transitionTime){
         while(true){
             if(currentAvoidanceTarget != null){
                 avoidNeighborsVector = Vector3.zero;
             }else{
+                List<GameObject> Agents = collisionAvoidance.GetOthersInUnalignedAvoidanceArea();
                 if(Agents == null) yield return null;
                 Vector3 newAvoidNeighborsVector = SteerToAvoidNeighbors(Agents, minTimeToCollision, collisionDangerThreshold);
                 if(potentialAvoidanceTarget != null){
@@ -473,29 +427,29 @@ public class PathController : MotionMatchingCharacterController
         // if(currentAvoidanceTarget != null) return Vector3.zero;
         foreach(GameObject other in others){
             //Skip self
-            if(other == agentCollider.gameObject){
+            if(other == collisionAvoidance.GetAgentGameObject()){
                 continue;
             }
             IParameterManager otherParameterManager = other.GetComponent<IParameterManager>();
 
             // predicted time until nearest approach of "this" and "other"
             float time = PredictNearestApproachTime (GetCurrentDirection(), 
-                                                        GetCurrentPosition(), 
-                                                        GetCurrentSpeed(), 
-                                                        otherParameterManager.GetCurrentDirection(), 
-                                                        otherParameterManager.GetCurrentPosition(), 
-                                                        otherParameterManager.GetCurrentSpeed());
+                                                     GetCurrentPosition(), 
+                                                     GetCurrentSpeed(), 
+                                                     otherParameterManager.GetCurrentDirection(), 
+                                                     otherParameterManager.GetCurrentPosition(), 
+                                                     otherParameterManager.GetCurrentSpeed());
             //Debug.Log("time:"+time);
             if ((time >= 0) && (time < minTimeToCollision)){
                 //Debug.Log("Distance:"+computeNearestApproachPositions (time, CurrentPosition, CurrentDirection, CurrentSpeed, otherParameterManager.GetRawCurrentPosition(), otherParameterManager.GetCurrentDirection(), otherParameterManager.GetCurrentSpeed()));
                 if (ComputeNearestApproachPositions (time, 
-                                                        GetCurrentPosition(), 
-                                                        GetCurrentDirection(), 
-                                                        GetCurrentSpeed(), 
-                                                        otherParameterManager.GetCurrentPosition(), 
-                                                        otherParameterManager.GetCurrentDirection(), 
-                                                        otherParameterManager.GetCurrentSpeed()) 
-                                                        < collisionDangerThreshold)
+                                                     GetCurrentPosition(), 
+                                                     GetCurrentDirection(), 
+                                                     GetCurrentSpeed(), 
+                                                     otherParameterManager.GetCurrentPosition(), 
+                                                     otherParameterManager.GetCurrentDirection(), 
+                                                     otherParameterManager.GetCurrentSpeed()) 
+                                                     < collisionDangerThreshold)
                 {
                     minTimeToCollision = time;
                     potentialAvoidanceTarget = other;
@@ -585,17 +539,6 @@ public class PathController : MotionMatchingCharacterController
         yield return null;
     }
 
-    private IEnumerator UpdateUnalignedAvoidanceAreaPos(float AgentHeight){
-        while(true){
-            if(GetCurrentDirection() == Vector3.zero) yield return null;
-            Vector3 Center = (Vector3)GetCurrentPosition() + GetCurrentDirection().normalized*unalignedAvoidanceCollider.size.z/2;
-            unalignedAvoidanceArea.transform.position = new Vector3(Center.x, AgentHeight, Center.z);
-            Quaternion targetRotation = Quaternion.LookRotation(GetCurrentDirection());
-            unalignedAvoidanceArea.transform.rotation = targetRotation;
-            yield return null;
-        }
-    }
-
     /******************************************************************************************************************************
     * Force from Group:
     * This section of the code calculates the collective force exerted by or on a group of objects.
@@ -610,33 +553,39 @@ public class PathController : MotionMatchingCharacterController
 
     private IEnumerator UpdateGroupForce(float updateTime, SocialRelations _socialRelations){
         List<GameObject> groupAgents = avatarCreator.GetAgentsInCategory(_socialRelations);
-        MotionMatchingSkinnedMeshRendererWithOCEAN motionMatchingSkinnedMeshRendererWithOCEAN = agentCollider.GetComponent<MotionMatchingSkinnedMeshRendererWithOCEAN>(); 
+
+        CapsuleCollider  agentCollider = collisionAvoidance.GetAgentCollider();
+        float              agentRadius = agentCollider.radius;
+        GameObject     agentGameObject = collisionAvoidance.GetAgentGameObject();
+
+        SocialBehaviour socialBehaviour = agentCollider.GetComponent<SocialBehaviour>(); 
+
         if(groupAgents.Count <= 1 || _socialRelations == SocialRelations.Individual){
             groupForce = Vector3.zero;
-            motionMatchingSkinnedMeshRendererWithOCEAN.SetLookForward(true);
+            socialBehaviour.SetLookForward(true);
             while(true){
                 Vector3 _currentDirection = GetCurrentDirection();
-                motionMatchingSkinnedMeshRendererWithOCEAN.SetAgentDirection(_currentDirection);
+                socialBehaviour.SetCurrentDirection(_currentDirection);
                 yield return new WaitForSeconds(updateTime);
             }
         }else{
-            motionMatchingSkinnedMeshRendererWithOCEAN.SetLookForward(false);
+            socialBehaviour.SetLookForward(false);
             while(true){
                 Vector3  _currentPosition = GetCurrentPosition();   
                 Vector3 _currentDirection = GetCurrentDirection();  
-                Vector3     headDirection = motionMatchingSkinnedMeshRendererWithOCEAN.GetCurrentLookAt();
+                Vector3     headDirection = socialBehaviour.GetCurrentLookAt();
 
-                motionMatchingSkinnedMeshRendererWithOCEAN.SetAgentDirection(_currentDirection);
+                socialBehaviour.SetCurrentDirection(_currentDirection);
 
-                Vector3    cohesionForce = CalculateCohesionForce(groupAgents, cohesionWeight, _currentPosition);
-                Vector3   repulsionForce = CalculateRepulsionForce(groupAgents, repulsionForceWeight, agentCollider.gameObject, agentCollider.radius, _currentPosition);
-                Vector3   alignmentForce = CalculateAlignment(groupAgents, alignmentForceWeight, agentCollider.gameObject, _currentDirection, agentCollider.radius);
+                Vector3    cohesionForce = CalculateCohesionForce (groupAgents, cohesionWeight,       agentGameObject, _currentPosition);
+                Vector3   repulsionForce = CalculateRepulsionForce(groupAgents, repulsionForceWeight, agentGameObject, _currentPosition, agentRadius);
+                Vector3   alignmentForce = CalculateAlignment     (groupAgents, alignmentForceWeight, agentGameObject, _currentDirection, agentRadius);
                 //Vector3 AdjustPosForce = Vector3.zero;
                 
                 if(headDirection!=null){
                     //float GazeAngle = CalculateGazingAngle(groupAgents, _currentPosition, headDirection, fieldOfView);
-                    Vector3 GazeAngleDirection = CalculateGazingDirection(groupAgents, _currentPosition, headDirection, agentCollider.gameObject, fieldOfView);
-                    motionMatchingSkinnedMeshRendererWithOCEAN.SetLookAtCenterOfMass(GazeAngleDirection);
+                    Vector3 GazeAngleDirection = CalculateGazingDirection(groupAgents, _currentPosition, headDirection, agentGameObject, fieldOfView);
+                    socialBehaviour.SetLookAtCenterOfMass(GazeAngleDirection);
 
                     //AdjustPosForce = CalculateAdjustPosForce(socialInteractionWeight, GazeAngle, headDirection);
                 }
@@ -653,7 +602,7 @@ public class PathController : MotionMatchingCharacterController
 
     private float CalculateGazingAngle(List<GameObject> groupAgents, Vector3 currentPos, Vector3 currentDir, float angleLimit, GameObject myself)
     {
-        Vector3            centerOfMass = CalculateCenterOfMass(groupAgents, agentCollider.gameObject);
+        Vector3            centerOfMass = CalculateCenterOfMass(groupAgents, myself);
         Vector3 directionToCenterOfMass = centerOfMass - currentPos;
 
         float             angle = Vector3.Angle(currentDir, directionToCenterOfMass);
@@ -703,9 +652,9 @@ public class PathController : MotionMatchingCharacterController
         return -socialInteractionWeight * headRot * currentDir *adjustment;
     }
 
-    private Vector3 CalculateCohesionForce(List<GameObject> groupAgents, float cohesionWeight, Vector3 currentPos){
+    private Vector3 CalculateCohesionForce(List<GameObject> groupAgents, float cohesionWeight, GameObject myself, Vector3 currentPos){
         float threshold = (groupAgents.Count-1)/2;
-        Vector3 centerOfMass = CalculateCenterOfMass(groupAgents, agentCollider.gameObject);
+        Vector3 centerOfMass = CalculateCenterOfMass(groupAgents, myself);
         float dist = Vector3.Distance(currentPos, centerOfMass);
         float judgeWithinThreshold = 0;
         if(dist > threshold){
@@ -716,7 +665,7 @@ public class PathController : MotionMatchingCharacterController
         return judgeWithinThreshold*cohesionWeight*toCenterOfMassDir;
     }
 
-    private Vector3 CalculateRepulsionForce(List<GameObject> groupAgents, float repulsionForceWeight, GameObject myself, float agentRadius, Vector3 currentPos){
+    private Vector3 CalculateRepulsionForce(List<GameObject> groupAgents, float repulsionForceWeight, GameObject myself, Vector3 currentPos, float agentRadius){
         Vector3 repulsionForceDir = Vector3.zero;
         foreach(GameObject agent in groupAgents){
             //skip myselfVector3.Cross
@@ -979,21 +928,6 @@ public class PathController : MotionMatchingCharacterController
     ******************************************************************************************************************************/
     private void DrawInfo(){
         Color gizmoColor;
-        if(showAgentSphere){
-            if (socialRelations == SocialRelations.Couple){
-                gizmoColor = new Color(1.0f, 0.0f, 0.0f); // red
-            }else if (socialRelations == SocialRelations.Friend){
-                gizmoColor = new Color(0.0f, 1.0f, 0.0f); // green
-            }else if  (socialRelations == SocialRelations.Family){
-                gizmoColor = new Color(0.0f, 0.0f, 1.0f); // blue
-            }else if  (socialRelations == SocialRelations.Coworker){
-                gizmoColor = new Color(1.0f, 1.0f, 0.0f); // yellow
-            }else{
-                gizmoColor = new Color(1.0f, 1.0f, 1.0f); // white
-            }
-            Draw.WireCylinder((Vector3)GetCurrentPosition(), Vector3.up, agentCollider.height, agentCollider.radius, gizmoColor);
-        }
-
         if(showAvoidanceForce){
             gizmoColor = Color.blue;
             Draw.ArrowheadArc((Vector3)GetCurrentPosition(), avoidanceVector, 0.55f, gizmoColor);
