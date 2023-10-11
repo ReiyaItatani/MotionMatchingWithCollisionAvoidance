@@ -159,6 +159,7 @@ public class PathController : MotionMatchingCharacterController
         //StartCoroutine(UpdateAvoidNeighborsVector(avatarCreator.GetAgents(), 0.1f, 0.3f));
     }
 
+    #region UPDATE SIMULATION
     protected override void OnUpdate(){
         // Predict the future positions and directions
         for (int i = 0; i < NumberPredictionPos; i++)
@@ -274,13 +275,14 @@ public class PathController : MotionMatchingCharacterController
             MotionMatching.SetPosAdjustment(newMotionMatchingPos - motionMatching);
         }
     }
+    #endregion
 
     /**********************************************************************************************
     * Goal Direction Update:
     * This section of the code is responsible for recalculating and adjusting the target direction.
     * It ensures that the object is always oriented or moving towards its intended goal or target.
     ***********************************************************************************************/
-
+    #region TO GOAL FORCE
     private IEnumerator UpdateToGoalVector(float updateTime){
         while(true){
             toGoalVector = (GetCurrentGoal() - (Vector3)GetCurrentPosition()).normalized;
@@ -330,12 +332,14 @@ public class PathController : MotionMatchingCharacterController
 
         yield return null;
     }
+    #endregion
 
     /***********************************************************************************************
     * Collision Avoidance Logic:
     * This section of the code ensures that objects do not overlap or intersect with each other.
     * It provides basic mechanisms to detect potential collisions and take preventive actions.
     ***********************************************************************************************/
+    #region BASIC COLLISION AVOIDANCE FORCE
     private IEnumerator UpdateAvoidanceVector(float updateTime, float transitionTime)
     {
         float elapsedTime = 0.0f;
@@ -394,11 +398,13 @@ public class PathController : MotionMatchingCharacterController
         }
         return 1f;
     }
+    #endregion
 
     /***********************************************************************************************************
     * Unaligned Collision Avoidance:
     * This section of the code handles scenarios where objects might collide in the future(prediction).
     ************************************************************************************************************/
+    #region UNALIGNED COLLISION AVOIDANCE
     public IEnumerator UpdateAvoidNeighborsVector(float updateTime, float transitionTime){
         while(true){
             GameObject currentAvoidanceTarget = collisionAvoidance.GetCurrentAvoidanceTarget();
@@ -535,12 +541,14 @@ public class PathController : MotionMatchingCharacterController
 
         yield return null;
     }
+    #endregion
 
     /******************************************************************************************************************************
     * Force from Group:
     * This section of the code calculates the collective force exerted by or on a group of objects.
     * It takes into account the interactions and influences of multiple objects within a group to determine the overall force or direction.
     ********************************************************************************************************************************/
+    #region GROUP FORCE
     private float fieldOfView = 45f;
 
     //private float socialInteractionWeight = 1.0f;
@@ -650,7 +658,8 @@ public class PathController : MotionMatchingCharacterController
     }
 
     private Vector3 CalculateCohesionForce(List<GameObject> groupAgents, float cohesionWeight, GameObject myself, Vector3 currentPos){
-        float threshold = (groupAgents.Count-1)/2;
+        //float threshold = (groupAgents.Count-1)/2;
+        float threshold = (groupAgents.Count)/2;
         Vector3 centerOfMass = CalculateCenterOfMass(groupAgents, myself);
         float dist = Vector3.Distance(currentPos, centerOfMass);
         float judgeWithinThreshold = 0;
@@ -777,12 +786,27 @@ public class PathController : MotionMatchingCharacterController
 
         yield return null;
     }
+    #endregion
+
+    /********************************************************************************************************************************
+    * Wall force:
+    * This section of the code is dedicated to modifying the speed of an object based on certain conditions or criteria.
+    * It ensures that the object maintains an appropriate speed, possibly in response to environmental factors, obstacles, or other objects.
+    ********************************************************************************************************************************/
+    #region WALL FORCE
+    public IEnumerator UpdateWallForce(float updateTime, float transitionTime){
+        while(true){
+            yield return new WaitForSeconds(updateTime);
+        }
+    }
+    #endregion
 
     /********************************************************************************************************************************
     * Speed Adjustment Function:
     * This section of the code is dedicated to modifying the speed of an object based on certain conditions or criteria.
     * It ensures that the object maintains an appropriate speed, possibly in response to environmental factors, obstacles, or other objects.
     ********************************************************************************************************************************/
+    #region SPEED ADJUSTMENT 
     private IEnumerator UpdateSpeed(List<GameObject> groupAgents, GameObject myself, float updateTime = 0.5f, float speedChangeRate = 0.05f){
         if(groupAgents.Count == 1 || socialRelations == SocialRelations.Individual){
             yield return null;
@@ -829,12 +853,14 @@ public class PathController : MotionMatchingCharacterController
             yield return new WaitForSeconds(updateTime);
         }
     }
+    #endregion
     
     /********************************************************************************************************************************
     * Get and Set Methods:
     * This section of the code contains methods to retrieve (get) and update (set) the values of properties or attributes of an object.
     * These methods ensure controlled access and potential validation when changing the state of the object.
     ********************************************************************************************************************************/
+    #region GET AND SET
     public override void GetTrajectoryFeature(TrajectoryFeature feature, int index, Transform character, NativeArray<float> output)
     {
         if (!feature.SimulationBone) Debug.Assert(false, "Trajectory should be computed using the SimulationBone");
@@ -917,12 +943,14 @@ public class PathController : MotionMatchingCharacterController
     public void SetOnMoving(bool _onMoving){
         onMoving = _onMoving;
     }
+    #endregion
 
     /******************************************************************************************************************************
     * Gizmos and Drawing:
     * This section of the code is dedicated to visual debugging and representation in the Unity editor.
     * It contains methods and logic to draw gizmos, shapes, and other visual aids that help in understanding and debugging the scene or object behaviors.
     ******************************************************************************************************************************/
+    #region GIZMOS AND DRAW
     private void DrawInfo(){
         Color gizmoColor;
         if(showAvoidanceForce){
@@ -951,8 +979,7 @@ public class PathController : MotionMatchingCharacterController
         }
     }
 
-
-#if UNITY_EDITOR
+    #if UNITY_EDITOR
     private void OnDrawGizmos()
     {
 
@@ -1031,5 +1058,7 @@ public class PathController : MotionMatchingCharacterController
             GizmosExtensions.DrawLine(predictedPos, predictedPos + new Vector3(dirf2.x, 0.0f, dirf2.z) * 0.5f, 12);
         }
     }
-#endif
+    #endif
+    #endregion
+
 }
