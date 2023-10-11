@@ -8,16 +8,15 @@ public class AvatarCreator : AvatarCreatorBase
     [Tooltip("This is a parameter to scatter the start and end positions of the path. The larger the value, the more the start and end positions of the path will deviate.")]
     public float startPointDeviation = 1f;
 
-
     public override void InstantiateAvatars()
     {
         CalculatePath();
 
         //Set initial speed for each social relations
-        float coupleSpeed = UnityEngine.Random.Range(0.5f, 0.8f);
-        float familySpeed = UnityEngine.Random.Range(0.5f, 0.8f);
-        float friendSpeed = UnityEngine.Random.Range(0.5f, 0.8f);
-        float coworkerSpeed = UnityEngine.Random.Range(0.5f, 0.8f);
+        float coupleSpeed = UnityEngine.Random.Range(minSpeed,maxSpeed);
+        float familySpeed = UnityEngine.Random.Range(minSpeed,maxSpeed);
+        float friendSpeed = UnityEngine.Random.Range(minSpeed, maxSpeed);
+        float coworkerSpeed = UnityEngine.Random.Range(minSpeed, maxSpeed);
 
         //Create Category Objects
         foreach (SocialRelations relation in System.Enum.GetValues(typeof(SocialRelations)))

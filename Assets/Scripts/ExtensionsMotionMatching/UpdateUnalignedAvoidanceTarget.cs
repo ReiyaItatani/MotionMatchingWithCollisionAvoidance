@@ -8,6 +8,7 @@ public class UpdateUnalignedAvoidanceTarget : MonoBehaviour
     private PathController pathController;
     private CapsuleCollider myAgentCollider;
     private CapsuleCollider myGroupCollider;
+    [ReadOnly]
     public List<GameObject> othersInUnalignedAvoidanceArea = new List<GameObject>();
 
     void Update(){

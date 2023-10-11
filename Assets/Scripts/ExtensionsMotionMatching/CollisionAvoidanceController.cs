@@ -6,7 +6,7 @@ using System;
 
 public class CollisionAvoidanceController : MonoBehaviour
 {
-        public PathController pathController;
+    public PathController pathController;
     public CapsuleCollider agentCollider;
     public CapsuleCollider groupCollider;
 
@@ -61,6 +61,10 @@ public class CollisionAvoidanceController : MonoBehaviour
         StartCoroutine(UpdateUnalignedAvoidanceAreaPos(agentCollider.height/2));
     }
 
+    void Update(){
+        DrawInfo();
+    }
+
     private IEnumerator UpdateBasicAvoidanceAreaPos(float AgentHeight){
         while(true){
             if(pathController.GetCurrentDirection() == Vector3.zero) yield return null;
@@ -85,6 +89,10 @@ public class CollisionAvoidanceController : MonoBehaviour
 
     public List<GameObject> GetOthersInUnalignedAvoidanceArea(){
         return updateUnalignedAvoidanceTarget.GetOthersInUnalignedAvoidanceArea();
+    }
+
+    public GameObject GetCurrentAvoidanceTarget(){
+        return updateAvoidanceTarget.GetCurrentAvoidanceTarget();
     }
 
     public CapsuleCollider GetAgentCollider(){

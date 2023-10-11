@@ -58,11 +58,6 @@ public class PathController : MotionMatchingCharacterController
     private Vector3 avoidanceVector = Vector3.zero;//Direction of basic collision avoidance
     [HideInInspector]
     public float avoidanceWeight = 2.0f;//Weight for basic collision avoidance
-    private GameObject currentAvoidanceTarget;
-    public GameObject CurrentAvoidanceTarget{
-        get => currentAvoidanceTarget;
-        set => currentAvoidanceTarget = value;
-    }
     // --------------------------------------------------------------------------
     // To Goal Direction --------------------------------------------------------
     [Header("Parameters For Goal Direction")]
@@ -113,7 +108,7 @@ public class PathController : MotionMatchingCharacterController
     [HideInInspector]
     public float groupForceWeight = 0.5f;
     // --------------------------------------------------------------------------
-    // Collision Avoidance manager ----------------------------------------------
+    // Collision Avoidance Controller --------------------------------------------
     public CollisionAvoidanceController collisionAvoidance;
     
 
@@ -191,7 +186,7 @@ public class PathController : MotionMatchingCharacterController
         currentSpeed = distanceToGoal < slowingRadius ? Mathf.Lerp(minSpeed, currentSpeed, distanceToGoal / slowingRadius) : currentSpeed;
 
         //Move Agent
-        direction = (toGoalWeight*toGoalVector + avoidanceWeight*avoidanceVector + avoidNeighborWeight*avoidNeighborsVector + groupForce*groupForceWeight).normalized;
+        direction = (toGoalWeight*toGoalVector + avoidanceWeight*avoidanceVector + avoidNeighborWeight*avoidNeighborsVector + groupForceWeight*groupForce).normalized;
         direction = new Vector3(direction.x, 0f, direction.z);
 
         //Check collision
@@ -345,6 +340,7 @@ public class PathController : MotionMatchingCharacterController
     {
         float elapsedTime = 0.0f;
         while(true){
+            GameObject currentAvoidanceTarget = collisionAvoidance.GetCurrentAvoidanceTarget();
             if (currentAvoidanceTarget != null)
             {
                 avoidanceVector = ComputeAvoidanceVector(currentAvoidanceTarget, GetCurrentDirection(), GetCurrentPosition());
@@ -405,6 +401,7 @@ public class PathController : MotionMatchingCharacterController
     ************************************************************************************************************/
     public IEnumerator UpdateAvoidNeighborsVector(float updateTime, float transitionTime){
         while(true){
+            GameObject currentAvoidanceTarget = collisionAvoidance.GetCurrentAvoidanceTarget();
             if(currentAvoidanceTarget != null){
                 avoidNeighborsVector = Vector3.zero;
             }else{

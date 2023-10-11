@@ -8,7 +8,8 @@ public class UpdateAvoidanceTarget : MonoBehaviour
     private PathController pathController;
     private CapsuleCollider myAgentCollider;
     private CapsuleCollider myGroupCollider;
-    private GameObject currentAvoidanceTarget;
+    [ReadOnly]
+    public GameObject currentAvoidanceTarget;
 
     private void Update(){
         AvoidanceTargetActiveChecker();
@@ -20,9 +21,8 @@ public class UpdateAvoidanceTarget : MonoBehaviour
         if(!other.Equals(myAgentCollider) && other.gameObject.CompareTag("Agent") || 
            !other.Equals(myGroupCollider) && other.gameObject.CompareTag("Group")) 
         {
-            if (pathController.CurrentAvoidanceTarget == null || Vector3.Distance(pathController.GetCurrentPosition(), pathController.CurrentAvoidanceTarget.transform.position) > Vector3.Distance(pathController.GetCurrentPosition(), other.transform.position))
+            if (currentAvoidanceTarget == null || Vector3.Distance(pathController.GetCurrentPosition(), currentAvoidanceTarget.transform.position) > Vector3.Distance(pathController.GetCurrentPosition(), other.transform.position))
             {
-                pathController.CurrentAvoidanceTarget = other.gameObject;
                 currentAvoidanceTarget = other.gameObject;
             }
         }   
@@ -31,11 +31,14 @@ public class UpdateAvoidanceTarget : MonoBehaviour
     void OnTriggerExit(Collider other)
     {
         if(pathController == null) return;
-        if (pathController.CurrentAvoidanceTarget!=null && pathController.CurrentAvoidanceTarget.Equals(other.gameObject))
+        if (currentAvoidanceTarget!=null && currentAvoidanceTarget.Equals(other.gameObject))
         {
             currentAvoidanceTarget = null;
-            pathController.CurrentAvoidanceTarget = null;
         }
+    }
+
+    public GameObject GetCurrentAvoidanceTarget(){
+        return currentAvoidanceTarget;
     }
 
     //Group Colldier wil be inactive so in that case this will help 
@@ -43,7 +46,6 @@ public class UpdateAvoidanceTarget : MonoBehaviour
         if(currentAvoidanceTarget != null){
             if(!currentAvoidanceTarget.activeInHierarchy){
                 currentAvoidanceTarget = null;
-                pathController.CurrentAvoidanceTarget = null;
             }
         }
     }

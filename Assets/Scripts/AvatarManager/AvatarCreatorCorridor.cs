@@ -24,10 +24,10 @@ public class AvatarCreatorCorridor : AvatarCreatorBase
         GenerateWall();
 
         //Set initial speed for each social relations
-        float coupleSpeed = UnityEngine.Random.Range(0.5f, 0.8f);
-        float familySpeed = UnityEngine.Random.Range(0.5f, 0.8f);
-        float friendSpeed = UnityEngine.Random.Range(0.5f, 0.8f);
-        float coworkerSpeed = UnityEngine.Random.Range(0.5f, 0.8f);
+        float coupleSpeed = UnityEngine.Random.Range(minSpeed, maxSpeed);
+        float familySpeed = UnityEngine.Random.Range(minSpeed, maxSpeed);
+        float friendSpeed = UnityEngine.Random.Range(minSpeed, maxSpeed);
+        float coworkerSpeed = UnityEngine.Random.Range(minSpeed, maxSpeed);
 
         //Create Category Objects
         foreach (SocialRelations relation in System.Enum.GetValues(typeof(SocialRelations)))
