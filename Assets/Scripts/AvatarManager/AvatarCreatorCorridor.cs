@@ -11,6 +11,7 @@ public class AvatarCreatorCorridor : AvatarCreatorBase
     [Header("Wall Parameters")]
     public float wallHeight = 3f;
     public float wallWidth = 0.2f;
+    public float wallColliderAdditionalWidth = 0.5f;
     public float wallToWallDist = 1.2f;
     [HideInInspector]
     public GameObject wallParent;
@@ -284,6 +285,7 @@ public class AvatarCreatorCorridor : AvatarCreatorBase
         Quaternion rotation = Quaternion.LookRotation(direction);
 
         GameObject wallSegment = new GameObject("WallSegment");
+        wallSegment.tag = "Wall";
         wallSegment.transform.position = center;
         wallSegment.transform.rotation = rotation;
         wallSegment.transform.SetParent(wallParent.transform);
@@ -293,7 +295,7 @@ public class AvatarCreatorCorridor : AvatarCreatorBase
         BoxCollider boxCollider = wallSegment.AddComponent<BoxCollider>();
         boxCollider.isTrigger = true;
 
-        boxCollider.size = new Vector3(wallWidth, wallHeight, distance);
+        boxCollider.size = new Vector3(wallWidth + wallColliderAdditionalWidth, wallHeight, distance);
         boxCollider.center = new Vector3(0, wallHeight/2f, 0);
         Rigidbody rigidBody = wallSegment.AddComponent<Rigidbody>();
         rigidBody.useGravity = false;

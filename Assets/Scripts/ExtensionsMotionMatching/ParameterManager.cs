@@ -18,4 +18,12 @@ public class ParameterManager : MonoBehaviour, IParameterManager
     public float GetCurrentSpeed(){
         return pathController.GetCurrentSpeed();           
     }
+
+    public SocialRelations GetSocialRelations(){
+        return pathController.GetSocialRelations();
+    }
+
+    public AvatarCreatorBase GetAvatarCreatorBase(){
+        return pathController.GetAvatarCreatorBase();
+    }
 }

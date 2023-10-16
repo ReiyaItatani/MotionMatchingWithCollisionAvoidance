@@ -764,8 +764,10 @@ public class MotionMatchingSkinnedMeshRendererWithOCEAN : MonoBehaviour
 
     private void AttractionPointUpdater(){
         if(lookObject != null){
+            //when collide
             attractionPoint = (lookObject.transform.position - this.transform.position).normalized;
         }else{
+            //in normal situation
             if(lookAtForward){
                 attractionPoint = agentDirection;
             }else{

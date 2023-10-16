@@ -549,8 +549,6 @@ public class PathController : MotionMatchingCharacterController
     * It takes into account the interactions and influences of multiple objects within a group to determine the overall force or direction.
     ********************************************************************************************************************************/
     #region GROUP FORCE
-    private float fieldOfView = 45f;
-
     //private float socialInteractionWeight = 1.0f;
     private float cohesionWeight = 0.7f;
     private float repulsionForceWeight = 1.5f;
@@ -563,40 +561,26 @@ public class PathController : MotionMatchingCharacterController
         float              agentRadius = agentCollider.radius;
         GameObject     agentGameObject = collisionAvoidance.GetAgentGameObject();
 
-        SocialBehaviour socialBehaviour = agentCollider.GetComponent<SocialBehaviour>(); 
-
         if(groupAgents.Count <= 1 || _socialRelations == SocialRelations.Individual){
             groupForce = Vector3.zero;
-            socialBehaviour.SetLookForward(true);
-            while(true){
-                Vector3 _currentDirection = GetCurrentDirection();
-                socialBehaviour.SetCurrentDirection(_currentDirection);
-                yield return new WaitForSeconds(updateTime);
-            }
         }else{
-            socialBehaviour.SetLookForward(false);
+
             while(true){
                 Vector3  _currentPosition = GetCurrentPosition();   
                 Vector3 _currentDirection = GetCurrentDirection();  
-                Vector3     headDirection = socialBehaviour.GetCurrentLookAt();
-
-                socialBehaviour.SetCurrentDirection(_currentDirection);
 
                 Vector3    cohesionForce = CalculateCohesionForce (groupAgents, cohesionWeight,       agentGameObject, _currentPosition);
                 Vector3   repulsionForce = CalculateRepulsionForce(groupAgents, repulsionForceWeight, agentGameObject, _currentPosition, agentRadius);
                 Vector3   alignmentForce = CalculateAlignment     (groupAgents, alignmentForceWeight, agentGameObject, _currentDirection, agentRadius);
-                //Vector3 AdjustPosForce = Vector3.zero;
-                
-                if(headDirection!=null){
-                    //float GazeAngle = CalculateGazingAngle(groupAgents, _currentPosition, headDirection, fieldOfView);
-                    Vector3 GazeAngleDirection = CalculateGazingDirection(groupAgents, _currentPosition, headDirection, agentGameObject, fieldOfView);
-                    socialBehaviour.SetLookAtCenterOfMass(GazeAngleDirection);
-
-                    //AdjustPosForce = CalculateAdjustPosForce(socialInteractionWeight, GazeAngle, headDirection);
-                }
-
-                //Vector3 newGroupForce = (AdjustPosForce + cohesionForce + repulsionForce + alignmentForce).normalized;
                 Vector3 newGroupForce = (cohesionForce + repulsionForce + alignmentForce).normalized;
+
+                //Vector3 AdjustPosForce = Vector3.zero;
+                //Vector3  headDirection = socialBehaviour.GetCurrentLookAt();
+                // if(headDirection!=null){
+                //     float GazeAngle = CalculateGazingAngle(groupAgents, _currentPosition, headDirection, fieldOfView);
+                //     AdjustPosForce = CalculateAdjustPosForce(socialInteractionWeight, GazeAngle, headDirection);
+                // }
+                //Vector3 newGroupForce = (AdjustPosForce + cohesionForce + repulsionForce + alignmentForce).normalized;
 
                 StartCoroutine(GroupForceGradualTransition(updateTime, groupForce, newGroupForce));
 
@@ -619,37 +603,6 @@ public class PathController : MotionMatchingCharacterController
         }
 
         return neckRotationAngle;
-    }
-
-    private Vector3 CalculateGazingDirection(List<GameObject> groupAgents, Vector3 currentPos, Vector3 currentLookDir, GameObject myself, float angleLimit)
-    {
-        Vector3            centerOfMass = CalculateCenterOfMass(groupAgents, myself);
-        Vector3 directionToCenterOfMass = (centerOfMass - currentPos).normalized;    
-
-        float             angle = Vector3.Angle(currentLookDir, directionToCenterOfMass);
-        float neckRotationAngle = 0f;
-
-        if (angle > angleLimit)
-        {
-            neckRotationAngle = angle - angleLimit;
-        }
-
-        Vector3 crossProduct = Vector3.Cross(currentLookDir, directionToCenterOfMass);
-        Quaternion  rotation = Quaternion.identity;
-        if (crossProduct.y > 0)
-        {
-            // directionToCenterOfMass is on your right side
-            rotation = Quaternion.Euler(0, neckRotationAngle, 0);
-        }
-        else if (crossProduct.y <= 0)
-        {
-            // directionToCenterOfMass is on your left side
-            rotation = Quaternion.Euler(0, -neckRotationAngle, 0);
-        }
-
-        Vector3 rotatedVector = rotation * currentLookDir;
-
-        return rotatedVector.normalized;
     }
 
     private Vector3 CalculateAdjustPosForce(float socialInteractionWeight, float headRot, Vector3 currentDir){
@@ -930,6 +883,12 @@ public class PathController : MotionMatchingCharacterController
     }
     public Vector3 GetCurrentGoal(){
         return currentGoal;
+    }
+    public SocialRelations GetSocialRelations(){
+        return socialRelations;
+    }
+    public AvatarCreatorBase GetAvatarCreatorBase(){
+        return avatarCreator;
     }
 
     public void SetCollidedAgent(GameObject _collidedAgent){
