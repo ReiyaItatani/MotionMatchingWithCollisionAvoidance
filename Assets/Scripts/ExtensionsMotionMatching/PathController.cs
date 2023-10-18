@@ -58,7 +58,7 @@ public class PathController : MotionMatchingCharacterController
     private Vector3 avoidanceVector = Vector3.zero;//Direction of basic collision avoidance
     [HideInInspector]
     public float avoidanceWeight = 2.0f;//Weight for basic collision avoidance
-    private GameObject currentAvoidanceTarget;
+    public GameObject currentAvoidanceTarget;
     // --------------------------------------------------------------------------
     // To Goal Direction --------------------------------------------------------
     [Header("Parameters For Goal Direction")]
@@ -74,8 +74,6 @@ public class PathController : MotionMatchingCharacterController
     // --------------------------------------------------------------------------
     // Unaligned Collision Avoidance -------------------------------------------
     [Header("Parameters For Unaligned Collision Avoidance"), HideInInspector]
-    private Vector3 otherPositionAtNearestApproach;
-    private Vector3 myPositionAtNearestApproach;
     private Vector3 avoidNeighborsVector = Vector3.zero;//Direction for unaligned collision avoidance
     private GameObject potentialAvoidanceTarget;
     [HideInInspector]
@@ -159,7 +157,7 @@ public class PathController : MotionMatchingCharacterController
 
     private void UpdateCollisionAvoidance(){
         StartCoroutine(UpdateToGoalVector(0.1f));
-        StartCoroutine(UpdateAvoidanceVector(0.1f, 0.5f));
+        StartCoroutine(UpdateAvoidanceVector(0.1f, 0.3f));
         StartCoroutine(UpdateAvoidNeighborsVector(0.1f, 0.3f));
         StartCoroutine(UpdateGroupForce(0.2f, socialRelations));
         StartCoroutine(UpdateWallForce(0.2f, 0.5f));
@@ -359,15 +357,15 @@ public class PathController : MotionMatchingCharacterController
         float elapsedTime = 0.0f;
         while(true){
             List<GameObject> othersInAvoidanceArea = collisionAvoidance.GetOthersInAvoidanceArea();
+            Vector3 myPositionAtNearestApproach = Vector3.zero;
+            Vector3 otherPositionAtNearestApproach = Vector3.zero;
 
             //Update CurrentAvoidance Target
-            //TODO: CalculateUrgentAvoidanceTarget内のComputeNearestApproachPositions内変数の整理。
-            //完全に動くようにする。
-            //今はまだpreference wayを変えているだけ。
             if(othersInAvoidanceArea != null){
-                currentAvoidanceTarget = CalculateUrgentAvoidanceTarget(othersInAvoidanceArea, minTimeToCollision, collisionDangerThreshold);              
+                currentAvoidanceTarget = DecideUrgentAvoidanceTarget(othersInAvoidanceArea, minTimeToCollision, collisionDangerThreshold, out myPositionAtNearestApproach, out otherPositionAtNearestApproach);              
             }
 
+            //Calculate Avoidance Force
             if (currentAvoidanceTarget != null)
             {
                 avoidanceVector = ComputeAvoidanceVector(currentAvoidanceTarget, GetCurrentDirection(), GetCurrentPosition());
@@ -422,8 +420,10 @@ public class PathController : MotionMatchingCharacterController
         return 1f;
     }
 
-    private GameObject CalculateUrgentAvoidanceTarget(List<GameObject> others, float minTimeToCollision, float collisionDangerThreshold){
+    private GameObject DecideUrgentAvoidanceTarget(List<GameObject> others, float minTimeToCollision, float collisionDangerThreshold, out Vector3 myPositionAtNearestApproach, out Vector3 otherPositionAtNearestApproach){
         GameObject _currentAvoidanceTarget = null;
+        myPositionAtNearestApproach = Vector3.zero;
+        otherPositionAtNearestApproach = Vector3.zero;
         foreach(GameObject other in others){
             //Skip self
             if(other == collisionAvoidance.GetAgentGameObject()){
@@ -447,7 +447,9 @@ public class PathController : MotionMatchingCharacterController
                                                      GetCurrentSpeed(), 
                                                      otherParameterManager.GetCurrentPosition(), 
                                                      otherParameterManager.GetCurrentDirection(), 
-                                                     otherParameterManager.GetCurrentSpeed()) 
+                                                     otherParameterManager.GetCurrentSpeed(), 
+                                                     out myPositionAtNearestApproach, 
+                                                     out otherPositionAtNearestApproach) 
                                                      < collisionDangerThreshold)
                 {
                     minTimeToCollision = time;
@@ -457,6 +459,7 @@ public class PathController : MotionMatchingCharacterController
         }
         return _currentAvoidanceTarget;
     }
+
     #endregion
 
     /***********************************************************************************************************
@@ -485,38 +488,9 @@ public class PathController : MotionMatchingCharacterController
     {
         float steer = 0;
         potentialAvoidanceTarget = null;
-        // if(currentAvoidanceTarget != null) return Vector3.zero;
-        foreach(GameObject other in others){
-            //Skip self
-            if(other == collisionAvoidance.GetAgentGameObject()){
-                continue;
-            }
-            IParameterManager otherParameterManager = other.GetComponent<IParameterManager>();
-
-            // predicted time until nearest approach of "this" and "other"
-            float time = PredictNearestApproachTime (GetCurrentDirection(), 
-                                                     GetCurrentPosition(), 
-                                                     GetCurrentSpeed(), 
-                                                     otherParameterManager.GetCurrentDirection(), 
-                                                     otherParameterManager.GetCurrentPosition(), 
-                                                     otherParameterManager.GetCurrentSpeed());
-            //Debug.Log("time:"+time);
-            if ((time >= 0) && (time < minTimeToCollision)){
-                //Debug.Log("Distance:"+computeNearestApproachPositions (time, CurrentPosition, CurrentDirection, CurrentSpeed, otherParameterManager.GetRawCurrentPosition(), otherParameterManager.GetCurrentDirection(), otherParameterManager.GetCurrentSpeed()));
-                if (ComputeNearestApproachPositions (time, 
-                                                     GetCurrentPosition(), 
-                                                     GetCurrentDirection(), 
-                                                     GetCurrentSpeed(), 
-                                                     otherParameterManager.GetCurrentPosition(), 
-                                                     otherParameterManager.GetCurrentDirection(), 
-                                                     otherParameterManager.GetCurrentSpeed()) 
-                                                     < collisionDangerThreshold)
-                {
-                    minTimeToCollision = time;
-                    potentialAvoidanceTarget = other;
-                }
-            }
-        }
+        Vector3 myPositionAtNearestApproach = Vector3.zero;
+        Vector3 otherPositionAtNearestApproach = Vector3.zero;
+        potentialAvoidanceTarget = DecideUrgentAvoidanceTarget(others, minTimeToCollision, collisionDangerThreshold, out myPositionAtNearestApproach, out otherPositionAtNearestApproach);
 
         if(potentialAvoidanceTarget != null){
             // parallel: +1, perpendicular: 0, anti-parallel: -1
@@ -573,7 +547,7 @@ public class PathController : MotionMatchingCharacterController
         return projection / relSpeed;
     }
 
-    private float ComputeNearestApproachPositions (float time, Vector3 myPosition, Vector3 myDirection, float mySpeed, Vector3 otherPosition, Vector3 otherDirection, float otherSpeed)
+    private float ComputeNearestApproachPositions (float time, Vector3 myPosition, Vector3 myDirection, float mySpeed, Vector3 otherPosition, Vector3 otherDirection, float otherSpeed, out Vector3 myPositionAtNearestApproach, out Vector3 otherPositionAtNearestApproach)
     {
         Vector3    myTravel = myDirection * mySpeed * time;
         Vector3     myFinal =  myPosition +    myTravel;

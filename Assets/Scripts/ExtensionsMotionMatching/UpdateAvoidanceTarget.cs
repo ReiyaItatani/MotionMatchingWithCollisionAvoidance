@@ -5,7 +5,7 @@ using MotionMatching;
 
 public class UpdateAvoidanceTarget : MonoBehaviour
 {
-    private PathController pathController;
+
     private CapsuleCollider myAgentCollider;
     private CapsuleCollider myGroupCollider;
     [ReadOnly]
@@ -17,7 +17,6 @@ public class UpdateAvoidanceTarget : MonoBehaviour
 
     void OnTriggerStay(Collider other)
     {
-        if(pathController == null) return;
         if(!other.Equals(myAgentCollider) && other.gameObject.CompareTag("Agent") || 
            !other.Equals(myGroupCollider) && other.gameObject.CompareTag("Group")) 
         {

@@ -316,7 +316,7 @@ public class MotionMatchingSkinnedMeshRendererWithOCEAN : MonoBehaviour
         EmotionPass();
 
         //Fluctuate
-        FluctuatePass();
+        //FluctuatePass();
 
         //EyeLevel
         AdjustEyeLevelPass();
