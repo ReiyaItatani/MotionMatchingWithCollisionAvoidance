@@ -994,6 +994,8 @@ MonoBehaviour:
   socialRelations: 0
   groupForceWeight: 0.5
   collisionAvoidance: {fileID: 2879909096291568006}
+  wallRepForce: {x: 0, y: 0, z: 0}
+  wallRepForceWeight: 1
 --- !u!1 &2994602650983485462
 GameObject:
   m_ObjectHideFlags: 0
@@ -2782,6 +2784,7 @@ MonoBehaviour:
   groupCollider: {fileID: 0}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
   unalignedAvoidanceColliderSize: {x: 4.5, y: 1.5, z: 6}
+  agentCollisionDetection: {fileID: 2879909096291568003}
   showAgentSphere: 0
 --- !u!1 &9105553496059855191
 GameObject:

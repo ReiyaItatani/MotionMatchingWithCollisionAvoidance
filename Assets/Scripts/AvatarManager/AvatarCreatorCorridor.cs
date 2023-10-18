@@ -294,12 +294,13 @@ public class AvatarCreatorCorridor : AvatarCreatorBase
         MeshRenderer meshRenderer = wallSegment.AddComponent<MeshRenderer>();
         BoxCollider boxCollider = wallSegment.AddComponent<BoxCollider>();
         boxCollider.isTrigger = true;
+        NormalVector wallNormalVector = wallSegment.AddComponent<NormalVector>();
 
         boxCollider.size = new Vector3(wallWidth + wallColliderAdditionalWidth, wallHeight, distance);
         boxCollider.center = new Vector3(0, wallHeight/2f, 0);
         Rigidbody rigidBody = wallSegment.AddComponent<Rigidbody>();
         rigidBody.useGravity = false;
-        wallSegment.AddComponent<WallCollisionDetection>();
+        // wallSegment.AddComponent<WallCollisionDetection>();
 
         Mesh mesh = new Mesh();
         mesh.vertices = new Vector3[]

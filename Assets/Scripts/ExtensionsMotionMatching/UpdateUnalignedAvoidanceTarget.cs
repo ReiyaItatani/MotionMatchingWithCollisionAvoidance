@@ -5,7 +5,6 @@ using MotionMatching;
 
 public class UpdateUnalignedAvoidanceTarget : MonoBehaviour
 {
-    private PathController pathController;
     private CapsuleCollider myAgentCollider;
     private CapsuleCollider myGroupCollider;
     [ReadOnly]
@@ -17,7 +16,6 @@ public class UpdateUnalignedAvoidanceTarget : MonoBehaviour
 
     void OnTriggerStay(Collider other)
     {
-        if(pathController == null) return;
         if(!other.Equals(myAgentCollider) && other.gameObject.CompareTag("Agent") || 
            !other.Equals(myGroupCollider) && other.gameObject.CompareTag("Group"))
         {
@@ -30,7 +28,6 @@ public class UpdateUnalignedAvoidanceTarget : MonoBehaviour
 
     void OnTriggerExit(Collider other)
     {
-        if(pathController == null) return;
         if(!other.Equals(myAgentCollider) && other.gameObject.CompareTag("Agent") || 
            !other.Equals(myGroupCollider) && other.gameObject.CompareTag("Group")){
             if (othersInUnalignedAvoidanceArea.Contains(other.gameObject))
@@ -48,8 +45,7 @@ public class UpdateUnalignedAvoidanceTarget : MonoBehaviour
         othersInUnalignedAvoidanceArea.RemoveAll(gameObject => !gameObject.activeInHierarchy);
     }
     
-    public void InitParameter(PathController _pathController, CapsuleCollider _myAgentCollider, CapsuleCollider _myGroupCollider){
-        pathController = _pathController;
+    public void InitParameter(CapsuleCollider _myAgentCollider, CapsuleCollider _myGroupCollider){
         myAgentCollider = _myAgentCollider;
         myGroupCollider = _myGroupCollider;
     }

@@ -36,6 +36,9 @@ public class AgentManager : MonoBehaviour
     [Tooltip("Weight for group force.")]
     [Range(0.0f, 5.0f)]
     public float groupForceWeight = 1.0f;
+    [Tooltip("Weight for wall force.")]
+    [Range(0.0f, 5.0f)]
+    public float wallRepForceWeight = 1.0f;
 
     // Parameters related to the adjustment of the position of the SimulationBone and SimulationObject.
     [Space]
@@ -59,6 +62,7 @@ public class AgentManager : MonoBehaviour
     public bool ShowGoalDirection = false;
     public bool ShowCurrentDirection = false;
     public bool ShowGroupForce = false;
+    public bool ShowWallForce = false;
 
     // Parameters for debugging the Motion Matching Controller.
     [Header("Motion Matching Controller Debug")]
@@ -214,6 +218,7 @@ public class AgentManager : MonoBehaviour
         pathController.avoidanceWeight = avoidanceWeight;
         pathController.avoidNeighborWeight = avoidNeighborWeight;
         pathController.groupForceWeight = groupForceWeight;
+        pathController.wallRepForceWeight = wallRepForceWeight;
 
         pathController.MaxDistanceMMAndCharacterController = MaxDistanceMMAndCharacterController;
         pathController.PositionAdjustmentHalflife = PositionAdjustmentHalflife;
@@ -224,6 +229,7 @@ public class AgentManager : MonoBehaviour
         pathController.showGoalDirection = ShowGoalDirection;
         pathController.showCurrentDirection = ShowCurrentDirection;
         pathController.showGroupForce = ShowGroupForce;
+        pathController.showWallForce = ShowWallForce;
     }
 
     private void SetMotionMatchingControllerParams(MotionMatchingController motionMatchingController){

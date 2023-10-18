@@ -24,6 +24,9 @@ public class CollisionAvoidanceController : MonoBehaviour
     private UpdateUnalignedAvoidanceTarget updateUnalignedAvoidanceTarget;
     private BoxCollider unalignedAvoidanceCollider;
 
+    [Header("Repulsion Force from the wall")]
+    public AgentCollisionDetection agentCollisionDetection; 
+
     [HideInInspector]
     public bool showAgentSphere = false;
 
@@ -33,7 +36,7 @@ public class CollisionAvoidanceController : MonoBehaviour
         basicAvoidanceArea                  = new GameObject("BasicCollisionAvoidanceArea");
         basicAvoidanceArea.transform.parent = this.transform;
         updateAvoidanceTarget               = basicAvoidanceArea.AddComponent<UpdateAvoidanceTarget>();
-        updateAvoidanceTarget.InitParameter(pathController, agentCollider, groupCollider);
+        updateAvoidanceTarget.InitParameter(agentCollider, groupCollider);
         avoidanceCollider                   = basicAvoidanceArea.AddComponent<BoxCollider>();
         avoidanceCollider.size              = avoidanceColliderSize;
         avoidanceCollider.isTrigger         = true;
@@ -42,13 +45,13 @@ public class CollisionAvoidanceController : MonoBehaviour
         unalignedAvoidanceArea                  = new GameObject("UnalignedCollisionAvoidanceArea");
         unalignedAvoidanceArea.transform.parent = this.transform;
         updateUnalignedAvoidanceTarget          = unalignedAvoidanceArea.AddComponent<UpdateUnalignedAvoidanceTarget>();
-        updateUnalignedAvoidanceTarget.InitParameter(pathController, agentCollider, groupCollider);
+        updateUnalignedAvoidanceTarget.InitParameter(agentCollider, groupCollider);
         unalignedAvoidanceCollider              = unalignedAvoidanceArea.AddComponent<BoxCollider>();
         unalignedAvoidanceCollider.size         = unalignedAvoidanceColliderSize;
         unalignedAvoidanceCollider.isTrigger    = true;
 
         //Create Agent Collision Detection
-        AgentCollisionDetection agentCollisionDetection = agentCollider.GetComponent<AgentCollisionDetection>();
+        agentCollisionDetection                 = agentCollider.GetComponent<AgentCollisionDetection>();
         if (agentCollisionDetection == null)
         {
             agentCollisionDetection = agentCollider.gameObject.AddComponent<AgentCollisionDetection>();
@@ -91,8 +94,12 @@ public class CollisionAvoidanceController : MonoBehaviour
         return updateUnalignedAvoidanceTarget.GetOthersInUnalignedAvoidanceArea();
     }
 
-    public GameObject GetCurrentAvoidanceTarget(){
-        return updateAvoidanceTarget.GetCurrentAvoidanceTarget();
+    public List<GameObject> GetOthersInAvoidanceArea(){
+        return updateAvoidanceTarget.GetOthersInAvoidanceArea();
+    }
+
+    public GameObject GetCurrentWallTarget(){
+        return agentCollisionDetection.GetCurrentWallTarget();
     }
 
     public CapsuleCollider GetAgentCollider(){

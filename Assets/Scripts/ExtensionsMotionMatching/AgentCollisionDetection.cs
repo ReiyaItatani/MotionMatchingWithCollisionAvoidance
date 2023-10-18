@@ -8,11 +8,15 @@ using Unity.VisualScripting;
 [RequireComponent(typeof(SocialBehaviour))]
 public class AgentCollisionDetection : MonoBehaviour
 {
+    [Header("Parameters when collision happens")]
     private PathController pathController;
     private CapsuleCollider capsuleCollider;
     private bool onCollide = false;
     private bool onMoving = false;
     public SocialBehaviour socialBehaviour;
+
+    [Header("Parameters for repulsion force")]
+    private GameObject currentWallTarget;
 
     //For checking what happend when collide
     [HideInInspector]
@@ -55,6 +59,16 @@ public class AgentCollisionDetection : MonoBehaviour
                 }
             }
         }
+        if(collider.gameObject.tag == "Wall"){
+            currentWallTarget = collider.gameObject;
+        }
+    }
+
+    void OnTriggerExit(Collider collider)
+    {
+        if(collider.gameObject.tag == "Wall"){
+            currentWallTarget = null;
+        }
     }
 
     private IEnumerator DurationAfterCamPosChange(ChangeCamPosChecker changeCamPosChecker, float duration){
@@ -96,5 +110,9 @@ public class AgentCollisionDetection : MonoBehaviour
         pathController.SetOnCollide(onCollide);
         pathController.SetOnMoving(onMoving);
         yield return null;
+    }
+
+    public GameObject GetCurrentWallTarget(){
+        return currentWallTarget;
     }
 }
