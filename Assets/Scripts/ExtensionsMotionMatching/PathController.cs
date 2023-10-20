@@ -347,7 +347,7 @@ public class PathController : MotionMatchingCharacterController
     #endregion
 
     /***********************************************************************************************
-    * Collision Avoidance Logic:
+    * Collision Avoidance Logic[Nuria HiDAC]:
     * This section of the code ensures that objects do not overlap or intersect with each other.
     * It provides basic mechanisms to detect potential collisions and take preventive actions.
     ***********************************************************************************************/
@@ -463,7 +463,7 @@ public class PathController : MotionMatchingCharacterController
     #endregion
 
     /***********************************************************************************************************
-    * Unaligned Collision Avoidance:
+    * Unaligned Collision Avoidance[Reynolds 1987]:
     * This section of the code handles scenarios where objects might collide in the future(prediction).
     ************************************************************************************************************/
     #region UNALIGNED COLLISION AVOIDANCE
@@ -575,8 +575,16 @@ public class PathController : MotionMatchingCharacterController
     }
     #endregion
 
+    /***********************************************************************************************
+    * Synthetic-Vision Based Steering for Crowds[Ondrej, J. et al. (2010)]:
+    * This part of the code helps virtual agents "see" and avoid bumping into each other.
+    * It detects when agents might crash and helps them change direction or speed to avoid it.
+    ***********************************************************************************************/
+    #region Synthetic-Vision Based Steering
+    
+    #endregion
     /******************************************************************************************************************************
-    * Force from Group:
+    * Force from Group[Moussaid et al. (2010)]:
     * This section of the code calculates the collective force exerted by or on a group of objects.
     * It takes into account the interactions and influences of multiple objects within a group to determine the overall force or direction.
     ********************************************************************************************************************************/
@@ -774,7 +782,7 @@ public class PathController : MotionMatchingCharacterController
     #endregion
 
     /********************************************************************************************************************************
-    * Wall force:
+    * Wall force[Nuria HiDAC]:
     * This section of the code is dedicated to modifying the speed of an object based on certain conditions or criteria.
     * It ensures that the object maintains an appropriate speed, possibly in response to environmental factors, obstacles, or other objects.
     ********************************************************************************************************************************/
