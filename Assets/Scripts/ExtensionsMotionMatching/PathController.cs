@@ -162,6 +162,7 @@ public class PathController : MotionMatchingCharacterController
         StartCoroutine(UpdateGroupForce(0.2f, socialRelations));
         StartCoroutine(UpdateWallForce(0.2f, 0.5f));
         StartCoroutine(UpdateSpeed(avatarCreator.GetAgentsInCategory(socialRelations), collisionAvoidance.GetAgentGameObject()));
+        StartCoroutine(AngularVelocityControl(0.2f));        
         //If you wanna consider all of the other agents for unaligned collision avoidance use below
         //StartCoroutine(UpdateAvoidNeighborsVector(avatarCreator.GetAgents(), 0.1f, 0.3f));
     }
@@ -581,7 +582,126 @@ public class PathController : MotionMatchingCharacterController
     * It detects when agents might crash and helps them change direction or speed to avoid it.
     ***********************************************************************************************/
     #region Synthetic-Vision Based Steering
-    
+
+    private IEnumerator AngularVelocityControl(float updateTime){
+        while(true){
+            List<GameObject> others = collisionAvoidance.GetOthersInAvoidanceArea();
+            Vector3 myPosition      = GetCurrentPosition();
+            Vector3 myDirection     = GetCurrentDirection();
+            Vector3 myGoal          = GetCurrentGoal();
+            float   myCurrentSpeed  = GetCurrentSpeed();
+            float   angularVelocity = CalculateAngularVelocities(others, myPosition, myDirection, myGoal, myCurrentSpeed);
+            //Debug.Log("angularVelocity" + angularVelocity);
+
+            yield return new WaitForSeconds(updateTime);
+        }
+    }
+
+    private float CalculateAngularVelocities(List<GameObject> others, Vector3 myPosition, Vector3 myDirection,Vector3 myGoal, float myCurrentSpeed){
+        //Predict future my position
+        Vector3 myFuturePosition = myPosition + myDirection * myCurrentSpeed * Time.deltaTime;
+
+        float rightTurn = 0f;
+        float leftTurn = 0f;
+
+        foreach(GameObject other in others){
+            Vector3 otherPosition     = other.GetComponent<IParameterManager>().GetCurrentPosition();
+            Vector3 otherDirection    = other.GetComponent<IParameterManager>().GetCurrentDirection();
+            float   otherCurrentSpeed = other.GetComponent<IParameterManager>().GetCurrentSpeed();
+            //Predict future other's position
+            Vector3 otherFuturePosition = otherPosition + otherDirection * otherCurrentSpeed * Time.deltaTime;
+
+            //Calculate Angular Velocity
+            float currentBearingAngle_Other = CalculateBearingAngle(myPosition, myDirection, otherPosition);
+            //float  futureBearingAngle_Other = CalculateBearingAngle(myFuturePosition, myDirection, otherFuturePosition);
+            // float   deltaBearingAngle_Other = futureBearingAngle_Other - currentBearingAngle_Other;
+            // float   angularVelocity_Other   = deltaBearingAngle_Other/Time.deltaTime;
+            Vector3 relPosition = otherPosition + (otherDirection - myDirection);
+            Vector3 meToOther   = otherPosition - myPosition;
+            float   angularVelocity_Other = CalculateBearingAngle(myPosition, meToOther, relPosition);
+
+            //Calculate Time-To-Interaction
+            float timeToInteraction = PredictNearestApproachTime(myDirection, myPosition, myCurrentSpeed, otherDirection, otherPosition, otherCurrentSpeed);
+
+            //Calculate Angular Velocities Threshold
+            float bearingAngleThreshold = CalculateBearingAngleThreshold(angularVelocity_Other, timeToInteraction);
+
+            Debug.Log("currentBearingAngle_Other" + currentBearingAngle_Other);
+            // Debug.Log("angularVelocity_Other"+angularVelocity_Other);
+            Debug.Log("bearingAngleThreshold"+bearingAngleThreshold);
+            Debug.Log("");
+            // Debug.Log("timeToInteraction"+timeToInteraction);
+            //Points a walker has to react to
+            if(timeToInteraction > 0f && currentBearingAngle_Other < bearingAngleThreshold){
+                float turn = angularVelocity_Other - bearingAngleThreshold;
+                if(angularVelocity_Other > 0f){
+                    //the two walkers will not collide and I will give way.
+                    if(turn < rightTurn || rightTurn == 0f){
+                        rightTurn = turn;
+                    }
+                }else if(angularVelocity_Other < 0f || leftTurn == 0f){
+                    //the two walkers will not collide and I will pass first.
+                    if(turn > leftTurn){
+                        leftTurn = turn;
+                    }
+                }   
+            }
+        }
+
+        //Calculate bearing-angle corresponding to my goal
+        float currentBearingAngle_Goal = CalculateBearingAngle(myPosition, myDirection, myGoal);
+        float  futureBearingAngle_Goal = CalculateBearingAngle(myFuturePosition, myDirection, myGoal);
+        float   deltaBearingAngle_Goal = futureBearingAngle_Goal - currentBearingAngle_Goal;
+        float     angularVelocity_Goal = deltaBearingAngle_Goal / Time.deltaTime;
+
+        float myAngularVelocity = 0f;
+
+        //Calculate angular velocities for me
+        if(Mathf.Abs(angularVelocity_Goal) < 0.1f){
+            //walkers are currently heading to their goal
+            if(Mathf.Abs(rightTurn) < Mathf.Abs(leftTurn)){
+                myAngularVelocity = rightTurn;
+            }else{
+                myAngularVelocity = leftTurn;
+            }
+        }else if(leftTurn < angularVelocity_Goal && angularVelocity_Goal < rightTurn){
+            if(Mathf.Abs(rightTurn-angularVelocity_Goal) < Mathf.Abs(leftTurn-angularVelocity_Goal)){
+                myAngularVelocity = rightTurn;
+            }else{
+                myAngularVelocity = leftTurn;
+            }
+        }else if(angularVelocity_Goal < leftTurn && angularVelocity_Goal > rightTurn){
+            myAngularVelocity = angularVelocity_Goal;
+        }
+
+        //Clamp
+        float maxAngularVelocity = Mathf.PI / 2f;
+
+        if (Mathf.Abs(myAngularVelocity) > maxAngularVelocity)
+        {
+            myAngularVelocity = maxAngularVelocity;
+        }
+
+        return myAngularVelocity;
+    }
+
+    private float CalculateBearingAngle(Vector3 basePosition, Vector3 baseDirection, Vector3 otherPosition)
+    {
+        Vector3 directionToOther = otherPosition - basePosition;
+        float angleInDegrees = Vector3.SignedAngle(baseDirection, directionToOther, Vector3.up);
+        return -angleInDegrees * Mathf.Deg2Rad; 
+    }
+
+
+    private float CalculateBearingAngleThreshold(float angularVelocity, float timeToInteraction, float a = 0, float b = 0.6f, float c = 1.5f){
+        float bearingAngleThreshold = 0f;
+        if(angularVelocity < 0){
+            bearingAngleThreshold= a - b * Mathf.Pow(timeToInteraction, -c);
+        }else{
+            bearingAngleThreshold= a + b * Mathf.Pow(timeToInteraction, -c);
+        }
+        return bearingAngleThreshold;
+    }
     #endregion
     /******************************************************************************************************************************
     * Force from Group[Moussaid et al. (2010)]:
