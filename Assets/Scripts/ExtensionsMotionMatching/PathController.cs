@@ -589,7 +589,6 @@ public class PathController : MotionMatchingCharacterController
             Vector3 myPosition      = GetCurrentPosition();
             Vector3 myDirection     = GetCurrentDirection();
             Vector3 myGoal          = GetCurrentGoal();
-            float   myCurrentSpeed  = GetCurrentSpeed();
             float   angularVelocity = CalculateAngularVelocities(others, myPosition, myDirection, myGoal);
             Debug.Log("angularVelocity" + angularVelocity);
 
@@ -607,7 +606,8 @@ public class PathController : MotionMatchingCharacterController
 
             //Calculate Angular Velocity
             float distance = Vector3.Distance(myPosition, otherPosition);
-            Vector3 pi_walker = otherPosition - myPosition;
+            //Vector3 pi_walker = otherPosition - myPosition;
+            Vector3 pi_walker = myPosition - otherPosition;
             Vector3 k = pi_walker.normalized;
             Vector3 V_pi_w = otherDirection - myDirection;//(10)
             Vector3 V_conv_pi_w = ProjectVector(V_pi_w, k);//(11)
@@ -621,11 +621,11 @@ public class PathController : MotionMatchingCharacterController
             float bearingAngleThreshold = CalculateBearingAngleThreshold(angularVelocity_Other, timeToInteraction);
 
             float currentBearingAngle_Other = CalculateBearingAngle(myPosition, myDirection, otherPosition);
-            //Debug.Log("currentBearingAngle_Other" + currentBearingAngle_Other);
-            // Debug.Log("angularVelocity_Other"+angularVelocity_Other);
-            //Debug.Log("bearingAngleThreshold"+bearingAngleThreshold);
+            // Debug.Log("α" + currentBearingAngle_Other);
+            // Debug.Log("α^ +左周り, -右周り:"+angularVelocity_Other);
+            // Debug.Log("thr"+bearingAngleThreshold);
             // Debug.Log("");
-            // Debug.Log("timeToInteraction"+timeToInteraction);
+            // Debug.Log("tti"+timeToInteraction);
             //Points a walker has to react to
             if(timeToInteraction > 0f && currentBearingAngle_Other < bearingAngleThreshold){
                 float turn = angularVelocity_Other - bearingAngleThreshold;
@@ -645,7 +645,7 @@ public class PathController : MotionMatchingCharacterController
 
         //Calculate bearing-angle corresponding to my goal
         float distance_Goal = Vector3.Distance(myPosition, myGoal);
-        Vector3 pg_walker = myGoal - myPosition;
+        Vector3 pg_walker = myPosition - myGoal;
         Vector3 k_Goal = pg_walker.normalized;
         Vector3 V_pg_w = Vector3.zero - myDirection;//(10)
         Vector3 V_conv_pg_w = ProjectVector(V_pg_w, k_Goal);//(11)
@@ -696,7 +696,7 @@ public class PathController : MotionMatchingCharacterController
     }
 
 
-    private float CalculateBearingAngleThreshold(float angularVelocity, float timeToInteraction, float a = 0, float b = 0.6f, float c = 1.5f){
+    private float CalculateBearingAngleThreshold(float angularVelocity, float timeToInteraction, float a = 1.5f, float b = 0.6f, float c = 1.0f){
         float bearingAngleThreshold = 0f;
         if(angularVelocity < 0){
             bearingAngleThreshold= a - b * Mathf.Pow(timeToInteraction, -c);
