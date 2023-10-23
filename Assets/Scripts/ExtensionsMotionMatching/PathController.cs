@@ -162,7 +162,7 @@ public class PathController : MotionMatchingCharacterController
         StartCoroutine(UpdateGroupForce(0.2f, socialRelations));
         StartCoroutine(UpdateWallForce(0.2f, 0.5f));
         StartCoroutine(UpdateSpeed(avatarCreator.GetAgentsInCategory(socialRelations), collisionAvoidance.GetAgentGameObject()));
-        StartCoroutine(AngularVelocityControl(0.2f));        
+        StartCoroutine(AngularVelocityControl(0.1f));        
         //If you wanna consider all of the other agents for unaligned collision avoidance use below
         //StartCoroutine(UpdateAvoidNeighborsVector(avatarCreator.GetAgents(), 0.1f, 0.3f));
     }
@@ -590,46 +590,41 @@ public class PathController : MotionMatchingCharacterController
             Vector3 myDirection     = GetCurrentDirection();
             Vector3 myGoal          = GetCurrentGoal();
             float   myCurrentSpeed  = GetCurrentSpeed();
-            float   angularVelocity = CalculateAngularVelocities(others, myPosition, myDirection, myGoal, myCurrentSpeed);
-            //Debug.Log("angularVelocity" + angularVelocity);
+            float   angularVelocity = CalculateAngularVelocities(others, myPosition, myDirection, myGoal);
+            Debug.Log("angularVelocity" + angularVelocity);
 
             yield return new WaitForSeconds(updateTime);
         }
     }
 
-    private float CalculateAngularVelocities(List<GameObject> others, Vector3 myPosition, Vector3 myDirection,Vector3 myGoal, float myCurrentSpeed){
-        //Predict future my position
-        Vector3 myFuturePosition = myPosition + myDirection * myCurrentSpeed * Time.deltaTime;
-
+    private float CalculateAngularVelocities(List<GameObject> others, Vector3 myPosition, Vector3 myDirection,Vector3 myGoal){
         float rightTurn = 0f;
         float leftTurn = 0f;
 
         foreach(GameObject other in others){
             Vector3 otherPosition     = other.GetComponent<IParameterManager>().GetCurrentPosition();
             Vector3 otherDirection    = other.GetComponent<IParameterManager>().GetCurrentDirection();
-            float   otherCurrentSpeed = other.GetComponent<IParameterManager>().GetCurrentSpeed();
-            //Predict future other's position
-            Vector3 otherFuturePosition = otherPosition + otherDirection * otherCurrentSpeed * Time.deltaTime;
 
             //Calculate Angular Velocity
-            float currentBearingAngle_Other = CalculateBearingAngle(myPosition, myDirection, otherPosition);
-            //float  futureBearingAngle_Other = CalculateBearingAngle(myFuturePosition, myDirection, otherFuturePosition);
-            // float   deltaBearingAngle_Other = futureBearingAngle_Other - currentBearingAngle_Other;
-            // float   angularVelocity_Other   = deltaBearingAngle_Other/Time.deltaTime;
-            Vector3 relPosition = otherPosition + (otherDirection - myDirection);
-            Vector3 meToOther   = otherPosition - myPosition;
-            float   angularVelocity_Other = CalculateBearingAngle(myPosition, meToOther, relPosition);
+            float distance = Vector3.Distance(myPosition, otherPosition);
+            Vector3 pi_walker = otherPosition - myPosition;
+            Vector3 k = pi_walker.normalized;
+            Vector3 V_pi_w = otherDirection - myDirection;//(10)
+            Vector3 V_conv_pi_w = ProjectVector(V_pi_w, k);//(11)
+            Vector3 V_orth_pi_w = V_pi_w - V_conv_pi_w;//(12)
+            float angularVelocity_Other = CalculateAngularVelocity(distance, V_orth_pi_w, V_conv_pi_w, 1f);//(14)
 
             //Calculate Time-To-Interaction
-            float timeToInteraction = PredictNearestApproachTime(myDirection, myPosition, myCurrentSpeed, otherDirection, otherPosition, otherCurrentSpeed);
+            float timeToInteraction = CalculateTimeToIntersection(distance, V_conv_pi_w);//(13)
 
             //Calculate Angular Velocities Threshold
             float bearingAngleThreshold = CalculateBearingAngleThreshold(angularVelocity_Other, timeToInteraction);
 
-            Debug.Log("currentBearingAngle_Other" + currentBearingAngle_Other);
+            float currentBearingAngle_Other = CalculateBearingAngle(myPosition, myDirection, otherPosition);
+            //Debug.Log("currentBearingAngle_Other" + currentBearingAngle_Other);
             // Debug.Log("angularVelocity_Other"+angularVelocity_Other);
-            Debug.Log("bearingAngleThreshold"+bearingAngleThreshold);
-            Debug.Log("");
+            //Debug.Log("bearingAngleThreshold"+bearingAngleThreshold);
+            // Debug.Log("");
             // Debug.Log("timeToInteraction"+timeToInteraction);
             //Points a walker has to react to
             if(timeToInteraction > 0f && currentBearingAngle_Other < bearingAngleThreshold){
@@ -649,13 +644,21 @@ public class PathController : MotionMatchingCharacterController
         }
 
         //Calculate bearing-angle corresponding to my goal
-        float currentBearingAngle_Goal = CalculateBearingAngle(myPosition, myDirection, myGoal);
-        float  futureBearingAngle_Goal = CalculateBearingAngle(myFuturePosition, myDirection, myGoal);
-        float   deltaBearingAngle_Goal = futureBearingAngle_Goal - currentBearingAngle_Goal;
-        float     angularVelocity_Goal = deltaBearingAngle_Goal / Time.deltaTime;
+        float distance_Goal = Vector3.Distance(myPosition, myGoal);
+        Vector3 pg_walker = myGoal - myPosition;
+        Vector3 k_Goal = pg_walker.normalized;
+        Vector3 V_pg_w = Vector3.zero - myDirection;//(10)
+        Vector3 V_conv_pg_w = ProjectVector(V_pg_w, k_Goal);//(11)
+        Vector3 V_orth_pg_w = V_pg_w - V_conv_pg_w;//(12)
+        float angularVelocity_Goal = CalculateAngularVelocity(distance_Goal, V_orth_pg_w, V_conv_pg_w, 1f);//(14)
+        // float currentBearingAngle_Goal = CalculateBearingAngle(myPosition, myDirection, myGoal);
+        // float  futureBearingAngle_Goal = CalculateBearingAngle(myFuturePosition, myDirection, myGoal);
+        // float   deltaBearingAngle_Goal = futureBearingAngle_Goal - currentBearingAngle_Goal;
+        // float     angularVelocity_Goal = deltaBearingAngle_Goal / Time.deltaTime;
 
         float myAngularVelocity = 0f;
 
+        // Debug.Log(angularVelocity_Goal);
         //Calculate angular velocities for me
         if(Mathf.Abs(angularVelocity_Goal) < 0.1f){
             //walkers are currently heading to their goal
@@ -702,6 +705,40 @@ public class PathController : MotionMatchingCharacterController
         }
         return bearingAngleThreshold;
     }
+
+    private Vector3 ProjectVector(Vector3 vector, Vector3 direction)
+    {
+        float dotProduct = Vector3.Dot(vector, direction);
+        return direction * dotProduct;
+    }
+
+    float CalculateTimeToIntersection(float distance, Vector3 velocityProjection)
+    {
+        float speedTowardsWalker = velocityProjection.magnitude;
+
+        if (speedTowardsWalker < Mathf.Epsilon)
+        {
+            return float.PositiveInfinity;
+        }
+
+        return distance / speedTowardsWalker;
+    }
+
+    float CalculateAngularVelocity(float distance, Vector3 orthogonalComponent, Vector3 projectionComponent, float timeUnit)
+    {
+        float numerator = orthogonalComponent.magnitude;
+        float denominator = distance - projectionComponent.magnitude;
+
+        if (Mathf.Abs(denominator) < Mathf.Epsilon)
+        {
+            return 0f;
+        }
+
+        float angle = Mathf.Atan(numerator / denominator) / timeUnit;
+
+        return angle;
+    }
+
     #endregion
     /******************************************************************************************************************************
     * Force from Group[Moussaid et al. (2010)]:
