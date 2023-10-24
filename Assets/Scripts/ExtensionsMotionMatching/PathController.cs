@@ -596,7 +596,7 @@ public class PathController : MotionMatchingCharacterController
             Vector3 myGoal          = GetCurrentGoal();
             float minTimeToInteraction = float.MaxValue;
             float   angularVelocity = CalculateAngularVelocities(others, myPosition, myDirection, myGoal, out minTimeToInteraction);
-            currentSpeed = UpdateSpeed(others, _currentSpeed, minTimeToInteraction);
+            //currentSpeed = UpdateSpeed(others, _currentSpeed, minTimeToInteraction);
             //rotation
             Vector3 rotationAxis = Vector3.up;
             Quaternion rotation = Quaternion.AngleAxis(angularVelocity * Mathf.Rad2Deg, rotationAxis);
@@ -607,7 +607,7 @@ public class PathController : MotionMatchingCharacterController
         }
     }
 
-    private float UpdateSpeed(List<GameObject> others, float _currentSpeed, float minTimeToInteraction, float ttiThr = 3f){
+    private float UpdateSpeed(List<GameObject> others, float _currentSpeed, float minTimeToInteraction, float ttiThr = 1f){
         if(others == null){
             return _currentSpeed;
         }else{
