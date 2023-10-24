@@ -39,6 +39,9 @@ public class AgentManager : MonoBehaviour
     [Tooltip("Weight for wall force.")]
     [Range(0.0f, 5.0f)]
     public float wallRepForceWeight = 1.0f;
+    [Tooltip("Weight for synthetic vision force.")]
+    [Range(0.0f, 5.0f)]
+    public float syntheticVisionForceWeight = 1.0f;
 
     // Parameters related to the adjustment of the position of the SimulationBone and SimulationObject.
     [Space]
@@ -219,6 +222,7 @@ public class AgentManager : MonoBehaviour
         pathController.avoidNeighborWeight = avoidNeighborWeight;
         pathController.groupForceWeight = groupForceWeight;
         pathController.wallRepForceWeight = wallRepForceWeight;
+        pathController.syntheticVisionForceWeight = syntheticVisionForceWeight;
 
         pathController.MaxDistanceMMAndCharacterController = MaxDistanceMMAndCharacterController;
         pathController.PositionAdjustmentHalflife = PositionAdjustmentHalflife;

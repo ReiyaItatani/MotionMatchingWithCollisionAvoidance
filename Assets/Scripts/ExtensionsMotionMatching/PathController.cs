@@ -162,7 +162,7 @@ public class PathController : MotionMatchingCharacterController
         StartCoroutine(UpdateGroupForce(0.2f, socialRelations));
         StartCoroutine(UpdateWallForce(0.2f, 0.5f));
         StartCoroutine(UpdateSpeed(avatarCreator.GetAgentsInCategory(socialRelations), collisionAvoidance.GetAgentGameObject()));
-        StartCoroutine(AngularVelocityControl(0.1f));        
+        StartCoroutine(UpdateAngularVelocityControl(0.2f));        
         //If you wanna consider all of the other agents for unaligned collision avoidance use below
         //StartCoroutine(UpdateAvoidNeighborsVector(avatarCreator.GetAgents(), 0.1f, 0.3f));
     }
@@ -199,7 +199,8 @@ public class PathController : MotionMatchingCharacterController
                         avoidanceWeight    *         avoidanceVector + 
                     avoidNeighborWeight    *    avoidNeighborsVector + 
                        groupForceWeight    *             groupForce +
-                     wallRepForceWeight    *           wallRepForce
+                     wallRepForceWeight    *           wallRepForce +
+             syntheticVisionForceWeight    *   syntheticVisionForce
                      ).normalized;
         direction = new Vector3(direction.x, 0f, direction.z);
 
@@ -583,22 +584,44 @@ public class PathController : MotionMatchingCharacterController
     ***********************************************************************************************/
     #region Synthetic-Vision Based Steering
 
-    private IEnumerator AngularVelocityControl(float updateTime){
+    private Vector3 syntheticVisionForce;
+    public float syntheticVisionForceWeight = 1.0f;
+    private float minTimeToInteraction;
+    private IEnumerator UpdateAngularVelocityControl(float updateTime){
         while(true){
-            List<GameObject> others = collisionAvoidance.GetOthersInAvoidanceArea();
+            List<GameObject> others = collisionAvoidance.GetOthersInUnalignedAvoidanceArea();
             Vector3 myPosition      = GetCurrentPosition();
             Vector3 myDirection     = GetCurrentDirection();
+            float   _currentSpeed   = GetCurrentSpeed();
             Vector3 myGoal          = GetCurrentGoal();
-            float   angularVelocity = CalculateAngularVelocities(others, myPosition, myDirection, myGoal);
-            Debug.Log("angularVelocity" + angularVelocity);
+            float minTimeToInteraction = float.MaxValue;
+            float   angularVelocity = CalculateAngularVelocities(others, myPosition, myDirection, myGoal, out minTimeToInteraction);
+            currentSpeed = UpdateSpeed(others, _currentSpeed, minTimeToInteraction);
+            //rotation
+            Vector3 rotationAxis = Vector3.up;
+            Quaternion rotation = Quaternion.AngleAxis(angularVelocity * Mathf.Rad2Deg, rotationAxis);
+            syntheticVisionForce = rotation * myDirection;
+
 
             yield return new WaitForSeconds(updateTime);
         }
     }
 
-    private float CalculateAngularVelocities(List<GameObject> others, Vector3 myPosition, Vector3 myDirection,Vector3 myGoal){
-        float rightTurn = 0f;
-        float leftTurn = 0f;
+    private float UpdateSpeed(List<GameObject> others, float _currentSpeed, float minTimeToInteraction, float ttiThr = 3f){
+        if(others == null){
+            return _currentSpeed;
+        }else{
+            if(minTimeToInteraction < ttiThr){
+                _currentSpeed = _currentSpeed * (1 - Mathf.Exp(-0.5f * minTimeToInteraction * minTimeToInteraction));
+            }
+        }
+        return _currentSpeed;
+    }
+
+    private float CalculateAngularVelocities(List<GameObject> others, Vector3 myPosition, Vector3 myDirection,Vector3 myGoal, out float minTimeToInteraction){
+        float rightTurn = float.MaxValue;
+        float leftTurn = float.MinValue;
+        minTimeToInteraction = float.MaxValue; 
 
         foreach(GameObject other in others){
             Vector3 otherPosition     = other.GetComponent<IParameterManager>().GetCurrentPosition();
@@ -606,26 +629,24 @@ public class PathController : MotionMatchingCharacterController
 
             //Calculate Angular Velocity
             float distance = Vector3.Distance(myPosition, otherPosition);
-            //Vector3 pi_walker = otherPosition - myPosition;
-            Vector3 pi_walker = myPosition - otherPosition;
+            Vector3 pi_walker = otherPosition - myPosition;
+            //Vector3 pi_walker = myPosition - otherPosition;
             Vector3 k = pi_walker.normalized;
             Vector3 V_pi_w = otherDirection - myDirection;//(10)
             Vector3 V_conv_pi_w = ProjectVector(V_pi_w, k);//(11)
             Vector3 V_orth_pi_w = V_pi_w - V_conv_pi_w;//(12)
             float angularVelocity_Other = CalculateAngularVelocity(distance, V_orth_pi_w, V_conv_pi_w, 1f);//(14)
-
             //Calculate Time-To-Interaction
             float timeToInteraction = CalculateTimeToIntersection(distance, V_conv_pi_w);//(13)
 
+            //Update Minimum TimeToInteraction
+            if(timeToInteraction < minTimeToInteraction){
+                minTimeToInteraction = timeToInteraction;
+            }
+
             //Calculate Angular Velocities Threshold
             float bearingAngleThreshold = CalculateBearingAngleThreshold(angularVelocity_Other, timeToInteraction);
-
             float currentBearingAngle_Other = CalculateBearingAngle(myPosition, myDirection, otherPosition);
-            // Debug.Log("α" + currentBearingAngle_Other);
-            // Debug.Log("α^ +左周り, -右周り:"+angularVelocity_Other);
-            // Debug.Log("thr"+bearingAngleThreshold);
-            // Debug.Log("");
-            // Debug.Log("tti"+timeToInteraction);
             //Points a walker has to react to
             if(timeToInteraction > 0f && currentBearingAngle_Other < bearingAngleThreshold){
                 float turn = angularVelocity_Other - bearingAngleThreshold;
@@ -651,19 +672,15 @@ public class PathController : MotionMatchingCharacterController
         Vector3 V_conv_pg_w = ProjectVector(V_pg_w, k_Goal);//(11)
         Vector3 V_orth_pg_w = V_pg_w - V_conv_pg_w;//(12)
         float angularVelocity_Goal = CalculateAngularVelocity(distance_Goal, V_orth_pg_w, V_conv_pg_w, 1f);//(14)
-        // float currentBearingAngle_Goal = CalculateBearingAngle(myPosition, myDirection, myGoal);
-        // float  futureBearingAngle_Goal = CalculateBearingAngle(myFuturePosition, myDirection, myGoal);
-        // float   deltaBearingAngle_Goal = futureBearingAngle_Goal - currentBearingAngle_Goal;
-        // float     angularVelocity_Goal = deltaBearingAngle_Goal / Time.deltaTime;
 
         float myAngularVelocity = 0f;
 
-        // Debug.Log(angularVelocity_Goal);
         //Calculate angular velocities for me
         if(Mathf.Abs(angularVelocity_Goal) < 0.1f){
             //walkers are currently heading to their goal
             if(Mathf.Abs(rightTurn) < Mathf.Abs(leftTurn)){
-                myAngularVelocity = rightTurn;
+                //why -rightturn????
+                myAngularVelocity = -rightTurn;
             }else{
                 myAngularVelocity = leftTurn;
             }
@@ -677,14 +694,9 @@ public class PathController : MotionMatchingCharacterController
             myAngularVelocity = angularVelocity_Goal;
         }
 
-        //Clamp
-        float maxAngularVelocity = Mathf.PI / 2f;
-
-        if (Mathf.Abs(myAngularVelocity) > maxAngularVelocity)
-        {
-            myAngularVelocity = maxAngularVelocity;
+        if(myAngularVelocity == float.MaxValue || myAngularVelocity == float.MinValue){
+            myAngularVelocity = 0f;
         }
-
         return myAngularVelocity;
     }
 
@@ -696,7 +708,7 @@ public class PathController : MotionMatchingCharacterController
     }
 
 
-    private float CalculateBearingAngleThreshold(float angularVelocity, float timeToInteraction, float a = 1.5f, float b = 0.6f, float c = 1.0f){
+    private float CalculateBearingAngleThreshold(float angularVelocity, float timeToInteraction, float a = 1.0f, float b = 1.1f, float c = 0.7f){
         float bearingAngleThreshold = 0f;
         if(angularVelocity < 0){
             bearingAngleThreshold= a - b * Mathf.Pow(timeToInteraction, -c);
@@ -734,7 +746,13 @@ public class PathController : MotionMatchingCharacterController
             return 0f;
         }
 
-        float angle = Mathf.Atan(numerator / denominator) / timeUnit;
+        float angle = Mathf.Atan2(numerator , denominator) / timeUnit;
+        float signedAngle = Vector3.SignedAngle(projectionComponent, orthogonalComponent, Vector3.up);
+
+        if (signedAngle < 0)
+        {
+            angle = -angle;
+        }
 
         return angle;
     }
@@ -769,7 +787,7 @@ public class PathController : MotionMatchingCharacterController
                 Vector3    cohesionForce = CalculateCohesionForce (groupAgents, cohesionWeight,       agentGameObject, _currentPosition);
                 Vector3   repulsionForce = CalculateRepulsionForce(groupAgents, repulsionForceWeight, agentGameObject, _currentPosition, agentRadius);
                 Vector3   alignmentForce = CalculateAlignment     (groupAgents, alignmentForceWeight, agentGameObject, _currentDirection, agentRadius);
-                Vector3 newGroupForce = (cohesionForce + repulsionForce + alignmentForce).normalized;
+                Vector3    newGroupForce = (cohesionForce + repulsionForce + alignmentForce).normalized;
 
                 //Vector3 AdjustPosForce = Vector3.zero;
                 //Vector3  headDirection = socialBehaviour.GetCurrentLookAt();
@@ -1158,6 +1176,8 @@ public class PathController : MotionMatchingCharacterController
             gizmoColor = Color.black;
             Draw.ArrowheadArc((Vector3)GetCurrentPosition(), wallRepForce, 0.55f, gizmoColor);
         }
+
+        Draw.ArrowheadArc((Vector3)GetCurrentPosition(), syntheticVisionForce, 0.55f, Color.green);
     }
 
     #if UNITY_EDITOR
