@@ -69,7 +69,7 @@ public class AvatarCreatorBase : MonoBehaviour
     public virtual void DeleteAvatars(){}
 
     // GetAgents: A method to retrieve agent game objects from instantiated avatars.
-    protected virtual List<GameObject> GetAgents(){
+    public virtual List<GameObject> GetAgents(){
         List<GameObject> agentsList = new List<GameObject>();
         for (int i = 0; i < instantiatedAvatars.Count; i++)
         {

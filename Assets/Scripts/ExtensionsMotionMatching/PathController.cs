@@ -101,6 +101,8 @@ public class PathController : MotionMatchingCharacterController
     public bool showGroupForce = false;
     [HideInInspector]
     public bool showWallForce = false;
+    [HideInInspector]
+    public bool showSyntheticVisionForce = false;
     // --------------------------------------------------------------------------
     // Force From Group --------------------------------------------------------
     [Header("Group Force, Group Category")]
@@ -589,7 +591,8 @@ public class PathController : MotionMatchingCharacterController
     private float minTimeToInteraction;
     private IEnumerator UpdateAngularVelocityControl(float updateTime){
         while(true){
-            List<GameObject> others = collisionAvoidance.GetOthersInUnalignedAvoidanceArea();
+            //List<GameObject> others = collisionAvoidance.GetOthersInUnalignedAvoidanceArea();
+            List<GameObject> others = avatarCreator.GetAgents();
             Vector3 myPosition      = GetCurrentPosition();
             Vector3 myDirection     = GetCurrentDirection();
             float   _currentSpeed   = GetCurrentSpeed();
@@ -1125,6 +1128,10 @@ public class PathController : MotionMatchingCharacterController
     public AvatarCreatorBase GetAvatarCreatorBase(){
         return avatarCreator;
     }
+    public GameObject GetCurrentAvoidanceTarget()
+    {
+        return currentAvoidanceTarget;
+    }
 
     public void SetCollidedAgent(GameObject _collidedAgent){
         collidedAgent = _collidedAgent;
@@ -1177,7 +1184,10 @@ public class PathController : MotionMatchingCharacterController
             Draw.ArrowheadArc((Vector3)GetCurrentPosition(), wallRepForce, 0.55f, gizmoColor);
         }
 
-        Draw.ArrowheadArc((Vector3)GetCurrentPosition(), syntheticVisionForce, 0.55f, Color.green);
+        if(showSyntheticVisionForce){
+            gizmoColor = Color.magenta;
+            Draw.ArrowheadArc((Vector3)GetCurrentPosition(), syntheticVisionForce, 0.55f, gizmoColor);
+        }
     }
 
     #if UNITY_EDITOR

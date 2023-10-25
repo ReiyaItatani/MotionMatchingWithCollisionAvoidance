@@ -30,4 +30,8 @@ public class GroupParameterManager : MonoBehaviour, IParameterManager
         }
         return currentSpeedAverage/pathControllers.Count;
     }
+
+    public SocialRelations GetSocialRelations(){
+        return pathControllers[0].GetSocialRelations();
+    }
 }

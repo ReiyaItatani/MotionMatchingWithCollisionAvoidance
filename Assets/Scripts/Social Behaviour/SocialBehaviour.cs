@@ -35,13 +35,26 @@ public class SocialBehaviour : MonoBehaviour
     void Start(){
         StartCoroutine(UpdateCurrentLookAt(0.2f, parameterManager.GetSocialRelations(), this.gameObject));  
     }
-
-    public void LookAtTarget(GameObject LookAtTarget){
-        motionMatchingSkinnedMeshRendererWithOCEAN.LookObject = LookAtTarget;
+    #region SET
+    public void SetCollidedTarget(GameObject collidedTarget){
+        motionMatchingSkinnedMeshRendererWithOCEAN.SetCollidedTarget(collidedTarget);
+    }
+    public void SetCurrentDirection(Vector3 currentDirection){
+        motionMatchingSkinnedMeshRendererWithOCEAN.SetCurrentAgentDirection(currentDirection);
     }
 
-    public void DeleteLookObject(){
-        motionMatchingSkinnedMeshRendererWithOCEAN.LookObject = null;
+    public void SetCurrentCenterOfMass(Vector3 lookAtCenterOfMass){
+        motionMatchingSkinnedMeshRendererWithOCEAN.SetCurrentCenterOfMass(lookAtCenterOfMass);
+    }
+
+    public void SetCurrentAvoidanceTarget(Vector3 currentAvoidanceTarget){
+        motionMatchingSkinnedMeshRendererWithOCEAN.SetCurrentAvoidanceTarget(currentAvoidanceTarget);
+    }
+    #endregion
+
+
+    public void DeleteCollidedTarget(){
+        motionMatchingSkinnedMeshRendererWithOCEAN.SetCollidedTarget(null);
     }
 
     public void FollowMotionMacthing(){
@@ -62,44 +75,64 @@ public class SocialBehaviour : MonoBehaviour
         }
     }
 
-    public void SetLookForward(bool lookForward){
-        motionMatchingSkinnedMeshRendererWithOCEAN.SetLookForward(lookForward);
-    }
-
-    public void SetCurrentDirection(Vector3 currentDirection){
-        motionMatchingSkinnedMeshRendererWithOCEAN.SetAgentDirection(currentDirection);
+    public void IfIndividual(bool ifIndividual){
+        motionMatchingSkinnedMeshRendererWithOCEAN.IfIndividual(ifIndividual);
     }
 
     public Vector3 GetCurrentLookAt(){
         return motionMatchingSkinnedMeshRendererWithOCEAN.GetCurrentLookAt();
     }
 
-    public void SetLookAtCenterOfMass(Vector3 _lookAtCenterOfMass){
-        motionMatchingSkinnedMeshRendererWithOCEAN.SetLookAtCenterOfMass(_lookAtCenterOfMass);
-    }
-
     private IEnumerator UpdateCurrentLookAt(float updateTime, SocialRelations _socialRelations, GameObject agentGameObject){
 
         List<GameObject> groupAgents = parameterManager.GetAvatarCreatorBase().GetAgentsInCategory(_socialRelations);
+        SocialRelations mySocialRelations = parameterManager.GetSocialRelations();
 
         if(groupAgents.Count <= 1 || _socialRelations == SocialRelations.Individual){
-            SetLookForward(true);
+            //For Individual Agent
+            IfIndividual(true);
             while(true){
                 Vector3 currentDirection = parameterManager.GetCurrentDirection();
                 SetCurrentDirection(currentDirection);
+            
+                GameObject currentAvoidanceTarget = parameterManager.GetCurrentAvoidanceTarget();
+                if(currentAvoidanceTarget != null){
+                    SocialRelations avoidanceTargetSocialRelations = currentAvoidanceTarget.GetComponent<IParameterManager>().GetSocialRelations();
+                    if(avoidanceTargetSocialRelations != mySocialRelations){
+                        SetCurrentAvoidanceTarget(currentAvoidanceTarget.GetComponent<IParameterManager>().GetCurrentPosition());
+                    }else{
+                        SetCurrentAvoidanceTarget(Vector3.zero);
+                    }
+                }else{
+                    SetCurrentAvoidanceTarget(Vector3.zero);
+                }
+
                 yield return new WaitForSeconds(updateTime);
             }
         }else{
-            SetLookForward(false);
+            //For Group Agents
+            IfIndividual(false);
             while(true){
                 Vector3  currentDirection = parameterManager.GetCurrentDirection();     
                 SetCurrentDirection(currentDirection);
 
+                GameObject currentAvoidanceTarget = parameterManager.GetCurrentAvoidanceTarget();
+                if(currentAvoidanceTarget != null){
+                    SocialRelations avoidanceTargetSocialRelations = currentAvoidanceTarget.GetComponent<IParameterManager>().GetSocialRelations();
+                    if(avoidanceTargetSocialRelations != mySocialRelations){
+                        SetCurrentAvoidanceTarget(currentAvoidanceTarget.GetComponent<IParameterManager>().GetCurrentPosition());
+                    }else{
+                        SetCurrentAvoidanceTarget(Vector3.zero);
+                    }
+                }else{
+                    SetCurrentAvoidanceTarget(Vector3.zero);
+                }
+
                 Vector3     headDirection = GetCurrentLookAt();
                 if(headDirection!=null){
                     Vector3    currentPosition = parameterManager.GetCurrentPosition();
-                    Vector3 GazeAngleDirection = CalculateGazingDirection(groupAgents, currentPosition, headDirection, agentGameObject, fieldOfView);
-                    SetLookAtCenterOfMass(GazeAngleDirection);
+                    Vector3 GazeAngleDirection = CalculateGazingDirectionToCOM(groupAgents, currentPosition, headDirection, agentGameObject, fieldOfView);
+                    SetCurrentCenterOfMass(GazeAngleDirection);
                 }
 
                 yield return new WaitForSeconds(updateTime);
@@ -107,7 +140,7 @@ public class SocialBehaviour : MonoBehaviour
         }
     }
 
-    private Vector3 CalculateGazingDirection(List<GameObject> groupAgents, Vector3 currentPos, Vector3 currentLookDir, GameObject myself, float angleLimit)
+    private Vector3 CalculateGazingDirectionToCOM(List<GameObject> groupAgents, Vector3 currentPos, Vector3 currentLookDir, GameObject myself, float angleLimit)
     {
         Vector3            centerOfMass = CalculateCenterOfMass(groupAgents, myself);
         Vector3 directionToCenterOfMass = (centerOfMass - currentPos).normalized;    

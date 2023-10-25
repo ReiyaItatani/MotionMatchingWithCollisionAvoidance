@@ -66,6 +66,7 @@ public class AgentManager : MonoBehaviour
     public bool ShowCurrentDirection = false;
     public bool ShowGroupForce = false;
     public bool ShowWallForce = false;
+    public bool ShowSyntheticVisionForce = false;
 
     // Parameters for debugging the Motion Matching Controller.
     [Header("Motion Matching Controller Debug")]
@@ -214,56 +215,58 @@ public class AgentManager : MonoBehaviour
 
     // Method to set parameters for PathController.
     private void SetPathControllerParams(PathController pathController){
-        pathController.goalRadius = goalRadius;
+        pathController.goalRadius    = goalRadius;
         pathController.slowingRadius = slowingRadius;
 
-        pathController.toGoalWeight = toGoalWeight;
-        pathController.avoidanceWeight = avoidanceWeight;
-        pathController.avoidNeighborWeight = avoidNeighborWeight;
-        pathController.groupForceWeight = groupForceWeight;
-        pathController.wallRepForceWeight = wallRepForceWeight;
+        pathController.toGoalWeight               = toGoalWeight;
+        pathController.avoidanceWeight            = avoidanceWeight;
+        pathController.avoidNeighborWeight        = avoidNeighborWeight;
+        pathController.groupForceWeight           = groupForceWeight;
+        pathController.wallRepForceWeight         = wallRepForceWeight;
         pathController.syntheticVisionForceWeight = syntheticVisionForceWeight;
 
         pathController.MaxDistanceMMAndCharacterController = MaxDistanceMMAndCharacterController;
-        pathController.PositionAdjustmentHalflife = PositionAdjustmentHalflife;
-        pathController.PosMaximumAdjustmentRatio = PosMaximumAdjustmentRatio;
+        pathController.PositionAdjustmentHalflife          = PositionAdjustmentHalflife;
+        pathController.PosMaximumAdjustmentRatio           = PosMaximumAdjustmentRatio;
 
-        pathController.showAvoidanceForce = ShowAvoidanceForce;
+        pathController.showAvoidanceForce              = ShowAvoidanceForce;
         pathController.showUnalignedCollisionAvoidance = ShowUnalignedCollisionAvoidance;
-        pathController.showGoalDirection = ShowGoalDirection;
-        pathController.showCurrentDirection = ShowCurrentDirection;
-        pathController.showGroupForce = ShowGroupForce;
-        pathController.showWallForce = ShowWallForce;
+        pathController.showGoalDirection               = ShowGoalDirection;
+        pathController.showCurrentDirection            = ShowCurrentDirection;
+        pathController.showGroupForce                  = ShowGroupForce;
+        pathController.showWallForce                   = ShowWallForce;
+        pathController.showSyntheticVisionForce        = ShowSyntheticVisionForce;
     }
 
     private void SetMotionMatchingControllerParams(MotionMatchingController motionMatchingController){
         // motionMatchingController.SpheresRadius = SphereRadius;
-        motionMatchingController.DebugSkeleton = DebugSkeleton;
-        motionMatchingController.DebugCurrent = DebugCurrent;
-        motionMatchingController.DebugPose = DebugPose;
+        motionMatchingController.DebugSkeleton   = DebugSkeleton;
+        motionMatchingController.DebugCurrent    = DebugCurrent;
+        motionMatchingController.DebugPose       = DebugPose;
         motionMatchingController.DebugTrajectory = DebugTrajectory;
-        motionMatchingController.DebugContacts = DebugContacts;
+        motionMatchingController.DebugContacts   = DebugContacts;
     }
 
     private void SetCollisionAvoidanceControllerParams(CollisionAvoidanceController collisionAvoidanceController){
-        collisionAvoidanceController.avoidanceColliderSize = avoidanceColliderSize;
+        collisionAvoidanceController.avoidanceColliderSize          = avoidanceColliderSize;
         collisionAvoidanceController.unalignedAvoidanceColliderSize = unalignedAvoidanceColliderSize;
-        collisionAvoidanceController.agentCollider.radius = CapsuleColliderRadius;
-        collisionAvoidanceController.showAgentSphere = showAgentSphere;
+        collisionAvoidanceController.agentCollider.radius           = CapsuleColliderRadius;
+        collisionAvoidanceController.showAgentSphere                = showAgentSphere;
     }
 
     private void SetMotionMatchingSkinnedMeshRendererWithOCEANParams(MotionMatchingSkinnedMeshRendererWithOCEAN mmSMRWithOCEAN){
-        mmSMRWithOCEAN.openness = openness;
+        mmSMRWithOCEAN.openness          = openness;
         mmSMRWithOCEAN.conscientiousness = conscientiousness;
-        mmSMRWithOCEAN.extraversion = Negative_Positive;
-        mmSMRWithOCEAN.agreeableness = agreeableness;
-        mmSMRWithOCEAN.neuroticism = neuroticism;
-        mmSMRWithOCEAN.e_happy = e_happy;
-        mmSMRWithOCEAN.e_sad = e_sad;
-        mmSMRWithOCEAN.e_angry = e_angry;
-        mmSMRWithOCEAN.e_disgust = e_disgust;
-        mmSMRWithOCEAN.e_fear = e_fear;
-        mmSMRWithOCEAN.e_shock = e_shock;      
+        mmSMRWithOCEAN.extraversion      = Negative_Positive;
+        mmSMRWithOCEAN.agreeableness     = agreeableness;
+        mmSMRWithOCEAN.neuroticism       = neuroticism;
+
+        mmSMRWithOCEAN.e_happy           = e_happy;
+        mmSMRWithOCEAN.e_sad             = e_sad;
+        mmSMRWithOCEAN.e_angry           = e_angry;
+        mmSMRWithOCEAN.e_disgust         = e_disgust;
+        mmSMRWithOCEAN.e_fear            = e_fear;
+        mmSMRWithOCEAN.e_shock           = e_shock;      
     }
 
     private void SetCollisionDetectionParams(AgentCollisionDetection agentCollisionDetection){

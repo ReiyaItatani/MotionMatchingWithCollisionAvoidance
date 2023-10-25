@@ -105,7 +105,7 @@ public class MotionMatchingSkinnedMeshRendererWithOCEAN : MonoBehaviour
 
         // StartCoroutine(LookAtPass());
     }
-
+# region MOTION MATCHING
     private void InitRetargeting()
     {
         MotionMatchingData mmData = MotionMatching.MMData;
@@ -298,6 +298,9 @@ public class MotionMatchingSkinnedMeshRendererWithOCEAN : MonoBehaviour
         PreviousHipsPosition = TargetBones != null ? TargetBones[0].position : float3.zero;
     }
 
+#endregion
+
+
     void UpdateOCEAN(){
         // if (Map_OCEAN_to_LabanShape) OCEAN_to_LabanShape();
         if (Map_OCEAN_to_LabanEffort) OCEAN_to_LabanEffort();
@@ -322,8 +325,8 @@ public class MotionMatchingSkinnedMeshRendererWithOCEAN : MonoBehaviour
         AdjustEyeLevelPass();
 
         //LookAt
-        CheckNeckRotation(GetCurrentLookAt(), GetAgentDirection(), neckRotationLimit);
-        AttractionPointUpdater();
+        CheckNeckRotation(GetCurrentLookAt(), GetCurrentAgentDirection(), neckRotationLimit);
+        LookAtAttractionPointUpdater();
         UpdateCurrentLookAt();
         LookAtPass(currentLookAt, attractionPoint, 1.0f);
         //LookAtAdjustmentPass
@@ -344,6 +347,7 @@ public class MotionMatchingSkinnedMeshRendererWithOCEAN : MonoBehaviour
 
         // GetBodyTransforms();
     }
+    #region OCEAN PARAMS
 
     // Used for retargeting. First parent, then children
     private HumanBodyBones[] BodyJoints =
@@ -469,6 +473,7 @@ public class MotionMatchingSkinnedMeshRendererWithOCEAN : MonoBehaviour
         foreach (Transform t in ts) if (t.gameObject.name == withName) return t.gameObject;
         return null;
     }
+    #endregion
 
     #region TRANSFORMS GET SET
     // arms
@@ -658,6 +663,7 @@ public class MotionMatchingSkinnedMeshRendererWithOCEAN : MonoBehaviour
     }
     #endregion
 
+    #region ADDITIONAL PASS
     // PASSES
 
     private void AdditionalPass()
@@ -675,6 +681,7 @@ public class MotionMatchingSkinnedMeshRendererWithOCEAN : MonoBehaviour
         nrp_head.x = ScaleBetween(-head_bend*0.6f, head_min, head_max, -1f, 1f);
 
     }
+    #endregion
 
     #region FLUCTUATE
     private CircularNoise circularNoise;
@@ -731,23 +738,28 @@ public class MotionMatchingSkinnedMeshRendererWithOCEAN : MonoBehaviour
     }
     #endregion
 
+    #region LOOK AT PASS
     /* * *
     * 
     * LOOK AT PASS
     * 
     * * */
     [Header("Look At Params")]
-    private GameObject lookObject;
-    public GameObject LookObject
+    private GameObject collidedTarget;
+    public GameObject CollidedTarget
     {
-        get{ return lookObject; }
-        set{ lookObject = value; }
+        get{ return collidedTarget; }
+        set{ collidedTarget = value; }
     }
     private Vector3 attractionPoint;
     private Quaternion saveLookAtRot = Quaternion.identity;
     private Vector3 currentLookAt = Vector3.zero;
-    public bool lookAtForward = false;
+    private bool ifIndividual = false;
     private float neckRotationLimit = 40.0f;
+    private Vector3 currentCenterOfMass = Vector3.zero;
+    private Vector3 currentAvoidanceTarget = Vector3.zero;
+    private Vector3 currentAgentDirection = Vector3.zero;
+
 
     private void LookAtPass(Vector3 currentLookAtDir, Vector3 targetLookAtDir, float rotationSpeed){
         Vector3 crossResult = Vector3.Cross(currentLookAtDir, targetLookAtDir);
@@ -762,26 +774,29 @@ public class MotionMatchingSkinnedMeshRendererWithOCEAN : MonoBehaviour
         t_Neck.localRotation *= saveLookAtRot;
     }
 
-    private void AttractionPointUpdater(){
-        if(lookObject != null){
+//Todo refine
+    private void LookAtAttractionPointUpdater(){
+        if(collidedTarget != null){
             //when collide
-            attractionPoint = (lookObject.transform.position - this.transform.position).normalized;
+            attractionPoint = (collidedTarget.transform.position - this.transform.position).normalized;
+        }else if(collidedTarget == null && currentAvoidanceTarget != Vector3.zero){
+            attractionPoint = (currentAvoidanceTarget - this.transform.position).normalized;
         }else{
             //in normal situation
-            if(lookAtForward){
-                attractionPoint = agentDirection;
+            if(ifIndividual){
+                //if the agent is individual
+                attractionPoint = currentAgentDirection.normalized;
             }else{
-                attractionPoint = lookAtCenterOfMass.normalized;
+                //if the agent is in a group
+                attractionPoint = currentCenterOfMass.normalized;
             }
         }
-        //Draw.ArrowheadArc(this.transform.position, attractionPoint, 0.55f, Color.black);
     }
 
-    private void CheckNeckRotation(Vector3 _currentLookAt, Vector3 myDirection, float _neckRotationLimit, float probability = 0.1f){
-        float currentNeckRotation = Vector3.Angle(_currentLookAt, myDirection);
-        if(probability >= UnityEngine.Random.Range(0.0f, 10.0f)){
-            if(currentNeckRotation >= _neckRotationLimit && coroutineLooForwardIsFinished == true){
-                float lookAtForwardDuration = 2.0f;
+    private void CheckNeckRotation(Vector3 _currentLookAt, Vector3 myDirection, float _neckRotationLimit, float lookAtForwardDuration = 2.0f, float probability = 0.1f){
+        float currentNeckRotation = Vector3.Angle(_currentLookAt.normalized, myDirection.normalized);
+        if(UnityEngine.Random.Range(0.0f, 1.0f) < probability){
+            if(currentNeckRotation >= _neckRotationLimit && coroutineLooForwardIsFinished){
                 StartCoroutine(TemporalLookAtForward(lookAtForwardDuration));
             }
         }
@@ -789,11 +804,11 @@ public class MotionMatchingSkinnedMeshRendererWithOCEAN : MonoBehaviour
 
     private bool coroutineLooForwardIsFinished = true;
     private IEnumerator TemporalLookAtForward(float duration){
-        if(lookAtForward == false  && coroutineLooForwardIsFinished == true){
+        if(ifIndividual == false  && coroutineLooForwardIsFinished == true){
             coroutineLooForwardIsFinished = false;
-            lookAtForward = true;
+            ifIndividual = true;
             yield return new WaitForSeconds(duration);
-            lookAtForward = false;
+            ifIndividual = false;
             coroutineLooForwardIsFinished = true;
         }
         yield return null;
@@ -814,24 +829,27 @@ public class MotionMatchingSkinnedMeshRendererWithOCEAN : MonoBehaviour
         //t_Neck.localRotation *= Quaternion.Inverse(t_Neck.rotation) * horizontalRotation;
     }
 
-    private Vector3 lookAtCenterOfMass = Vector3.zero;
-
-    public void SetLookAtCenterOfMass(Vector3 _lookAtCenterOfMass){
-        lookAtCenterOfMass = _lookAtCenterOfMass;
+    public void SetCurrentCenterOfMass(Vector3 _currentCenterOfMass){
+        currentCenterOfMass = _currentCenterOfMass;
+    }
+    public void SetCurrentAvoidanceTarget(Vector3 _currentAvoidanceTarget){
+        currentAvoidanceTarget = _currentAvoidanceTarget;
     }
 
-    private Vector3 agentDirection = Vector3.zero;
-
-    public void SetAgentDirection(Vector3 _agentDirection){
-        agentDirection = _agentDirection;
+    public void SetCurrentAgentDirection(Vector3 _currentAgentDirection){
+        currentAgentDirection = _currentAgentDirection;
     }
 
-    public Vector3 GetAgentDirection(){
-        return agentDirection;
+    public void SetCollidedTarget(GameObject _collidedTarget){
+        collidedTarget = _collidedTarget;
     }
 
-    public void SetLookForward(bool _lookAtForward){
-        lookAtForward = _lookAtForward;
+    public Vector3 GetCurrentAgentDirection(){
+        return currentAgentDirection;
+    }
+
+    public void IfIndividual(bool _ifIndividual){
+        ifIndividual = _ifIndividual;
     }
 
     private void LookAtAdjustmentPass(float angleLimit = 40.0f){
@@ -855,7 +873,9 @@ public class MotionMatchingSkinnedMeshRendererWithOCEAN : MonoBehaviour
 
         return Mathf.Clamp(angle, -limit, limit);
     }
+    #endregion
 
+    #region EYES PASS
     /* * *
     * 
     * EYES MOVEMENT PASS
@@ -922,6 +942,7 @@ public class MotionMatchingSkinnedMeshRendererWithOCEAN : MonoBehaviour
 
         blendValue = targetWeight;
     }
+    #endregion
 
     #region NEW ROTATE PASS
     private Vector3 nrp_spine;
@@ -1002,6 +1023,7 @@ public class MotionMatchingSkinnedMeshRendererWithOCEAN : MonoBehaviour
     }
     #endregion
 
+    #region EMOTION PASS
     /* * *
     * 
     * EMOTION PASS
@@ -1054,7 +1076,9 @@ public class MotionMatchingSkinnedMeshRendererWithOCEAN : MonoBehaviour
         // if (e_shock > 0) e_shock -= tmpDecayValue; else e_shock = 0;
 
     }
+    #endregion
 
+    #region MAP FUNCTIONS
     /* * *
     * 
     * MAP FUNCTIONS
@@ -1205,7 +1229,9 @@ public class MotionMatchingSkinnedMeshRendererWithOCEAN : MonoBehaviour
             nrp_hand.z = ScaleBetween(openness, 0, -6, -1, 1);   
         }
     }
+    #endregion
 
+    #region TEXT OCEAN PROBS
     /* * *
     * 
     * TEXT OCEAN PROBS
@@ -1369,5 +1395,6 @@ public class MotionMatchingSkinnedMeshRendererWithOCEAN : MonoBehaviour
         if (d == 0) return 0;
         else return (newmax - newmin) * (oldvalue - oldmin) / d + newmin;
     }
+    #endregion
 
 }

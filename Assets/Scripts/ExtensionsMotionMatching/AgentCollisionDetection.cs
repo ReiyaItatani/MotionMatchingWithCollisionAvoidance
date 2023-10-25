@@ -88,7 +88,7 @@ public class AgentCollisionDetection : MonoBehaviour
         onCollide = true;
         pathController.SetOnCollide(onCollide);
         //Look at
-        socialBehaviour.LookAtTarget(collidedAgent);
+        socialBehaviour.SetCollidedTarget(collidedAgent);
         //Start talk
         socialBehaviour.TryPlayAudio();
         //Start Animation
@@ -96,7 +96,7 @@ public class AgentCollisionDetection : MonoBehaviour
         yield return new WaitForSeconds(time/2.0f);
 
         //Look at forward
-        socialBehaviour.DeleteLookObject();
+        socialBehaviour.DeleteCollidedTarget();
         //Stop Animaiton
         socialBehaviour.FollowMotionMacthing();
         //StartMove

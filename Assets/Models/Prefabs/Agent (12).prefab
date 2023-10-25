@@ -817,7 +817,7 @@ MonoBehaviour:
   sink_bend: 0
   head_bend: 0
   faceController: {fileID: 0}
-  lookAtForward: 0
+  ifIndividual: 0
 --- !u!114 &7715311636722592654
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2218,7 +2218,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CharacterController: {fileID: 7715311637199067653}
-  MMData: {fileID: 11400000, guid: 8ddcffd587519e840ba105f93050fcf6, type: 2}
+  MMData: {fileID: 11400000, guid: 68a6fb7a3791d084e9cbebcb6c479bae, type: 2}
   LockFPS: 1
   SearchTime: 0.01
   UseBVHSearch: 1
@@ -2512,6 +2512,7 @@ MonoBehaviour:
   maxSpeed: 1
   avatarCreator: {fileID: 0}
   avoidanceWeight: 1.5
+  currentAvoidanceTarget: {fileID: 0}
   toGoalWeight: 1.7
   goalRadius: 0.5
   slowingRadius: 2
@@ -2521,11 +2522,13 @@ MonoBehaviour:
   showGoalDirection: 0
   showCurrentDirection: 0
   showGroupForce: 0
+  showWallForce: 0
+  showSyntheticVisionForce: 0
   socialRelations: 0
   groupForceWeight: 0.5
   collisionAvoidance: {fileID: 7715311636722592644}
-  wallRepForce: {x: 0, y: 0, z: 0}
   wallRepForceWeight: 1
+  syntheticVisionForceWeight: 1
 --- !u!1 &7731163337877494169
 GameObject:
   m_ObjectHideFlags: 0
