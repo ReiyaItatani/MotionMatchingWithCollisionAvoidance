@@ -31,6 +31,14 @@ public class GroupParameterManager : MonoBehaviour, IParameterManager
         return currentSpeedAverage/pathControllers.Count;
     }
 
+    public Vector3 GetCurrentAvoidanceVector(){
+        Vector3 currentAvoidanceVectorAverage = Vector3.zero;  
+        foreach(PathController pathController in pathControllers){
+            currentAvoidanceVectorAverage += pathController.GetCurrentAvoidanceVector();
+        }
+        return currentAvoidanceVectorAverage.normalized;
+    }
+
     public SocialRelations GetSocialRelations(){
         return pathControllers[0].GetSocialRelations();
     }

@@ -13,6 +13,7 @@ using Mono.Cecil;
 
 using MotionMatching;
 using TrajectoryFeature = MotionMatching.MotionMatchingData.TrajectoryFeature;
+using UnityEditor.PackageManager.Requests;
 
 public class PathController : MotionMatchingCharacterController
 {
@@ -245,7 +246,7 @@ public class PathController : MotionMatchingCharacterController
 
     private Vector3 CheckOppoentDir(Vector3 myDirection, Vector3 myPosition, Vector3 otherDirection, Vector3 otherPosition){
         Vector3 offset = (otherPosition - myPosition).normalized;
-        Vector3 right= Vector3.Cross(Vector3.up, offset);
+        Vector3 right= Vector3.Cross(Vector3.up, offset).normalized;
         if(Vector3.Dot(right, myDirection)>0 && Vector3.Dot(right, otherDirection)>0 || Vector3.Dot(right, myDirection)<0 && Vector3.Dot(right, otherDirection)<0){
             //Potential to collide
             return GetReflectionVector(myDirection, offset);
@@ -372,13 +373,27 @@ public class PathController : MotionMatchingCharacterController
             //Calculate Avoidance Force
             if (currentAvoidanceTarget != null)
             {
-                avoidanceVector = ComputeAvoidanceVector(currentAvoidanceTarget, GetCurrentDirection(), GetCurrentPosition());
+                Vector3 currentPosition          = GetCurrentPosition();
+                Vector3 currentDirection         = GetCurrentDirection();
+                Vector3 avoidanceTargetPosition  = currentAvoidanceTarget.GetComponent<IParameterManager>().GetCurrentPosition();
+                Vector3 avoidanceTargetAvoidanceVector = currentAvoidanceTarget.GetComponent<IParameterManager>().GetCurrentAvoidanceVector();
+
+                avoidanceVector = ComputeAvoidanceVector(currentAvoidanceTarget, currentDirection, currentPosition);
+
+                //Check opponent dir
+                if(avoidanceTargetAvoidanceVector != Vector3.zero && Vector3.Dot(currentDirection, avoidanceVector) < 0.5){
+                    avoidanceVector = CheckOppoentDir(avoidanceVector, currentPosition, avoidanceTargetAvoidanceVector ,avoidanceTargetPosition);
+                }
+
                 //gradually increase the avoidance force considering the distance 
                 Vector3 colliderSize = collisionAvoidance.GetAvoidanceColliderSize();
                 float agentRadius = collisionAvoidance.GetAgentCollider().radius;
-                avoidanceVector = avoidanceVector*(1.0f-Vector3.Distance(currentAvoidanceTarget.transform.position, 
-                                                                         GetCurrentPosition())/(Mathf.Sqrt(colliderSize.x/2*colliderSize.x/2+colliderSize.z*colliderSize.z)+agentRadius*2));
+                avoidanceVector = avoidanceVector*(1.0f-Vector3.Distance(avoidanceTargetPosition, 
+                                                                         currentPosition)/(Mathf.Sqrt(colliderSize.x/2*colliderSize.x/2+colliderSize.z*colliderSize.z)+agentRadius*2));
+
+                //Group or Individual
                 avoidanceVector *= TagChecker(currentAvoidanceTarget);
+                
                 elapsedTime = 0.0f;
             }
             else
@@ -1131,6 +1146,9 @@ public class PathController : MotionMatchingCharacterController
     public GameObject GetCurrentAvoidanceTarget()
     {
         return currentAvoidanceTarget;
+    }
+    public Vector3 GetCurrentAvoidanceVector(){
+        return avoidanceVector;
     }
 
     public void SetCollidedAgent(GameObject _collidedAgent){

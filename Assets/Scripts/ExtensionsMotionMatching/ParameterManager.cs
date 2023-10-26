@@ -27,6 +27,10 @@ public class ParameterManager : MonoBehaviour, IParameterManager
         return pathController.GetAvatarCreatorBase();
     }
 
+    public Vector3 GetCurrentAvoidanceVector(){
+        return pathController.GetCurrentAvoidanceVector();
+    }
+
     public GameObject GetCurrentAvoidanceTarget(){
         GameObject currentAvoidanceTarget = pathController.GetCurrentAvoidanceTarget();
         if(currentAvoidanceTarget != null){
