@@ -814,7 +814,8 @@ public class MotionMatchingSkinnedMeshRendererWithOCEAN : MonoBehaviour
         yield return null;
     }
 
-    private void UpdateCurrentLookAt(){
+    private void UpdateCurrentLookAt(float angleLimit = 40.0f){
+        saveLookAtRot = LimitRotation(saveLookAtRot, angleLimit);
         currentLookAt = saveLookAtRot * t_Head.forward;
     }
 

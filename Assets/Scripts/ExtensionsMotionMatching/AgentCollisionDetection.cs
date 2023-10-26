@@ -115,4 +115,8 @@ public class AgentCollisionDetection : MonoBehaviour
     public GameObject GetCurrentWallTarget(){
         return currentWallTarget;
     }
+
+    public Vector3 GetCurrentLookAt(){
+        return socialBehaviour.GetCurrentLookAt();
+    }
 }

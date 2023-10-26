@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using MotionMatching;
 using Unity.VisualScripting;
+using Drawing;
 
 [RequireComponent(typeof(ParameterManager))]
 public class SocialBehaviour : MonoBehaviour
