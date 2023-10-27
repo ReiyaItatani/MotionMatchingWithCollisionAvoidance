@@ -6,126 +6,143 @@ using MotionMatching;
 using Unity.VisualScripting;
 using Drawing;
 
-public enum UpperBodyAnimatiomState{
-    Walk,//Smoke, Hold a bug, Carry a buggage For Group People //Motion Matching
-    Talk,//For Group People //Unity Animation
-    SmartPhone//ListenToMusic, Texting, Calling, For Individual// Unity Animation
+public enum UpperBodyAnimationState
+{
+    // The 'Walking' animation state.
+    // Used for activities within a group, e.g., smoking, holding a bug, carrying luggage.
+    // Utilizes Motion Matching technology.
+    Walk,
+    
+    // The 'Talking' animation state.
+    // Used for communication within a group.
+    // Utilizes Unity's animation system.
+    Talk,
+    
+    // The 'Using Smartphone' animation state.
+    // Used for individual activities, e.g., listening to music, texting, making calls.
+    // Utilizes Unity's animation system.
+    SmartPhone
 }
 
+/// <summary>
+/// Manages the social behavior and animation states for a character.
+/// </summary>
 [RequireComponent(typeof(ParameterManager))]
 [RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(MotionMatchingSkinnedMeshRendererWithOCEAN))]
 public class SocialBehaviour : MonoBehaviour
 {
+    private const float LookAtUpdateTime = 0.2f;
+    private const float AnimationStateUpdateMinTime = 10.0f;
+    private const float AnimationStateUpdateMaxTime = 20.0f;
+    private const float PlayAudioProbability = 0.1f;
+    private const float WalkAnimationProbability = 0.5f;
+    private const float FieldOfView = 45f;
+    
     [Header("Conversation")]
-    public bool onTalk = false;
     public AudioSource audioSource;
     public AudioClip[] audioClips;
-    [Range(0, 1)] 
-    public float playProbability = 0.1f; 
 
     [Header("Animation")]
-    public MotionMatchingSkinnedMeshRendererWithOCEAN motionMatchingSkinnedMeshRendererWithOCEAN;
+    private MotionMatchingSkinnedMeshRendererWithOCEAN motionMatchingRenderer;
     private AvatarMaskData initialAvatarMask;
 
     [Header("LookAt")]
     private ParameterManager parameterManager;
-    private float fieldOfView = 45f;
 
     [Header("AnimationState")]
     [ReadOnly]
-    public UpperBodyAnimatiomState currentAnimationState = UpperBodyAnimatiomState.Walk;
+    public UpperBodyAnimationState currentAnimationState = UpperBodyAnimationState.Walk;
     private Animator animator;
 
-    void Awake()
+    private void Awake()
     {
-        parameterManager = this.GetComponent<ParameterManager>();
-        animator = this.GetComponent<Animator>();
-        if(motionMatchingSkinnedMeshRendererWithOCEAN!=null){
-            initialAvatarMask = motionMatchingSkinnedMeshRendererWithOCEAN.AvatarMask;
+        parameterManager = GetComponent<ParameterManager>();
+        animator = GetComponent<Animator>();
+        motionMatchingRenderer = GetComponent<MotionMatchingSkinnedMeshRendererWithOCEAN>();
+
+        if (motionMatchingRenderer != null)
+        {
+            initialAvatarMask = motionMatchingRenderer.AvatarMask;
         }
+
         FollowMotionMatching();
     }
 
-    void Start(){
-        StartCoroutine(UpdateCurrentLookAt(0.2f, parameterManager.GetSocialRelations(), this.gameObject));  
-        StartCoroutine(UpdateAnimationState(parameterManager.GetSocialRelations()));
+    private void Start()
+    {
+        StartCoroutine(UpdateCurrentLookAt(LookAtUpdateTime));
+        StartCoroutine(UpdateAnimationState());
     }
 
-    #region AnimationStateControl
-    private IEnumerator UpdateAnimationState(SocialRelations _socialRelations)
+    #region Animation State Control
+    /// <summary>
+    /// Continuously updates the current animation state based on social relations and group members.
+    /// </summary>
+    /// // TODO: Group Talking is triggered when people are within certain distance
+    private IEnumerator UpdateAnimationState()
     {
         while (true)
         {
-            List<GameObject> groupAgents = parameterManager.GetAvatarCreatorBase().GetAgentsInCategory(_socialRelations);
-            currentAnimationState = DetermineAnimationState(_socialRelations, groupAgents);
+            List<GameObject> groupAgents = parameterManager.GetAvatarCreatorBase().GetAgentsInCategory(parameterManager.GetSocialRelations());
+            currentAnimationState = DetermineAnimationState(groupAgents);
 
             TriggerUnityAnimation(currentAnimationState);
-            
-            if (currentAnimationState == UpperBodyAnimatiomState.Walk)
+
+            if (currentAnimationState == UpperBodyAnimationState.Walk)
             {
                 FollowMotionMatching();
             }
 
-            yield return new WaitForSeconds(UnityEngine.Random.Range(10.0f, 20.0f));
+            yield return new WaitForSeconds(UnityEngine.Random.Range(AnimationStateUpdateMinTime, AnimationStateUpdateMaxTime));
         }
     }
 
-    private UpperBodyAnimatiomState DetermineAnimationState(SocialRelations _socialRelations, List<GameObject> groupAgents)
+    private UpperBodyAnimationState DetermineAnimationState(List<GameObject> groupAgents)
     {
-        float randomValue = UnityEngine.Random.value;
-        if (_socialRelations == SocialRelations.Individual || groupAgents.Count <= 1)
-        {
-            return randomValue < 0.5f ? UpperBodyAnimatiomState.Walk : UpperBodyAnimatiomState.SmartPhone;
-        }
-        else
-        {
-            return randomValue < 0.5f ? UpperBodyAnimatiomState.Talk : UpperBodyAnimatiomState.Walk;
-        }
+        bool isIndividual = parameterManager.GetSocialRelations() == SocialRelations.Individual || groupAgents.Count <= 1;
+        return UnityEngine.Random.value < WalkAnimationProbability ? UpperBodyAnimationState.Walk : (isIndividual ? UpperBodyAnimationState.SmartPhone : UpperBodyAnimationState.Talk);
     }
 
     public void FollowMotionMatching()
     {
-        TriggerUnityAnimation(UpperBodyAnimatiomState.Walk);
-        motionMatchingSkinnedMeshRendererWithOCEAN.AvatarMask = null;
+        TriggerUnityAnimation(UpperBodyAnimationState.Walk);
+        motionMatchingRenderer.AvatarMask = null;
     }
 
-    public void TriggerUnityAnimation(UpperBodyAnimatiomState animationState)
+    public void TriggerUnityAnimation(UpperBodyAnimationState animationState)
     {
-        motionMatchingSkinnedMeshRendererWithOCEAN.AvatarMask = initialAvatarMask;
+        motionMatchingRenderer.AvatarMask = initialAvatarMask;
 
-        foreach (UpperBodyAnimatiomState animState in Enum.GetValues(typeof(UpperBodyAnimatiomState)))
+        foreach (UpperBodyAnimationState state in Enum.GetValues(typeof(UpperBodyAnimationState)))
         {
-            if (animState == animationState)
-            {
-                animator.SetBool(animState.ToString(), true);
-            }
-            else
-            {
-                animator.SetBool(animState.ToString(), false);
-            }
+            animator.SetBool(state.ToString(), state == animationState);
         }
     }
     #endregion
 
-    public void DeleteCollidedTarget(){
-        motionMatchingSkinnedMeshRendererWithOCEAN.SetCollidedTarget(null);
+    #region Collide Response
+    public void DeleteCollidedTarget()
+    {
+        motionMatchingRenderer.SetCollidedTarget(null);
     }
+
     public void TryPlayAudio()
     {
-        if (onTalk && audioSource != null && UnityEngine.Random.value < playProbability && audioClips.Length >= 1)
+        if (audioSource != null && audioClips.Length > 0 && UnityEngine.Random.value < PlayAudioProbability)
         {
-            int randomIndex = UnityEngine.Random.Range(0, audioClips.Length);
-            audioSource.clip = audioClips[randomIndex];
+            audioSource.clip = audioClips[UnityEngine.Random.Range(0, audioClips.Length)];
             audioSource.Play();
         }
     }
+    #endregion
 
-    #region UpdateLookAt
-    private IEnumerator UpdateCurrentLookAt(float updateTime, SocialRelations socialRelations, GameObject agentGameObject)
+    #region Update Look At
+    private IEnumerator UpdateCurrentLookAt(float updateTime)
     {
-        List<GameObject> groupAgents = parameterManager.GetAvatarCreatorBase().GetAgentsInCategory(socialRelations);
+        List<GameObject> groupAgents = parameterManager.GetAvatarCreatorBase().GetAgentsInCategory(parameterManager.GetSocialRelations());
         SocialRelations mySocialRelations = parameterManager.GetSocialRelations();
-        bool isIndividual = groupAgents.Count <= 1 || socialRelations == SocialRelations.Individual;
+        bool isIndividual = groupAgents.Count <= 1 || mySocialRelations == SocialRelations.Individual;
 
         IfIndividual(isIndividual);
 
@@ -135,7 +152,7 @@ public class SocialBehaviour : MonoBehaviour
 
             if (!isIndividual)
             {
-                UpdateGroupAgentLookAt(groupAgents, agentGameObject);
+                UpdateGroupAgentLookAt(groupAgents);
             }
 
             yield return new WaitForSeconds(updateTime);
@@ -146,7 +163,7 @@ public class SocialBehaviour : MonoBehaviour
     {
         SetCurrentDirection(parameterManager.GetCurrentDirection());
         GameObject currentAvoidanceTarget = parameterManager.GetCurrentAvoidanceTarget();
-        
+
         if (currentAvoidanceTarget != null)
         {
             SocialRelations avoidanceTargetSocialRelations = currentAvoidanceTarget.GetComponent<IParameterManager>().GetSocialRelations();
@@ -158,25 +175,25 @@ public class SocialBehaviour : MonoBehaviour
         }
     }
 
-    private void UpdateGroupAgentLookAt(List<GameObject> groupAgents, GameObject agentGameObject)
+    private void UpdateGroupAgentLookAt(List<GameObject> groupAgents)
     {
         Vector3 headDirection = GetCurrentLookAt();
         if (headDirection != Vector3.zero)
         {
             Vector3 currentPosition = parameterManager.GetCurrentPosition();
-            Vector3 gazeAngleDirection = CalculateGazingDirectionToCOM(groupAgents, currentPosition, headDirection, agentGameObject, fieldOfView);
+            Vector3 gazeAngleDirection = CalculateGazingDirectionToCOM(groupAgents, currentPosition, headDirection, gameObject, FieldOfView);
             SetCurrentCenterOfMass(gazeAngleDirection);
         }
     }
 
     public void IfIndividual(bool isIndividual)
     {
-        motionMatchingSkinnedMeshRendererWithOCEAN.IfIndividual(isIndividual);
+        motionMatchingRenderer.IfIndividual(isIndividual);
     }
 
     public Vector3 GetCurrentLookAt()
     {
-        return motionMatchingSkinnedMeshRendererWithOCEAN.GetCurrentLookAt();
+        return motionMatchingRenderer.GetCurrentLookAt();
     }
 
     private Vector3 CalculateGazingDirectionToCOM(List<GameObject> groupAgents, Vector3 currentPos, Vector3 currentLookDir, GameObject myself, float angleLimit)
@@ -238,145 +255,20 @@ public class SocialBehaviour : MonoBehaviour
     }
     #endregion
 
-    //  #region UpdateLookAt
-    // private IEnumerator UpdateCurrentLookAt(float updateTime, SocialRelations _socialRelations, GameObject agentGameObject){
-
-    //     List<GameObject> groupAgents = parameterManager.GetAvatarCreatorBase().GetAgentsInCategory(_socialRelations);
-    //     SocialRelations mySocialRelations = parameterManager.GetSocialRelations();
-
-    //     if(groupAgents.Count <= 1 || _socialRelations == SocialRelations.Individual){
-    //         //For Individual Agent
-    //         IfIndividual(true);
-    //         while(true){
-    //             Vector3 currentDirection = parameterManager.GetCurrentDirection();
-    //             SetCurrentDirection(currentDirection);
-            
-    //             GameObject currentAvoidanceTarget = parameterManager.GetCurrentAvoidanceTarget();
-    //             if(currentAvoidanceTarget != null){
-    //                 SocialRelations avoidanceTargetSocialRelations = currentAvoidanceTarget.GetComponent<IParameterManager>().GetSocialRelations();
-    //                 if(avoidanceTargetSocialRelations != mySocialRelations){
-    //                     SetCurrentAvoidanceTarget(currentAvoidanceTarget.GetComponent<IParameterManager>().GetCurrentPosition());
-    //                 }else{
-    //                     SetCurrentAvoidanceTarget(Vector3.zero);
-    //                 }
-    //             }else{
-    //                 SetCurrentAvoidanceTarget(Vector3.zero);
-    //             }
-
-    //             yield return new WaitForSeconds(updateTime);
-    //         }
-    //     }else{
-    //         //For Group Agents
-    //         IfIndividual(false);
-    //         while(true){
-    //             Vector3  currentDirection = parameterManager.GetCurrentDirection();     
-    //             SetCurrentDirection(currentDirection);
-
-    //             GameObject currentAvoidanceTarget = parameterManager.GetCurrentAvoidanceTarget();
-    //             if(currentAvoidanceTarget != null){
-    //                 SocialRelations avoidanceTargetSocialRelations = currentAvoidanceTarget.GetComponent<IParameterManager>().GetSocialRelations();
-    //                 if(avoidanceTargetSocialRelations != mySocialRelations){
-    //                     SetCurrentAvoidanceTarget(currentAvoidanceTarget.GetComponent<IParameterManager>().GetCurrentPosition());
-    //                 }else{
-    //                     SetCurrentAvoidanceTarget(Vector3.zero);
-    //                 }
-    //             }else{
-    //                 SetCurrentAvoidanceTarget(Vector3.zero);
-    //             }
-
-    //             Vector3     headDirection = GetCurrentLookAt();
-    //             if(headDirection!=null){
-    //                 Vector3    currentPosition = parameterManager.GetCurrentPosition();
-    //                 Vector3 GazeAngleDirection = CalculateGazingDirectionToCOM(groupAgents, currentPosition, headDirection, agentGameObject, fieldOfView);
-    //                 SetCurrentCenterOfMass(GazeAngleDirection);
-    //             }
-
-    //             yield return new WaitForSeconds(updateTime);
-    //         }
-    //     }
-    // }
-
-    // public void IfIndividual(bool ifIndividual){
-    //     motionMatchingSkinnedMeshRendererWithOCEAN.IfIndividual(ifIndividual);
-    // }
-
-    // public Vector3 GetCurrentLookAt(){
-    //     return motionMatchingSkinnedMeshRendererWithOCEAN.GetCurrentLookAt();
-    // }
-
-    // private Vector3 CalculateGazingDirectionToCOM(List<GameObject> groupAgents, Vector3 currentPos, Vector3 currentLookDir, GameObject myself, float angleLimit)
-    // {
-    //     Vector3            centerOfMass = CalculateCenterOfMass(groupAgents, myself);
-    //     Vector3 directionToCenterOfMass = (centerOfMass - currentPos).normalized;    
-
-    //     float             angle = Vector3.Angle(currentLookDir, directionToCenterOfMass);
-    //     float neckRotationAngle = 0f;
-
-    //     if (angle > angleLimit)
-    //     {
-    //         neckRotationAngle = angle - angleLimit;
-    //     }
-
-    //     Vector3 crossProduct = Vector3.Cross(currentLookDir, directionToCenterOfMass);
-    //     Quaternion  rotation = Quaternion.identity;
-    //     if (crossProduct.y > 0)
-    //     {
-    //         // directionToCenterOfMass is on your right side
-    //         rotation = Quaternion.Euler(0, neckRotationAngle, 0);
-    //     }
-    //     else if (crossProduct.y <= 0)
-    //     {
-    //         // directionToCenterOfMass is on your left side
-    //         rotation = Quaternion.Euler(0, -neckRotationAngle, 0);
-    //     }
-
-    //     Vector3 rotatedVector = rotation * currentLookDir;
-
-    //     return rotatedVector.normalized;
-    // }
-
-    // private Vector3 CalculateCenterOfMass(List<GameObject> groupAgents, GameObject myself)
-    // {
-    //     if (groupAgents == null || groupAgents.Count == 0)
-    //     {
-    //         return Vector3.zero;
-    //     }
-
-    //     Vector3 sumOfPositions = Vector3.zero;
-    //     int count = 0;
-
-    //     foreach (GameObject go in groupAgents)
-    //     {
-    //         if (go != null && go != myself) 
-    //         {
-    //             sumOfPositions += go.transform.position;
-    //             count++; 
-    //         }
-    //     }
-
-    //     if (count == 0) 
-    //     {
-    //         return Vector3.zero;
-    //     }
-
-    //     return sumOfPositions / count;
-    // }
-    // #endregion
-
     #region SET
     public void SetCollidedTarget(GameObject collidedTarget){
-        motionMatchingSkinnedMeshRendererWithOCEAN.SetCollidedTarget(collidedTarget);
+        motionMatchingRenderer.SetCollidedTarget(collidedTarget);
     }
     public void SetCurrentDirection(Vector3 currentDirection){
-        motionMatchingSkinnedMeshRendererWithOCEAN.SetCurrentAgentDirection(currentDirection);
+        motionMatchingRenderer.SetCurrentAgentDirection(currentDirection);
     }
 
     public void SetCurrentCenterOfMass(Vector3 lookAtCenterOfMass){
-        motionMatchingSkinnedMeshRendererWithOCEAN.SetCurrentCenterOfMass(lookAtCenterOfMass);
+        motionMatchingRenderer.SetCurrentCenterOfMass(lookAtCenterOfMass);
     }
 
     public void SetCurrentAvoidanceTarget(Vector3 currentAvoidanceTarget){
-        motionMatchingSkinnedMeshRendererWithOCEAN.SetCurrentAvoidanceTarget(currentAvoidanceTarget);
+        motionMatchingRenderer.SetCurrentAvoidanceTarget(currentAvoidanceTarget);
     }
     #endregion
 }

@@ -103,8 +103,6 @@ public class AgentManager : MonoBehaviour
 
     // Parameters related to social behavior of the agent.
     [Header("Social Behaviour")]
-    public bool onTalk = false;
-    public bool onAnimation = true;
 
     // Parameters related to collision detection.
     [Header("Collision Detection")]
@@ -270,11 +268,11 @@ public class AgentManager : MonoBehaviour
     }
 
     private void SetCollisionDetectionParams(AgentCollisionDetection agentCollisionDetection){
-        agentCollisionDetection.collisionDetectionCam = collisionDetectionCam;
+        agentCollisionDetection.collisionDetectionCamera = collisionDetectionCam;
     }
 
     private void SetSocialBehaviourParams(SocialBehaviour socialBehaviour){
-        socialBehaviour.onTalk = onTalk;
+
     }
 
 }

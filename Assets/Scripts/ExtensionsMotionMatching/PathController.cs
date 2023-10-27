@@ -165,7 +165,8 @@ public class PathController : MotionMatchingCharacterController
         StartCoroutine(UpdateGroupForce(0.2f, socialRelations));
         StartCoroutine(UpdateWallForce(0.2f, 0.5f));
         StartCoroutine(UpdateSpeed(avatarCreator.GetAgentsInCategory(socialRelations), collisionAvoidance.GetAgentGameObject()));
-        StartCoroutine(UpdateAngularVelocityControl(0.2f));        
+        StartCoroutine(UpdateAngularVelocityControl(0.2f));   
+             
         //If you wanna consider all of the other agents for unaligned collision avoidance use below
         //StartCoroutine(UpdateAvoidNeighborsVector(avatarCreator.GetAgents(), 0.1f, 0.3f));
     }
