@@ -746,11 +746,6 @@ public class MotionMatchingSkinnedMeshRendererWithOCEAN : MonoBehaviour
     * * */
     [Header("Look At Params")]
     private GameObject collidedTarget;
-    public GameObject CollidedTarget
-    {
-        get{ return collidedTarget; }
-        set{ collidedTarget = value; }
-    }
     private Vector3 attractionPoint;
     private Quaternion saveLookAtRot = Quaternion.identity;
     private Vector3 currentLookAt = Vector3.zero;

@@ -92,13 +92,13 @@ public class AgentCollisionDetection : MonoBehaviour
         //Start talk
         socialBehaviour.TryPlayAudio();
         //Start Animation
-        socialBehaviour.TriggerUnityAnimation();
+        socialBehaviour.TriggerUnityAnimation(UpperBodyAnimatiomState.Talk);
         yield return new WaitForSeconds(time/2.0f);
 
         //Look at forward
         socialBehaviour.DeleteCollidedTarget();
         //Stop Animaiton
-        socialBehaviour.FollowMotionMacthing();
+        socialBehaviour.FollowMotionMatching();
         //StartMove
         onMoving = true;
         pathController.SetOnMoving(onMoving);

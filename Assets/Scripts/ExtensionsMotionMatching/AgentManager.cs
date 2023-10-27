@@ -275,7 +275,6 @@ public class AgentManager : MonoBehaviour
 
     private void SetSocialBehaviourParams(SocialBehaviour socialBehaviour){
         socialBehaviour.onTalk = onTalk;
-        socialBehaviour.onAnimation = onAnimation;
     }
 
 }
