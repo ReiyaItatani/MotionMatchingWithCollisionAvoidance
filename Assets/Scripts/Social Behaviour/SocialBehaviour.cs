@@ -53,6 +53,7 @@ public class SocialBehaviour : MonoBehaviour
     [Header("AnimationState")]
     [ReadOnly]
     public UpperBodyAnimationState currentAnimationState = UpperBodyAnimationState.Walk;
+    public GameObject smartPhone;
     private Animator animator;
 
     private void Awake()
@@ -64,6 +65,10 @@ public class SocialBehaviour : MonoBehaviour
         if (motionMatchingRenderer != null)
         {
             initialAvatarMask = motionMatchingRenderer.AvatarMask;
+        }
+
+        if(smartPhone != null){
+            SetSmartPhoneActiveBasedOnSocialRelations(smartPhone);
         }
 
         FollowMotionMatching();
@@ -117,6 +122,19 @@ public class SocialBehaviour : MonoBehaviour
         foreach (UpperBodyAnimationState state in Enum.GetValues(typeof(UpperBodyAnimationState)))
         {
             animator.SetBool(state.ToString(), state == animationState);
+        }
+    }
+
+    private void SetSmartPhoneActiveBasedOnSocialRelations(GameObject smartPhone)
+    {
+        List<GameObject> groupAgents = parameterManager.GetAvatarCreatorBase().GetAgentsInCategory(parameterManager.GetSocialRelations());
+        bool isIndividual = parameterManager.GetSocialRelations() == SocialRelations.Individual;
+        
+        if(isIndividual || groupAgents.Count <= 1){
+            smartPhone.SetActive(true);
+        }
+        else{
+            smartPhone.SetActive(false);
         }
     }
     #endregion

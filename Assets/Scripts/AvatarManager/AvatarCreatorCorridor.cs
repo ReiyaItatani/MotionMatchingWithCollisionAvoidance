@@ -255,17 +255,13 @@ public class AvatarCreatorCorridor : AvatarCreatorBase
         float distance = direction.magnitude;
         direction.Normalize();
 
-        // 法線ベクトルを計算（XZ平面に対して垂直な壁を生成するため、Y軸を法線として使用）
         Vector3 normal = Vector3.up;
 
-        // 壁をオフセットするためのベクトルを計算
         Vector3 offset = Vector3.Cross(direction, normal) * wallToWallDist;
 
-        // 両脇の壁の中心点を計算
         Vector3 centerLeft = (start + end) / 2 - offset;
         Vector3 centerRight = (start + end) / 2 + offset;
 
-        // 両脇の壁を生成
         GameObject leftWall = CreateWall(centerLeft, direction, distance);
         GameObject rightWall =CreateWall(centerRight, direction, distance);
 

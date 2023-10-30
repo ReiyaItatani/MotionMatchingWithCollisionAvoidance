@@ -174,10 +174,6 @@ public class AgentCollisionDetection : MonoBehaviour
             collisionDetectionCamera.transform.position = targetPosition + new Vector3(cameraPositionOffsetX, cameraPositionOffsetY, cameraPositionOffsetZ);
             StartCoroutine(DurationAfterCameraPositionChange(camPosChecker, cameraAdjustmentDuration));
         }
-        else
-        {
-            Debug.LogError("ChangeCamPosChecker component not found on collisionDetectionCamera or camera is already adjusted.");
-        }
     }
 
     /// <summary>

@@ -1,5 +1,95 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &64249467
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 64249468}
+  - component: {fileID: 64249470}
+  - component: {fileID: 64249469}
+  m_Layer: 0
+  m_Name: SmarthPhone(Clone)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &64249468
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 64249467}
+  m_LocalRotation: {x: -0.46738663, y: -0.5306126, z: 0.46738663, w: 0.5306126}
+  m_LocalPosition: {x: -0.04, y: 0.1, z: 0.02}
+  m_LocalScale: {x: 3.0000002, y: 3, z: 2.9999993}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3261467571624495859}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &64249470
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 64249467}
+  m_Mesh: {fileID: 8061429553450880516, guid: 4d58e72014753e24f9a9cd33ca9a0fb5, type: 3}
+--- !u!23 &64249469
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 64249467}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 97dee5f87355be245968c5eb9d2e3c04, type: 2}
+  - {fileID: 2100000, guid: b9a9207c20bc4694aa1ff4395ee5dc70, type: 2}
+  - {fileID: 2100000, guid: 268109065577a1642ae78ddafe8ae55a, type: 2}
+  - {fileID: 2100000, guid: 7b68bd80aad11f24d981d76896e4d79a, type: 2}
+  - {fileID: 2100000, guid: f68b388c699fbc64db73383b93db3298, type: 2}
+  - {fileID: 2100000, guid: edc0e224e8f6c15438f9a2adf7ee73a1, type: 2}
+  - {fileID: 2100000, guid: c7cd1eb02f10d734c9eac19ca91a57b1, type: 2}
+  - {fileID: 2100000, guid: d156566a126f75340b8d1d1e8d95d187, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &118135341316830169
 GameObject:
   m_ObjectHideFlags: 0
@@ -767,6 +857,7 @@ Transform:
   - {fileID: 7317045783514897087}
   - {fileID: 8994707050109294644}
   - {fileID: 8710332635336527519}
+  - {fileID: 64249468}
   m_Father: {fileID: 1540795741444217973}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1389,7 +1480,6 @@ MonoBehaviour:
   sink_bend: 0
   head_bend: 0
   faceController: {fileID: 0}
-  ifIndividual: 0
 --- !u!114 &5104321456628599520
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1402,15 +1492,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fc975652ab7bcd4cacb9377e5592b74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  onTalk: 0
   audioSource: {fileID: 5104321457914985399}
   audioClips:
   - {fileID: 8300000, guid: 6104dd54d297b2746a235c08aae5ad55, type: 3}
   - {fileID: 8300000, guid: bcad6fe36e26b4748b8c34c9e1804a8c, type: 3}
   - {fileID: 8300000, guid: d866266b79ec89742baa20523b70fac5, type: 3}
-  playProbability: 0.1
-  onAnimation: 1
-  motionMatchingSkinnedMeshRendererWithOCEAN: {fileID: 4250081631127157108}
+  currentAnimationState: 0
+  smartPhone: {fileID: 64249467}
 --- !u!114 &5104321456628599521
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1424,7 +1512,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   socialBehaviour: {fileID: 5104321456628599520}
-  collisionDetectionCam: {fileID: 0}
+  collisionDetectionCamera: {fileID: 0}
 --- !u!1 &4090739079615388400
 GameObject:
   m_ObjectHideFlags: 0
