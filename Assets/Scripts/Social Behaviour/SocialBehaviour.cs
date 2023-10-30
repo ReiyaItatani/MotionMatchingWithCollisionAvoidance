@@ -5,6 +5,7 @@ using UnityEngine;
 using MotionMatching;
 using Unity.VisualScripting;
 using Drawing;
+using UnityEditor;
 
 public enum UpperBodyAnimationState
 {
@@ -84,13 +85,19 @@ public class SocialBehaviour : MonoBehaviour
     /// <summary>
     /// Continuously updates the current animation state based on social relations and group members.
     /// </summary>
-    /// // TODO: Group Talking is triggered when people are within certain distance
     private IEnumerator UpdateAnimationState()
     {
         while (true)
         {
             List<GameObject> groupAgents = parameterManager.GetAvatarCreatorBase().GetAgentsInCategory(parameterManager.GetSocialRelations());
+            //Determine Random Animation State based on social relations
             currentAnimationState = DetermineAnimationState(groupAgents);
+
+            bool isCurrentlyTalking = currentAnimationState == UpperBodyAnimationState.Talk;
+            if(isCurrentlyTalking){
+                bool areAgentsClose = AreAgentsAndSelfCloseToAveragePos(groupAgents, gameObject);
+                currentAnimationState = areAgentsClose ? UpperBodyAnimationState.Talk : UpperBodyAnimationState.Walk;
+            }
 
             TriggerUnityAnimation(currentAnimationState);
 
@@ -102,6 +109,19 @@ public class SocialBehaviour : MonoBehaviour
             yield return new WaitForSeconds(UnityEngine.Random.Range(AnimationStateUpdateMinTime, AnimationStateUpdateMaxTime));
         }
     }
+
+    #if UNITY_EDITOR
+    void OnDrawGizmos()
+    {
+        var style = new GUIStyle()
+        {
+            fontSize = 20,
+            normal = new GUIStyleState() { textColor = Color.black, background = Texture2D.whiteTexture }
+        };
+        Handles.Label(transform.position + Vector3.up * 2.3f, currentAnimationState.ToString(), style);
+
+    }
+    #endif
 
     private UpperBodyAnimationState DetermineAnimationState(List<GameObject> groupAgents)
     {
@@ -137,6 +157,60 @@ public class SocialBehaviour : MonoBehaviour
             smartPhone.SetActive(false);
         }
     }
+
+    /// <summary>
+    /// Determines if the calling object (self) and a group of agents are all sufficiently close to their common average pos.
+    /// The distance threshold is set to half the number of agents in the group. If all agents and the self are within this
+    /// threshold from the average pos, the function returns true; otherwise, it returns false.
+    /// </summary>
+    /// <param name="groupAgents">List of agent GameObjects to be checked.</param>
+    /// <returns>True if all agents and self are close to the average pos, false otherwise.</returns>
+    private bool AreAgentsAndSelfCloseToAveragePos(List<GameObject> groupAgents, GameObject myself)
+    {
+        // Calculate the center of mass, including the calling object itself
+        Vector3 averagePos = CalculateAveragePosition(groupAgents);
+        
+        // Set the distance threshold to half the number of agents
+        float thresholdDistance = groupAgents.Count / 2f;
+
+        // Check if the calling object (self) is within the threshold distance from the center of mass
+        if (Vector3.Distance(myself.transform.position, averagePos) > thresholdDistance)
+        {
+            return false;
+        }
+
+        // Check if at least one agent in the group (excluding myself) is within the threshold distance from the average position
+        bool isAnyAgentClose = false;
+        foreach (GameObject agent in groupAgents)
+        {
+            if (agent != myself && Vector3.Distance(agent.transform.position, averagePos) <= thresholdDistance)
+            {
+                isAnyAgentClose = true;
+                break;
+            }
+        }
+
+        // If at least one agent (excluding myself) is close, and myself is also close, return true
+        if (isAnyAgentClose)
+        {
+            return true;
+        }
+
+        // If no agent (excluding myself) is close enough, return false
+        return false;
+
+    }
+
+    private Vector3 CalculateAveragePosition(List<GameObject> agents)
+    {
+        Vector3 combinedPosition = Vector3.zero;
+        foreach (GameObject agent in agents)
+        {
+            combinedPosition += agent.transform.position;
+        }
+        return combinedPosition / agents.Count;
+    }
+
     #endregion
 
     #region Collide Response
