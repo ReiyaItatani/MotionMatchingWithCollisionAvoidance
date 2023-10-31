@@ -24,6 +24,12 @@ public class CollisionAvoidanceController : MonoBehaviour
     private UpdateUnalignedAvoidanceTarget updateUnalignedAvoidanceTarget;
     private BoxCollider unalignedAvoidanceCollider;
 
+    [Header("Basic Collision Avoidance SemiSpheir Area")]
+    public GameObject FOVMeshPrefab;
+    private GameObject basicAvoidanceSemiCircleArea;
+    private UpdateAvoidanceTarget updateAvoidanceTargetInFOV;
+
+
     [Header("Repulsion Force from the wall")]
     public AgentCollisionDetection agentCollisionDetection; 
 
@@ -50,6 +56,12 @@ public class CollisionAvoidanceController : MonoBehaviour
         unalignedAvoidanceCollider.size         = unalignedAvoidanceColliderSize;
         unalignedAvoidanceCollider.isTrigger    = true;
 
+        //Create FOV for Collision Avoidance Force
+        basicAvoidanceSemiCircleArea                  = Instantiate(FOVMeshPrefab, this.transform.position, this.transform.rotation);
+        basicAvoidanceSemiCircleArea.transform.parent = this.transform;
+        updateAvoidanceTargetInFOV                    = GetActiveChildObject(basicAvoidanceSemiCircleArea).GetComponent<UpdateAvoidanceTarget>();
+        updateAvoidanceTargetInFOV.InitParameter(agentCollider, groupCollider);
+
         //Create Agent Collision Detection
         agentCollisionDetection                 = agentCollider.GetComponent<AgentCollisionDetection>();
         if (agentCollisionDetection == null)
@@ -62,6 +74,23 @@ public class CollisionAvoidanceController : MonoBehaviour
         //Update AvoidanceArea
         StartCoroutine(UpdateBasicAvoidanceAreaPos(agentCollider.height/2));
         StartCoroutine(UpdateUnalignedAvoidanceAreaPos(agentCollider.height/2));
+        StartCoroutine(UpdateBasicAvoidanceSemiCircleAreaPos(agentCollider.height/2));
+    }
+
+    private GameObject GetActiveChildObject(GameObject parentObject)
+    {
+        if (parentObject != null)
+        {
+            foreach (Transform childTransform in parentObject.transform)
+            {
+                if (childTransform.gameObject.activeSelf)
+                {
+                    return childTransform.gameObject;
+                }
+            }
+        }
+
+        return null;
     }
 
     void Update(){
@@ -86,6 +115,19 @@ public class CollisionAvoidanceController : MonoBehaviour
             unalignedAvoidanceArea.transform.position = new Vector3(Center.x, AgentHeight, Center.z);
             Quaternion targetRotation = Quaternion.LookRotation(agentCollisionDetection.GetCurrentLookAt());
             unalignedAvoidanceArea.transform.rotation = targetRotation;
+            yield return null;
+        }
+    }
+
+    private IEnumerator UpdateBasicAvoidanceSemiCircleAreaPos(float AgentHeight){
+        while(true){
+            if(pathController.GetCurrentDirection() == Vector3.zero) yield return null;
+            Vector3 currentPosition = (Vector3)pathController.GetCurrentPosition();
+            basicAvoidanceSemiCircleArea.transform.position = new Vector3(currentPosition.x, AgentHeight, currentPosition.z);
+            Quaternion targetRotation = Quaternion.LookRotation(agentCollisionDetection.GetCurrentLookAt());
+            targetRotation *= Quaternion.Euler(0, 180, 0);
+            
+            basicAvoidanceSemiCircleArea.transform.rotation = targetRotation;
             yield return null;
         }
     }

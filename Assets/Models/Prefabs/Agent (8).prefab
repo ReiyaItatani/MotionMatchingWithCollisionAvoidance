@@ -394,6 +394,8 @@ MonoBehaviour:
   groupCollider: {fileID: 0}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
   unalignedAvoidanceColliderSize: {x: 4.5, y: 1.5, z: 6}
+  FOVMeshPrefab: {fileID: 4215951433680714984, guid: 67d1ea03b9f7a07428c663c49ab761a1,
+    type: 3}
   agentCollisionDetection: {fileID: 4695691877277905979}
   showAgentSphere: 0
 --- !u!1 &1641196237453055362
