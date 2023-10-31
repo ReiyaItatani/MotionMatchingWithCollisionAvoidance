@@ -10,6 +10,14 @@ using UnityEngine.UI;
 using Unity.VisualScripting;
 using System.Runtime.CompilerServices;
 using MotionMatching;
+using UnityEditor;
+
+public enum CurrentLookTarget{
+        CollidedTarget,
+        CurerntAvoidancetarget,
+        MyDirection,
+        CenterOfMass
+ }
 
 [RequireComponent(typeof(Animator))]
 public class MotionMatchingSkinnedMeshRendererWithOCEAN : MonoBehaviour
@@ -745,6 +753,7 @@ public class MotionMatchingSkinnedMeshRendererWithOCEAN : MonoBehaviour
     * 
     * * */
     [Header("Look At Params")]
+    public CurrentLookTarget currentLookTarget;
     private GameObject collidedTarget;
     private Vector3 attractionPoint;
     private Quaternion saveLookAtRot = Quaternion.identity;
@@ -774,19 +783,35 @@ public class MotionMatchingSkinnedMeshRendererWithOCEAN : MonoBehaviour
         if(collidedTarget != null){
             //when collide
             attractionPoint = (collidedTarget.transform.position - this.transform.position).normalized;
+            currentLookTarget = CurrentLookTarget.CollidedTarget;
         }else if(collidedTarget == null && currentAvoidanceTarget != Vector3.zero){
             attractionPoint = (currentAvoidanceTarget - this.transform.position).normalized;
+            currentLookTarget = CurrentLookTarget.CurerntAvoidancetarget;
         }else{
             //in normal situation
             if(ifIndividual){
                 //if the agent is individual
                 attractionPoint = currentAgentDirection.normalized;
+                currentLookTarget = CurrentLookTarget.MyDirection;
             }else{
                 //if the agent is in a group
                 attractionPoint = currentCenterOfMass.normalized;
+                currentLookTarget = CurrentLookTarget.CenterOfMass;
             }
         }
     }
+    #if UNITY_EDITOR
+    void OnDrawGizmos()
+    {
+        var style = new GUIStyle()
+        {
+            fontSize = 20,
+            normal = new GUIStyleState() { textColor = Color.black, background = Texture2D.whiteTexture }
+        };
+        Handles.Label(transform.position + Vector3.up * 2, currentLookTarget.ToString(), style);
+
+    }
+    #endif
 
     private void CheckNeckRotation(Vector3 _currentLookAt, Vector3 myDirection, float _neckRotationLimit, float lookAtForwardDuration = 2.0f, float probability = 0.1f){
         float currentNeckRotation = Vector3.Angle(_currentLookAt.normalized, myDirection.normalized);
