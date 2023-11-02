@@ -10,11 +10,14 @@ public enum FOVDegree {
 }
 
 public class FOVActiveController : MonoBehaviour {
-    [ReadOnly]
-    public FOVDegree currentFOV = FOVDegree.Normal;
+    public FOVDegree currentFOV = FOVDegree.PeripheralFOV;
 
     private void Start() {
         UpdateFOV();
+    }
+
+    private void OnValidate() {
+        SetFOV(currentFOV);
     }
 
     private void UpdateFOV() {
@@ -29,5 +32,18 @@ public class FOVActiveController : MonoBehaviour {
     public void SetFOV(FOVDegree newFOV) {
         currentFOV = newFOV;
         UpdateFOV();
+    }
+
+    public GameObject GetActiveChildObject()
+    {
+        foreach (Transform childTransform in gameObject.transform)
+        {
+            if (childTransform.gameObject.activeSelf)
+            {
+                return childTransform.gameObject;
+            }
+        }
+
+        return null;
     }
 }

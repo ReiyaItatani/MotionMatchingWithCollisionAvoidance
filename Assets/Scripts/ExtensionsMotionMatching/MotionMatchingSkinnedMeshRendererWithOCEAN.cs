@@ -336,7 +336,7 @@ public class MotionMatchingSkinnedMeshRendererWithOCEAN : MonoBehaviour
         CheckNeckRotation(GetCurrentLookAt(), GetCurrentAgentDirection(), neckRotationLimit);
         LookAtAttractionPointUpdater();
         UpdateCurrentLookAt();
-        LookAtPass(currentLookAt, attractionPoint, 1.0f);
+        LookAtPass(currentLookAt, attractionPoint, 0.5f);
         //LookAtAdjustmentPass
         LookAtAdjustmentPass(neckRotationLimit);
 
@@ -753,6 +753,7 @@ public class MotionMatchingSkinnedMeshRendererWithOCEAN : MonoBehaviour
     * 
     * * */
     [Header("Look At Params")]
+    [ReadOnly]
     public CurrentLookTarget currentLookTarget;
     private GameObject collidedTarget;
     private Vector3 attractionPoint;

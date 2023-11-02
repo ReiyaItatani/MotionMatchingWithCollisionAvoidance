@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Drawing;
 using System;
+using System.Linq;
 
 public class CollisionAvoidanceController : MonoBehaviour
 {
@@ -24,10 +25,11 @@ public class CollisionAvoidanceController : MonoBehaviour
     private UpdateUnalignedAvoidanceTarget updateUnalignedAvoidanceTarget;
     private BoxCollider unalignedAvoidanceCollider;
 
-    [Header("Basic Collision Avoidance SemiSpheir Area")]
+    [Header("Basic Collision Avoidance Semi Circle Area")]
     public GameObject FOVMeshPrefab;
     private GameObject basicAvoidanceSemiCircleArea;
-    private UpdateAvoidanceTarget updateAvoidanceTargetInFOV;
+    private List<UpdateAvoidanceTarget> updateAvoidanceTargetsInFOV;
+    private FOVActiveController fovActiveController;
 
 
     [Header("Repulsion Force from the wall")]
@@ -59,8 +61,15 @@ public class CollisionAvoidanceController : MonoBehaviour
         //Create FOV for Collision Avoidance Force
         basicAvoidanceSemiCircleArea                  = Instantiate(FOVMeshPrefab, this.transform.position, this.transform.rotation);
         basicAvoidanceSemiCircleArea.transform.parent = this.transform;
-        updateAvoidanceTargetInFOV                    = GetActiveChildObject(basicAvoidanceSemiCircleArea).GetComponent<UpdateAvoidanceTarget>();
-        updateAvoidanceTargetInFOV.InitParameter(agentCollider, groupCollider);
+        fovActiveController                           = basicAvoidanceSemiCircleArea.GetComponent<FOVActiveController>();
+        updateAvoidanceTargetsInFOV = GetAllChildObjects(basicAvoidanceSemiCircleArea)
+            .Select(child => child.GetComponent<UpdateAvoidanceTarget>())
+            .Where(component => component != null)
+            .ToList();
+        foreach (var updateAvoidanceTarget in updateAvoidanceTargetsInFOV)
+        {
+            updateAvoidanceTarget.InitParameter(agentCollider, groupCollider);
+        }
 
         //Create Agent Collision Detection
         agentCollisionDetection                 = agentCollider.GetComponent<AgentCollisionDetection>();
@@ -74,23 +83,22 @@ public class CollisionAvoidanceController : MonoBehaviour
         //Update AvoidanceArea
         StartCoroutine(UpdateBasicAvoidanceAreaPos(agentCollider.height/2));
         StartCoroutine(UpdateUnalignedAvoidanceAreaPos(agentCollider.height/2));
-        StartCoroutine(UpdateBasicAvoidanceSemiCircleAreaPos(agentCollider.height/2));
+        StartCoroutine(UpdateBasicAvoidanceSemiCircleAreaPos(agentCollider.height/2, agentCollider.radius));
     }
 
-    private GameObject GetActiveChildObject(GameObject parentObject)
+    private List<GameObject> GetAllChildObjects(GameObject parentObject)
     {
+        List<GameObject> childObjects = new List<GameObject>();
+
         if (parentObject != null)
         {
             foreach (Transform childTransform in parentObject.transform)
             {
-                if (childTransform.gameObject.activeSelf)
-                {
-                    return childTransform.gameObject;
-                }
+                childObjects.Add(childTransform.gameObject);
             }
         }
 
-        return null;
+        return childObjects;
     }
 
     void Update(){
@@ -119,12 +127,15 @@ public class CollisionAvoidanceController : MonoBehaviour
         }
     }
 
-    private IEnumerator UpdateBasicAvoidanceSemiCircleAreaPos(float AgentHeight){
+    private IEnumerator UpdateBasicAvoidanceSemiCircleAreaPos(float AgentHeight, float AgentRadius){
         while(true){
             if(pathController.GetCurrentDirection() == Vector3.zero) yield return null;
-            Vector3 currentPosition = (Vector3)pathController.GetCurrentPosition();
-            basicAvoidanceSemiCircleArea.transform.position = new Vector3(currentPosition.x, AgentHeight, currentPosition.z);
-            Quaternion targetRotation = Quaternion.LookRotation(agentCollisionDetection.GetCurrentLookAt());
+            Vector3   currentPosition = (Vector3)pathController.GetCurrentPosition();
+            Vector3   lookAtDirection = agentCollisionDetection.GetCurrentLookAt().normalized;
+            Vector3   newPosition     = currentPosition + lookAtDirection * AgentRadius;
+            Quaternion targetRotation = Quaternion.LookRotation(lookAtDirection);
+
+            basicAvoidanceSemiCircleArea.transform.position = new Vector3(newPosition.x, AgentHeight, newPosition.z);
             targetRotation *= Quaternion.Euler(0, 180, 0);
             
             basicAvoidanceSemiCircleArea.transform.rotation = targetRotation;
@@ -132,12 +143,19 @@ public class CollisionAvoidanceController : MonoBehaviour
         }
     }
 
+
     public List<GameObject> GetOthersInUnalignedAvoidanceArea(){
         return updateUnalignedAvoidanceTarget.GetOthersInUnalignedAvoidanceArea();
     }
 
     public List<GameObject> GetOthersInAvoidanceArea(){
         return updateAvoidanceTarget.GetOthersInAvoidanceArea();
+    }
+
+    public List<GameObject> GetOthersInFOV(){
+        GameObject             activeGameObject      = fovActiveController.GetActiveChildObject();
+        UpdateAvoidanceTarget _updateAvoidanceTarget = activeGameObject.GetComponent<UpdateAvoidanceTarget>();
+        return _updateAvoidanceTarget.GetOthersInAvoidanceArea();
     }
 
     public GameObject GetCurrentWallTarget(){
@@ -159,13 +177,13 @@ public class CollisionAvoidanceController : MonoBehaviour
     private void DrawInfo(){
         Color gizmoColor;
         if(showAgentSphere){
-            if (pathController.socialRelations == SocialRelations.Couple){
+            if (pathController.GetSocialRelations() == SocialRelations.Couple){
                 gizmoColor = new Color(1.0f, 0.0f, 0.0f); // red
-            }else if (pathController.socialRelations == SocialRelations.Friend){
+            }else if (pathController.GetSocialRelations() == SocialRelations.Friend){
                 gizmoColor = new Color(0.0f, 1.0f, 0.0f); // green
-            }else if  (pathController.socialRelations == SocialRelations.Family){
+            }else if  (pathController.GetSocialRelations() == SocialRelations.Family){
                 gizmoColor = new Color(0.0f, 0.0f, 1.0f); // blue
-            }else if  (pathController.socialRelations == SocialRelations.Coworker){
+            }else if  (pathController.GetSocialRelations() == SocialRelations.Coworker){
                 gizmoColor = new Color(1.0f, 1.0f, 0.0f); // yellow
             }else{
                 gizmoColor = new Color(1.0f, 1.0f, 1.0f); // white

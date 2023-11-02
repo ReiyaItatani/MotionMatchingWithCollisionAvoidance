@@ -108,6 +108,7 @@ public class PathController : MotionMatchingCharacterController
     // Force From Group --------------------------------------------------------
     [Header("Group Force, Group Category")]
     private Vector3 groupForce = Vector3.zero;
+    [ReadOnly]
     public SocialRelations socialRelations;
     [HideInInspector]
     public float groupForceWeight = 0.5f;
@@ -162,9 +163,9 @@ public class PathController : MotionMatchingCharacterController
         StartCoroutine(UpdateToGoalVector(0.1f));
         StartCoroutine(UpdateAvoidanceVector(0.1f, 0.3f));
         StartCoroutine(UpdateAvoidNeighborsVector(0.1f, 0.3f));
-        StartCoroutine(UpdateGroupForce(0.2f, socialRelations));
+        StartCoroutine(UpdateGroupForce(0.2f, GetSocialRelations()));
         StartCoroutine(UpdateWallForce(0.2f, 0.5f));
-        StartCoroutine(UpdateSpeed(avatarCreator.GetAgentsInCategory(socialRelations), collisionAvoidance.GetAgentGameObject()));
+        StartCoroutine(UpdateSpeed(avatarCreator.GetAgentsInCategory(GetSocialRelations()), collisionAvoidance.GetAgentGameObject()));
         StartCoroutine(UpdateAngularVelocityControl(0.2f));   
              
         //If you wanna consider all of the other agents for unaligned collision avoidance use below
@@ -362,7 +363,10 @@ public class PathController : MotionMatchingCharacterController
     {
         float elapsedTime = 0.0f;
         while(true){
-            List<GameObject> othersInAvoidanceArea = collisionAvoidance.GetOthersInAvoidanceArea();
+            //To use Box Collider
+            //List<GameObject> othersInAvoidanceArea = collisionAvoidance.GetOthersInAvoidanceArea();
+            //To use FOV
+            List<GameObject> othersInAvoidanceArea = collisionAvoidance.GetOthersInFOV();
             Vector3 myPositionAtNearestApproach = Vector3.zero;
             Vector3 otherPositionAtNearestApproach = Vector3.zero;
 
@@ -603,6 +607,7 @@ public class PathController : MotionMatchingCharacterController
     #region Synthetic-Vision Based Steering
 
     private Vector3 syntheticVisionForce;
+    [HideInInspector]
     public float syntheticVisionForceWeight = 1.0f;
     private float minTimeToInteraction;
     private IEnumerator UpdateAngularVelocityControl(float updateTime){
@@ -1015,7 +1020,7 @@ public class PathController : MotionMatchingCharacterController
     ********************************************************************************************************************************/
     #region SPEED ADJUSTMENT 
     private IEnumerator UpdateSpeed(List<GameObject> groupAgents, GameObject myself, float updateTime = 0.5f, float speedChangeRate = 0.05f){
-        if(groupAgents.Count == 1 || socialRelations == SocialRelations.Individual){
+        if(groupAgents.Count == 1 || GetSocialRelations() == SocialRelations.Individual){
             yield return null;
         }
 
@@ -1226,13 +1231,13 @@ public class PathController : MotionMatchingCharacterController
         // }
         //Draw OnlyStartPos
         Color gizmoColor;
-        if (socialRelations == SocialRelations.Couple){
+        if (GetSocialRelations() == SocialRelations.Couple){
             gizmoColor = new Color(1.0f, 0.0f, 0.0f); // red
-        }else if (socialRelations == SocialRelations.Friend){
+        }else if (GetSocialRelations() == SocialRelations.Friend){
             gizmoColor = new Color(0.0f, 1.0f, 0.0f); // green
-        }else if  (socialRelations == SocialRelations.Family){
+        }else if  (GetSocialRelations() == SocialRelations.Family){
             gizmoColor = new Color(0.0f, 0.0f, 1.0f); // blue
-        }else if  (socialRelations == SocialRelations.Coworker){
+        }else if  (GetSocialRelations() == SocialRelations.Coworker){
             gizmoColor = new Color(1.0f, 1.0f, 0.0f); // yellow
         }else{
             gizmoColor = new Color(1.0f, 1.0f, 1.0f); // white

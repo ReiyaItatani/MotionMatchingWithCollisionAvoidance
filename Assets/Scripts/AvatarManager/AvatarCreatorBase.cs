@@ -88,7 +88,7 @@ public class AvatarCreatorBase : MonoBehaviour
         for (int i = 0; i < instantiatedAvatars.Count; i++)
         {
             PathController pathController = instantiatedAvatars[i].GetComponentInChildren<PathController>();
-            if(pathController.socialRelations == socialRelations){
+            if(pathController.GetSocialRelations() == socialRelations){
                 GameObject agent = instantiatedAvatars[i].GetComponentInChildren<MotionMatchingSkinnedMeshRendererWithOCEAN>().gameObject;
                 agentsList.Add(agent);
             }
