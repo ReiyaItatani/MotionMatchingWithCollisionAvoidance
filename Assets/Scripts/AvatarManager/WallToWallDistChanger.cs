@@ -17,5 +17,4 @@ public class WallToWallDistChanger : MonoBehaviour
         leftWall.transform.position = new Vector3(leftWall.transform.position.x, leftWall.transform.position.y, -WallToWallDist);
         rightWall.transform.position = new Vector3(rightWall.transform.position.x, rightWall.transform.position.y, WallToWallDist);
     }
-
 }

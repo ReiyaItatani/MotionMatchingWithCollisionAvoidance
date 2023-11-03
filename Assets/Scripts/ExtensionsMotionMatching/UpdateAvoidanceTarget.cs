@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using MotionMatching;
 
+namespace CollisionAvoidance{
+
 public class UpdateAvoidanceTarget : MonoBehaviour
 {
 
@@ -51,4 +53,5 @@ public class UpdateAvoidanceTarget : MonoBehaviour
         myAgentCollider = _myAgentCollider;
         myGroupCollider = _myGroupCollider;
     }
+}
 }

@@ -1,50 +1,50 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MotionMatching{
-    public class UpdateGroupCollider : MonoBehaviour
+namespace CollisionAvoidance{
+public class UpdateGroupCollider : MonoBehaviour
+{
+    public AvatarCreatorBase avatarCreator; 
+    private List<GameObject> agentsInCategory = new List<GameObject>();
+    private CapsuleCollider groupCollider;
+    public float agentRadius = 0.3f;
+
+    void Start()
     {
-        public AvatarCreatorBase avatarCreator; 
-        private List<GameObject> agentsInCategory = new List<GameObject>();
-        private CapsuleCollider groupCollider;
-        public float agentRadius = 0.3f;
+        agentsInCategory = avatarCreator.GetAgentsInCategory(avatarCreator.StringToSocialRelations(this.transform.parent.name));
+        groupCollider = GetComponent<CapsuleCollider>();
+    }
 
-        void Start()
+    void Update()
+    {
+        UpdateCenterOfMass();
+        UpdateCircleColliderRadius();
+    }
+
+    void UpdateCenterOfMass()
+    {
+        Vector3 combinedPosition = Vector3.zero;
+        foreach (GameObject agent in agentsInCategory)
         {
-            agentsInCategory = avatarCreator.GetAgentsInCategory(avatarCreator.StringToSocialRelations(this.transform.parent.name));
-            groupCollider = GetComponent<CapsuleCollider>();
+            combinedPosition += agent.transform.position;
         }
+        this.transform.position = combinedPosition / agentsInCategory.Count;
+    }
 
-        void Update()
+    void UpdateCircleColliderRadius()
+    {
+        float maxDistance = 0f;
+        foreach (GameObject agent in agentsInCategory)
         {
-            UpdateCenterOfMass();
-            UpdateCircleColliderRadius();
-        }
-
-        void UpdateCenterOfMass()
-        {
-            Vector3 combinedPosition = Vector3.zero;
-            foreach (GameObject agent in agentsInCategory)
+            float distance = Vector3.Distance(this.transform.position, agent.transform.position);
+            if (distance > maxDistance)
             {
-                combinedPosition += agent.transform.position;
+                maxDistance = distance;
             }
-            this.transform.position = combinedPosition / agentsInCategory.Count;
         }
-
-        void UpdateCircleColliderRadius()
-        {
-            float maxDistance = 0f;
-            foreach (GameObject agent in agentsInCategory)
-            {
-                float distance = Vector3.Distance(this.transform.position, agent.transform.position);
-                if (distance > maxDistance)
-                {
-                    maxDistance = distance;
-                }
-            }
-            if(maxDistance <= (agentsInCategory.Count)/2){
-                groupCollider.radius = maxDistance + agentRadius;    
-            }
+        if(maxDistance <= (agentsInCategory.Count)/2){
+            groupCollider.radius = maxDistance + agentRadius;    
         }
     }
+}
 }

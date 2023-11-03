@@ -6,6 +6,7 @@ using MotionMatching;
 using Unity.VisualScripting;
 using Drawing;
 using UnityEditor;
+using CollisionAvoidance;
 
 public enum UpperBodyAnimationState
 {

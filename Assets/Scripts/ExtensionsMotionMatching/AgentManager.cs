@@ -3,6 +3,7 @@ using UnityEngine;
 using MotionMatching;
 using System.Security.Cryptography;
 
+namespace CollisionAvoidance{
 // AgentManager is a class that manages various parameters and settings for agents in a simulation.
 public class AgentManager : MonoBehaviour
 {
@@ -275,4 +276,5 @@ public class AgentManager : MonoBehaviour
 
     }
 
+}
 }

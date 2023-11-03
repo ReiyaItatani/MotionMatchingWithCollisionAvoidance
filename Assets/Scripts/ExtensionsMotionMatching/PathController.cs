@@ -15,6 +15,8 @@ using MotionMatching;
 using TrajectoryFeature = MotionMatching.MotionMatchingData.TrajectoryFeature;
 using UnityEditor.PackageManager.Requests;
 
+namespace CollisionAvoidance{
+
 public class PathController : MotionMatchingCharacterController
 {
     public string TrajectoryPositionFeatureName = "FuturePosition";
@@ -167,7 +169,7 @@ public class PathController : MotionMatchingCharacterController
         StartCoroutine(UpdateWallForce(0.2f, 0.5f));
         StartCoroutine(UpdateSpeed(avatarCreator.GetAgentsInCategory(GetSocialRelations()), collisionAvoidance.GetAgentGameObject()));
         StartCoroutine(UpdateAngularVelocityControl(0.2f));   
-             
+            
         //If you wanna consider all of the other agents for unaligned collision avoidance use below
         //StartCoroutine(UpdateAvoidNeighborsVector(avatarCreator.GetAgents(), 0.1f, 0.3f));
     }
@@ -203,10 +205,10 @@ public class PathController : MotionMatchingCharacterController
         direction = (      toGoalWeight    *            toGoalVector + 
                         avoidanceWeight    *         avoidanceVector + 
                     avoidNeighborWeight    *    avoidNeighborsVector + 
-                       groupForceWeight    *             groupForce +
-                     wallRepForceWeight    *           wallRepForce +
-             syntheticVisionForceWeight    *   syntheticVisionForce
-                     ).normalized;
+                    groupForceWeight    *             groupForce +
+                    wallRepForceWeight    *           wallRepForce +
+            syntheticVisionForceWeight    *   syntheticVisionForce
+                    ).normalized;
         direction = new Vector3(direction.x, 0f, direction.z);
 
         //Check collision
@@ -394,7 +396,7 @@ public class PathController : MotionMatchingCharacterController
                 Vector3 colliderSize = collisionAvoidance.GetAvoidanceColliderSize();
                 float agentRadius = collisionAvoidance.GetAgentCollider().radius;
                 avoidanceVector = avoidanceVector*(1.0f-Vector3.Distance(avoidanceTargetPosition, 
-                                                                         currentPosition)/(Mathf.Sqrt(colliderSize.x/2*colliderSize.x/2+colliderSize.z*colliderSize.z)+agentRadius*2));
+                                                                        currentPosition)/(Mathf.Sqrt(colliderSize.x/2*colliderSize.x/2+colliderSize.z*colliderSize.z)+agentRadius*2));
 
                 //Group or Individual
                 avoidanceVector *= TagChecker(currentAvoidanceTarget);
@@ -457,24 +459,24 @@ public class PathController : MotionMatchingCharacterController
 
             // predicted time until nearest approach of "this" and "other"
             float time = PredictNearestApproachTime (GetCurrentDirection(), 
-                                                     GetCurrentPosition(), 
-                                                     GetCurrentSpeed(), 
-                                                     otherParameterManager.GetCurrentDirection(), 
-                                                     otherParameterManager.GetCurrentPosition(), 
-                                                     otherParameterManager.GetCurrentSpeed());
+                                                    GetCurrentPosition(), 
+                                                    GetCurrentSpeed(), 
+                                                    otherParameterManager.GetCurrentDirection(), 
+                                                    otherParameterManager.GetCurrentPosition(), 
+                                                    otherParameterManager.GetCurrentSpeed());
             //Debug.Log("time:"+time);
             if ((time >= 0) && (time < minTimeToCollision)){
                 //Debug.Log("Distance:"+computeNearestApproachPositions (time, CurrentPosition, CurrentDirection, CurrentSpeed, otherParameterManager.GetRawCurrentPosition(), otherParameterManager.GetCurrentDirection(), otherParameterManager.GetCurrentSpeed()));
                 if (ComputeNearestApproachPositions (time, 
-                                                     GetCurrentPosition(), 
-                                                     GetCurrentDirection(), 
-                                                     GetCurrentSpeed(), 
-                                                     otherParameterManager.GetCurrentPosition(), 
-                                                     otherParameterManager.GetCurrentDirection(), 
-                                                     otherParameterManager.GetCurrentSpeed(), 
-                                                     out myPositionAtNearestApproach, 
-                                                     out otherPositionAtNearestApproach) 
-                                                     < collisionDangerThreshold)
+                                                    GetCurrentPosition(), 
+                                                    GetCurrentDirection(), 
+                                                    GetCurrentSpeed(), 
+                                                    otherParameterManager.GetCurrentPosition(), 
+                                                    otherParameterManager.GetCurrentDirection(), 
+                                                    otherParameterManager.GetCurrentSpeed(), 
+                                                    out myPositionAtNearestApproach, 
+                                                    out otherPositionAtNearestApproach) 
+                                                    < collisionDangerThreshold)
                 {
                     minTimeToCollision = time;
                     _currentAvoidanceTarget = other;
@@ -993,7 +995,7 @@ public class PathController : MotionMatchingCharacterController
                 NormalVector normalVector = currentWallTarget.GetComponent<NormalVector>();
                 wallRepForce = normalVector.CalculateNormalVectorFromWall(GetCurrentPosition());
             }else{
-                 yield return StartCoroutine(WallForceGradualTransition(transitionTime, wallRepForce, Vector3.zero));
+                yield return StartCoroutine(WallForceGradualTransition(transitionTime, wallRepForce, Vector3.zero));
             }
             yield return new WaitForSeconds(updateTime);
         }
@@ -1296,4 +1298,5 @@ public class PathController : MotionMatchingCharacterController
     #endif
     #endregion
 
+}
 }

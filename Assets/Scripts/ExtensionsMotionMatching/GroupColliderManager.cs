@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+namespace CollisionAvoidance{
+
 public class GroupColliderManager : MonoBehaviour
 {
     public SocialRelations socialRelations;
@@ -46,4 +48,5 @@ public class GroupColliderManager : MonoBehaviour
             groupColliderGameObject.SetActive(false);
         }
     }
+}
 }

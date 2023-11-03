@@ -12,6 +12,8 @@ using System.Runtime.CompilerServices;
 using MotionMatching;
 using UnityEditor;
 
+namespace CollisionAvoidance{
+
 public enum CurrentLookTarget{
         CollidedTarget,
         CurerntAvoidancetarget,
@@ -1419,4 +1421,5 @@ public class MotionMatchingSkinnedMeshRendererWithOCEAN : MonoBehaviour
     }
     #endregion
 
+}
 }

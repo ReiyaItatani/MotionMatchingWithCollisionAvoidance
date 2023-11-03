@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using MotionMatching;
 
+namespace CollisionAvoidance{
 public class UpdateUnalignedAvoidanceTarget : MonoBehaviour
 {
     private CapsuleCollider myAgentCollider;
@@ -49,4 +50,5 @@ public class UpdateUnalignedAvoidanceTarget : MonoBehaviour
         myAgentCollider = _myAgentCollider;
         myGroupCollider = _myGroupCollider;
     }
+}
 }

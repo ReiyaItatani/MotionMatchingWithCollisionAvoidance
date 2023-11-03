@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+namespace CollisionAvoidance{
+
 public enum FOVDegree {
     Normal = 180, //180
     PeripheralFOV = 120, //120
@@ -63,4 +65,5 @@ public class FOVActiveController : MonoBehaviour {
     public void InitParameter(CollisionAvoidanceController _collisionAvoidance){
         collisionAvoidance = _collisionAvoidance;
     } 
+}
 }

@@ -2,6 +2,7 @@ using MotionMatching;
 using UnityEngine;
 using Drawing;
 
+namespace CollisionAvoidance{
 public class NormalVector : MonoBehaviour
 {
     private Vector3 perpendicularVector = Vector3.zero;
@@ -54,4 +55,5 @@ public class NormalVector : MonoBehaviour
     void Update(){
         Draw.ArrowheadArc(this.transform.position, perpendicularVector, 0.55f, Color.blue);
     }
+}
 }

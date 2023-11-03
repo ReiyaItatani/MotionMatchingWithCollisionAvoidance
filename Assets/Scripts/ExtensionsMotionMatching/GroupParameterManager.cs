@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using MotionMatching;
 
+namespace CollisionAvoidance{
+
 public class GroupParameterManager : MonoBehaviour, IParameterManager
 {
     public List<PathController> pathControllers = new List<PathController>();
@@ -42,4 +44,5 @@ public class GroupParameterManager : MonoBehaviour, IParameterManager
     public SocialRelations GetSocialRelations(){
         return pathControllers[0].GetSocialRelations();
     }
+}
 }

@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using MotionMatching;
 using System.Collections.Generic;
+using CollisionAvoidance;
 
 public class AvatarCreatorCorridor : AvatarCreatorBase
 {

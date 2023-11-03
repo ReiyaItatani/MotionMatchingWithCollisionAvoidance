@@ -2,6 +2,8 @@ using System.Collections;
 using UnityEngine;
 using MotionMatching;
 
+namespace CollisionAvoidance{
+
 /// <summary>
 /// Handles collision detection and responses for an agent in a virtual environment.
 /// This class is responsible for detecting collisions with other agents and walls, 
@@ -187,4 +189,5 @@ public class AgentCollisionDetection : MonoBehaviour
         yield return new WaitForSeconds(duration);
         changeCamPosChecker.ChangeCamPos = false;
     }
+}
 }

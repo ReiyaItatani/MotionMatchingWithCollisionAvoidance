@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using MotionMatching;
 
-public class ParameterManager : MonoBehaviour, IParameterManager
-{
+namespace CollisionAvoidance{
+    public class ParameterManager : MonoBehaviour, IParameterManager
+    {
     public PathController pathController;
 
     public Vector3 GetCurrentDirection(){
@@ -38,4 +39,5 @@ public class ParameterManager : MonoBehaviour, IParameterManager
         }
         return null;
     }
+}
 }
