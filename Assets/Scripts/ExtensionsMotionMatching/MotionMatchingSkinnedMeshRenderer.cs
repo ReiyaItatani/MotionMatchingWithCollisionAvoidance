@@ -62,6 +62,9 @@ public class MotionMatchingSkinnedMeshRenderer : MonoBehaviour
     private quaternion[] OffsetJointRotations;
     private float3 PreviousHipsPosition;
     private float3 OffsetHipsPosition;
+
+    //ConversationalAgentFrameWork
+    public ConversationalAgentFramework conversationalAgentFramework;
     
     private void Awake()
     {
@@ -262,6 +265,7 @@ public class MotionMatchingSkinnedMeshRenderer : MonoBehaviour
 
         // Update State
         UpdatePreviousInertialization();
+        conversationalAgentFramework.UpdateOCEAN();
     }
 
     private void UpdatePreviousInertialization()

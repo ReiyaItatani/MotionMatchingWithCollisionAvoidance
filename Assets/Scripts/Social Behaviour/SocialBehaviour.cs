@@ -8,6 +8,8 @@ using Drawing;
 using UnityEditor;
 using CollisionAvoidance;
 
+namespace CollisionAvoidance
+{
 public enum UpperBodyAnimationState
 {
     // The 'Walking' animation state.
@@ -368,4 +370,5 @@ public class SocialBehaviour : MonoBehaviour
         motionMatchingRenderer.SetCurrentAvoidanceTarget(currentAvoidanceTarget);
     }
     #endregion
+}
 }
