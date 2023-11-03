@@ -78,7 +78,7 @@ public class AgentManager : MonoBehaviour
     public bool DebugContacts = false;
 
     // OCEAN Personality Model Parameters: Parameters that define the personality of the agent according to the OCEAN model.
-    [Header("OCEAN Parameters")]
+    [Header("Conversational Agent Framework Parameters")]
     [Range(-1f, 1f),HideInInspector] public float openness = 0f;
     [Range(-1f, 1f),HideInInspector] public float conscientiousness = 0f;
     [Range(-1f, 1f)] public float Negative_Positive = 0f;
@@ -98,7 +98,7 @@ public class AgentManager : MonoBehaviour
     private List<GameObject> PathControllers = new List<GameObject>();
     private List<GameObject> MotionMatchingControllers = new List<GameObject>();
     private List<GameObject> CollisionAvoidanceControllers = new List<GameObject>();
-    private List<GameObject> MotionMatchingSkinnedMeshRendererWithOCEANs = new List<GameObject>();
+    private List<GameObject> ConversationalAgentFrameworks = new List<GameObject>();
     private List<GameObject> Avatars = new List<GameObject>();
     private AvatarCreatorBase avatarCreator;
 
@@ -144,11 +144,11 @@ public class AgentManager : MonoBehaviour
                 CollisionAvoidanceControllers.Add(collisionAvoidanceController.gameObject);
             }
 
-            // Get and set MotionMatchingSkinnedMeshRendererWithOCEAN parameters.
-            MotionMatchingSkinnedMeshRendererWithOCEAN mmSMRWithOCEAN = Avatars[i].GetComponentInChildren<MotionMatchingSkinnedMeshRendererWithOCEAN>();
-            if(mmSMRWithOCEAN != null) {
-                SetMotionMatchingSkinnedMeshRendererWithOCEANParams(mmSMRWithOCEAN);
-                MotionMatchingSkinnedMeshRendererWithOCEANs.Add(mmSMRWithOCEAN.gameObject);
+            // Get and set ConversationalAgentFramework parameters.
+            ConversationalAgentFramework conversationalAgentFramework = Avatars[i].GetComponentInChildren<ConversationalAgentFramework>();
+            if(conversationalAgentFramework != null) {
+                SetConversationalAgentFrameworkParams(conversationalAgentFramework);
+                ConversationalAgentFrameworks.Add(conversationalAgentFramework.gameObject);
             }
 
             // Get and set SocialBehaviour parameters.
@@ -156,12 +156,6 @@ public class AgentManager : MonoBehaviour
             if(socialBehaviour != null) {
                 SetSocialBehaviourParams(socialBehaviour);
             }     
-
-            // Get and set AgentCollisionDetection parameters.
-            AgentCollisionDetection agentCollisionDetection = Avatars[i].GetComponentInChildren<AgentCollisionDetection>();
-            if(agentCollisionDetection != null){
-                SetCollisionDetectionParams(agentCollisionDetection);
-            }
         }
     }
 
@@ -197,13 +191,13 @@ public class AgentManager : MonoBehaviour
             }
         }
 
-        // Loop through all MotionMatchingSkinnedMeshRendererWithOCEANs and set their parameters.
-        foreach(GameObject controllerObject in MotionMatchingSkinnedMeshRendererWithOCEANs) 
+        // Loop through all ConversationalAgentFrameworks and set their parameters.
+        foreach(GameObject controllerObject in ConversationalAgentFrameworks) 
         {
-            MotionMatchingSkinnedMeshRendererWithOCEAN mmSMRWithOCEAN = controllerObject.GetComponent<MotionMatchingSkinnedMeshRendererWithOCEAN>();
-            if(mmSMRWithOCEAN != null) 
+            ConversationalAgentFramework conversationalAgentFramework = controllerObject.GetComponent<ConversationalAgentFramework>();
+            if(conversationalAgentFramework != null) 
             {
-                SetMotionMatchingSkinnedMeshRendererWithOCEANParams(mmSMRWithOCEAN);
+                SetConversationalAgentFrameworkParams(conversationalAgentFramework);
             }
             SocialBehaviour socialBehaviour = controllerObject.GetComponent<SocialBehaviour>();
             if(socialBehaviour != null) {
@@ -253,23 +247,19 @@ public class AgentManager : MonoBehaviour
         collisionAvoidanceController.showAgentSphere                = showAgentSphere;
     }
 
-    private void SetMotionMatchingSkinnedMeshRendererWithOCEANParams(MotionMatchingSkinnedMeshRendererWithOCEAN mmSMRWithOCEAN){
-        mmSMRWithOCEAN.openness          = openness;
-        mmSMRWithOCEAN.conscientiousness = conscientiousness;
-        mmSMRWithOCEAN.extraversion      = Negative_Positive;
-        mmSMRWithOCEAN.agreeableness     = agreeableness;
-        mmSMRWithOCEAN.neuroticism       = neuroticism;
+    private void SetConversationalAgentFrameworkParams(ConversationalAgentFramework conversationalAgentFramework){
+        conversationalAgentFramework.openness          = openness;
+        conversationalAgentFramework.conscientiousness = conscientiousness;
+        conversationalAgentFramework.extraversion      = Negative_Positive;
+        conversationalAgentFramework.agreeableness     = agreeableness;
+        conversationalAgentFramework.neuroticism       = neuroticism;
 
-        mmSMRWithOCEAN.e_happy           = e_happy;
-        mmSMRWithOCEAN.e_sad             = e_sad;
-        mmSMRWithOCEAN.e_angry           = e_angry;
-        mmSMRWithOCEAN.e_disgust         = e_disgust;
-        mmSMRWithOCEAN.e_fear            = e_fear;
-        mmSMRWithOCEAN.e_shock           = e_shock;      
-    }
-
-    private void SetCollisionDetectionParams(AgentCollisionDetection agentCollisionDetection){
-        agentCollisionDetection.collisionDetectionCamera = collisionDetectionCam;
+        conversationalAgentFramework.e_happy           = e_happy;
+        conversationalAgentFramework.e_sad             = e_sad;
+        conversationalAgentFramework.e_angry           = e_angry;
+        conversationalAgentFramework.e_disgust         = e_disgust;
+        conversationalAgentFramework.e_fear            = e_fear;
+        conversationalAgentFramework.e_shock           = e_shock;      
     }
 
     private void SetSocialBehaviourParams(SocialBehaviour socialBehaviour){

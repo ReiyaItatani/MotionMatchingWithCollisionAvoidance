@@ -74,7 +74,7 @@ public class AvatarCreatorBase : MonoBehaviour
         List<GameObject> agentsList = new List<GameObject>();
         for (int i = 0; i < instantiatedAvatars.Count; i++)
         {
-            MotionMatchingSkinnedMeshRendererWithOCEAN component = instantiatedAvatars[i].GetComponentInChildren<MotionMatchingSkinnedMeshRendererWithOCEAN>();
+            ConversationalAgentFramework component = instantiatedAvatars[i].GetComponentInChildren<ConversationalAgentFramework>();
             if (component != null)
             {
                 agentsList.Add(component.gameObject);
@@ -90,7 +90,7 @@ public class AvatarCreatorBase : MonoBehaviour
         {
             PathController pathController = instantiatedAvatars[i].GetComponentInChildren<PathController>();
             if(pathController.GetSocialRelations() == socialRelations){
-                GameObject agent = instantiatedAvatars[i].GetComponentInChildren<MotionMatchingSkinnedMeshRendererWithOCEAN>().gameObject;
+                GameObject agent = instantiatedAvatars[i].GetComponentInChildren<ConversationalAgentFramework>().gameObject;
                 agentsList.Add(agent);
             }
         }

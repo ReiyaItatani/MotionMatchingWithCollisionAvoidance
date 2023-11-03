@@ -82,7 +82,7 @@ public class AvatarCreatorCorridor : AvatarCreatorBase
             PathController pathController = instance.GetComponentInChildren<PathController>();
             MotionMatchingController motionMatchingController = instance.GetComponentInChildren<MotionMatchingController>();
             CollisionAvoidanceController collisionAvoidanceController = instance.GetComponentInChildren<CollisionAvoidanceController>();
-            MotionMatchingSkinnedMeshRendererWithOCEAN motionMatchingSkinnedMeshRendererWithOCEAN = instance.GetComponentInChildren<MotionMatchingSkinnedMeshRendererWithOCEAN>();
+            ConversationalAgentFramework conversationalAgentFramework = instance.GetComponentInChildren<ConversationalAgentFramework>();
 
             //Random Social Relations Allocation 
             SocialRelations[] allValues = (SocialRelations[])System.Enum.GetValues(typeof(SocialRelations));
@@ -133,7 +133,7 @@ public class AvatarCreatorCorridor : AvatarCreatorBase
 
             //Move the agent to starting pos
             motionMatchingController.transform.position = pathController.Path[0];
-            motionMatchingSkinnedMeshRendererWithOCEAN.transform.position = pathController.Path[0];
+            conversationalAgentFramework.transform.position = pathController.Path[0];
 
             //initial Speed
             if(randomRelation == SocialRelations.Individual){

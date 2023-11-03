@@ -16,6 +16,9 @@ namespace CollisionAvoidance{
 [RequireComponent(typeof(SocialBehaviour))]
 public class AgentCollisionDetection : MonoBehaviour
 {
+    private const float minReactionTime = 3f;
+    private const float maxReactionTime = 7f;
+
     [Header("Collision Handling Parameters")]
     private PathController pathController;
     private CapsuleCollider capsuleCollider;
@@ -25,17 +28,6 @@ public class AgentCollisionDetection : MonoBehaviour
 
     [Header("Repulsion Force Parameters")]
     private GameObject currentWallTarget;
-
-    // For debugging collision detection.
-    [HideInInspector]
-    public Camera collisionDetectionCamera;
-
-    private const float cameraPositionOffsetX = -0.4f;
-    private const float cameraPositionOffsetY = 1.7f;
-    private const float cameraPositionOffsetZ = -2.5f;
-    private const float cameraAdjustmentDuration = 5.0f;
-    private const float minReactionTime = 3f;
-    private const float maxReactionTime = 7f;
 
     void Awake()
     {
@@ -155,39 +147,6 @@ public class AgentCollisionDetection : MonoBehaviour
         {
             StartCoroutine(ReactionToCollision(Random.Range(minReactionTime, maxReactionTime), collidingAgent.gameObject));
         }
-
-        if (collisionDetectionCamera != null)
-        {
-            AdjustCameraPosition(collidingAgent.transform.position);
-        }
-    }
-
-    /// <summary>
-    /// Adjusts the camera's position for a better view of the collision.
-    /// </summary>
-    /// <param name="targetPosition">The target position to adjust the camera towards.</param>
-    private void AdjustCameraPosition(Vector3 targetPosition)
-    {
-        ChangeCamPosChecker camPosChecker = collisionDetectionCamera.GetComponent<ChangeCamPosChecker>();
-
-        if (camPosChecker != null && !camPosChecker.ChangeCamPos)
-        {
-            camPosChecker.ChangeCamPos = true;
-            collisionDetectionCamera.transform.position = targetPosition + new Vector3(cameraPositionOffsetX, cameraPositionOffsetY, cameraPositionOffsetZ);
-            StartCoroutine(DurationAfterCameraPositionChange(camPosChecker, cameraAdjustmentDuration));
-        }
-    }
-
-    /// <summary>
-    /// Coroutine to reset camera position adjustment after a duration.
-    /// </summary>
-    /// <param name="changeCamPosChecker">The ChangeCamPosChecker component reference.</param>
-    /// <param name="duration">Duration to wait before resetting the camera position adjustment.</param>
-    /// <returns></returns>
-    private IEnumerator DurationAfterCameraPositionChange(ChangeCamPosChecker changeCamPosChecker, float duration)
-    {
-        yield return new WaitForSeconds(duration);
-        changeCamPosChecker.ChangeCamPos = false;
     }
 }
 }

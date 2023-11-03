@@ -1069,9 +1069,10 @@ GameObject:
   - component: {fileID: 329583752830720037}
   - component: {fileID: 4631874872787884719}
   - component: {fileID: 1689018075292950710}
-  - component: {fileID: 1174139737110326506}
   - component: {fileID: 5161204989624310485}
   - component: {fileID: 5161204989624310484}
+  - component: {fileID: 5611619017782839132}
+  - component: {fileID: 7404234145616809744}
   m_Layer: 0
   m_Name: male7@T-Pose
   m_TagString: Agent
@@ -1161,61 +1162,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pathController: {fileID: 5161204990306798143}
---- !u!114 &1174139737110326506
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3819664784235622410}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a422e7081b4c4514892c5ac5063fc5b6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  MotionMatching: {fileID: 5161204989098896931}
-  AvatarMask: {fileID: 11400000, guid: a6bccdd3441d37c4f8b39ba775108fbf, type: 2}
-  RootPositionsMask: 1
-  RootRotationsMask: 1
-  BlendPoses: 1
-  BlendHalfLife: 0.05
-  ForwardLocalVector: {x: 0, y: 0, z: 1}
-  UpLocalVector: {x: 0, y: 1, z: 0}
-  AvoidToesFloorPenetration: 1
-  ToesSoleOffset: {x: 0, y: 0, z: -0.02}
-  FLUC_ADD: 0
-  Map_OCEAN_to_LabanEffort: 1
-  Map_OCEAN_to_Additional: 1
-  openness: 0
-  conscientiousness: 0
-  extraversion: 0
-  agreeableness: 0
-  neuroticism: 0
-  space: 0
-  weight: 0
-  time: 0
-  flow: 0
-  e_happy: 0
-  e_sad: 0
-  e_angry: 0
-  e_disgust: 0
-  e_fear: 0
-  e_shock: 0
-  base_happy: 0
-  base_sad: 0
-  base_angry: 0
-  base_shock: 0
-  base_disgust: 0
-  base_fear: 0
-  ls_hor: 0
-  ls_ver: 0
-  ls_hor_speed: 0
-  ls_ver_speed: 0
-  spine_bend: 0
-  sink_bend: 0
-  head_bend: 0
-  faceController: {fileID: 0}
-  currentLookTarget: 0
 --- !u!114 &5161204989624310485
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1249,6 +1195,74 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   socialBehaviour: {fileID: 5161204989624310485}
   collisionDetectionCamera: {fileID: 0}
+--- !u!114 &5611619017782839132
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3819664784235622410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e72d17c6b5c5b2e46a2c364f2ff844e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MotionMatching: {fileID: 5161204989098896931}
+  AvatarMask: {fileID: 11400000, guid: a6bccdd3441d37c4f8b39ba775108fbf, type: 2}
+  RootPositionsMask: 1
+  RootRotationsMask: 1
+  BlendPoses: 1
+  BlendHalfLife: 0.05
+  ForwardLocalVector: {x: 0, y: 0, z: 1}
+  UpLocalVector: {x: 0, y: 1, z: 0}
+  AvoidToesFloorPenetration: 0
+  ToesSoleOffset: {x: 0, y: 0, z: -0.02}
+  conversationalAgentFramework: {fileID: 7404234145616809744}
+--- !u!114 &7404234145616809744
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3819664784235622410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ec217d0e85cfce4ea56b31f5564c141, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FLUC_ADD: 0
+  Map_OCEAN_to_LabanEffort: 1
+  Map_OCEAN_to_Additional: 1
+  openness: 0
+  conscientiousness: 0
+  extraversion: 0
+  agreeableness: 0
+  neuroticism: 0
+  space: 0
+  weight: 0
+  time: 0
+  flow: 0
+  e_happy: 0
+  e_sad: 0
+  e_angry: 0
+  e_disgust: 0
+  e_fear: 0
+  e_shock: 0
+  base_happy: 0
+  base_sad: 0
+  base_angry: 0
+  base_shock: 0
+  base_disgust: 0
+  base_fear: 0
+  ls_hor: 0
+  ls_ver: 0
+  ls_hor_speed: 0
+  ls_ver_speed: 0
+  spine_bend: 0
+  sink_bend: 0
+  head_bend: 0
+  faceController: {fileID: 0}
+  currentLookTarget: 0
 --- !u!1 &3820285924494826852
 GameObject:
   m_ObjectHideFlags: 0

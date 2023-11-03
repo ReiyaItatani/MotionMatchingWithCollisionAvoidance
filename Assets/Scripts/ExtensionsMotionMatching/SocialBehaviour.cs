@@ -6,10 +6,9 @@ using MotionMatching;
 using Unity.VisualScripting;
 using Drawing;
 using UnityEditor;
-using CollisionAvoidance;
 
-namespace CollisionAvoidance
-{
+namespace CollisionAvoidance{
+
 public enum UpperBodyAnimationState
 {
     // The 'Walking' animation state.
@@ -33,7 +32,8 @@ public enum UpperBodyAnimationState
 /// </summary>
 [RequireComponent(typeof(ParameterManager))]
 [RequireComponent(typeof(Animator))]
-[RequireComponent(typeof(MotionMatchingSkinnedMeshRendererWithOCEAN))]
+[RequireComponent(typeof(CollisionAvoidance.MotionMatchingSkinnedMeshRenderer))]
+[RequireComponent(typeof(ConversationalAgentFramework))]
 public class SocialBehaviour : MonoBehaviour
 {
     private const float LookAtUpdateTime = 0.2f;
@@ -48,7 +48,8 @@ public class SocialBehaviour : MonoBehaviour
     public AudioClip[] audioClips;
 
     [Header("Animation")]
-    private MotionMatchingSkinnedMeshRendererWithOCEAN motionMatchingRenderer;
+    private CollisionAvoidance.MotionMatchingSkinnedMeshRenderer motionMatchingRenderer;
+    private ConversationalAgentFramework conversationalAgentFramework;
     private AvatarMaskData initialAvatarMask;
 
     [Header("LookAt")]
@@ -62,9 +63,10 @@ public class SocialBehaviour : MonoBehaviour
 
     private void Awake()
     {
-        parameterManager = GetComponent<ParameterManager>();
-        animator = GetComponent<Animator>();
-        motionMatchingRenderer = GetComponent<MotionMatchingSkinnedMeshRendererWithOCEAN>();
+        parameterManager             = GetComponent<ParameterManager>();
+        animator                     = GetComponent<Animator>();
+        motionMatchingRenderer       = GetComponent<CollisionAvoidance.MotionMatchingSkinnedMeshRenderer>();
+        conversationalAgentFramework = GetComponent<ConversationalAgentFramework>();
 
         if (motionMatchingRenderer != null)
         {
@@ -223,7 +225,7 @@ public class SocialBehaviour : MonoBehaviour
     #region Collide Response
     public void DeleteCollidedTarget()
     {
-        motionMatchingRenderer.SetCollidedTarget(null);
+        conversationalAgentFramework.SetCollidedTarget(null);
     }
 
     public void TryPlayAudio()
@@ -287,12 +289,12 @@ public class SocialBehaviour : MonoBehaviour
 
     public void IfIndividual(bool isIndividual)
     {
-        motionMatchingRenderer.IfIndividual(isIndividual);
+        conversationalAgentFramework.IfIndividual(isIndividual);
     }
 
     public Vector3 GetCurrentLookAt()
     {
-        return motionMatchingRenderer.GetCurrentLookAt();
+        return conversationalAgentFramework.GetCurrentLookAt();
     }
 
     private Vector3 CalculateGazingDirectionToCOM(List<GameObject> groupAgents, Vector3 currentPos, Vector3 currentLookDir, GameObject myself, float angleLimit)
@@ -356,18 +358,18 @@ public class SocialBehaviour : MonoBehaviour
 
     #region SET
     public void SetCollidedTarget(GameObject collidedTarget){
-        motionMatchingRenderer.SetCollidedTarget(collidedTarget);
+        conversationalAgentFramework.SetCollidedTarget(collidedTarget);
     }
     public void SetCurrentDirection(Vector3 currentDirection){
-        motionMatchingRenderer.SetCurrentAgentDirection(currentDirection);
+        conversationalAgentFramework.SetCurrentAgentDirection(currentDirection);
     }
 
     public void SetCurrentCenterOfMass(Vector3 lookAtCenterOfMass){
-        motionMatchingRenderer.SetCurrentCenterOfMass(lookAtCenterOfMass);
+        conversationalAgentFramework.SetCurrentCenterOfMass(lookAtCenterOfMass);
     }
 
     public void SetCurrentAvoidanceTarget(Vector3 currentAvoidanceTarget){
-        motionMatchingRenderer.SetCurrentAvoidanceTarget(currentAvoidanceTarget);
+        conversationalAgentFramework.SetCurrentAvoidanceTarget(currentAvoidanceTarget);
     }
     #endregion
 }
