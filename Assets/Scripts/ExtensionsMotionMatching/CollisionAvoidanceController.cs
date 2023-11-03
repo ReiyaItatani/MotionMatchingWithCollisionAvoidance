@@ -4,6 +4,7 @@ using UnityEngine;
 using Drawing;
 using System;
 using System.Linq;
+using System.Security.Cryptography;
 
 public class CollisionAvoidanceController : MonoBehaviour
 {
@@ -30,6 +31,7 @@ public class CollisionAvoidanceController : MonoBehaviour
     private GameObject basicAvoidanceSemiCircleArea;
     private List<UpdateAvoidanceTarget> updateAvoidanceTargetsInFOV;
     private FOVActiveController fovActiveController;
+    public SocialBehaviour socialBehaviour;
 
 
     [Header("Repulsion Force from the wall")]
@@ -62,6 +64,7 @@ public class CollisionAvoidanceController : MonoBehaviour
         basicAvoidanceSemiCircleArea                  = Instantiate(FOVMeshPrefab, this.transform.position, this.transform.rotation);
         basicAvoidanceSemiCircleArea.transform.parent = this.transform;
         fovActiveController                           = basicAvoidanceSemiCircleArea.GetComponent<FOVActiveController>();
+        fovActiveController.InitParameter(gameObject.GetComponent<CollisionAvoidanceController>());
         updateAvoidanceTargetsInFOV = GetAllChildObjects(basicAvoidanceSemiCircleArea)
             .Select(child => child.GetComponent<UpdateAvoidanceTarget>())
             .Where(component => component != null)
@@ -172,6 +175,10 @@ public class CollisionAvoidanceController : MonoBehaviour
 
     public Vector3 GetAvoidanceColliderSize(){
         return avoidanceColliderSize;
+    }
+
+    public UpperBodyAnimationState GetUpperBodyAnimationState(){
+        return socialBehaviour.GetUpperBodyAnimationState();
     }
 
     private void DrawInfo(){

@@ -11,6 +11,7 @@ public enum FOVDegree {
 
 public class FOVActiveController : MonoBehaviour {
     public FOVDegree currentFOV = FOVDegree.PeripheralFOV;
+    private CollisionAvoidanceController collisionAvoidance;
 
     private void Start() {
         UpdateFOV();
@@ -18,6 +19,18 @@ public class FOVActiveController : MonoBehaviour {
 
     private void OnValidate() {
         SetFOV(currentFOV);
+    }
+
+    void Update(){
+        if(collisionAvoidance == null) return;
+        UpperBodyAnimationState upperBodyAnimationState = collisionAvoidance.GetUpperBodyAnimationState();
+        if(upperBodyAnimationState == UpperBodyAnimationState.Walk){
+            SetFOV(FOVDegree.PeripheralFOV);
+        }else if(upperBodyAnimationState == UpperBodyAnimationState.Talk){
+            SetFOV(FOVDegree.FieldOf3dVision);
+        }else if(upperBodyAnimationState == UpperBodyAnimationState.SmartPhone){
+            SetFOV(FOVDegree.Focus);
+        }
     }
 
     private void UpdateFOV() {
@@ -46,4 +59,8 @@ public class FOVActiveController : MonoBehaviour {
 
         return null;
     }
+
+    public void InitParameter(CollisionAvoidanceController _collisionAvoidance){
+        collisionAvoidance = _collisionAvoidance;
+    } 
 }

@@ -158,6 +158,10 @@ public class SocialBehaviour : MonoBehaviour
         }
     }
 
+    public UpperBodyAnimationState GetUpperBodyAnimationState(){
+        return currentAnimationState;
+    }
+
     /// <summary>
     /// Determines if the calling object (self) and a group of agents are all sufficiently close to their common average pos.
     /// The distance threshold is set to half the number of agents in the group. If all agents and the self are within this

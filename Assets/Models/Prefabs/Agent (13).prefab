@@ -2222,6 +2222,7 @@ MonoBehaviour:
   sink_bend: 0
   head_bend: 0
   faceController: {fileID: 0}
+  currentLookTarget: 0
 --- !u!114 &5336097455707217915
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2527,6 +2528,7 @@ MonoBehaviour:
   unalignedAvoidanceColliderSize: {x: 4.5, y: 1.5, z: 6}
   FOVMeshPrefab: {fileID: 4215951433680714984, guid: 67d1ea03b9f7a07428c663c49ab761a1,
     type: 3}
+  socialBehaviour: {fileID: 5336097455707217915}
   agentCollisionDetection: {fileID: 5336097455707217914}
   showAgentSphere: 0
 --- !u!1 &7531828318875538467
