@@ -13,7 +13,6 @@ namespace CollisionAvoidance{
 /// movement and social interactions based on collisions.
 /// </summary>
 [RequireComponent(typeof(CapsuleCollider))]
-[RequireComponent(typeof(SocialBehaviour))]
 public class AgentCollisionDetection : MonoBehaviour
 {
     private const float minReactionTime = 3f;

@@ -30,10 +30,6 @@ public enum UpperBodyAnimationState
 /// <summary>
 /// Manages the social behavior and animation states for a character.
 /// </summary>
-[RequireComponent(typeof(ParameterManager))]
-[RequireComponent(typeof(Animator))]
-[RequireComponent(typeof(CollisionAvoidance.MotionMatchingSkinnedMeshRenderer))]
-[RequireComponent(typeof(ConversationalAgentFramework))]
 public class SocialBehaviour : MonoBehaviour
 {
     private const float LookAtUpdateTime = 0.2f;
