@@ -2,10 +2,11 @@ using UnityEngine;
 using UnityEditor;
 using System.IO;
 using MotionMatching;
-using CollisionAvoidance;
 using System.Collections.Generic;
 using UnityEditor.Animations;
 using System;
+
+namespace CollisionAvoidance{
 
 // Custom editor window to create prefabs of Humanoid characters.
 public class PrefabCreatorWindow : EditorWindow
@@ -213,9 +214,11 @@ private void CreatePrefab(GameObject humanoid)
 
     // Create a new parent GameObject for the humanoid clone named "Agent".
     GameObject agent = new GameObject("Agent");
+    agent.tag = "Agent";
 
     // Make the humanoid clone a child of the new parent.
     humanoidInstance.transform.SetParent(agent.transform);
+    humanoidInstance.tag = "Agent";
 
     // Create and attach the "PathController" GameObject and script.
     GameObject pathController = new GameObject("PathController");
@@ -314,4 +317,5 @@ private void CreatePrefab(GameObject humanoid)
     Debug.Log($"Prefab created at: {prefabPath}");
 }
 
+}
 }

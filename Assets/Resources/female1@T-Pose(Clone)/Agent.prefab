@@ -463,7 +463,7 @@ GameObject:
   - component: {fileID: 2992345157458751168}
   m_Layer: 0
   m_Name: Agent
-  m_TagString: Untagged
+  m_TagString: Agent
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3140,7 +3140,7 @@ GameObject:
   - component: {fileID: 5207010223513548067}
   m_Layer: 0
   m_Name: female1@T-Pose(Clone)
-  m_TagString: Untagged
+  m_TagString: Agent
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
