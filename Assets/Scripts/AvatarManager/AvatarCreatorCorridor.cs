@@ -12,8 +12,8 @@ public class AvatarCreatorCorridor : AvatarCreatorBase
     [Header("Wall Parameters")]
     public float wallHeight = 3f;
     public float wallWidth = 0.2f;
-    public float wallColliderAdditionalWidth = 0.5f;
-    public float wallToWallDist = 1.2f;
+    public float wallColliderAdditionalWidth = 5.0f;
+    public float wallToWallDist = 4.0f;
     [HideInInspector]
     public GameObject wallParent;
 

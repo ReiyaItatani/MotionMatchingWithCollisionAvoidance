@@ -13,10 +13,10 @@ public class AgentManager : MonoBehaviour
     public Vector3 avoidanceColliderSize = new Vector3(1.5f, 1.5f, 2.0f);
     [Tooltip("Radius to consider as the goal.")]
     [Range(0.1f, 5.0f)]
-    public float goalRadius = 0.5f;
+    public float goalRadius = 2.0f;
     [Tooltip("Radius to start slowing down.")]
     [Range(0.1f, 5.0f)]
-    public float slowingRadius = 2.0f;
+    public float slowingRadius = 3.0f;
 
     // Parameters For Unaligned Collision Avoidance: Parameters that define how agents avoid collisions when they are not aligned.
     [Header("Parameters For Unaligned Collision Avoidance")]
@@ -27,22 +27,22 @@ public class AgentManager : MonoBehaviour
     [Space]
     [Tooltip("Weight for moving towards the goal.")]
     [Range(0.0f, 5.0f)]
-    public float toGoalWeight = 2.0f;
+    public float toGoalWeight = 1.5f;
     [Tooltip("Weight to avoid neighbors.")]
     [Range(0.0f, 5.0f)]
-    public float avoidNeighborWeight = 2.0f;
+    public float avoidNeighborWeight = 0.5f;
     [Tooltip("Weight for general avoidance.")]
     [Range(0.0f, 5.0f)]
-    public float avoidanceWeight = 3.0f;
+    public float avoidanceWeight = 2.3f;
     [Tooltip("Weight for group force.")]
     [Range(0.0f, 5.0f)]
-    public float groupForceWeight = 1.0f;
+    public float groupForceWeight = 0.5f;
     [Tooltip("Weight for wall force.")]
     [Range(0.0f, 5.0f)]
-    public float wallRepForceWeight = 1.0f;
+    public float wallRepForceWeight = 0.3f;
     [Tooltip("Weight for synthetic vision force.")]
     [Range(0.0f, 5.0f)]
-    public float syntheticVisionForceWeight = 1.0f;
+    public float syntheticVisionForceWeight = 0.0f;
 
     // Parameters related to the adjustment of the position of the SimulationBone and SimulationObject.
     [Space]
@@ -56,7 +56,7 @@ public class AgentManager : MonoBehaviour
     // Parameters defining the size of the agent's capsule collider.
     [Header("Agent Capsule Collider Size")]
     [Range(0.0f, 1.0f)]
-    public float CapsuleColliderRadius = 0.25f; 
+    public float CapsuleColliderRadius = 0.3f; 
 
     // Parameters to control the display of various debug gizmos in the Unity Editor.
     [Header("Controll Gizmos Parameters")]
@@ -101,13 +101,6 @@ public class AgentManager : MonoBehaviour
     private List<GameObject> ConversationalAgentFrameworks = new List<GameObject>();
     private List<GameObject> Avatars = new List<GameObject>();
     private AvatarCreatorBase avatarCreator;
-
-    // Parameters related to social behavior of the agent.
-    [Header("Social Behaviour")]
-
-    // Parameters related to collision detection.
-    [Header("Collision Detection")]
-    public Camera collisionDetectionCam;
 
     // Awake is called when the script instance is being loaded.
     void Awake(){

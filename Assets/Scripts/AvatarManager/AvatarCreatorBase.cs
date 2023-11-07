@@ -22,9 +22,9 @@ public class AvatarCreatorBase : MonoBehaviour
     // avatarPrefabs: A list of available avatar prefabs.
     public List<GameObject> avatarPrefabs = new List<GameObject>();
     // categoryGameObjects: A list of game objects per category (might not be used).
-    public List<GameObject> categoryGameObjects = new List<GameObject>();  
+    [ReadOnly]public List<GameObject> categoryGameObjects = new List<GameObject>();  
     // instantiatedAvatars: A list of instantiated avatars.
-    public List<GameObject> instantiatedAvatars = new List<GameObject>();
+    [ReadOnly]public List<GameObject> instantiatedAvatars = new List<GameObject>();
     // spawnCount: The number of avatars to spawn.
     public int spawnCount = 1;  
 

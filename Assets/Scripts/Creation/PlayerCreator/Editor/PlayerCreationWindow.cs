@@ -129,7 +129,7 @@ public class PlayerCreationWindow : EditorWindow
         CapsuleCollider capsuleCollider = instance.AddComponent<CapsuleCollider>();
         capsuleCollider.isTrigger = true;
         capsuleCollider.center = new Vector3(0,0.9f,0);
-        capsuleCollider.radius = 0.3f;
+        capsuleCollider.radius = 0.25f;
         capsuleCollider.height = 1.8f;
         //
         var motionMatchingRenderer = instance.AddComponent<MotionMatching.MotionMatchingSkinnedMeshRenderer>();
@@ -137,6 +137,14 @@ public class PlayerCreationWindow : EditorWindow
         motionMatchingRenderer.ToesSoleOffset = new Vector3(0, 0, -0.02f);      
         //
         SpringParameterManager springParameterManager = instance.AddComponent<CollisionAvoidance.SpringParameterManager>();
+        //
+        Transform headTransform = instance.GetComponent<Animator>().GetBoneTransform(HumanBodyBones.Head);
+        GameObject cameraGameObject = new GameObject("HeadCamera");
+        Camera headCamera = cameraGameObject.AddComponent<Camera>();
+        cameraGameObject.transform.parent = headTransform;
+        cameraGameObject.transform.localPosition = Vector3.zero;
+        cameraGameObject.transform.localRotation = Quaternion.identity;
+        
 
         var motionMatchingObject = CreateChildGameObject(parent, "MotionMatching");
         var motionMatchingController = motionMatchingObject.AddComponent<MotionMatchingController>();
