@@ -1,65 +1,75 @@
 # Collision Avoidance System
 
-This repository contains a Collision Avoidance system for agents in a simulated environment, integrating various behavioral forces to navigate towards goals while avoiding collisions and forming coherent groups.
+Welcome to the Collision Avoidance system repository, where agents dynamically navigate a simulated environment. This system is designed to simulate realistic pedestrian behavior by integrating a variety of forces that guide agents towards their goals, enable avoidance of collisions, and facilitate natural group formations.
 
 ## System Overview
 
-Agents in the system are influenced by a combination of forces:
-- **Goal Direction**: Propels the agent towards a designated target.
-- **Collision Avoidance Logic**: Prevents collisions with nearby agents using Nuria HiDAC's logic.
-- **Unaligned Collision Avoidance**: Predicts and mitigates potential collisions, as per Reynolds (1987).
-- **Force from Group**: Encourages group behaviors, detailed by Moussaid et al. (2010).
-- **Wall Force**: Generates a repulsive force from walls to avoid collisions, following Nuria HiDAC's principles.
+The movement of each agent is determined by a blend of the following forces:
+- **Goal Direction**: Directs the agent towards a target.
+- **Collision Avoidance Logic**: Utilizes Nuria HiDAC's approach to avert imminent collisions.
+- **Unaligned Collision Avoidance**: Based on the work of Reynolds (1987), it anticipates and avoids potential collisions.
+- **Force from Group**: Implements the principles outlined by Moussaid et al. (2010) to foster group dynamics.
+- **Wall Force**: Generates a repulsive force from walls, as per Nuria HiDAC's methodology.
 
-Weights assigned to each force can be adjusted to modify their impact on agent movement.
+The influence of these forces is governed by adjustable weights, allowing for nuanced control of agent behavior.
 
 ## Key Features
 
 ### Motion Matching
 
-For realistic animation of local movements, motion matching techniques are employed. Details can be found at [MotionMatching GitHub](https://github.com/JLPM22/MotionMatching).
+To animate local movements authentically, we employ motion matching techniques. For an in-depth look, visit [MotionMatching GitHub](https://github.com/JLPM22/MotionMatching).
 
-> **Note**: Movements of the head, neck, and eyes are specifically designed to account for collision scenarios.
+> **Note**: Special attention has been given to the design of head, neck, and eye movements to ensure they are responsive to collision avoidance scenarios.
+
+### Animation Correction
+
+We utilize the framework from "A Conversational Agent Framework with Multi-modal Personality Expression" to adjust animations based on the OCEAN personality model. However, in our program, we primarily employ the extraversion parameter to adjust postures, such as straightening or slouching.
+
+### Facial Expressions
+
+Facial expressions are realized through blendshapes, using the Microsoft Rocketbox avatar's blendshapes. This requires adjustments when using different avatars. Additionally, our agents feature an automatic blinking function and lip-sync capabilities powered by the Oculus package's OVRLipSync.
 
 ### Collision Avoidance Logic
 
-- **Field of View (FOV)**: Adjusts in size based on the agent's upper body animation, affecting the Collision Avoidance Logic.
-- **Avoidance Direction**: Ensures agents avoid moving in the same direction when evading each other.
-- **Group Dynamics**: The avoidance force scales with the size of the group, with a formula of `radius + 1f` for the avoidance vector.
-- **Distance-Based Scaling**: The force varies depending on the proximity of other agents.
+- **Field of View (FOV)**: The size of the FOV adapts according to the agent's upper body animation, which is crucial for the Collision Avoidance Logic.
+- **Avoidance Direction**: Agents are programmed to avoid moving in the same direction when evading each other.
+- **Group Dynamics**: The avoidance force is proportional to the group size, calculated as `radius + 1f` for the avoidance vector.
+- **Distance-Based Scaling**: The force is dynamically adjusted based on the distance to other agents.
 
 ### Force from Group
 
-This force is a composite of:
-- **Cohesion**: Draws agents towards the group center.
-- **Repulsion**: Repels agents when they get too close to each other.
-- **Alignment**: Aligns agents to move in the same direction when in a group.
+This composite force consists of:
+- **Cohesion**: Attracts agents towards the group's center.
+- **Repulsion**: Creates a separating force between agents when they are too close.
+- **Alignment**: Aligns the direction of agents within a group.
 
-Future updates will include social relation-based distance adjustments.
+Planned enhancements include modifying distances based on social relations.
+
+### Social Relations
+
+A central aspect of our system is the categorization of agents into five distinct **Social Relations**: Couple, Friend, Family, Coworker, and Individual. These categories significantly influence agents' interactions and their decision-making processes, affecting their animations and movements within the environment.
 
 ### Field of View Adjustments
 
-The FOV is dynamic and correlates with the agent's current upper body animation:
-- **Using Smartphone**: Narrow FOV at 30 degrees.
-- **Talking**: Moderate FOV at 60 degrees.
-- **Walking**: Wide FOV at 120 degrees.
+The FOV dynamically changes with the agent's current upper body animation:
+- **Using Smartphone**: A focused FOV at 30 degrees.
+- **Talking**: An engaged FOV at 60 degrees.
+- **Walking**: An alert FOV at 120 degrees.
 
 ### Upper Body Animation
 
-Determined by the agent's social relations, which include Couple, Friend, Family, Coworker, and Individual. Agents interact or transition between animations based on these relations and their current state, such as walking or using a smartphone.
+The agent's social relations category—Couple, Friend, Family, Coworker, or Individual—determines the upper body animation. Agents will transition between conversational or walking animations when encountering agents of the same category. Solo or individual agents will switch between smartphone use and walking animations.
 
 ### Head, Eye, and Neck Movements
 
-These movements are not animation-based but are controlled by attraction points:
-- **CollidedTarget**: The agent that has been collided with.
-- **CurrentAvoidanceTarget**: A potential collision target.
-- **MyDirection**: The agent's current travel direction.
-- **CenterOfMass**: The center of mass if the agent is part of a group.
+Controlled by attraction points such as **CollidedTarget**, **CurrentAvoidanceTarget**, **MyDirection**, and **CenterOfMass** in group scenarios, these movements are designed to be fluid and context-sensitive, enhancing the realism of interactions.
 
-Agents will randomly switch focus between MyDirection and CurrentAvoidanceTarget, or CenterOfMass, depending on their group status.
+### Additional Features
+
+- **Vector Visualization**: Utilizing the ALINE package, we provide visualization of various vectors for better understanding and debugging of agent behaviors.
 
 ---
 
-*Images and diagrams will be added to this document to visually demonstrate the system's features and behaviors.*
+*Visual aids illustrating the system's mechanics and agent behaviors will be incorporated to complement the textual descriptions.*
 
-For contributions or further queries, please feel free to open an issue or submit a pull request.
+We encourage contributions and inquiries—please open an issue or submit a pull request if you wish to collaborate or have questions.
