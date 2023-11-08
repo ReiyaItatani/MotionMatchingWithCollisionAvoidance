@@ -96,7 +96,14 @@ The agent's social relations category—Couple, Friend, Family, Coworker, or Ind
 
 ### Head, Eye, and Neck Movements
 
-Controlled by attraction points such as **CollidedTarget**, **CurrentAvoidanceTarget** (informed by gaze prioritization strategies as studied by Meerhoff et al. [Meerhoff et al., 2018]), **MyDirection**, and **CenterOfMass** (based on the analysis of pedestrian social group behavior by Moussaïd et al. [Moussaïd et al., 2010]) in group scenarios, these movements are designed to be fluid and context-sensitive, enhancing the realism of interactions.
+Our model simulates naturalistic head, eye, and neck movements by referencing key attraction points:
+
+- **CollidedTarget**: Interaction with immediate obstacles.
+- **CurrentAvoidanceTarget**: Navigation informed by gaze data, as researched by Meerhoff et al. [Meerhoff et al., 2018].
+- **MyDirection**: Personal movement trajectory.
+- **CenterOfMass**: Group behavior dynamics, following findings by Moussaïd et al. [Moussaïd et al., 2010].
+
+These points ensure movements are realistic and contextually appropriate, improving interaction authenticity.
 
 ### Additional Features
 
