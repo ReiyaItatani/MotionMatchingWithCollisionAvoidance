@@ -1,6 +1,7 @@
 # Collision Avoidance System
 
 Welcome to the Collision Avoidance system repository, where agents dynamically navigate a simulated environment. This system is designed to simulate realistic pedestrian behavior by integrating a variety of forces that guide agents towards their goals, enable avoidance of collisions, and facilitate natural group formations.
+
 <img src=".github/media/collision_avoidance_system.png" alt="Collision Avoidance System" width="300"/>
 
 
@@ -26,11 +27,13 @@ To animate local movements authentically, we employ motion matching techniques. 
 ### Animation Correction
 
 We utilize the framework from "A Conversational Agent Framework with Multi-modal Personality Expression" to adjust animations based on the OCEAN personality model. However, in our program, we primarily employ the extraversion parameter to adjust postures, such as straightening or slouching.
+
 <img src=".github/media/animation_correction.png" alt="Collision Avoidance System" width="500"/>
 
 ### Facial Expressions
 
 Facial expressions are realized through blendshapes, using the Microsoft Rocketbox avatar's blendshapes. This requires adjustments when using different avatars. Additionally, our agents feature an automatic blinking function and lip-sync capabilities powered by the Oculus package's OVRLipSync.
+
 <img src=".github/media/facial_expression.png" alt="Collision Avoidance System" width="700"/>
 
 ### Collision Avoidance Logic
