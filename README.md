@@ -15,8 +15,6 @@ The movement of each agent within our system is influenced by a combination of d
 - **Group Dynamics Force**: Shapes natural group movements as characterized by Moussaid et al., influencing agents to move cohesively. For more details, see the [Group Dynamics Force](#force-from-group) section.
 - **Wall Repulsion Force**: Produces a repelling vector that maintains a safe buffer between agents and wall surfaces, in line with Nuria HiDAC's principles.
 
-The interplay of these forces is finely tuned through adjustable weights, providing a sophisticated level of control over the agents' movements.
-
 The direction of an agent's movement is determined by a weighted combination of several vector forces. The equation governing this combination is as follows:
 
 **D** = w<sub>g</sub>**G** + w<sub>c</sub>**C** + w<sub>u</sub>**U** + w<sub>f</sub>**F** + w<sub>w</sub>**W**
