@@ -17,7 +17,7 @@ The movement of each agent within our system is influenced by a combination of d
 
 The interplay of these forces is finely tuned through adjustable weights, providing a sophisticated level of control over the agents' movements.
 
-The direction of an agent's movement, denoted as \( \mathbf{D} \), is determined by a weighted combination of several vector forces. The equation governing this combination is as follows:
+The direction of an agent's movement, denoted as $$\( \mathbf{D} \)$$, is determined by a weighted combination of several vector forces. The equation governing this combination is as follows:
 
 $$
 \mathbf{D} = w_g \cdot \mathbf{G} + w_c \cdot \mathbf{C} + w_u \cdot \mathbf{U} + w_f \cdot \mathbf{F} + w_w \cdot \mathbf{W}
