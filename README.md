@@ -21,7 +21,7 @@ The influence of these forces is governed by adjustable weights, allowing for nu
 
 To animate local movements authentically, we employ motion matching techniques. For an in-depth look, visit [MotionMatching GitHub](https://github.com/JLPM22/MotionMatching).
 
-> **Note**: Special attention has been given to the design of head, neck, and eye movements to ensure they are responsive to collision avoidance scenarios.
+> **Note**: Head, neck, and eye movements operate on a separate algorithm distinct from motion matching.
 
 ### Animation Correction
 
