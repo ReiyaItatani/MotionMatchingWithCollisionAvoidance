@@ -96,7 +96,7 @@ The agent's social relations category—Couple, Friend, Family, Coworker, or Ind
 
 ### Head, Eye, and Neck Movements
 
-Controlled by attraction points such as **CollidedTarget**, **CurrentAvoidanceTarget**, **MyDirection**, and **CenterOfMass** in group scenarios, these movements are designed to be fluid and context-sensitive, enhancing the realism of interactions.
+Controlled by attraction points such as **CollidedTarget**, **CurrentAvoidanceTarget** (informed by gaze prioritization strategies as studied by Meerhoff et al. [Meerhoff et al., 2018]), **MyDirection**, and **CenterOfMass** (based on the analysis of pedestrian social group behavior by Moussaïd et al. [Moussaïd et al., 2010]) in group scenarios, these movements are designed to be fluid and context-sensitive, enhancing the realism of interactions.
 
 ### Additional Features
 
@@ -107,6 +107,7 @@ Controlled by attraction points such as **CollidedTarget**, **CurrentAvoidanceTa
 - Moussaïd, M., Perozo, N., Garnier, S., Helbing, D., & Theraulaz, G. (2010). The Walking Behaviour of Pedestrian Social Groups and Its Impact on Crowd Dynamics. PLOS ONE, 5(4), e10047.
 - Pelechano, N., Allbeck, J., & Badler, N. (2007). Controlling Individual Agents in High-Density Crowd Simulation. In Proc. Symp. Computer Animation (pp. 99-108).
 - Kremer, M., Haworth, B., Kapadia, M. et al. (2021). Modelling distracted agents in crowd simulations. The Visual Computer, 37, 107–118.
+- Meerhoff, L. A., Bruneau, J., Vu, A., Olivier, A. H., & Pettré, J. (2018). Guided by gaze: Prioritization strategy when navigating through a virtual crowd can be assessed through gaze activity. Acta Psychologica, 190, 248-257.
 
 ---
 
