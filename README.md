@@ -8,7 +8,7 @@ Welcome to the Collision Avoidance system repository, where agents dynamically n
 
 The movement of each agent is determined by a blend of the following forces:
 - **Goal Direction**: Directs the agent towards a target.
-- **Collision Avoidance Logic**: Utilizes Nuria HiDAC's approach to avert imminent collisions.
+- **Collision Avoidance Logic**: Utilizes Nuria HiDAC's approach to avert imminent collisions.For more details on how agents avoid collisions, see the [Collision Avoidance Logic](#collision-avoidance-logic) section.
 - **Unaligned Collision Avoidance**: Based on the work of Reynolds (1987), it anticipates and avoids potential collisions.
 - **Force from Group**: Implements the principles outlined by Moussaid et al. (2010) to foster group dynamics.
 - **Wall Force**: Generates a repulsive force from walls, as per Nuria HiDAC's methodology.
