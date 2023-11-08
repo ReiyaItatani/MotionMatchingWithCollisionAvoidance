@@ -9,11 +9,11 @@ Welcome to the Collision Avoidance system repository, where agents dynamically n
 
 The movement of each agent within our system is influenced by a combination of dynamic forces, each contributing to the overall behavior in a unique way. These forces include:
 
-- **Goal Direction**: Guides the agent towards a specific target or destination.
-- **Collision Avoidance Logic**: Employs advanced techniques to prevent imminent collisions. Refer to the [Collision Avoidance Logic](#collision-avoidance-logic) section for an in-depth explanation.
-- **Unaligned Collision Avoidance**: Inspired by Reynolds' seminal work, this force is calculated to predict and mitigate potential collisions. More information can be found in the [Unaligned Collision Avoidance](#unaligned-collision-avoidance) section.
-- **Force from Group**: Encourages natural group behaviors as described by Moussaid et al. The nuances of this force are detailed in the [Force from Group](#force-from-group) section.
-- **Wall Force**: Generates a deterrent force to keep agents at a safe distance from walls, following the Nuria HiDAC's established methods.
+- **Goal-Seeking Force**: Steers the agent towards a designated target or destination, acting as a homing vector.
+- **Collision Avoidance Force**: Implements sophisticated avoidance algorithms to prevent imminent collisions. For more details, see the [Collision Avoidance Force](#collision-avoidance-logic) section.
+- **Unaligned Collision Avoidance Force**: Derived from Reynolds' influential work, this vector anticipates and steers agents away from potential collisions. For more details, see the [Unaligned Collision Avoidance Force](#unaligned-collision-avoidance) section.
+- **Group Dynamics Force**: Shapes natural group movements as characterized by Moussaid et al., influencing agents to move cohesively. For more details, see the [Group Dynamics Force](#force-from-group) section.
+- **Wall Repulsion Force**: Produces a repelling vector that maintains a safe buffer between agents and wall surfaces, in line with Nuria HiDAC's principles.
 
 The interplay of these forces is finely tuned through adjustable weights, providing a sophisticated level of control over the agents' movements.
 
