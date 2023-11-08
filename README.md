@@ -26,6 +26,7 @@ To animate local movements authentically, we employ motion matching techniques. 
 ### Animation Correction
 
 We utilize the framework from "A Conversational Agent Framework with Multi-modal Personality Expression" to adjust animations based on the OCEAN personality model. However, in our program, we primarily employ the extraversion parameter to adjust postures, such as straightening or slouching.
+<img src=".github/media/animation_correction.png" alt="Collision Avoidance System" width="300"/>
 
 ### Facial Expressions
 
