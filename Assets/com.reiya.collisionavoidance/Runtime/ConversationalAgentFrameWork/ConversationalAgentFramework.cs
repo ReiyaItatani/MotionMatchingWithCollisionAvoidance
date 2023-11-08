@@ -507,16 +507,16 @@ public class ConversationalAgentFramework : MonoBehaviour
         }
     }
     #if UNITY_EDITOR
-    void OnDrawGizmos()
-    {
-        var style = new GUIStyle()
-        {
-            fontSize = 20,
-            normal = new GUIStyleState() { textColor = Color.black, background = Texture2D.whiteTexture }
-        };
-        Handles.Label(transform.position + Vector3.up * 2, currentLookTarget.ToString(), style);
+    // void OnDrawGizmos()
+    // {
+    //     var style = new GUIStyle()
+    //     {
+    //         fontSize = 20,
+    //         normal = new GUIStyleState() { textColor = Color.black, background = Texture2D.whiteTexture }
+    //     };
+    //     Handles.Label(transform.position + Vector3.up * 2, currentLookTarget.ToString(), style);
 
-    }
+    // }
     #endif
 
     private void CheckNeckRotation(Vector3 _currentLookAt, Vector3 myDirection, float _neckRotationLimit, float lookAtForwardDuration = 2.0f, float probability = 0.1f){

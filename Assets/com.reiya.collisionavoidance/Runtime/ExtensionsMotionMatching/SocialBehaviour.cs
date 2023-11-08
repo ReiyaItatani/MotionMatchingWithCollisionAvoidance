@@ -112,16 +112,16 @@ public class SocialBehaviour : MonoBehaviour
     }
 
     #if UNITY_EDITOR
-    void OnDrawGizmos()
-    {
-        var style = new GUIStyle()
-        {
-            fontSize = 20,
-            normal = new GUIStyleState() { textColor = Color.black, background = Texture2D.whiteTexture }
-        };
-        Handles.Label(transform.position + Vector3.up * 2.3f, currentAnimationState.ToString(), style);
+    // void OnDrawGizmos()
+    // {
+    //     var style = new GUIStyle()
+    //     {
+    //         fontSize = 20,
+    //         normal = new GUIStyleState() { textColor = Color.black, background = Texture2D.whiteTexture }
+    //     };
+    //     Handles.Label(transform.position + Vector3.up * 2.3f, currentAnimationState.ToString(), style);
 
-    }
+    // }
     #endif
 
     private UpperBodyAnimationState DetermineAnimationState(List<GameObject> groupAgents)
