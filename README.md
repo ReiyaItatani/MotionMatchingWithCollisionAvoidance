@@ -34,7 +34,9 @@ Each weight w<sub>x</sub> modulates the influence of its corresponding force, al
 
 ### Collision Avoidance Logic
 
-- **Field of View (FOV)**: The size of the FOV adapts according to the agent's upper body animation, which is crucial for the Collision Avoidance Logic.
+### Collision Avoidance Logic
+
+- **Field of View (FOV)**: The size of the FOV adapts according to the agent's upper body animation, which is crucial for the Collision Avoidance Logic. See [Field of View Adjustments](#field-of-view-adjustments) for how the FOV changes with different animations.
 - **Avoidance Direction**: Agents are programmed to avoid moving in the same direction when evading each other.
 - **Group Dynamics**: The avoidance force is proportional to the group size, calculated as `radius + 1f` for the avoidance vector.
 - **Distance-Based Scaling**: The force is dynamically adjusted based on the distance to other agents.
