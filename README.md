@@ -65,23 +65,27 @@ To animate local movements authentically, we employ motion matching techniques. 
 
 > **Note**: Head, neck, and eye movements operate on a separate algorithm distinct from motion matching.
 
-### Animation Correction
+### Animation Correction[Sonlu et al., 2021]
 
 We utilize the framework from "A Conversational Agent Framework with Multi-modal Personality Expression" to adjust animations based on the OCEAN personality model. However, in our program, we primarily employ the extraversion parameter to adjust postures, such as straightening or slouching.
 
 <img src=".github/media/animation_correction.png" alt="Animation Correction" width="500"/>
 
-### Facial Expressions
+The implementation is based on the code available at [Sonlu et al.'s GitHub repository](https://github.com/sinansonlu/Conversational-Agent-Framework).
+
+### Facial Expressions[Sonlu et al., 2021]
 
 Facial expressions are realized through blendshapes, using the Microsoft Rocketbox avatar's blendshapes. This requires adjustments when using different avatars. Additionally, our agents feature an automatic blinking function and lip-sync capabilities powered by the Oculus package's OVRLipSync.
 
 <img src=".github/media/facial_expression.png" alt="Facial Expression" width="700"/>
 
-### Social Relations
+The implementation is based on the code available at [Sonlu et al.'s GitHub repository](https://github.com/sinansonlu/Conversational-Agent-Framework).
 
-A central aspect of our system is the categorization of agents into five distinct **Social Relations**: Couple, Friend, Family, Coworker, and Individual. These categories significantly influence agents' interactions and their decision-making processes, affecting their animations and movements within the environment.
+### Social Relations[Prédhumeau et al., 2020]
 
-### Field of View Adjustments
+Our system classifies agents into five **Social Relations** categories: Couple, Friend, Family, Coworker, and Individual. This classification is specifically used to adjust inter-agent distances within groups, in line with the varying proxemics detailed by Prédhumeau et al. (2020) for different social relations. Alongside the categories identified in their study—Couple, Friend, Family, and Coworker—we have introduced "Individual" to represent agents that are not part of a group.
+
+### Field of View Adjustments[Kremer et al., 2021]
 
 The FOV dynamically changes with the agent's current upper body animation, taking into account the impact of distractions on agent perception as modelled by Kremer et al. [Kremer et al., 2021]:
 - **Using Smartphone**: A focused FOV at 30 degrees.
@@ -94,7 +98,7 @@ The FOV dynamically changes with the agent's current upper body animation, takin
 
 The agent's social relations category—Couple, Friend, Family, Coworker, or Individual—determines the upper body animation. Agents will transition between conversational or walking animations when encountering agents of the same category. Solo or individual agents will switch between smartphone use and walking animations.
 
-### Head, Eye, and Neck Movements
+### Head, Eye, and Neck Movements[Meerhoff et al., 2018][Moussaïd et al., 2010]
 
 Our model simulates naturalistic head, eye, and neck movements by referencing key attraction points:
 
@@ -110,10 +114,12 @@ These points ensure movements are realistic and contextually appropriate, improv
 - **Vector Visualization**: Utilizing the ALINE package, we provide visualization of various vectors for better understanding and debugging of agent behaviors.
 
 ## References
-- Ponton, J. L. (2022). Motion Matching for Character Animation and Virtual Reality Avatars in Unity. Universitat Politecnica de Catalunya. 
 - Reynolds, C. W. (1987). Flocks, herds and schools: A distributed behavioral model. ACM SIGGRAPH Computer Graphics, 21(4), 25-34.
 - Moussaïd, M., Perozo, N., Garnier, S., Helbing, D., & Theraulaz, G. (2010). The Walking Behaviour of Pedestrian Social Groups and Its Impact on Crowd Dynamics. PLOS ONE, 5(4), e10047.
 - Pelechano, N., Allbeck, J., & Badler, N. (2007). Controlling Individual Agents in High-Density Crowd Simulation. In Proc. Symp. Computer Animation (pp. 99-108).
+- Prédhumeau, M., Dugdale, J., & Spalanzani, A. (2020). Modeling and Simulating Pedestrian Social Group Behavior with Heterogeneous Social Relationships. In 2020 Spring Simulation Conference (SpringSim), Fairfax, VA, USA (pp. 1-12).
+- Ponton, J. L. (2022). Motion Matching for Character Animation and Virtual Reality Avatars in Unity. Universitat Politecnica de Catalunya.
+- Sonlu, S., Gündükbay, U., & Durupinar, F. (2021). A Conversational Agent Framework with Multi-Modal Personality Expression. ACM Transactions on Graphics, 40(1), Article 7.
 - Kremer, M., Haworth, B., Kapadia, M. et al. (2021). Modelling distracted agents in crowd simulations. The Visual Computer, 37, 107–118.
 - Meerhoff, L. A., Bruneau, J., Vu, A., Olivier, A. H., & Pettré, J. (2018). Guided by gaze: Prioritization strategy when navigating through a virtual crowd can be assessed through gaze activity. Acta Psychologica, 190, 248-257.
 
