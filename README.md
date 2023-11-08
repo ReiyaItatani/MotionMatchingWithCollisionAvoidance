@@ -9,11 +9,11 @@ Welcome to the Collision Avoidance system repository, where agents dynamically n
 
 The movement of each agent within our system is influenced by a combination of dynamic forces, each contributing to the overall behavior in a unique way. These forces include:
 
-- **Goal-Seeking Force**: Steers the agent towards a designated target or destination, acting as a homing vector.
+- **Goal-Seeking Force**: Steers the agent towards a designated target or destination.
 - **Collision Avoidance Force**: Implements sophisticated avoidance algorithms to prevent imminent collisions. For more details, see the [Collision Avoidance Force](#collision-avoidance-logic) section.
-- **Unaligned Collision Avoidance Force**: Derived from Reynolds' influential work, this vector anticipates and steers agents away from potential collisions. For more details, see the [Unaligned Collision Avoidance Force](#unaligned-collision-avoidance) section.
-- **Group Dynamics Force**: Shapes natural group movements as characterized by Moussaid et al., influencing agents to move cohesively. For more details, see the [Group Dynamics Force](#force-from-group) section.
-- **Wall Repulsion Force**: Produces a repelling vector that maintains a safe buffer between agents and wall surfaces, in line with Nuria HiDAC's principles.
+- **Unaligned Collision Avoidance Force**: Derived from Reynolds' influential work [Reynolds, 1987], this vector anticipates and steers agents away from potential collisions. For more details, see the [Unaligned Collision Avoidance Force](#unaligned-collision-avoidance) section.
+- **Group Dynamics Force**: Shapes natural group movements as characterized by Moussaid et al. [Moussaid et al., 2010], influencing agents to move cohesively. For more details, see the [Group Dynamics Force](#force-from-group) section.
+- **Wall Repulsion Force**: Produces a repelling vector that maintains a safe buffer between agents and wall surfaces, in line with Nuria HiDAC's principles [Pelechano et al., 2007].
 
 The direction of an agent's movement is determined by a weighted combination of several vector forces. The equation governing this combination is as follows:
 
@@ -100,6 +100,10 @@ Controlled by attraction points such as **CollidedTarget**, **CurrentAvoidanceTa
 
 - **Vector Visualization**: Utilizing the ALINE package, we provide visualization of various vectors for better understanding and debugging of agent behaviors.
 
+## References
+- Reynolds, C. W. (1987). Flocks, herds and schools: A distributed behavioral model. ACM SIGGRAPH Computer Graphics, 21(4), 25-34.
+- Moussaïd, M., Perozo, N., Garnier, S., Helbing, D., & Theraulaz, G. (2010). The Walking Behaviour of Pedestrian Social Groups and Its Impact on Crowd Dynamics. PLOS ONE, 5(4), e10047. [https://doi.org/10.1371/journal.pone.0010047](https://doi.org/10.1371/journal.pone.0010047)
+- Pelechano, N., Allbeck, J., & Badler, N. (2007). Controlling Individual Agents in High-Density Crowd Simulation. In Proc. Symp. Computer Animation (pp. 99-108). doi:10.1145/1272690.1272705
 ---
 
 *Visual aids illustrating the system's mechanics and agent behaviors will be incorporated to complement the textual descriptions.*
