@@ -59,7 +59,7 @@ Future updates aim to refine these interactions further, taking into account the
 
 ## Key Features
 
-### Motion Matching
+### Motion Matching[Ponton, 2022]
 
 To animate local movements authentically, we employ motion matching techniques. For an in-depth look, visit [MotionMatching GitHub](https://github.com/JLPM22/MotionMatching).
 
@@ -110,6 +110,7 @@ These points ensure movements are realistic and contextually appropriate, improv
 - **Vector Visualization**: Utilizing the ALINE package, we provide visualization of various vectors for better understanding and debugging of agent behaviors.
 
 ## References
+- Ponton, J. L. (2022). Motion Matching for Character Animation and Virtual Reality Avatars in Unity. Universitat Politecnica de Catalunya. 
 - Reynolds, C. W. (1987). Flocks, herds and schools: A distributed behavioral model. ACM SIGGRAPH Computer Graphics, 21(4), 25-34.
 - Moussaïd, M., Perozo, N., Garnier, S., Helbing, D., & Theraulaz, G. (2010). The Walking Behaviour of Pedestrian Social Groups and Its Impact on Crowd Dynamics. PLOS ONE, 5(4), e10047.
 - Pelechano, N., Allbeck, J., & Badler, N. (2007). Controlling Individual Agents in High-Density Crowd Simulation. In Proc. Symp. Computer Animation (pp. 99-108).
