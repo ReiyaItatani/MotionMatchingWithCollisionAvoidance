@@ -1,6 +1,8 @@
 # Collision Avoidance System
 
 Welcome to the Collision Avoidance system repository, where agents dynamically navigate a simulated environment. This system is designed to simulate realistic pedestrian behavior by integrating a variety of forces that guide agents towards their goals, enable avoidance of collisions, and facilitate natural group formations.
+<img src=".github/media/collision_avoidance_system.png" alt="Collision Avoidance System" width="300"/>
+
 
 ## System Overview
 
@@ -19,7 +21,7 @@ The influence of these forces is governed by adjustable weights, allowing for nu
 
 To animate local movements authentically, we employ motion matching techniques. For an in-depth look, visit [MotionMatching GitHub](https://github.com/JLPM22/MotionMatching).
 
-> **Note**: Special attention has been given to the design of head, neck, and eye movements to ensure they are responsive to collision avoidance scenarios.
+> **Note**: Head, neck, and eye movements operate on a separate algorithm distinct from motion matching.
 
 ### Animation Correction
 
