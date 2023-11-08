@@ -8,7 +8,6 @@ Welcome to the Collision Avoidance system repository, where agents dynamically n
 - [System Overview](#system-overview)
 - [Key Features](#key-features)
 - [Getting Started](#getting-started)
-- [Contributing](#contributing)
 - [References](#references)
 
 ## System Overview
