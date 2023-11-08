@@ -98,10 +98,10 @@ The agent's social relations category—Couple, Friend, Family, Coworker, or Ind
 
 Our model simulates naturalistic head, eye, and neck movements by referencing key attraction points:
 
-- **CollidedTarget**: Interaction with immediate obstacles.
-- **CurrentAvoidanceTarget**: Navigation informed by gaze data, as researched by Meerhoff et al. [Meerhoff et al., 2018].
-- **MyDirection**: Personal movement trajectory.
-- **CenterOfMass**: Group behavior dynamics, following findings by Moussaïd et al. [Moussaïd et al., 2010].
+- **Collided Target**: Interaction with immediate obstacles.
+- **Current Avoidance Target**: Navigation informed by gaze data, as researched by Meerhoff et al. [Meerhoff et al., 2018].
+- **Current Direction**: Personal movement trajectory.
+- **Center Of Mass**: Group behavior dynamics, following findings by Moussaïd et al. [Moussaïd et al., 2010].
 
 These points ensure movements are realistic and contextually appropriate, improving interaction authenticity.
 
