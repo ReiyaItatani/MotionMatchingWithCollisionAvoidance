@@ -17,7 +17,9 @@ The movement of each agent within our system is influenced by a combination of d
 
 The direction of an agent's movement is determined by a weighted combination of several vector forces. The equation governing this combination is as follows:
 
-**D** = w<sub>g</sub>**G** + w<sub>c</sub>**C** + w<sub>u</sub>**U** + w<sub>f</sub>**F** + w<sub>w</sub>**W**
+$$
+\mathbf{D} = w_g \cdot \mathbf{G} + w_c \cdot \mathbf{C} + w_u \cdot \mathbf{U} + w_f \cdot \mathbf{F} + w_w \cdot \mathbf{W}
+$$
 
 Where:
 
