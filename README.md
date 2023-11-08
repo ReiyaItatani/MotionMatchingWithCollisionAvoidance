@@ -17,22 +17,20 @@ The movement of each agent within our system is influenced by a combination of d
 
 The interplay of these forces is finely tuned through adjustable weights, providing a sophisticated level of control over the agents' movements.
 
-The direction of an agent's movement, denoted as $$\( \mathbf{D} \)$$, is determined by a weighted combination of several vector forces. The equation governing this combination is as follows:
+The direction of an agent's movement is determined by a weighted combination of several vector forces. The equation governing this combination is as follows:
 
-$$
-\mathbf{D} = w_g \cdot \mathbf{G} + w_c \cdot \mathbf{C} + w_u \cdot \mathbf{U} + w_f \cdot \mathbf{F} + w_w \cdot \mathbf{W}
-$$
+**D** = w<sub>g</sub>**G** + w<sub>c</sub>**C** + w<sub>u</sub>**U** + w<sub>f</sub>**F** + w<sub>w</sub>**W**
 
 Where:
 
-- \( \mathbf{D} \) represents the Direction Vector, which is the resultant vector guiding the agent's movement.
-- \( w_g \) is the weight assigned to the Goal-Seeking Force \( \mathbf{G} \).
-- \( w_c \) is the weight assigned to the Collision Avoidance Force \( \mathbf{C} \).
-- \( w_u \) is the weight assigned to the Unaligned Collision Avoidance Force \( \mathbf{U} \).
-- \( w_f \) is the weight assigned to the Group Dynamics Force \( \mathbf{F} \).
-- \( w_w \) is the weight assigned to the Wall Repulsion Force \( \mathbf{W} \).
+- **D** represents the Direction Vector, which is the resultant vector guiding the agent's movement.
+- w<sub>g</sub> is the weight assigned to the Goal-Seeking Force **G**.
+- w<sub>c</sub> is the weight assigned to the Collision Avoidance Force **C**.
+- w<sub>u</sub> is the weight assigned to the Unaligned Collision Avoidance Force **U**.
+- w<sub>f</sub> is the weight assigned to the Group Dynamics Force **F**.
+- w<sub>w</sub> is the weight assigned to the Wall Repulsion Force **W**.
 
-Each weight \( w_x \) modulates the influence of its corresponding force, allowing for nuanced and responsive control over the agent's navigation within the environment.
+Each weight w<sub>x</sub> modulates the influence of its corresponding force, allowing for nuanced and responsive control over the agent's navigation within the environment.
 
 ### Collision Avoidance Logic
 
