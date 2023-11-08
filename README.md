@@ -31,7 +31,7 @@ We utilize the framework from "A Conversational Agent Framework with Multi-modal
 ### Facial Expressions
 
 Facial expressions are realized through blendshapes, using the Microsoft Rocketbox avatar's blendshapes. This requires adjustments when using different avatars. Additionally, our agents feature an automatic blinking function and lip-sync capabilities powered by the Oculus package's OVRLipSync.
-<img src=".github/media/facial_expression.png" alt="Collision Avoidance System" width="400"/>
+<img src=".github/media/facial_expression.png" alt="Collision Avoidance System" width="500"/>
 
 ### Collision Avoidance Logic
 
