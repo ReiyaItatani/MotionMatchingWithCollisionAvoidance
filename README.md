@@ -19,8 +19,10 @@ The interplay of these forces is finely tuned through adjustable weights, provid
 
 ### Collision Avoidance Logic
 
-- **Field of View (FOV)**: The agent's FOV is dynamically adjusted based on their upper body animation, playing a critical role in effective collision avoidance.
-- **Avoidance Direction**: Agents are programmed to diverge in their paths to efficiently evade each other, ensuring fluid motion within the space.
+- **Field of View (FOV)**: The size of the FOV adapts according to the agent's upper body animation, which is crucial for the Collision Avoidance Logic.
+- **Avoidance Direction**: Agents are programmed to avoid moving in the same direction when evading each other.
+- **Group Dynamics**: The avoidance force is proportional to the group size, calculated as `radius + 1f` for the avoidance vector.
+- **Distance-Based Scaling**: The force is dynamically adjusted based on the distance to other agents.
 
 ### Unaligned Collision Avoidance
 
