@@ -16,6 +16,22 @@ The movement of each agent is determined by a blend of the following forces:
 
 The influence of these forces is governed by adjustable weights, allowing for nuanced control of agent behavior.
 
+### Collision Avoidance Logic
+
+- **Field of View (FOV)**: The size of the FOV adapts according to the agent's upper body animation, which is crucial for the Collision Avoidance Logic.
+- **Avoidance Direction**: Agents are programmed to avoid moving in the same direction when evading each other.
+- **Group Dynamics**: The avoidance force is proportional to the group size, calculated as `radius + 1f` for the avoidance vector.
+- **Distance-Based Scaling**: The force is dynamically adjusted based on the distance to other agents.
+
+### Force from Group
+
+This composite force consists of:
+- **Cohesion**: Attracts agents towards the group's center.
+- **Repulsion**: Creates a separating force between agents when they are too close.
+- **Alignment**: Aligns the direction of agents within a group.
+
+Planned enhancements include modifying distances based on social relations.
+
 ## Key Features
 
 ### Motion Matching
@@ -35,22 +51,6 @@ We utilize the framework from "A Conversational Agent Framework with Multi-modal
 Facial expressions are realized through blendshapes, using the Microsoft Rocketbox avatar's blendshapes. This requires adjustments when using different avatars. Additionally, our agents feature an automatic blinking function and lip-sync capabilities powered by the Oculus package's OVRLipSync.
 
 <img src=".github/media/facial_expression.png" alt="Collision Avoidance System" width="700"/>
-
-### Collision Avoidance Logic
-
-- **Field of View (FOV)**: The size of the FOV adapts according to the agent's upper body animation, which is crucial for the Collision Avoidance Logic.
-- **Avoidance Direction**: Agents are programmed to avoid moving in the same direction when evading each other.
-- **Group Dynamics**: The avoidance force is proportional to the group size, calculated as `radius + 1f` for the avoidance vector.
-- **Distance-Based Scaling**: The force is dynamically adjusted based on the distance to other agents.
-
-### Force from Group
-
-This composite force consists of:
-- **Cohesion**: Attracts agents towards the group's center.
-- **Repulsion**: Creates a separating force between agents when they are too close.
-- **Alignment**: Aligns the direction of agents within a group.
-
-Planned enhancements include modifying distances based on social relations.
 
 ### Social Relations
 
