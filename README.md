@@ -69,13 +69,13 @@ To animate local movements authentically, we employ motion matching techniques. 
 
 We utilize the framework from "A Conversational Agent Framework with Multi-modal Personality Expression" to adjust animations based on the OCEAN personality model. However, in our program, we primarily employ the extraversion parameter to adjust postures, such as straightening or slouching.
 
-<img src=".github/media/animation_correction.png" alt="Collision Avoidance System" width="500"/>
+<img src=".github/media/animation_correction.png" alt="Animation Correction" width="500"/>
 
 ### Facial Expressions
 
 Facial expressions are realized through blendshapes, using the Microsoft Rocketbox avatar's blendshapes. This requires adjustments when using different avatars. Additionally, our agents feature an automatic blinking function and lip-sync capabilities powered by the Oculus package's OVRLipSync.
 
-<img src=".github/media/facial_expression.png" alt="Collision Avoidance System" width="700"/>
+<img src=".github/media/facial_expression.png" alt="Facial Expression" width="700"/>
 
 ### Social Relations
 
@@ -87,6 +87,8 @@ The FOV dynamically changes with the agent's current upper body animation:
 - **Using Smartphone**: A focused FOV at 30 degrees.
 - **Talking**: An engaged FOV at 60 degrees.
 - **Walking**: An alert FOV at 120 degrees.
+
+<img src=".github/media/field_of_view.png" alt="Field Of View" width="300"/>
 
 ### Upper Body Animation
 
