@@ -4,6 +4,12 @@ Welcome to the Collision Avoidance system repository, where agents dynamically n
 
 <img src=".github/media/collision_avoidance_system.png" alt="Collision Avoidance System" width="300"/>
 
+## Table of Contents
+- [System Overview](#system-overview)
+- [Key Features](#key-features)
+- [Getting Started](#getting-started)
+- [Contributing](#contributing)
+- [References](#references)
 
 ## System Overview
 
