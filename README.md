@@ -7,30 +7,38 @@ Welcome to the Collision Avoidance system repository, where agents dynamically n
 
 ## System Overview
 
-The movement of each agent is determined by a blend of the following forces:
-- **Goal Direction**: Directs the agent towards a target.
-- **Collision Avoidance Logic**: Utilizes Nuria HiDAC's approach to avert imminent collisions.For more details, see the [Collision Avoidance Logic](#collision-avoidance-logic) section.
-- **Unaligned Collision Avoidance**: Based on the work of Reynolds (1987), it anticipates and avoids potential collisions.
-- **Force from Group**: Implements the principles outlined by Moussaid et al. (2010) to foster group dynamics.For more details, see the [Force from Group](#force-from-group) section.
-- **Wall Force**: Generates a repulsive force from walls, as per Nuria HiDAC's methodology.
+The movement of each agent within our system is influenced by a combination of dynamic forces, each contributing to the overall behavior in a unique way. These forces include:
 
-The influence of these forces is governed by adjustable weights, allowing for nuanced control of agent behavior.
+- **Goal Direction**: Guides the agent towards a specific target or destination.
+- **Collision Avoidance Logic**: Employs advanced techniques to prevent imminent collisions. Refer to the [Collision Avoidance Logic](#collision-avoidance-logic) section for an in-depth explanation.
+- **Unaligned Collision Avoidance**: Inspired by Reynolds' seminal work, this force is calculated to predict and mitigate potential collisions. More information can be found in the [Unaligned Collision Avoidance](#unaligned-collision-avoidance) section.
+- **Force from Group**: Encourages natural group behaviors as described by Moussaid et al. The nuances of this force are detailed in the [Force from Group](#force-from-group) section.
+- **Wall Force**: Generates a deterrent force to keep agents at a safe distance from walls, following the Nuria HiDAC's established methods.
+
+The interplay of these forces is finely tuned through adjustable weights, providing a sophisticated level of control over the agents' movements.
 
 ### Collision Avoidance Logic
 
-- **Field of View (FOV)**: The size of the FOV adapts according to the agent's upper body animation, which is crucial for the Collision Avoidance Logic.
-- **Avoidance Direction**: Agents are programmed to avoid moving in the same direction when evading each other.
-- **Group Dynamics**: The avoidance force is proportional to the group size, calculated as `radius + 1f` for the avoidance vector.
-- **Distance-Based Scaling**: The force is dynamically adjusted based on the distance to other agents.
+- **Field of View (FOV)**: The agent's FOV is dynamically adjusted based on their upper body animation, playing a critical role in effective collision avoidance.
+- **Avoidance Direction**: Agents are programmed to diverge in their paths to efficiently evade each other, ensuring fluid motion within the space.
+
+### Unaligned Collision Avoidance
+
+- **Time to Collision**: This system continuously calculates the time until a potential collision for each agent within a Box Collider's bounds.
+- **Priority Targeting**: When multiple agents are present, the one with the shortest time to collision is prioritized.
+- **Responsive Force**: A responsive force is applied to the agent with the highest risk of collision, guiding it away from the impending impact.
+
+This proactive approach ensures that agents react in time to avoid collisions, maintaining smooth and uninterrupted movement throughout the environment.
 
 ### Force from Group
 
-This composite force consists of:
-- **Cohesion**: Attracts agents towards the group's center.
-- **Repulsion**: Creates a separating force between agents when they are too close.
-- **Alignment**: Aligns the direction of agents within a group.
+Agents experience a composite force that promotes cohesive group movement, consisting of:
 
-Planned enhancements include modifying distances based on social relations.
+- **Cohesion**: Draws agents towards the collective center of the group.
+- **Repulsion**: Generates a dispersing force to maintain comfortable spacing between agents.
+- **Alignment**: Encourages agents to move in a unified direction, mirroring the group's overall orientation.
+
+Future updates aim to refine these interactions further, taking into account the social relationships between agents to adjust distances accordingly.
 
 ## Key Features
 
