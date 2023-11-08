@@ -1,6 +1,7 @@
 # Collision Avoidance System
 
 Welcome to the Collision Avoidance system repository, where agents dynamically navigate a simulated environment. This system is designed to simulate realistic pedestrian behavior by integrating a variety of forces that guide agents towards their goals, enable avoidance of collisions, and facilitate natural group formations.
+![Collision Avoidance System](.github/media/collision_avoidance_system.png)
 
 ## System Overview
 
