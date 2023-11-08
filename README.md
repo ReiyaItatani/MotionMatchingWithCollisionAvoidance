@@ -114,14 +114,14 @@ These points ensure movements are realistic and contextually appropriate, improv
 - **Vector Visualization**: Utilizing the ALINE package, we provide visualization of various vectors for better understanding and debugging of agent behaviors.
 
 ## References
-- Reynolds, C. W. (1987). Flocks, herds and schools: A distributed behavioral model. ACM SIGGRAPH Computer Graphics, 21(4), 25-34.
-- Moussaïd, M., Perozo, N., Garnier, S., Helbing, D., & Theraulaz, G. (2010). The Walking Behaviour of Pedestrian Social Groups and Its Impact on Crowd Dynamics. PLOS ONE, 5(4), e10047.
-- Pelechano, N., Allbeck, J., & Badler, N. (2007). Controlling Individual Agents in High-Density Crowd Simulation. In Proc. Symp. Computer Animation (pp. 99-108).
-- Prédhumeau, M., Dugdale, J., & Spalanzani, A. (2020). Modeling and Simulating Pedestrian Social Group Behavior with Heterogeneous Social Relationships. In 2020 Spring Simulation Conference (SpringSim), Fairfax, VA, USA (pp. 1-12).
-- Ponton, J. L. (2022). Motion Matching for Character Animation and Virtual Reality Avatars in Unity. Universitat Politecnica de Catalunya.
-- Sonlu, S., Gündükbay, U., & Durupinar, F. (2021). A Conversational Agent Framework with Multi-Modal Personality Expression. ACM Transactions on Graphics, 40(1), Article 7.
-- Kremer, M., Haworth, B., Kapadia, M. et al. (2021). Modelling distracted agents in crowd simulations. The Visual Computer, 37, 107–118.
-- Meerhoff, L. A., Bruneau, J., Vu, A., Olivier, A. H., & Pettré, J. (2018). Guided by gaze: Prioritization strategy when navigating through a virtual crowd can be assessed through gaze activity. Acta Psychologica, 190, 248-257.
+- **Reynolds, C. W.** (1987). Flocks, herds and schools: A distributed behavioral model. ACM SIGGRAPH Computer Graphics, 21(4), 25-34.
+- **Moussaïd, M., Perozo, N., Garnier, S., Helbing, D., & Theraulaz, G.** (2010). The Walking Behaviour of Pedestrian Social Groups and Its Impact on Crowd Dynamics. PLOS ONE, 5(4), e10047.
+- **Pelechano, N., Allbeck, J., & Badler, N.** (2007). Controlling Individual Agents in High-Density Crowd Simulation. In Proc. Symp. Computer Animation (pp. 99-108).
+- **Prédhumeau, M., Dugdale, J., & Spalanzani, A.** (2020). Modeling and Simulating Pedestrian Social Group Behavior with Heterogeneous Social Relationships. In 2020 Spring Simulation Conference (SpringSim), Fairfax, VA, USA (pp. 1-12).
+- **Ponton, J. L.** (2022). Motion Matching for Character Animation and Virtual Reality Avatars in Unity. Universitat Politecnica de Catalunya.
+- **Sonlu, S., Gündükbay, U., & Durupinar, F.** (2021). A Conversational Agent Framework with Multi-Modal Personality Expression. ACM Transactions on Graphics, 40(1), Article 7.
+- **Kremer, M., Haworth, B., Kapadia, M. et al.** (2021). Modelling distracted agents in crowd simulations. The Visual Computer, 37, 107–118.
+- **Meerhoff, L. A., Bruneau, J., Vu, A., Olivier, A. H., & Pettré, J.** (2018). Guided by gaze: Prioritization strategy when navigating through a virtual crowd can be assessed through gaze activity. Acta Psychologica, 190, 248-257.
 
 ---
 
