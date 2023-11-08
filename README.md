@@ -83,7 +83,7 @@ A central aspect of our system is the categorization of agents into five distinc
 
 ### Field of View Adjustments
 
-The FOV dynamically changes with the agent's current upper body animation:
+The FOV dynamically changes with the agent's current upper body animation, taking into account the impact of distractions on agent perception as modelled by Kremer et al. [Kremer et al., 2021]:
 - **Using Smartphone**: A focused FOV at 30 degrees.
 - **Talking**: An engaged FOV at 60 degrees.
 - **Walking**: An alert FOV at 120 degrees.
@@ -105,7 +105,8 @@ Controlled by attraction points such as **CollidedTarget**, **CurrentAvoidanceTa
 ## References
 - Reynolds, C. W. (1987). Flocks, herds and schools: A distributed behavioral model. ACM SIGGRAPH Computer Graphics, 21(4), 25-34.
 - Moussaïd, M., Perozo, N., Garnier, S., Helbing, D., & Theraulaz, G. (2010). The Walking Behaviour of Pedestrian Social Groups and Its Impact on Crowd Dynamics. PLOS ONE, 5(4), e10047.
-- Pelechano, N., Allbeck, J., & Badler, N. (2007). Controlling Individual Agents in High-Density Crowd Simulation. In Proc. Symp. Computer Animation (pp. 99-108). 
+- Pelechano, N., Allbeck, J., & Badler, N. (2007). Controlling Individual Agents in High-Density Crowd Simulation. In Proc. Symp. Computer Animation (pp. 99-108).
+- Kremer, M., Haworth, B., Kapadia, M. et al. (2021). Modelling distracted agents in crowd simulations. The Visual Computer, 37, 107–118.
 
 ---
 
