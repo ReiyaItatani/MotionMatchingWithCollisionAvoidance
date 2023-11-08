@@ -17,6 +17,11 @@ The movement of each agent within our system is influenced by a combination of d
 
 The interplay of these forces is finely tuned through adjustable weights, providing a sophisticated level of control over the agents' movements.
 
+The direction of an agent's movement, denoted as `D`, is determined by a weighted combination of several vector forces. The equation governing this combination is as follows:
+
+```latex
+D = w_g \cdot G + w_c \cdot C + w_u \cdot U + w_f \cdot F + w_w \cdot W
+
 ### Collision Avoidance Logic
 
 - **Field of View (FOV)**: The size of the FOV adapts according to the agent's upper body animation, which is crucial for the Collision Avoidance Logic.
