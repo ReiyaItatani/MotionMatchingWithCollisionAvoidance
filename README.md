@@ -118,6 +118,41 @@ These points ensure movements are realistic and contextually appropriate, improv
 
 - **Vector Visualization**: Utilizing the ALINE package, we provide visualization of various vectors for better understanding and debugging of agent behaviors.
 
+# Getting Started 
+## Installation Steps
+
+Follow these steps to install the Motion Matching package into your Unity project.
+
+### Prerequisites
+
+- Unity 2021.2 or newer is required (untested on other versions).
+
+### Installing Motion Matching
+
+1. Open the Unity Editor on your machine.
+
+2. Navigate to `Window > Package Manager` to open the Package Manager window.
+
+3. In the Package Manager window, click the `Add (+)` button in the top left corner, then select `Add package by git URL...`.
+
+4. Enter the following URL into the git URL field:
+
+https://github.com/ReiyaItatani/MotionMatchingWithCollisionAvoidance?path=/com.reiya.collisionavoidance
+
+5. Click `Add` to start the installation process.
+
+**Note:** All sample scenes are configured for the **Universal Render Pipeline (URP)**. If you are using a different render pipeline, conversion of the scenes may be necessary.
+
+### [Optional] Importing Example Scenes
+
+If you want to import the example scenes:
+
+1. In the Package Manager, locate the `Motion Matching With Collision Avoidance` package.
+
+2. Expand the `Samples` dropdown.
+
+3. Find `Examples`, and click `Import` to bring the example scenes into your project.
+
 ## References
 - **Reynolds, C. W.** (1987). Flocks, herds and schools: A distributed behavioral model. ACM SIGGRAPH Computer Graphics, 21(4), 25-34.
 - **Moussaïd, M., Perozo, N., Garnier, S., Helbing, D., & Theraulaz, G.** (2010). The Walking Behaviour of Pedestrian Social Groups and Its Impact on Crowd Dynamics. PLOS ONE, 5(4), e10047.
