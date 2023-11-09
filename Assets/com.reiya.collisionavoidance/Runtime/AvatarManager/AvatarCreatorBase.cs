@@ -3,8 +3,8 @@ using UnityEngine.AI;
 using MotionMatching;
 using System.Collections.Generic;
 using System;
-using CollisionAvoidance;
 
+namespace CollisionAvoidance{
 // Enum to define social relations. This will be used later to categorize relationships between characters.
 public enum SocialRelations
 {
@@ -188,4 +188,5 @@ public class AvatarCreatorBase : MonoBehaviour
             }
         }
     #endif
+}
 }

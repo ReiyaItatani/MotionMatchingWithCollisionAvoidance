@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEditor;
+using CollisionAvoidance;
 
-namespace CollisionAvoidance{
 public class CollisionAvoidanceMenuItems
 {
     [MenuItem("CollisionAvoidance/Create Field/With Wall")]
@@ -93,5 +93,4 @@ public class CollisionAvoidanceMenuItems
             Debug.LogError("GizmoDrawer script not found. Make sure it exists and is compiled.");
         }
     }
-}
 }

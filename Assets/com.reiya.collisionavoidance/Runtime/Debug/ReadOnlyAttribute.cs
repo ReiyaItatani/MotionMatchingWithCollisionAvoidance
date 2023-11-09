@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 
+namespace CollisionAvoidance{
 public class ReadOnlyAttribute : PropertyAttribute { }
 
 [CustomPropertyDrawer(typeof(ReadOnlyAttribute))]
@@ -20,4 +21,5 @@ public class ReadOnlyDrawer : PropertyDrawer
         EditorGUI.PropertyField(position, property, label, true);
         GUI.enabled = true;
     }
+}
 }

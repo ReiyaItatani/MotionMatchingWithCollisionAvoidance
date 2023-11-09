@@ -2,8 +2,8 @@ using UnityEngine;
 using MotionMatching;
 using System.Collections.Generic;
 using System;
-using CollisionAvoidance;
 
+namespace CollisionAvoidance{
 public class AvatarCreator : AvatarCreatorBase
 {
     [Tooltip("This is a parameter to scatter the start and end positions of the path. The larger the value, the more the start and end positions of the path will deviate.")]
@@ -187,4 +187,5 @@ public class AvatarCreator : AvatarCreatorBase
 
         return new Vector3(x, 0f, z);
     }
+}
 }

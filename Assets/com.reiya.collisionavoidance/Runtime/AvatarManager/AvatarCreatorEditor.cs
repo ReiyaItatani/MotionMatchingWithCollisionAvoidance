@@ -1,6 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
+namespace CollisionAvoidance{
 [CustomEditor(typeof(AvatarCreatorBase), true)]
 public class AvatarCreatorEditor : Editor
 {
@@ -41,4 +42,5 @@ public class AvatarCreatorEditor : Editor
 
         GUILayout.EndVertical();
     }
+}
 }

@@ -1,6 +1,7 @@
 using UnityEngine;
 
 #if UNITY_EDITOR
+namespace CollisionAvoidance{
 [ExecuteInEditMode] 
 public class GizmoDrawer : MonoBehaviour
 {
@@ -16,7 +17,7 @@ public class GizmoDrawer : MonoBehaviour
     }
 }
 #endif
-
+}
 
 
 

@@ -3,8 +3,7 @@ using UnityEditor;
 using System.IO;
 using MotionMatching;
 using System.Collections.Generic;
-
-namespace CollisionAvoidance{
+using CollisionAvoidance;
 
 // Custom editor window to create prefabs of Humanoid characters.
 public class PrefabCreatorWindow : EditorWindow
@@ -315,5 +314,4 @@ private void CreatePrefab(GameObject humanoid)
     Debug.Log($"Prefab created at: {prefabPath}");
 }
 
-}
 }

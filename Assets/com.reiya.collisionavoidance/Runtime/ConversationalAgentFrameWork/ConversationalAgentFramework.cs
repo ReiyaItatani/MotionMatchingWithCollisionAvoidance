@@ -3,6 +3,7 @@ using UnityEngine;
 using Unity.Mathematics;
 using System;
 using UnityEditor;
+using CollisionAvoidance;
 
 public class ConversationalAgentFramework : MonoBehaviour
 {

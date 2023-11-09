@@ -2,8 +2,8 @@ using UnityEngine;
 using UnityEditor;
 using System.Linq;
 using MotionMatching;
+using CollisionAvoidance;
 
-namespace CollisionAvoidance{
 public class PlayerCreationWindow : EditorWindow
 {
     private MotionMatchingData MMData;
@@ -135,7 +135,7 @@ public class PlayerCreationWindow : EditorWindow
         motionMatchingRenderer.AvoidToesFloorPenetration = true;
         motionMatchingRenderer.ToesSoleOffset = new Vector3(0, 0, -0.02f);      
         //
-        SpringParameterManager springParameterManager = instance.AddComponent<CollisionAvoidance.SpringParameterManager>();
+        SpringParameterManager springParameterManager = instance.AddComponent<SpringParameterManager>();
         //
         Transform headTransform = instance.GetComponent<Animator>().GetBoneTransform(HumanBodyBones.Head);
         GameObject cameraGameObject = new GameObject("HeadCamera");
@@ -153,7 +153,7 @@ public class PlayerCreationWindow : EditorWindow
 
         var characterControllerObject = CreateChildGameObject(parent, "CharacterController");
         characterControllerObject.AddComponent<InputManager>();
-        characterControllerObject.AddComponent<CollisionAvoidance.InputCharacterController>();
+        characterControllerObject.AddComponent<InputCharacterController>();
         var springCharacterController = characterControllerObject.AddComponent<CollisionAvoidance.SpringCharacterController>();
         springCharacterController.MotionMatching = motionMatchingController;
         motionMatchingController.CharacterController = springCharacterController;
@@ -175,5 +175,4 @@ public class PlayerCreationWindow : EditorWindow
         Selection.activeGameObject = playerParent;
         EditorUtility.SetDirty(playerParent);
     }
-}
 }

@@ -2,8 +2,8 @@ using UnityEngine;
 using UnityEngine.AI;
 using MotionMatching;
 using System.Collections.Generic;
-using CollisionAvoidance;
 
+namespace CollisionAvoidance{
 public class AvatarCreatorCorridor : AvatarCreatorBase
 {
     [HideInInspector]
@@ -342,4 +342,5 @@ public class AvatarCreatorCorridor : AvatarCreatorBase
             DestroyImmediate(wallParent);
         }
     }
+}
 }
