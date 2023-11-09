@@ -137,7 +137,7 @@ Follow these steps to install the Motion Matching package into your Unity projec
 
 4. Enter the following URL into the git URL field:
 
-https://github.com/ReiyaItatani/MotionMatchingWithCollisionAvoidance?path=/com.reiya.collisionavoidance
+https://github.com/ReiyaItatani/MotionMatchingWithCollisionAvoidance.git?path=Assets/com.reiya.collisionavoidance
 
 5. Click `Add` to start the installation process.
 
