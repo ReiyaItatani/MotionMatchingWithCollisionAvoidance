@@ -14,9 +14,7 @@
       "name": "ReiyaItatani"
     },
     "dependencies": {
-      "com.unity.burst": "1.6.4",
-      "com.unity.inputsystem": "1.3.0",
-      "com.jlpm.motionmatching": "https://github.com/JLPM22/MotionMatching.git?path=/com.jlpm.motionmatching"
+
     }
   }
   
