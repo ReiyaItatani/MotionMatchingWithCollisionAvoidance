@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEditor;
 using System.Linq;
 using MotionMatching;
-using UnityEngine.InputSystem;
 
 namespace CollisionAvoidance{
 public class PlayerCreationWindow : EditorWindow

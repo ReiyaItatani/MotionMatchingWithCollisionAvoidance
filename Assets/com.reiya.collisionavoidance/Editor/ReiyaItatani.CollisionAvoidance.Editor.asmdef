@@ -1,0 +1,8 @@
+{
+    "name": "ReiyaItatani.CollisionAvoidance.Editor",
+    "references": [
+		"JLPM.MotionMatching",
+		"ReiyaItatani.CollisionAvoidance"
+    ],
+    "allowUnsafeCode": true
+}

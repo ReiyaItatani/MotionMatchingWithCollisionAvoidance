@@ -3,8 +3,6 @@ using UnityEditor;
 using System.IO;
 using MotionMatching;
 using System.Collections.Generic;
-using UnityEditor.Animations;
-using System;
 
 namespace CollisionAvoidance{
 
