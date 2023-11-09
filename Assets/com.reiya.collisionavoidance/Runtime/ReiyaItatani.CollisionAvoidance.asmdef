@@ -1,0 +1,10 @@
+{
+    "name": "ReiyaItatani.CollisionAvoidance",
+    "references": [
+        "JLPM.MotionMatching",
+        "Unity.Mathematics",
+        "Unity.InputSystem",
+        "ALINE"
+    ],
+    "allowUnsafeCode": true
+}

@@ -1,8 +1,9 @@
 {
     "name": "ReiyaItatani.CollisionAvoidance.Editor",
     "references": [
-		"JLPM.MotionMatching",
-		"ReiyaItatani.CollisionAvoidance"
+        "JLPM.MotionMatching",
+		"ReiyaItatani.CollisionAvoidance",
+                "Oculus.LipSync"
     ],
     "allowUnsafeCode": true
 }

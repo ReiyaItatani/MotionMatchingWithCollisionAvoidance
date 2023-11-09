@@ -3,12 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Mathematics;
 using System;
-using Drawing;
-using UnityEngine.PlayerLoop;
-using UnityEngine.Rendering.Universal;
-using UnityEngine.UI;
-using Unity.VisualScripting;
-using System.Runtime.CompilerServices;
 using MotionMatching;
 using UnityEditor;
 
