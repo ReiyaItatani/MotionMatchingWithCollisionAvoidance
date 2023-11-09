@@ -127,7 +127,7 @@ Follow these steps to install the Motion Matching package into your Unity projec
 
 - Unity 2021.2 or newer is required (untested on other versions).
 
-### Installing Motion Matching
+### Installing Collision Avoidance
 
 1. Open the Unity Editor on your machine.
 
