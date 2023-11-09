@@ -14,7 +14,7 @@
       "name": "ReiyaItatani"
     },
     "dependencies": {
-
+      "com.jlpm.motionmatching": "0.1.0"
     }
   }
   
