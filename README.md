@@ -4,6 +4,8 @@ Welcome to the Collision Avoidance system repository, where agents dynamically n
 
 <img src=".github/media/collision_avoidance_system.png" alt="Collision Avoidance System" width="300"/>
 
+![Collision Avoidance Demo](.github/media/collision_avoidance.gif)
+
 ## Table of Contents
 - [System Overview](#system-overview)
 - [Key Features](#key-features)
@@ -140,12 +142,13 @@ Before you start, ensure your system meets the following requirements:
 3. In the Package Manager window, click the `Add (+)` button in the top left corner, then select `Add package by git URL...`.
 
 4. Enter the following URL into the git URL field:
-
+```
 https://github.com/ReiyaItatani/MotionMatchingWithCollisionAvoidance.git?path=Assets/com.reiya.collisionavoidance
+```
 
 5. Click `Add` to start the installation process.
 
-**Note:** All sample scenes are configured for the **Universal Render Pipeline (URP)**. If you are using a different render pipeline, conversion of the scenes may be necessary.
+>**Note:** All sample scenes are configured for the **Universal Render Pipeline (URP)**. If you are using a different render pipeline, conversion of the scenes may be necessary.
 
 ### Post-Installation Setup
 
@@ -154,16 +157,21 @@ After installing the Collision Avoidance package, a new window titled **'Collisi
 - **Create Field**: Initialize your scene's layout.
   - **With Wall**
     - Adds 'OVRLipSyncObject' for lip-sync.
-    - Attaches **'AvatarCreatorCorridor'** for random avatar generation in corridor situation.
+    - Generates a game object with **'AvatarCreatorCorridor'** attached, for random avatar generation in corridor situations.
   - **Without Wall**
     - Includes 'OVRLipSyncObject'.
-    - Uses **'AvatarCreator'** for random avatar generation.
+    - Generates a game object with **'AvatarCreator'** attached, for random avatar generation.
 
 - **Create Player**: 
   - Instantly adds a default player to the scene.A pop-up window enables creating a character equipped with a first-person camera.
 
 - **Prefab Creator**: 
   - Streamlines avatar creation for the 'Avatar Creator' or 'AvatarCreatorCorridor'.
+
+>**Important Note:** After downloading the project, please start by generating a field using the **Create Field** option. This step automatically creates necessary tags such as Player, Group, and Wall, which are essential for the functioning of the project.
+
+  <img src=".github/media/window_description.PNG" alt="Window Description" width="700"/>
+
 
 ## References
 - **Reynolds, C. W.** (1987). Flocks, herds and schools: A distributed behavioral model. ACM SIGGRAPH Computer Graphics, 21(4), 25-34.
