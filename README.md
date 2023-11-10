@@ -183,8 +183,6 @@ To generate avatars in your project, follow these steps:
    - After baking the field, use the 'Create Field' option to set up `avatarcreator` or `avatarcreatorcorridor`.
 
 3. **Configure Avatar Prefab**
-   - Navigate to the Inspector panel.
-   - Locate either `avatarcreator` or `avatarcreatorcorridor`.
    - In the 'Avatar Prefab' field, insert an avatar from `Packages/CollisionAvoidance/Samples/Models/Prefabs`.
 
 4. **Instantiate Avatars**
