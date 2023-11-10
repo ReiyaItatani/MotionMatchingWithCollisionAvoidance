@@ -147,6 +147,23 @@ https://github.com/ReiyaItatani/MotionMatchingWithCollisionAvoidance.git?path=As
 
 **Note:** All sample scenes are configured for the **Universal Render Pipeline (URP)**. If you are using a different render pipeline, conversion of the scenes may be necessary.
 
+### Post-Installation Setup
+
+After installing the Collision Avoidance package, a new window titled **'Collision Avoidance'** will appear in the Unity Editor. This window includes several features:
+
+- **Create Field**: Initialize your scene's layout.
+  - **With Wall**
+    - Adds 'OVRLipSyncObject' for lip-sync.
+    - Attaches **'AvatarCreatorCorridor'** for random avatar generation in corridor situation.
+  - **Without Wall**
+    - Includes 'OVRLipSyncObject'.
+    - Uses **'AvatarCreator'** for random avatar generation.
+
+- **Create Player**: 
+  - Instantly adds a default player to the scene.A pop-up window enables creating a character equipped with a first-person camera.
+
+- **Prefab Creator**: 
+  - Streamlines avatar creation for the 'Avatar Creator' or 'AvatarCreatorCorridor'.
 
 ## References
 - **Reynolds, C. W.** (1987). Flocks, herds and schools: A distributed behavioral model. ACM SIGGRAPH Computer Graphics, 21(4), 25-34.
