@@ -126,9 +126,9 @@ Follow these steps to set up your project:
 
 1. **Import Motion Matching Package**
 2. [**Import Collision Avoidance**](#installing-collision-avoidance)
-3. **Setup the Field**
-4. **Generate the Crowd**
-5. **Create the Player**
+3. [**Setup the Field**](#post-installation-setup)
+4. [**Generate the Crowd**](#crowd-generation)
+5. [**Create the Player**](#creating-a-first-person-camera-player)
 
 ### Prerequisites
 
@@ -193,7 +193,7 @@ The following table outlines the parameters for the 'Avatar Creator Corridor' an
 
 These parameters allow you to customize the behavior and environment of the avatars within the corridor setting.
 
-### Avatar Generation Method
+### Crowd Generation
 
 To generate avatars in your project, follow these steps:
 
