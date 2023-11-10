@@ -190,6 +190,45 @@ To generate avatars in your project, follow these steps:
 
 ![Create Avatar Demo](.github/media/create_avatar.gif)
 
+### Creating a First-Person Camera Player
+
+Follow these steps to create a player with a first-person camera in your scene:
+
+1. **Open 'Create Player' Window**
+   - Begin by opening the 'Create Player' window in your Unity Editor.
+
+2. **Configure Motion Matching Data**
+   - In the 'Motion Matching Data' field, select a data file from `Packages/CollisionAvoidance/Samples/Animations/MMData`.
+
+3. **Set Humanoid Avatar**
+   - For the 'Humanoid Avatar' field, choose an avatar from `Packages/CollisionAvoidance/Samples/Models/MicroSoftRocketBox/Female_Adult_01/mixamorig`.
+
+4. **Create the Player**
+   - Click on `CreatePlayer` to generate the player in your scene.
+
+5. **Player Movement**
+   - The created player can be moved using the WASD keys.
+   - It utilizes the `SpringCharacterController`.
+
+6. **Learn More About the Controller**
+   - For detailed information on the `SpringCharacterController`, refer to the [Motion Matching documentation](https://jlpm22.github.io/motionmatching-docs/basics/character_controller/).
+
+![Create Player Demo](.github/media/create_player.gif)
+
+## Final Step: Running the Project
+
+Once you have completed the 'Avatar Generation Method' and 'Creating a First-Person Camera Player' steps:
+
+1. **Run the Unity Project**
+   - Click the 'Run' button in your Unity Editor.
+
+2. **View the Moving Agents**
+   - After running the project, you should be able to see the moving agents in action within your scene!
+
+These steps will allow you to witness the results of your setup, with avatars moving around the environment and the first-person camera player in action.
+
+![Run Unity Demo](.github/media/run_unity.gif)
+
 ## References
 - **Reynolds, C. W.** (1987). Flocks, herds and schools: A distributed behavioral model. ACM SIGGRAPH Computer Graphics, 21(4), 25-34.
 - **Moussaïd, M., Perozo, N., Garnier, S., Helbing, D., & Theraulaz, G.** (2010). The Walking Behaviour of Pedestrian Social Groups and Its Impact on Crowd Dynamics. PLOS ONE, 5(4), e10047.
