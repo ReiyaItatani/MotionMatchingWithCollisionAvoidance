@@ -2316,7 +2316,6 @@ GameObject:
   - component: {fileID: 9062420931715446905}
   - component: {fileID: 5270192807425522589}
   - component: {fileID: 5502760553015315150}
-  - component: {fileID: 2648493822792883090}
   - component: {fileID: 838584663250128450}
   - component: {fileID: 838584663250128449}
   - component: {fileID: 6480167477484084397}
@@ -2410,61 +2409,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pathController: {fileID: 838584662184255677}
---- !u!114 &2648493822792883090
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6463950749330914731}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a422e7081b4c4514892c5ac5063fc5b6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  MotionMatching: {fileID: 838584661933257359}
-  AvatarMask: {fileID: 11400000, guid: a6bccdd3441d37c4f8b39ba775108fbf, type: 2}
-  RootPositionsMask: 1
-  RootRotationsMask: 1
-  BlendPoses: 1
-  BlendHalfLife: 0.05
-  ForwardLocalVector: {x: 0, y: 0, z: 1}
-  UpLocalVector: {x: 0, y: 1, z: 0}
-  AvoidToesFloorPenetration: 1
-  ToesSoleOffset: {x: 0, y: 0, z: -0.02}
-  FLUC_ADD: 0
-  Map_OCEAN_to_LabanEffort: 1
-  Map_OCEAN_to_Additional: 1
-  openness: 0
-  conscientiousness: 0
-  extraversion: 0
-  agreeableness: 0
-  neuroticism: 0
-  space: 0
-  weight: 0
-  time: 0
-  flow: 0
-  e_happy: 0
-  e_sad: 0
-  e_angry: 0
-  e_disgust: 0
-  e_fear: 0
-  e_shock: 0
-  base_happy: 0
-  base_sad: 0
-  base_angry: 0
-  base_shock: 0
-  base_disgust: 0
-  base_fear: 0
-  ls_hor: 0
-  ls_ver: 0
-  ls_hor_speed: 0
-  ls_ver_speed: 0
-  spine_bend: 0
-  sink_bend: 0
-  head_bend: 0
-  faceController: {fileID: 0}
-  currentLookTarget: 0
 --- !u!114 &838584663250128450
 MonoBehaviour:
   m_ObjectHideFlags: 0
