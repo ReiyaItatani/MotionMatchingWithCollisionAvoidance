@@ -125,7 +125,11 @@ Follow these steps to install the Motion Matching package into your Unity projec
 
 ### Prerequisites
 
-- Unity 2021.2 or newer is required (untested on other versions).
+Before you start, ensure your system meets the following requirements:
+
+- **Unity 2021.2 or Newer**: This project requires Unity 2021.2 or a newer version. It has not been tested on earlier versions, so compatibility cannot be guaranteed.
+
+- **Motion Matching Package**: It is essential to add the Motion Matching package to your project. For detailed instructions and more information about the Motion Matching package, please visit [JLPM22's Motion Matching GitHub repository](https://github.com/JLPM22/MotionMatching). This repository contains comprehensive documentation and setup instructions that are crucial for integrating the package into your project successfully.
 
 ### Installing Collision Avoidance
 
@@ -143,15 +147,6 @@ https://github.com/ReiyaItatani/MotionMatchingWithCollisionAvoidance.git?path=As
 
 **Note:** All sample scenes are configured for the **Universal Render Pipeline (URP)**. If you are using a different render pipeline, conversion of the scenes may be necessary.
 
-### [Optional] Importing Example Scenes
-
-If you want to import the example scenes:
-
-1. In the Package Manager, locate the `Motion Matching With Collision Avoidance` package.
-
-2. Expand the `Samples` dropdown.
-
-3. Find `Examples`, and click `Import` to bring the example scenes into your project.
 
 ## References
 - **Reynolds, C. W.** (1987). Flocks, herds and schools: A distributed behavioral model. ACM SIGGRAPH Computer Graphics, 21(4), 25-34.
