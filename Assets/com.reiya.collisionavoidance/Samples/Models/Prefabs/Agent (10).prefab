@@ -1472,7 +1472,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MotionMatching: {fileID: 5104321456916399992}
-  AvatarMask: {fileID: 11400000, guid: a6bccdd3441d37c4f8b39ba775108fbf, type: 2}
+  AvatarMask: {fileID: 11400000, guid: 64b264b95c4ba5f4f8cbb97c2c733c6b, type: 2}
   RootPositionsMask: 1
   RootRotationsMask: 1
   BlendPoses: 1
