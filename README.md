@@ -122,8 +122,13 @@ These points ensure movements are realistic and contextually appropriate, improv
 
 # Getting Started 
 ## Installation Steps
+Follow these steps to set up your project:
 
-Follow these steps to install the Motion Matching package into your Unity project.
+1. **Import Motion Matching Package**
+2. [**Import Collision Avoidance**](#installing-collision-avoidance)
+3. **Setup the Field**
+4. **Generate the Crowd**
+5. **Create the Player**
 
 ### Prerequisites
 
@@ -150,7 +155,7 @@ https://github.com/ReiyaItatani/MotionMatchingWithCollisionAvoidance.git?path=As
 
 >**Note:** All sample scenes are configured for the **Universal Render Pipeline (URP)**. If you are using a different render pipeline, conversion of the scenes may be necessary.
 
-### Post-Installation Setup
+## Post-Installation Setup
 
 After installing the Collision Avoidance package, a new window titled **'Collision Avoidance'** will appear in the Unity Editor. This window includes several features:
 
@@ -171,6 +176,22 @@ After installing the Collision Avoidance package, a new window titled **'Collisi
 >**Important Note:** After downloading the project, please start by generating a field using the **Create Field** option. This step automatically creates necessary tags such as Player, Group, and Wall, which are essential for the functioning of the project.
 
   <img src=".github/media/window_description.PNG" alt="Window Description" width="700"/>
+
+#### 'Avatar Creator (Corridor)' Parameters
+
+The following table outlines the parameters for the 'Avatar Creator Corridor' and their respective descriptions:
+
+| Parameter                       | Description |
+|---------------------------------|-------------|
+| **Spawn Count**                 | The number of avatars to be generated. |
+| **Max Speed**                   | The maximum speed of the generated avatars. |
+| **Min Speed**                   | The minimum speed of the generated avatars. |
+| **Wall Height**                 | The height of walls generated on the path. |
+| **Wall Width**                  | The thickness of the generated walls. |
+| **Wall Corridor Additional Width** | The width of the box collider attached to the wall. Agents entering this collider will be subjected to a repulsion force from the wall. |
+| **Wall to Wall Dist**           | The distance between two walls. |
+
+These parameters allow you to customize the behavior and environment of the avatars within the corridor setting.
 
 ### Avatar Generation Method
 
