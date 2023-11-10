@@ -172,6 +172,23 @@ After installing the Collision Avoidance package, a new window titled **'Collisi
 
   <img src=".github/media/window_description.PNG" alt="Window Description" width="700"/>
 
+### Avatar Generation Method
+
+To generate avatars in your project, follow these steps:
+
+1. **Prepare the Field**
+   - Begin by baking the field to create a `navmesh`. This is essential for navigation and movement within the scene.
+
+2. **Use 'Create Field'**
+   - After baking the field, use the 'Create Field' option to set up `avatarcreator` or `avatarcreatorcorridor`.
+
+3. **Configure Avatar Prefab**
+   - In the 'Avatar Prefab' field, insert an avatar from `Packages/CollisionAvoidance/Samples/Models/Prefabs`.
+
+4. **Instantiate Avatars**
+   - Click on `InstantiateAvatars` to generate the avatars in the scene.
+
+![Create Avatar Demo](.github/media/create_avatar.gif)
 
 ## References
 - **Reynolds, C. W.** (1987). Flocks, herds and schools: A distributed behavioral model. ACM SIGGRAPH Computer Graphics, 21(4), 25-34.
