@@ -122,8 +122,13 @@ These points ensure movements are realistic and contextually appropriate, improv
 
 # Getting Started 
 ## Installation Steps
+Follow these steps to set up your project:
 
-Follow these steps to install the Motion Matching package into your Unity project.
+1. **Import Motion Matching Package**
+2. [**Import Collision Avoidance**](#installing-collision-avoidance)
+3. [**Setup the Field**](#post-installation-setup)
+4. [**Generate the Crowd**](#crowd-generation)
+5. [**Create the Player**](#creating-a-first-person-camera-player)
 
 ### Prerequisites
 
@@ -150,9 +155,9 @@ https://github.com/ReiyaItatani/MotionMatchingWithCollisionAvoidance.git?path=As
 
 >**Note:** All sample scenes are configured for the **Universal Render Pipeline (URP)**. If you are using a different render pipeline, conversion of the scenes may be necessary.
 
-### Post-Installation Setup
+## Post-Installation Setup
 
-After installing the Collision Avoidance package, a new window titled **'Collision Avoidance'** will appear in the Unity Editor. This window includes several features:
+After installing the Collision Avoidance package, a new window titled **'Collision Avoidance'** will appear in the Unity Editor. Click on **'AvatarCreatorCorridor'** window includes several features:
 
 - **Create Field**: Initialize your scene's layout.
   - **With Wall**
@@ -172,7 +177,23 @@ After installing the Collision Avoidance package, a new window titled **'Collisi
 
   <img src=".github/media/window_description.PNG" alt="Window Description" width="700"/>
 
-### Avatar Generation Method
+#### 'Avatar Creator (Corridor)' Parameters
+
+The following table outlines the parameters for the 'Avatar Creator Corridor' and their respective descriptions:
+
+| Parameter                       | Description |
+|---------------------------------|-------------|
+| **Spawn Count**                 | The number of avatars to be generated. |
+| **Max Speed**                   | The maximum speed of the generated avatars. |
+| **Min Speed**                   | The minimum speed of the generated avatars. |
+| **Wall Height**                 | The height of walls generated on the path. |
+| **Wall Width**                  | The thickness of the generated walls. |
+| **Wall Corridor Additional Width** | The width of the box collider attached to the wall. Agents entering this collider will be subjected to a repulsion force from the wall. |
+| **Wall to Wall Dist**           | The distance between two walls. |
+
+These parameters allow you to customize the behavior and environment of the avatars within the corridor setting.
+
+### Crowd Generation
 
 To generate avatars in your project, follow these steps:
 
@@ -189,6 +210,45 @@ To generate avatars in your project, follow these steps:
    - Click on `InstantiateAvatars` to generate the avatars in the scene.
 
 ![Create Avatar Demo](.github/media/create_avatar.gif)
+
+### Creating a First-Person Camera Player
+
+Follow these steps to create a player with a first-person camera in your scene:
+
+1. **Open 'Create Player' Window**
+   - Begin by opening the 'Create Player' window in your Unity Editor.
+
+2. **Configure Motion Matching Data**
+   - In the 'Motion Matching Data' field, select a data file from `Packages/CollisionAvoidance/Samples/Animations/MMData`.
+
+3. **Set Humanoid Avatar**
+   - For the 'Humanoid Avatar' field, choose an avatar from `Packages/CollisionAvoidance/Samples/Models/MicroSoftRocketBox/Female_Adult_01/mixamorig`.
+
+4. **Create the Player**
+   - Click on `CreatePlayer` to generate the player in your scene.
+
+5. **Player Movement**
+   - The created player can be moved using the WASD keys.
+   - It utilizes the `SpringCharacterController`.
+
+6. **Learn More About the Controller**
+   - For detailed information on the `SpringCharacterController`, refer to the [Motion Matching documentation](https://jlpm22.github.io/motionmatching-docs/basics/character_controller/).
+
+![Create Player Demo](.github/media/create_player.gif)
+
+## Final Step: Running the Project
+
+Once you have completed the 'Avatar Generation Method' and 'Creating a First-Person Camera Player' steps:
+
+1. **Run the Unity Project**
+   - Click the 'Run' button in your Unity Editor.
+
+2. **View the Moving Agents**
+   - After running the project, you should be able to see the moving agents in action within your scene!
+
+These steps will allow you to witness the results of your setup, with avatars moving around the environment and the first-person camera player in action.
+
+![Run Unity Demo](.github/media/run_unity.gif)
 
 ## References
 - **Reynolds, C. W.** (1987). Flocks, herds and schools: A distributed behavioral model. ACM SIGGRAPH Computer Graphics, 21(4), 25-34.
