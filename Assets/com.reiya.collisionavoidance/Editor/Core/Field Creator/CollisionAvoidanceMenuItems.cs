@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEditor;
-using CollisionAvoidance;
 
+namespace CollisionAvoidance{
 public class CollisionAvoidanceMenuItems
 {
     [MenuItem("CollisionAvoidance/Create Field/With Wall")]
@@ -34,12 +34,21 @@ public class CollisionAvoidanceMenuItems
 
         // Create the AvatarCreator game object
         GameObject avatarCreator = new GameObject("AvatarCreator");
-        // Attempt to add the script component by name
-        var scriptComponent = avatarCreator.AddComponent(System.Type.GetType(scriptName));
-        if (scriptComponent == null)
+
+        // Add the script component based on the scriptName
+        if (scriptName == "AvatarCreatorCorridor")
+        {
+            avatarCreator.AddComponent<AvatarCreatorCorridor>(); // 直接の型を使用
+        }
+        else if (scriptName == "AvatarCreator")
+        {
+            avatarCreator.AddComponent<AvatarCreator>(); // 直接の型を使用
+        }
+        else
         {
             Debug.LogError($"Script '{scriptName}' not found. Make sure it exists and is compiled.");
         }
+
         return avatarCreator;
     }
 
@@ -93,4 +102,5 @@ public class CollisionAvoidanceMenuItems
             Debug.LogError("GizmoDrawer script not found. Make sure it exists and is compiled.");
         }
     }
+}
 }

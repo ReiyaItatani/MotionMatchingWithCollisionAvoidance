@@ -2,8 +2,8 @@ using UnityEngine;
 using UnityEditor;
 using System.Linq;
 using MotionMatching;
-using CollisionAvoidance;
 
+namespace CollisionAvoidance{
 public class PlayerCreationWindow : EditorWindow
 {
     private MotionMatchingData MMData;
@@ -175,4 +175,5 @@ public class PlayerCreationWindow : EditorWindow
         Selection.activeGameObject = playerParent;
         EditorUtility.SetDirty(playerParent);
     }
+}
 }
