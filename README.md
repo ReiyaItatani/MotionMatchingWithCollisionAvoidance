@@ -157,7 +157,7 @@ https://github.com/ReiyaItatani/MotionMatchingWithCollisionAvoidance.git?path=As
 
 ## Post-Installation Setup
 
-After installing the Collision Avoidance package, a new window titled **'Collision Avoidance'** will appear in the Unity Editor. This window includes several features:
+After installing the Collision Avoidance package, a new window titled **'Collision Avoidance'** will appear in the Unity Editor. Click on **'AvatarCreatorCorridor'** window includes several features:
 
 - **Create Field**: Initialize your scene's layout.
   - **With Wall**
