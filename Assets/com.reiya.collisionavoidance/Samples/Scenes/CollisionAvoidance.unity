@@ -171,39 +171,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2769706d7e338b94c99b9c1cbbdfb3f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  avatarPrefabs:
-  - {fileID: 3846230633580688351, guid: fc459a64c9544204baa5390f476f5202, type: 3}
-  - {fileID: 5800964573482720960, guid: adb1c1af20963e04296bae943ec0bb7c, type: 3}
-  - {fileID: 2118688296386178285, guid: 2426044d264086148a9c6105fcf31def, type: 3}
-  - {fileID: 4110648341680021903, guid: fde8f53b37d95ee4cb41bf90a2e76724, type: 3}
-  - {fileID: 2330521412855342892, guid: 955173a2c90349244a9954b24ef8fe4e, type: 3}
-  - {fileID: 5560578027940749344, guid: 8d1133d45bb9a7343b8de55e1edb82d7, type: 3}
-  - {fileID: 891088761802639619, guid: 10aaa8b1ad05c414899e50bcc1cd7c8a, type: 3}
-  - {fileID: 4695691877499311656, guid: 3b2cb6cee3470e048b10d0ebb56fea25, type: 3}
-  - {fileID: 7008937180416874872, guid: e1ba6727de936fa4db5948bf5a6006d2, type: 3}
-  - {fileID: 5104321456453247296, guid: 7fc5a9376e755fe45be9a44bc2a3f9e8, type: 3}
-  - {fileID: 7498186109153928231, guid: 2e72ed98c3ed0ec47b96b5f5b050ffb5, type: 3}
-  - {fileID: 7715311637013886142, guid: 5f58cf0be967d6d45b8308df727c66ba, type: 3}
-  - {fileID: 5336097455007133724, guid: 8f9e2a992d5f33e41a3a37bdd21b2228, type: 3}
-  - {fileID: 2969990448250830418, guid: 986483c1ea1fce646b1364ee052d85ff, type: 3}
-  - {fileID: 1654234376420562338, guid: 199c943989d725e46b97efc22dbf1bd3, type: 3}
-  - {fileID: 9072386223061649253, guid: 5df0782f749005b49a72a1afd40b9595, type: 3}
-  - {fileID: 838584661891791376, guid: 28d8a6d5b346d2c42a40c2c1f39a981e, type: 3}
-  - {fileID: 5161204988862964738, guid: 6fad1457d837d5840a78d7504055f4ac, type: 3}
-  - {fileID: 3458739307727900464, guid: 19417f55d3bbf6343826d2f1ad505d8f, type: 3}
-  - {fileID: 2879909097741341458, guid: 86348f68baa5da646873fd0b6caf820c, type: 3}
-  - {fileID: 8665519240879909057, guid: 23c3c53acd0e71b489070a309d576856, type: 3}
-  - {fileID: 7931132732093064085, guid: b400f1248871bcf4e81ca68f2c3ad59b, type: 3}
-  - {fileID: 8461679874079984822, guid: 48a0d6f007033bf40a92479a5c87ce69, type: 3}
-  - {fileID: 1645053308125781686, guid: 99b14ba51e0f7b64b8800bde293e5c02, type: 3}
-  - {fileID: 9186703569394905333, guid: 843c2bc7c4c684a479e627eaabc1f705, type: 3}
-  - {fileID: 8081831558218959849, guid: bd75458697745bb4eb1119b52d3c8df7, type: 3}
-  - {fileID: 2626078998767235350, guid: 035c579f94d772a46a1244d0482d2aaf, type: 3}
-  - {fileID: 8945496378095649594, guid: bccb5b845c41ca245b9d77d853f0a39c, type: 3}
-  - {fileID: 3951746086116151517, guid: 03eb5105f3037c5448934ed1d6104b54, type: 3}
+  avatarPrefabs: []
   categoryGameObjects: []
   instantiatedAvatars: []
-  spawnCount: 10
+  spawnCount: 1
   maxSpeed: 0.8
   minSpeed: 0.5
   pathVertices: []
