@@ -4,6 +4,8 @@ Welcome to the Collision Avoidance system repository, where agents dynamically n
 
 <img src=".github/media/collision_avoidance_system.png" alt="Collision Avoidance System" width="300"/>
 
+![Collision Avoidance Demo](.github/media/collision_avoidance.gif)
+
 ## Table of Contents
 - [System Overview](#system-overview)
 - [Key Features](#key-features)
@@ -120,12 +122,21 @@ These points ensure movements are realistic and contextually appropriate, improv
 
 # Getting Started 
 ## Installation Steps
+Follow these steps to set up your project:
 
-Follow these steps to install the Motion Matching package into your Unity project.
+1. **Import Motion Matching Package**
+2. [**Import Collision Avoidance**](#installing-collision-avoidance)
+3. [**Setup the Field**](#post-installation-setup)
+4. [**Generate the Crowd**](#crowd-generation)
+5. [**Create the Player**](#creating-a-first-person-camera-player)
 
 ### Prerequisites
 
-- Unity 2021.2 or newer is required (untested on other versions).
+Before you start, ensure your system meets the following requirements:
+
+- **Unity 2021.2 or Newer**: This project requires Unity 2021.2 or a newer version. It has not been tested on earlier versions, so compatibility cannot be guaranteed.
+
+- **Motion Matching Package**: It is essential to add the Motion Matching package to your project. For detailed instructions and more information about the Motion Matching package, please visit [JLPM22's Motion Matching GitHub repository](https://github.com/JLPM22/MotionMatching). This repository contains comprehensive documentation and setup instructions that are crucial for integrating the package into your project successfully.
 
 ### Installing Collision Avoidance
 
@@ -136,22 +147,108 @@ Follow these steps to install the Motion Matching package into your Unity projec
 3. In the Package Manager window, click the `Add (+)` button in the top left corner, then select `Add package by git URL...`.
 
 4. Enter the following URL into the git URL field:
-
+```
 https://github.com/ReiyaItatani/MotionMatchingWithCollisionAvoidance.git?path=Assets/com.reiya.collisionavoidance
+```
 
 5. Click `Add` to start the installation process.
 
-**Note:** All sample scenes are configured for the **Universal Render Pipeline (URP)**. If you are using a different render pipeline, conversion of the scenes may be necessary.
+>**Note:** All sample scenes are configured for the **Universal Render Pipeline (URP)**. If you are using a different render pipeline, conversion of the scenes may be necessary.
 
-### [Optional] Importing Example Scenes
+## Post-Installation Setup
 
-If you want to import the example scenes:
+After installing the Collision Avoidance package, a new window titled **'Collision Avoidance'** will appear in the Unity Editor. Click on **'AvatarCreatorCorridor'** window includes several features:
 
-1. In the Package Manager, locate the `Motion Matching With Collision Avoidance` package.
+- **Create Field**: Initialize your scene's layout.
+  - **With Wall**
+    - Adds 'OVRLipSyncObject' for lip-sync.
+    - Generates a game object with **'AvatarCreatorCorridor'** attached, for random avatar generation in corridor situations.
+  - **Without Wall**
+    - Includes 'OVRLipSyncObject'.
+    - Generates a game object with **'AvatarCreator'** attached, for random avatar generation.
 
-2. Expand the `Samples` dropdown.
+- **Create Player**: 
+  - Instantly adds a default player to the scene.A pop-up window enables creating a character equipped with a first-person camera.
 
-3. Find `Examples`, and click `Import` to bring the example scenes into your project.
+- **Prefab Creator**: 
+  - Streamlines avatar creation for the 'Avatar Creator' or 'AvatarCreatorCorridor'.
+
+>**Important Note:** After downloading the project, please start by generating a field using the **Create Field** option. This step automatically creates necessary tags such as Player, Group, and Wall, which are essential for the functioning of the project.
+
+  <img src=".github/media/window_description.PNG" alt="Window Description" width="700"/>
+
+#### 'Avatar Creator (Corridor)' Parameters
+
+The following table outlines the parameters for the 'Avatar Creator Corridor' and their respective descriptions:
+
+| Parameter                       | Description |
+|---------------------------------|-------------|
+| **Spawn Count**                 | The number of avatars to be generated. |
+| **Max Speed**                   | The maximum speed of the generated avatars. |
+| **Min Speed**                   | The minimum speed of the generated avatars. |
+| **Wall Height**                 | The height of walls generated on the path. |
+| **Wall Width**                  | The thickness of the generated walls. |
+| **Wall Corridor Additional Width** | The width of the box collider attached to the wall. Agents entering this collider will be subjected to a repulsion force from the wall. |
+| **Wall to Wall Dist**           | The distance between two walls. |
+
+These parameters allow you to customize the behavior and environment of the avatars within the corridor setting.
+
+### Crowd Generation
+
+To generate avatars in your project, follow these steps:
+
+1. **Prepare the Field**
+   - **Begin by baking the field to create a `navmesh`. This is essential for navigation and movement within the scene.**
+
+2. **Use 'Create Field'**
+   - After baking the field, use the 'Create Field' option to set up `avatarcreator` or `avatarcreatorcorridor`.
+
+3. **Configure Avatar Prefab**
+   - In the 'Avatar Prefab' field, insert an avatar from `Packages/CollisionAvoidance/Samples/Models/Prefabs`.
+
+4. **Instantiate Avatars**
+   - Click on `InstantiateAvatars` to generate the avatars in the scene.
+
+![Create Avatar Demo](.github/media/create_avatar.gif)
+
+### Creating a First-Person Camera Player
+
+Follow these steps to create a player with a first-person camera in your scene:
+
+1. **Open 'Create Player' Window**
+   - Begin by opening the 'Create Player' window in your Unity Editor.
+
+2. **Configure Motion Matching Data**
+   - In the 'Motion Matching Data' field, select a data file from `Packages/CollisionAvoidance/Samples/Animations/MMData`.
+
+3. **Set Humanoid Avatar**
+   - For the 'Humanoid Avatar' field, choose an avatar from `Packages/CollisionAvoidance/Samples/Models/MicroSoftRocketBox/Female_Adult_01/mixamorig`.
+
+4. **Create the Player**
+   - Click on `CreatePlayer` to generate the player in your scene.
+
+5. **Player Movement**
+   - The created player can be moved using the WASD keys.
+   - It utilizes the `SpringCharacterController`.
+
+6. **Learn More About the Controller**
+   - For detailed information on the `SpringCharacterController`, refer to the [Motion Matching documentation](https://jlpm22.github.io/motionmatching-docs/basics/character_controller/).
+
+![Create Player Demo](.github/media/create_player.gif)
+
+## Final Step: Running the Project
+
+Once you have completed the 'Avatar Generation Method' and 'Creating a First-Person Camera Player' steps:
+
+1. **Run the Unity Project**
+   - Click the 'Run' button in your Unity Editor.
+
+2. **View the Moving Agents**
+   - After running the project, you should be able to see the moving agents in action within your scene!
+
+These steps will allow you to witness the results of your setup, with avatars moving around the environment and the first-person camera player in action.
+
+![Run Unity Demo](.github/media/run_unity.gif)
 
 ## References
 - **Reynolds, C. W.** (1987). Flocks, herds and schools: A distributed behavioral model. ACM SIGGRAPH Computer Graphics, 21(4), 25-34.

@@ -1,12 +1,15 @@
 using UnityEngine;
 using UnityEditor;
-using CollisionAvoidance;
 
+namespace CollisionAvoidance{
 public class CollisionAvoidanceMenuItems
 {
     [MenuItem("CollisionAvoidance/Create Field/With Wall")]
     private static void CreateFieldWithWall()
     {
+        AddTag("Agent");
+        AddTag("Group");
+        AddTag("Wall");
         GameObject avatarCreator = CreateAvatarCreator("AvatarCreatorCorridor");
         SetPathEndpoints(avatarCreator, "AvatarCreatorCorridor");
         Debug.Log("Field with wall and AvatarCreator with Path, StartPos, and EndPos created");
@@ -15,6 +18,9 @@ public class CollisionAvoidanceMenuItems
     [MenuItem("CollisionAvoidance/Create Field/Without Wall")]
     private static void CreateFieldWithoutWall()
     {
+        AddTag("Agent");
+        AddTag("Group");
+        AddTag("Wall");
         GameObject avatarCreator = CreateAvatarCreator("AvatarCreator");
         SetPathEndpoints(avatarCreator, "AvatarCreator");
         Debug.Log("Field without wall and AvatarCreator with Path, StartPos, and EndPos created");
@@ -34,12 +40,21 @@ public class CollisionAvoidanceMenuItems
 
         // Create the AvatarCreator game object
         GameObject avatarCreator = new GameObject("AvatarCreator");
-        // Attempt to add the script component by name
-        var scriptComponent = avatarCreator.AddComponent(System.Type.GetType(scriptName));
-        if (scriptComponent == null)
+
+        // Add the script component based on the scriptName
+        if (scriptName == "AvatarCreatorCorridor")
+        {
+            avatarCreator.AddComponent<AvatarCreatorCorridor>(); // 直接の型を使用
+        }
+        else if (scriptName == "AvatarCreator")
+        {
+            avatarCreator.AddComponent<AvatarCreator>(); // 直接の型を使用
+        }
+        else
         {
             Debug.LogError($"Script '{scriptName}' not found. Make sure it exists and is compiled.");
         }
+
         return avatarCreator;
     }
 
@@ -93,4 +108,24 @@ public class CollisionAvoidanceMenuItems
             Debug.LogError("GizmoDrawer script not found. Make sure it exists and is compiled.");
         }
     }
+    private static void AddTag(string tag)
+    {
+        SerializedObject tagManager = new SerializedObject(AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/TagManager.asset")[0]);
+        SerializedProperty tagsProp = tagManager.FindProperty("tags");
+
+        bool found = false;
+        for (int i = 0; i < tagsProp.arraySize; i++)
+        {
+            SerializedProperty t = tagsProp.GetArrayElementAtIndex(i);
+            if (t.stringValue.Equals(tag)) { found = true; break; }
+        }
+
+        if (!found)
+        {
+            tagsProp.arraySize++;
+            tagsProp.GetArrayElementAtIndex(tagsProp.arraySize - 1).stringValue = tag;
+            tagManager.ApplyModifiedProperties();
+        }
+    }
+}
 }
