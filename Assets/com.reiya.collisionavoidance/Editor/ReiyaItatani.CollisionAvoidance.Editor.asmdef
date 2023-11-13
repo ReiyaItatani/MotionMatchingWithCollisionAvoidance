@@ -3,7 +3,7 @@
     "references": [
         "JLPM.MotionMatching",
 		"ReiyaItatani.CollisionAvoidance",
-                "Oculus.LipSync"
+        "Oculus.LipSync"
     ],
     "allowUnsafeCode": true
 }

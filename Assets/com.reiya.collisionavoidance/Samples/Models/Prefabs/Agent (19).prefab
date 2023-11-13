@@ -1527,6 +1527,8 @@ GameObject:
   - component: {fileID: 3458739308548253723}
   - component: {fileID: 5665892670060443622}
   - component: {fileID: 2065531437687423078}
+  - component: {fileID: 2245497896542031993}
+  - component: {fileID: 2265304486981764530}
   m_Layer: 0
   m_Name: male8@T-Pose
   m_TagString: Agent
@@ -1666,8 +1668,6 @@ MonoBehaviour:
   RootRotationsMask: 1
   BlendPoses: 1
   BlendHalfLife: 0.05
-  ForwardLocalVector: {x: 0, y: 0, z: 1}
-  UpLocalVector: {x: 0, y: 1, z: 0}
   AvoidToesFloorPenetration: 0
   ToesSoleOffset: {x: 0, y: 0, z: -0.02}
   conversationalAgentFramework: {fileID: 2065531437687423078}
@@ -1716,6 +1716,34 @@ MonoBehaviour:
   head_bend: 0
   faceController: {fileID: 0}
   currentLookTarget: 0
+--- !u!114 &2245497896542031993
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3596208098815999933}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4f4902bad0c0354d80d2a8055548ae6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rightHandIKWeight: 0
+  leftHandIKWeight: 0
+--- !u!114 &2265304486981764530
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3596208098815999933}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4f4902bad0c0354d80d2a8055548ae6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rightHandIKWeight: 0
+  leftHandIKWeight: 0
 --- !u!1 &3715852919570776514
 GameObject:
   m_ObjectHideFlags: 0

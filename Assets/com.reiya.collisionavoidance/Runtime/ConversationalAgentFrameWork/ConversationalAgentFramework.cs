@@ -26,7 +26,7 @@ public class ConversationalAgentFramework : MonoBehaviour
         // get the animator
         Animator.logWarnings = false;
         // face script part
-        GameObject body = GetChildGameObject(gameObject, "Body");
+        GameObject body = FindObjectWithSkinnedMeshRenderer(gameObject);
         faceController = body.AddComponent<FaceScript>();
         faceController.meshRenderer = body.GetComponentInChildren<SkinnedMeshRenderer>();
         faceController.InitShapeKeys();
@@ -35,6 +35,32 @@ public class ConversationalAgentFramework : MonoBehaviour
         FluctuatePassInit();
 
         // StartCoroutine(LookAtPass());
+    }
+    
+    // Recursive method to find a GameObject with a SkinnedMeshRenderer component
+    GameObject FindObjectWithSkinnedMeshRenderer(GameObject parent)
+    {
+        // Check if the current GameObject has a SkinnedMeshRenderer component
+        if (parent.GetComponent<SkinnedMeshRenderer>() != null)
+        {
+            // Return this GameObject if it has a SkinnedMeshRenderer
+            return parent;
+        }
+
+        // Iterate through all child GameObjects
+        foreach (Transform child in parent.transform)
+        {
+            // Recursively search in each child
+            GameObject found = FindObjectWithSkinnedMeshRenderer(child.gameObject);
+            if (found != null)
+            {
+                // Return the first found GameObject with a SkinnedMeshRenderer
+                return found;
+            }
+        }
+
+        // Return null if no GameObject with SkinnedMeshRenderer is found in the hierarchy
+        return null;
     }
 
     public void UpdateOCEAN(){
