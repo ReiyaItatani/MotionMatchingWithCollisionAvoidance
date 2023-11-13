@@ -198,7 +198,7 @@ These parameters allow you to customize the behavior and environment of the avat
 To generate avatars in your project, follow these steps:
 
 1. **Prepare the Field**
-   - Begin by baking the field to create a `navmesh`. This is essential for navigation and movement within the scene.
+   - **Begin by baking the field to create a `navmesh`. This is essential for navigation and movement within the scene.**
 
 2. **Use 'Create Field'**
    - After baking the field, use the 'Create Field' option to set up `avatarcreator` or `avatarcreatorcorridor`.
