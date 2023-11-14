@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 1534276123}
   - component: {fileID: 1534276125}
   - component: {fileID: 1534276124}
+  - component: {fileID: 2118688296005892726}
+  - component: {fileID: 1053467588962102289}
   m_Layer: 0
   m_Name: SmarthPhone(Clone)
   m_TagString: Untagged
@@ -90,6 +92,36 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!54 &2118688296005892726
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1534276122}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!64 &1053467588962102289
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1534276122}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 8061429553450880516, guid: 4d58e72014753e24f9a9cd33ca9a0fb5, type: 3}
 --- !u!1 &850614578045806633
 GameObject:
   m_ObjectHideFlags: 0
@@ -1113,7 +1145,6 @@ GameObject:
   - component: {fileID: 7985340715685609437}
   - component: {fileID: 5738016155658432510}
   - component: {fileID: 5643419106567720808}
-  - component: {fileID: 9024844650790061590}
   m_Layer: 0
   m_Name: female7@T-Pose
   m_TagString: Agent
@@ -1302,20 +1333,6 @@ MonoBehaviour:
   faceController: {fileID: 0}
   currentLookTarget: 0
 --- !u!114 &5643419106567720808
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3036718156811107576}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e4f4902bad0c0354d80d2a8055548ae6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rightHandIKWeight: 0
-  leftHandIKWeight: 0
---- !u!114 &9024844650790061590
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

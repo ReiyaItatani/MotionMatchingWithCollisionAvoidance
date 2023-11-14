@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 1047484618}
   - component: {fileID: 1047484620}
   - component: {fileID: 1047484619}
+  - component: {fileID: 1645053309859565951}
+  - component: {fileID: 3729166605544153114}
   m_Layer: 0
   m_Name: SmarthPhone(Clone)
   m_TagString: Untagged
@@ -90,6 +92,36 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!54 &1645053309859565951
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1047484617}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!64 &3729166605544153114
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1047484617}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 8061429553450880516, guid: 4d58e72014753e24f9a9cd33ca9a0fb5, type: 3}
 --- !u!1 &290235599278300559
 GameObject:
   m_ObjectHideFlags: 0
@@ -1649,7 +1681,6 @@ GameObject:
   - component: {fileID: 7692500914968682839}
   - component: {fileID: 5519285857725688365}
   - component: {fileID: 3476737570319131579}
-  - component: {fileID: 5153202410399791258}
   m_Layer: 0
   m_Name: male13@T-Pose
   m_TagString: Agent
@@ -1838,20 +1869,6 @@ MonoBehaviour:
   faceController: {fileID: 0}
   currentLookTarget: 0
 --- !u!114 &3476737570319131579
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5065735825927018001}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e4f4902bad0c0354d80d2a8055548ae6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rightHandIKWeight: 0
-  leftHandIKWeight: 0
---- !u!114 &5153202410399791258
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
