@@ -211,6 +211,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8949855121563912491, guid: 9393bf2a1a54f7c4c9ea07985edfcad7,
+        type: 3}
+      propertyPath: m_TagString
+      value: Object
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9393bf2a1a54f7c4c9ea07985edfcad7, type: 3}
 --- !u!1 &578526599
@@ -452,7 +457,7 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 1383910055}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &648679979
+--- !u!114 &648679982
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -461,7 +466,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 648679978}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4bf4c9e34edda634d8f2054ada2a6d04, type: 3}
+  m_Script: {fileID: 11500000, guid: fdcdec26a54b14343a77835c39d7b642, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   fingerTips: []

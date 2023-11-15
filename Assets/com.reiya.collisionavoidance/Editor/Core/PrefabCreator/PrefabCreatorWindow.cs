@@ -233,15 +233,15 @@ private void CreatePrefab(GameObject humanoid)
     CollisionAvoidanceController collisionAvoidanceController = collisionAvoidance.AddComponent<CollisionAvoidanceController>(); // Make sure you have a CollisionAvoidanceController script.
 
     //set params
-    pathControllerScript.MotionMatching = motionMatchingController;
+    pathControllerScript.MotionMatching     = motionMatchingController;
     pathControllerScript.collisionAvoidance = collisionAvoidanceController;
-    pathControllerScript.Path = new Vector3[2];
-    pathControllerScript.Path[0] = new Vector3(-15, 0, 0);
-    pathControllerScript.Path[1] = new Vector3(15, 0, 0);
+    pathControllerScript.Path               = new Vector3[2];
+    pathControllerScript.Path[0]            = new Vector3(-15, 0, 0);
+    pathControllerScript.Path[1]            = new Vector3(15, 0, 0);
     //
     motionMatchingController.CharacterController = pathControllerScript;
-    motionMatchingController.MMData = MMData;
-    motionMatchingController.SearchTime = 0.01f;
+    motionMatchingController.MMData              = MMData;
+    motionMatchingController.SearchTime          = 0.01f;
     //
     Transform handTransform = humanoidInstance.GetComponent<Animator>().GetBoneTransform(HumanBodyBones.RightHand);
     GameObject phoneInstance = Instantiate(phonePrefab, handTransform.position + positionOffset, handTransform.rotation);
@@ -251,44 +251,48 @@ private void CreatePrefab(GameObject humanoid)
     humanoidInstance.GetComponent<Animator>().runtimeAnimatorController = animator;
     humanoidInstance.GetComponent<Animator>().applyRootMotion = false;
     //
-    Rigidbody rigidBody = humanoidInstance.AddComponent<Rigidbody>();
-    rigidBody.mass = 60f;
-    rigidBody.useGravity = false;
+    Rigidbody rigidBody            = humanoidInstance.AddComponent<Rigidbody>();
+              rigidBody.mass       = 60f;
+              rigidBody.useGravity = false;
     //
-    CapsuleCollider capsuleCollider = humanoidInstance.AddComponent<CapsuleCollider>();
-    capsuleCollider.isTrigger = true;
-    capsuleCollider.center = new Vector3(0,0.9f,0);
-    capsuleCollider.radius = 0.3f;
-    capsuleCollider.height = 1.8f;
+    CapsuleCollider capsuleCollider           = humanoidInstance.AddComponent<CapsuleCollider>();
+                    capsuleCollider.isTrigger = true;
+                    capsuleCollider.center    = new Vector3(0,0.9f,0);
+                    capsuleCollider.radius    = 0.3f;
+                    capsuleCollider.height    = 1.8f;
     //
-    ParameterManager parameterManager = humanoidInstance.AddComponent<ParameterManager>();
-    parameterManager.pathController = pathControllerScript;
+    ParameterManager parameterManager                = humanoidInstance.AddComponent<ParameterManager>();
+                     parameterManager.pathController = pathControllerScript;
     //
-    GameObject soundObject = new GameObject("Sound");
-    soundObject.transform.SetParent(humanoidInstance.transform);
-    soundObject.transform.localPosition = Vector3.zero;
-    AudioSource audioSource = soundObject.AddComponent<AudioSource>();
-    audioSource.playOnAwake = false;
-    OVRLipSyncContext lipSyncContext = soundObject.AddComponent<OVRLipSyncContext>();
-    lipSyncContext.audioSource = audioSource;
-    lipSyncContext.audioLoopback = true;
-    OVRLipSyncContextMorphTarget lipSyncMorphTarget = soundObject.AddComponent<OVRLipSyncContextMorphTarget>();
-    lipSyncMorphTarget.skinnedMeshRenderer = FindSkinnedMeshRendererInSameHierarchy(lipSyncMorphTarget.gameObject);
+    GameObject soundObject                         = new GameObject("Sound");
+               soundObject.transform.localPosition = Vector3.zero;
+               soundObject.transform.SetParent(humanoidInstance.transform);
+    AudioSource audioSource             = soundObject.AddComponent<AudioSource>();
+                audioSource.playOnAwake = false;
+    OVRLipSyncContext lipSyncContext               = soundObject.AddComponent<OVRLipSyncContext>();
+                      lipSyncContext.audioSource   = audioSource;
+                      lipSyncContext.audioLoopback = true;
+    OVRLipSyncContextMorphTarget lipSyncMorphTarget                     = soundObject.AddComponent<OVRLipSyncContextMorphTarget>();
+                                 lipSyncMorphTarget.skinnedMeshRenderer = FindSkinnedMeshRendererInSameHierarchy(lipSyncMorphTarget.gameObject);
     //
-    SocialBehaviour socialBehaviour = humanoidInstance.AddComponent<SocialBehaviour>();
-    socialBehaviour.smartPhone = phoneInstance;
-    socialBehaviour.audioSource = audioSource;
-    socialBehaviour.audioClips = audioClips;
+    SocialBehaviour socialBehaviour             = humanoidInstance.AddComponent<SocialBehaviour>();
+                    socialBehaviour.smartPhone  = phoneInstance;
+                    socialBehaviour.audioSource = audioSource;
+                    socialBehaviour.audioClips  = audioClips;
     //
-    AgentCollisionDetection agentCollisionDetection = humanoidInstance.AddComponent<AgentCollisionDetection>();
-    agentCollisionDetection.socialBehaviour = socialBehaviour;
+    AgentCollisionDetection agentCollisionDetection                 = humanoidInstance.AddComponent<AgentCollisionDetection>();
+                            agentCollisionDetection.socialBehaviour = socialBehaviour;
     //
     ConversationalAgentFramework conversationalAgentFramework = humanoidInstance.AddComponent<ConversationalAgentFramework>();
     //
-    CollisionAvoidance.MotionMatchingSkinnedMeshRenderer motionMatchingSkinnedMeshRenderer = humanoidInstance.AddComponent<CollisionAvoidance.MotionMatchingSkinnedMeshRenderer>();
-    motionMatchingSkinnedMeshRenderer.MotionMatching = motionMatchingController;
-    motionMatchingSkinnedMeshRenderer.AvatarMask = avatarMask;
-    motionMatchingSkinnedMeshRenderer.conversationalAgentFramework = conversationalAgentFramework;
+    CollisionAvoidance.MotionMatchingSkinnedMeshRenderer motionMatchingSkinnedMeshRenderer                              = humanoidInstance.AddComponent<CollisionAvoidance.MotionMatchingSkinnedMeshRenderer>();
+                                                         motionMatchingSkinnedMeshRenderer.MotionMatching               = motionMatchingController;
+                                                         motionMatchingSkinnedMeshRenderer.AvatarMask                   = avatarMask;
+                                                         motionMatchingSkinnedMeshRenderer.conversationalAgentFramework = conversationalAgentFramework;
+    //
+    AnimationModifier animationModifier = humanoidInstance.AddComponent<AnimationModifier>();
+    //
+    RightHandRotModifier rightHandRotModifier = humanoidInstance.AddComponent<RightHandRotModifier>();
     //
     collisionAvoidanceController.pathController = pathControllerScript;
     collisionAvoidanceController.FOVMeshPrefab = FOVMeshPrefab;

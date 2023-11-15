@@ -56,6 +56,7 @@ public class SocialBehaviour : MonoBehaviour
     public UpperBodyAnimationState currentAnimationState = UpperBodyAnimationState.Walk;
     public GameObject smartPhone;
     private Animator animator;
+    public bool onSmartPhone = true;
 
     private void Awake()
     {
@@ -153,9 +154,11 @@ public class SocialBehaviour : MonoBehaviour
         
         if(isIndividual || groupAgents.Count <= 1){
             smartPhone.SetActive(true);
+            onSmartPhone = true;
         }
         else{
             smartPhone.SetActive(false);
+            onSmartPhone = false;
         }
     }
 
@@ -352,7 +355,11 @@ public class SocialBehaviour : MonoBehaviour
     }
     #endregion
 
-    #region SET
+    #region GET and SET
+    public bool GetOnSmartPhone(){
+        return onSmartPhone;
+    }
+
     public void SetCollidedTarget(GameObject collidedTarget){
         conversationalAgentFramework.SetCollidedTarget(collidedTarget);
     }

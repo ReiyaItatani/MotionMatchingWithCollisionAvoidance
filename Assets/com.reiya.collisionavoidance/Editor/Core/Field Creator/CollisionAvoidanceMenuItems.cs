@@ -10,6 +10,7 @@ public class CollisionAvoidanceMenuItems
         AddTag("Agent");
         AddTag("Group");
         AddTag("Wall");
+        AddTag("Object");
         GameObject avatarCreator = CreateAvatarCreator("AvatarCreatorCorridor");
         SetPathEndpoints(avatarCreator, "AvatarCreatorCorridor");
         Debug.Log("Field with wall and AvatarCreator with Path, StartPos, and EndPos created");
@@ -21,6 +22,7 @@ public class CollisionAvoidanceMenuItems
         AddTag("Agent");
         AddTag("Group");
         AddTag("Wall");
+        AddTag("Object");
         GameObject avatarCreator = CreateAvatarCreator("AvatarCreator");
         SetPathEndpoints(avatarCreator, "AvatarCreator");
         Debug.Log("Field without wall and AvatarCreator with Path, StartPos, and EndPos created");

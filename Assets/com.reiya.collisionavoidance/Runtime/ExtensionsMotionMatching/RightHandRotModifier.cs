@@ -1,26 +1,30 @@
+using System.Collections;
+using System.Collections.Generic;
+using CollisionAvoidance;
 using UnityEngine;
 
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
+namespace CollisionAvoidance{
 
-public class HandController : MonoBehaviour
+public class RightHandRotModifier : MonoBehaviour
 {
     private Animator animator; // Animator component attached to the humanoid
-    public Transform[] fingerTips; // Assign the fingertip transforms here
+    public Transform[][] fingerColliders; // Assign the fingertip transforms here
     public float[] bendAngles; // Max bend angles for each joint
 
     public Transform[][] fingerJoints; // Stores the transforms for each finger joint of the right hand
     public Vector3[][] initialRotations; // Stores the initial local rotations for each finger joint
+    public Vector3[][] endRotations; // Stores the end local rotations for each finger joint
 
     public bool[] stopBending;
-
     
     [SerializeField, Range(0f,1f)]
     float interpolation=0f;
+
+    private SocialBehaviour socialBehaviour;
     private void Start()
     {
         animator = GetComponent<Animator>();
+        socialBehaviour = GetComponent<SocialBehaviour>();
 
         // Initialize finger joints array for the right hand
         // Assuming 3 joints per finger (excluding the thumb, which has 2)
@@ -53,19 +57,26 @@ public class HandController : MonoBehaviour
             animator.GetBoneTransform(HumanBodyBones.RightLittleDistal)
         };
 
-        // Initialize the fingerTips array and add Sphere Collider to the fingertips
-        fingerTips = new Transform[fingerJoints.Length];
+        // Initialize the fingerColliders array and add Sphere Collider to the fingerColliders
+        fingerColliders = new Transform[fingerJoints.Length][];
         stopBending = new bool[fingerJoints.Length];
         for (int i = 0; i < fingerJoints.Length; i++)
         {
-            // Assign the last joint of each finger as the fingertip
             Transform fingertip = fingerJoints[i][fingerJoints[i].Length - 1].GetChild(0);
-            fingerTips[i] = fingertip;
+            Transform fingerdistal = fingerJoints[i][fingerJoints[i].Length - 1];
+
+            // Add capsule collider between fingertip and distal
+            AddCapsuleCollider(fingerdistal, fingertip, i);
+
+            if (i != 0) // Handle non-thumb fingers
+            {
+                Transform fingerintermediate = fingerJoints[i][fingerJoints[i].Length - 2];
+
+                // Add capsule collider between distal and intermediate
+                AddCapsuleCollider(fingerintermediate, fingerdistal, i);
+            }
 
             stopBending[i] = false;
-
-            // Add Sphere Collider to the fingertip
-            AddFingertipCollider(fingertip, i);
         }
 
         // Initialize the bendAngles
@@ -87,6 +98,8 @@ public class HandController : MonoBehaviour
 
         // Initialize the initialRotations array with the same structure as fingerJoints
         initialRotations = new Vector3[fingerJoints.Length][];
+        endRotations = new Vector3[fingerJoints.Length][];
+
         for (int i = 0; i < fingerJoints.Length; i++)
         {
             initialRotations[i] = new Vector3[fingerJoints[i].Length];
@@ -98,18 +111,49 @@ public class HandController : MonoBehaviour
         }
     }
 
-    private void AddFingertipCollider(Transform fingertip, int fingerIndex)
+    // private void AddCollider(Transform joint, int fingerIndex, bool isSphere = true)
+    // {
+    //     if (isSphere)
+    //     {
+    //         SphereCollider collider = joint.gameObject.AddComponent<SphereCollider>();
+    //         collider.radius = 0.005f; // Set an appropriate radius for the sphere collider
+    //         collider.isTrigger = true;
+    //     }
+    //     else
+    //     {
+    //         // Capsule collider creation logic will go here
+    //     }
+
+    //     Finger finger = joint.gameObject.AddComponent<Finger>();
+    //     finger.Init(GetComponent<RightHandRotModifier>(), fingerIndex);
+    // }
+
+    private void AddCapsuleCollider(Transform startJoint, Transform endJoint, int fingerIndex)
     {
-        SphereCollider collider = fingertip.gameObject.AddComponent<SphereCollider>();
-        collider.radius = 0.01f; // Set an appropriate radius for the collider
+        CapsuleCollider collider = startJoint.gameObject.AddComponent<CapsuleCollider>();
+        collider.radius = 0.005f; // Set an appropriate radius for the capsule collider
+        collider.height = Vector3.Distance(startJoint.position, endJoint.position);
+        collider.direction = 2; // Assuming Z-axis alignment, change if needed
         collider.isTrigger = true;
 
-        Finger finger = fingertip.gameObject.AddComponent<Finger>();
-        finger.Init(GetComponent<HandController>(), fingerIndex);
+        // Position the collider in the middle of the two joints
+        Vector3 midPoint = (startJoint.position + endJoint.position) / 2;
+        collider.center = startJoint.InverseTransformPoint(midPoint);
+
+        //rotate colldier
+        collider.direction = 1;
+
+        // Additional initialization for Finger component
+        Finger finger = startJoint.gameObject.AddComponent<Finger>();
+        finger.Init(GetComponent<RightHandRotModifier>(), fingerIndex);
     }
 
-    void LateUpdate()
+    public void LateUpdate()
     {
+        if(socialBehaviour.onSmartPhone == false) return;
+        if(interpolation < 1){
+            interpolation += 0.01f;
+        }
         BendFingers(interpolation);
     }
 
@@ -119,9 +163,13 @@ public class HandController : MonoBehaviour
         int bendIndex = 0;
         for (int i = 0; i < fingerJoints.Length; i++)
         {
-            if(stopBending[i] == true) continue;
             for (int j = 0; j < fingerJoints[i].Length; j++)
             {
+                if(stopBending[i] == true){
+                    fingerJoints[i][j].localEulerAngles = endRotations[i][j];
+                    continue;
+                }
+
                 Quaternion additionalRotation;
 
                 if (i == 0) // Check if it's the thumb
@@ -145,6 +193,13 @@ public class HandController : MonoBehaviour
     // Stops bending the specified finger
     public void StopBendingFinger(int fingerIndex)
     {
+        endRotations[fingerIndex] = new Vector3[fingerJoints[fingerIndex].Length];
+        // Save the end local rotation for each joint
+        for (int j = 0; j < fingerJoints[fingerIndex].Length; j++)
+        {
+            endRotations[fingerIndex][j] = fingerJoints[fingerIndex][j].localEulerAngles;
+        }
         stopBending[fingerIndex] = true;
     }
+}
 }

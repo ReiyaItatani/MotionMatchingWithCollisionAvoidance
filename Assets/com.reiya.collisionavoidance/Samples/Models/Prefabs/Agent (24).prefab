@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 3729166605544153114}
   m_Layer: 0
   m_Name: SmarthPhone(Clone)
-  m_TagString: Untagged
+  m_TagString: Object
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1681,6 +1681,7 @@ GameObject:
   - component: {fileID: 7692500914968682839}
   - component: {fileID: 5519285857725688365}
   - component: {fileID: 3476737570319131579}
+  - component: {fileID: 6392955260969827040}
   m_Layer: 0
   m_Name: male13@T-Pose
   m_TagString: Agent
@@ -1789,6 +1790,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: d866266b79ec89742baa20523b70fac5, type: 3}
   currentAnimationState: 0
   smartPhone: {fileID: 1047484617}
+  onSmartPhone: 1
 --- !u!114 &1645053309859565945
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1882,6 +1884,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rightHandIKWeight: 0
   leftHandIKWeight: 0
+--- !u!114 &6392955260969827040
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5065735825927018001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fdcdec26a54b14343a77835c39d7b642, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fingerTips: []
+  bendAngles: []
+  stopBending: 
+  interpolation: 0
 --- !u!1 &5346502774511655591
 GameObject:
   m_ObjectHideFlags: 0
