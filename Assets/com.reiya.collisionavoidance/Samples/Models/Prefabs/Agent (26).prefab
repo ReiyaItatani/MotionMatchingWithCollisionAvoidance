@@ -1558,7 +1558,7 @@ MonoBehaviour:
   RootRotationsMask: 1
   BlendPoses: 1
   BlendHalfLife: 0.05
-  AvoidToesFloorPenetration: 0
+  AvoidToesFloorPenetration: 1
   ToesSoleOffset: {x: 0, y: 0, z: -0.02}
   conversationalAgentFramework: {fileID: 2206329662777787404}
 --- !u!114 &2206329662777787404
@@ -1632,7 +1632,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fdcdec26a54b14343a77835c39d7b642, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fingerTips: []
   bendAngles: []
   stopBending: 
   interpolation: 0

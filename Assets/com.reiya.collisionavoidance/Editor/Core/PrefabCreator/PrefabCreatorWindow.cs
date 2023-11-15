@@ -289,6 +289,8 @@ private void CreatePrefab(GameObject humanoid)
                                                          motionMatchingSkinnedMeshRenderer.MotionMatching               = motionMatchingController;
                                                          motionMatchingSkinnedMeshRenderer.AvatarMask                   = avatarMask;
                                                          motionMatchingSkinnedMeshRenderer.conversationalAgentFramework = conversationalAgentFramework;
+                                                         motionMatchingSkinnedMeshRenderer.AvoidToesFloorPenetration    = true;
+                                                         motionMatchingSkinnedMeshRenderer.ToesSoleOffset               = new Vector3(0, 0, -0.02f);
     //
     AnimationModifier animationModifier = humanoidInstance.AddComponent<AnimationModifier>();
     //

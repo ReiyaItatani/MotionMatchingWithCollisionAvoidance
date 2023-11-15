@@ -35,6 +35,9 @@ public class ConversationalAgentFramework : MonoBehaviour
         FluctuatePassInit();
 
         // StartCoroutine(LookAtPass());
+
+        //Neck Checker
+        InvokeRepeating("UpdateNeckState",2.0f ,2.0f);
     }
     
     // Recursive method to find a GameObject with a SkinnedMeshRenderer component
@@ -87,7 +90,7 @@ public class ConversationalAgentFramework : MonoBehaviour
         AdjustEyeLevelPass();
 
         //LookAt
-        CheckNeckRotation(GetCurrentLookAt(), GetCurrentAgentDirection(), neckRotationLimit);
+        //CheckNeckRotation(GetCurrentLookAt(), GetCurrentAgentDirection(), neckRotationLimit);
         LookAtAttractionPointUpdater();
         UpdateCurrentLookAt();
         LookAtPass(currentLookAt, attractionPoint, 0.5f);
@@ -546,7 +549,13 @@ public class ConversationalAgentFramework : MonoBehaviour
     // }
     #endif
 
-    private void CheckNeckRotation(Vector3 _currentLookAt, Vector3 myDirection, float _neckRotationLimit, float lookAtForwardDuration = 2.0f, float probability = 0.1f){
+    //call this in fixed update
+    private void UpdateNeckState(){
+        CheckNeckRotation(GetCurrentLookAt(), GetCurrentAgentDirection(), neckRotationLimit);
+    }
+
+    private void CheckNeckRotation(Vector3 _currentLookAt, Vector3 myDirection, float _neckRotationLimit, float lookAtForwardDuration = 2.0f, float probability = 0.2f){
+        Debug.Log("NeckRotationChecker");
         float currentNeckRotation = Vector3.Angle(_currentLookAt.normalized, myDirection.normalized);
         if(UnityEngine.Random.Range(0.0f, 1.0f) < probability){
             if(currentNeckRotation >= _neckRotationLimit && coroutineLooForwardIsFinished){
