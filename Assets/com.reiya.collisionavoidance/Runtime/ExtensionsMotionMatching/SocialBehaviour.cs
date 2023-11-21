@@ -145,7 +145,7 @@ public class SocialBehaviour : MonoBehaviour
             animator.SetBool(state.ToString(), state == animationState);
         }
         if(animationState == UpperBodyAnimationState.SmartPhone || animationState == UpperBodyAnimationState.Talk){
-            TryPlayAudio(1.0f, false);
+            TryPlayAudio(1.0f);
         }
     }
 
@@ -229,17 +229,11 @@ public class SocialBehaviour : MonoBehaviour
         conversationalAgentFramework.SetCollidedTarget(null);
     }
 
-    public void TryPlayAudio(float PlayAudioProbability , bool onSound = false)
+    public void TryPlayAudio(float PlayAudioProbability)
     {
         if (audioSource != null && audioClips.Length > 0 && UnityEngine.Random.value < PlayAudioProbability)
         {
             audioSource.clip = audioClips[UnityEngine.Random.Range(0, audioClips.Length)];
-            if(onSound){
-                audioSource.volume = 1.0f;
-            }else{
-                audioSource.volume = 0.0f;
-            }
-
             audioSource.Play();
         }
     }
