@@ -49,7 +49,7 @@ public class AgentCollisionDetection : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Agent") && pathController != null)
+        if (other.CompareTag("Agent") && pathController != null && isColliding == false)
         {
             HandleAgentCollision(other);
         }
