@@ -35,7 +35,6 @@ public class SocialBehaviour : MonoBehaviour
     private const float LookAtUpdateTime = 0.2f;
     private const float AnimationStateUpdateMinTime = 10.0f;
     private const float AnimationStateUpdateMaxTime = 20.0f;
-    private const float PlayAudioProbability = 0.1f;
     private const float WalkAnimationProbability = 0.5f;
     private const float FieldOfView = 45f;
     
@@ -145,6 +144,9 @@ public class SocialBehaviour : MonoBehaviour
         {
             animator.SetBool(state.ToString(), state == animationState);
         }
+        if(animationState == UpperBodyAnimationState.SmartPhone || animationState == UpperBodyAnimationState.Talk){
+            TryPlayAudio(1.0f, false);
+        }
     }
 
     private void SetSmartPhoneActiveBasedOnSocialRelations(GameObject smartPhone)
@@ -227,11 +229,17 @@ public class SocialBehaviour : MonoBehaviour
         conversationalAgentFramework.SetCollidedTarget(null);
     }
 
-    public void TryPlayAudio()
+    public void TryPlayAudio(float PlayAudioProbability , bool onSound = false)
     {
         if (audioSource != null && audioClips.Length > 0 && UnityEngine.Random.value < PlayAudioProbability)
         {
             audioSource.clip = audioClips[UnityEngine.Random.Range(0, audioClips.Length)];
+            if(onSound){
+                audioSource.volume = 1.0f;
+            }else{
+                audioSource.volume = 0.0f;
+            }
+
             audioSource.Play();
         }
     }

@@ -90,7 +90,6 @@ public class AgentCollisionDetection : MonoBehaviour
         pathController.SetOnCollide(isColliding);
 
         socialBehaviour.SetCollidedTarget(collidedAgent);
-        socialBehaviour.TryPlayAudio();
         socialBehaviour.TriggerUnityAnimation(UpperBodyAnimationState.Talk);
         yield return new WaitForSeconds(time / 2.0f);
 

@@ -364,19 +364,18 @@ public class PathController : MotionMatchingCharacterController
             //List<GameObject> othersInAvoidanceArea = collisionAvoidance.GetOthersInAvoidanceArea();
             //To use FOV
             List<GameObject> othersInAvoidanceArea = collisionAvoidance.GetOthersInFOV();
+            List<GameObject> othersOnPath          = collisionAvoidance.GetOthersInAvoidanceArea();
             Vector3 myPositionAtNearestApproach = Vector3.zero;
             Vector3 otherPositionAtNearestApproach = Vector3.zero;
 
             //Update CurrentAvoidance Target
             if(othersInAvoidanceArea != null){
-                currentAvoidanceTarget = DecideUrgentAvoidanceTarget(othersInAvoidanceArea, minTimeToCollision, collisionDangerThreshold, out myPositionAtNearestApproach, out otherPositionAtNearestApproach);              
-            }
-
-            //Check if the CurrentAvoidance Target is on the path way
-            List<GameObject> othersOnPath = collisionAvoidance.GetOthersInAvoidanceArea();
-            if(!othersOnPath.Contains(currentAvoidanceTarget)){
-                //if the CurrentAvoidance Target is not on the path way
-                currentAvoidanceTarget = null;
+                currentAvoidanceTarget = DecideUrgentAvoidanceTarget(othersInAvoidanceArea, minTimeToCollision, collisionDangerThreshold, out myPositionAtNearestApproach, out otherPositionAtNearestApproach);  
+                //Check if the CurrentAvoidance Target is on the path way
+                if(!othersOnPath.Contains(currentAvoidanceTarget)){
+                    //if the CurrentAvoidance Target is not on the path way
+                    currentAvoidanceTarget = null;
+                }            
             }
 
             //Calculate Avoidance Force
@@ -1025,6 +1024,7 @@ public class PathController : MotionMatchingCharacterController
     #region SPEED ADJUSTMENT 
     private IEnumerator UpdateSpeed(List<GameObject> groupAgents, GameObject myself, float updateTime = 0.5f, float speedChangeRate = 0.05f){
         if(groupAgents.Count == 1 || GetSocialRelations() == SocialRelations.Individual){
+            StartCoroutine(DecreaseSpeedBaseOnUpperBodyAnimation(updateTime));
             yield return null;
         }
 
@@ -1065,6 +1065,18 @@ public class PathController : MotionMatchingCharacterController
                 }
             }else{
                 currentSpeed = averageSpeed;
+            }
+            yield return new WaitForSeconds(updateTime);
+        }
+    }
+
+    private IEnumerator DecreaseSpeedBaseOnUpperBodyAnimation(float updateTime){
+        float initialSpeed = GetCurrentSpeed();
+        while(true){
+            if(collisionAvoidance.GetUpperBodyAnimationState() == UpperBodyAnimationState.SmartPhone){
+                currentSpeed = minSpeed;
+            }else{
+                currentSpeed = initialSpeed;
             }
             yield return new WaitForSeconds(updateTime);
         }

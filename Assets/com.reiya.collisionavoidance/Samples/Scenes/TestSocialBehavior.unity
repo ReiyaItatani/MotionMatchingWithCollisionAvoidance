@@ -635,6 +635,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: 1@T-Pose
       objectReference: {fileID: 0}
+    - target: {fileID: 1630794972795428178, guid: 24f9caef1438ae342887f352704f831c,
+        type: 3}
+      propertyPath: m_BlendShapeWeights.Array.size
+      value: 175
+      objectReference: {fileID: 0}
+    - target: {fileID: 1630794972795428178, guid: 24f9caef1438ae342887f352704f831c,
+        type: 3}
+      propertyPath: m_BlendShapeWeights.Array.data[24]
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: 24f9caef1438ae342887f352704f831c,
         type: 3}
       propertyPath: m_Controller
@@ -660,7 +670,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1892981758
 Transform:
   m_ObjectHideFlags: 0
@@ -733,7 +743,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 8040c5eeff209114798dbf4666a71900, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 6104dd54d297b2746a235c08aae5ad55, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1

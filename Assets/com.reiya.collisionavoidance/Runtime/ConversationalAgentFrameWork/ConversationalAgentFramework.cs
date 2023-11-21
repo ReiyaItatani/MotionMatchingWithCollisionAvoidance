@@ -27,6 +27,7 @@ public class ConversationalAgentFramework : MonoBehaviour
         Animator.logWarnings = false;
         // face script part
         GameObject body = FindObjectWithSkinnedMeshRenderer(gameObject);
+        // GameObject body = GetChildGameObject(gameObject, "Body");
         faceController = body.AddComponent<FaceScript>();
         faceController.meshRenderer = body.GetComponentInChildren<SkinnedMeshRenderer>();
         faceController.InitShapeKeys();
@@ -555,7 +556,6 @@ public class ConversationalAgentFramework : MonoBehaviour
     }
 
     private void CheckNeckRotation(Vector3 _currentLookAt, Vector3 myDirection, float _neckRotationLimit, float lookAtForwardDuration = 2.0f, float probability = 0.2f){
-        Debug.Log("NeckRotationChecker");
         float currentNeckRotation = Vector3.Angle(_currentLookAt.normalized, myDirection.normalized);
         if(UnityEngine.Random.Range(0.0f, 1.0f) < probability){
             if(currentNeckRotation >= _neckRotationLimit && coroutineLooForwardIsFinished){
@@ -828,8 +828,7 @@ public class ConversationalAgentFramework : MonoBehaviour
         faceController.exp_sad = ScaleBetween(Mathf.Clamp(e_sad, 0, 100), 0, 100, 0, 1);
         faceController.exp_shock = ScaleBetween(Mathf.Clamp(e_shock, 0, 100), 0, 100, 0, 1);
 
-
-        // tmpDecayValue = emotionDecayFactor * Time.deltaTime;
+        //tmpDecayValue = emotionDecayFactor * Time.deltaTime;
         // decay emotion
         // if (e_angry > 0) e_angry -= tmpDecayValue; else e_angry = 0;
         // if (e_disgust > 0) e_disgust -= tmpDecayValue; else e_disgust = 0;
