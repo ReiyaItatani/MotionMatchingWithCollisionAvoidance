@@ -112,9 +112,9 @@ namespace CollisionAvoidance{
         private IEnumerator UpdateBasicAvoidanceAreaPos(float AgentHeight){
             while(true){
                 if(pathController.GetCurrentDirection() == Vector3.zero) yield return null;
-                Vector3 Center = (Vector3)pathController.GetCurrentPosition() + agentCollisionDetection.GetCurrentLookAt().normalized * avoidanceCollider.size.z/2;
+                Vector3 Center = (Vector3)pathController.GetCurrentPosition() + pathController.GetCurrentDirection().normalized * avoidanceCollider.size.z/2;
                 basicAvoidanceArea.transform.position = new Vector3(Center.x, AgentHeight, Center.z);
-                Quaternion targetRotation = Quaternion.LookRotation(agentCollisionDetection.GetCurrentLookAt());
+                Quaternion targetRotation = Quaternion.LookRotation(pathController.GetCurrentDirection().normalized);
                 basicAvoidanceArea.transform.rotation = targetRotation;
                 yield return null;
             }
@@ -123,9 +123,9 @@ namespace CollisionAvoidance{
         private IEnumerator UpdateUnalignedAvoidanceAreaPos(float AgentHeight){
             while(true){
                 if(pathController.GetCurrentDirection() == Vector3.zero) yield return null;
-                Vector3 Center = (Vector3)pathController.GetCurrentPosition() + agentCollisionDetection.GetCurrentLookAt().normalized*unalignedAvoidanceCollider.size.z/2;
+                Vector3 Center = (Vector3)pathController.GetCurrentPosition() + pathController.GetCurrentDirection().normalized * unalignedAvoidanceCollider.size.z/2;
                 unalignedAvoidanceArea.transform.position = new Vector3(Center.x, AgentHeight, Center.z);
-                Quaternion targetRotation = Quaternion.LookRotation(agentCollisionDetection.GetCurrentLookAt());
+                Quaternion targetRotation = Quaternion.LookRotation(pathController.GetCurrentDirection().normalized);
                 unalignedAvoidanceArea.transform.rotation = targetRotation;
                 yield return null;
             }

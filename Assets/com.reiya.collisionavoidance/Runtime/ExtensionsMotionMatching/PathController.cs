@@ -372,6 +372,13 @@ public class PathController : MotionMatchingCharacterController
                 currentAvoidanceTarget = DecideUrgentAvoidanceTarget(othersInAvoidanceArea, minTimeToCollision, collisionDangerThreshold, out myPositionAtNearestApproach, out otherPositionAtNearestApproach);              
             }
 
+            //Check if the CurrentAvoidance Target is on the path way
+            List<GameObject> othersOnPath = collisionAvoidance.GetOthersInAvoidanceArea();
+            if(!othersOnPath.Contains(currentAvoidanceTarget)){
+                //if the CurrentAvoidance Target is not on the path way
+                currentAvoidanceTarget = null;
+            }
+
             //Calculate Avoidance Force
             if (currentAvoidanceTarget != null)
             {
