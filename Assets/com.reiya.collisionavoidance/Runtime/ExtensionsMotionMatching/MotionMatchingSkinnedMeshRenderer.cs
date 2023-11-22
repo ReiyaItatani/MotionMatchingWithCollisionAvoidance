@@ -61,6 +61,9 @@ namespace CollisionAvoidance
         //ConversationalAgentFrameWork
         public ConversationalAgentFramework conversationalAgentFramework;
         
+        //UpdateGazeController
+        public GazeController gazeController;
+        
         private void Awake()
         {
             Animator = GetComponent<Animator>();
@@ -297,6 +300,9 @@ namespace CollisionAvoidance
             UpdatePreviousInertialization();
             if(conversationalAgentFramework != null){
                 conversationalAgentFramework.UpdateOCEAN();
+            }
+            if(gazeController != null){
+                gazeController.UpdateGaze();
             }
         }
 

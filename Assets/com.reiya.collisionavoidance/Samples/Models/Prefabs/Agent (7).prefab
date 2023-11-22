@@ -1604,6 +1604,7 @@ GameObject:
   - component: {fileID: 4616519900628131498}
   - component: {fileID: 1725902089091511044}
   - component: {fileID: 1156715142197482498}
+  - component: {fileID: 2612699541705202732}
   m_Layer: 0
   m_Name: female12@T-Pose
   m_TagString: Agent
@@ -1747,6 +1748,7 @@ MonoBehaviour:
   AvoidToesFloorPenetration: 1
   ToesSoleOffset: {x: 0, y: 0, z: -0.02}
   conversationalAgentFramework: {fileID: 4616519900628131498}
+  gazeController: {fileID: 2612699541705202732}
 --- !u!114 &4616519900628131498
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1821,6 +1823,19 @@ MonoBehaviour:
   bendAngles: []
   stopBending: 
   interpolation: 0
+--- !u!114 &2612699541705202732
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4822309990146288225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f522863ec97480744a67732aa2b71ff7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentLookTarget: 0
 --- !u!1 &4890080297645227679
 GameObject:
   m_ObjectHideFlags: 0

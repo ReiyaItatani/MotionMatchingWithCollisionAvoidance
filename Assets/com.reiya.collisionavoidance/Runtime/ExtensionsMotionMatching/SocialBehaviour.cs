@@ -44,7 +44,7 @@ public class SocialBehaviour : MonoBehaviour
 
     [Header("Animation")]
     private CollisionAvoidance.MotionMatchingSkinnedMeshRenderer motionMatchingRenderer;
-    private ConversationalAgentFramework conversationalAgentFramework;
+    private GazeController gazeController;
     private AvatarMaskData initialAvatarMask;
 
     [Header("LookAt")]
@@ -62,7 +62,7 @@ public class SocialBehaviour : MonoBehaviour
         parameterManager             = GetComponent<ParameterManager>();
         animator                     = GetComponent<Animator>();
         motionMatchingRenderer       = GetComponent<CollisionAvoidance.MotionMatchingSkinnedMeshRenderer>();
-        conversationalAgentFramework = GetComponent<ConversationalAgentFramework>();
+        gazeController               = GetComponent<GazeController>();
 
         if (motionMatchingRenderer != null)
         {
@@ -226,7 +226,7 @@ public class SocialBehaviour : MonoBehaviour
     #region Collide Response
     public void DeleteCollidedTarget()
     {
-        conversationalAgentFramework.SetCollidedTarget(null);
+        gazeController.SetCollidedTarget(null);
     }
 
     public void TryPlayAudio(float PlayAudioProbability)
@@ -290,12 +290,12 @@ public class SocialBehaviour : MonoBehaviour
 
     public void IfIndividual(bool isIndividual)
     {
-        conversationalAgentFramework.IfIndividual(isIndividual);
+        gazeController.IfIndividual(isIndividual);
     }
 
     public Vector3 GetCurrentLookAt()
     {
-        return conversationalAgentFramework.GetCurrentLookAt();
+        return gazeController.GetCurrentLookAt();
     }
 
     private Vector3 CalculateGazingDirectionToCOM(List<GameObject> groupAgents, Vector3 currentPos, Vector3 currentLookDir, GameObject myself, float angleLimit)
@@ -363,18 +363,18 @@ public class SocialBehaviour : MonoBehaviour
     }
 
     public void SetCollidedTarget(GameObject collidedTarget){
-        conversationalAgentFramework.SetCollidedTarget(collidedTarget);
+        gazeController.SetCollidedTarget(collidedTarget);
     }
     public void SetCurrentDirection(Vector3 currentDirection){
-        conversationalAgentFramework.SetCurrentAgentDirection(currentDirection);
+        gazeController.SetCurrentAgentDirection(currentDirection);
     }
 
     public void SetCurrentCenterOfMass(Vector3 lookAtCenterOfMass){
-        conversationalAgentFramework.SetCurrentCenterOfMass(lookAtCenterOfMass);
+        gazeController.SetCurrentCenterOfMass(lookAtCenterOfMass);
     }
 
     public void SetCurrentAvoidanceTarget(Vector3 currentAvoidanceTarget){
-        conversationalAgentFramework.SetCurrentAvoidanceTarget(currentAvoidanceTarget);
+        gazeController.SetCurrentAvoidanceTarget(currentAvoidanceTarget);
     }
     #endregion
 }
