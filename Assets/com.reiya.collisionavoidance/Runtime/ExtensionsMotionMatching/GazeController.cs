@@ -1,8 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 namespace CollisionAvoidance{
+[RequireComponent(typeof(ParameterManager))]
+[RequireComponent(typeof(SocialBehaviour))]
 public class GazeController : MonoBehaviour
 {
     public enum CurrentLookTarget{
@@ -16,10 +19,19 @@ public class GazeController : MonoBehaviour
     private Transform t_Neck;
     private Transform t_Head;
 
+    private SocialBehaviour socialBehaviour;
+
     private void Awake()
     {
         animator = GetComponent<Animator>();
         GetBodyTransforms(animator);
+
+        socialBehaviour = GetComponent<SocialBehaviour>();
+
+        ParameterManager parameterManager = GetComponent<ParameterManager>();
+        List<GameObject> groupAgents = parameterManager.GetAvatarCreatorBase().GetAgentsInCategory(parameterManager.GetSocialRelations());
+        SocialRelations mySocialRelations = parameterManager.GetSocialRelations();
+        ifIndividual = groupAgents.Count <= 1 || mySocialRelations == SocialRelations.Individual;
     }
 
     void Start()
@@ -27,7 +39,7 @@ public class GazeController : MonoBehaviour
         GameObject body = FindObjectWithSkinnedMeshRenderer(gameObject);
         meshRenderer = body.GetComponentInChildren<SkinnedMeshRenderer>();
 
-        InvokeRepeating("UpdateNeckState",2.0f ,2.0f);
+        StartCoroutine(UpdateNeckState(2.0f));
     }
 
     GameObject FindObjectWithSkinnedMeshRenderer(GameObject parent)
@@ -61,6 +73,8 @@ public class GazeController : MonoBehaviour
     public void UpdateGaze()
     {
         GetBodyTransforms(animator);
+        ParameterUpdater();
+
         AdjustEyeLevelPass();
         //LookAt
         LookAtAttractionPointUpdater();
@@ -107,6 +121,14 @@ public class GazeController : MonoBehaviour
     }
 
 //Todo refine
+    private void ParameterUpdater(){
+        //Update Params
+        currentCenterOfMass    = socialBehaviour.GetCurrentCenterOfMass();
+        currentAvoidanceTarget = socialBehaviour.GetCurrentAvoidanceTarget();
+        currentAgentDirection  = socialBehaviour.GetCurrentDirection();
+        collidedTarget         = socialBehaviour.GetCollidedTarget();
+    }
+
     private void LookAtAttractionPointUpdater(){
         if(collidedTarget != null){
             //when collide
@@ -117,14 +139,19 @@ public class GazeController : MonoBehaviour
             currentLookTarget = CurrentLookTarget.CurerntAvoidancetarget;
         }else{
             //in normal situation
-            if(ifIndividual){
-                //if the agent is individual
+            if (ifIndividual) {
+                // if the agent is individual
                 attractionPoint = currentAgentDirection.normalized;
                 currentLookTarget = CurrentLookTarget.MyDirection;
-            }else{
-                //if the agent is in a group
+            } else{
+                // if the agent is in a group
                 attractionPoint = currentCenterOfMass.normalized;
                 currentLookTarget = CurrentLookTarget.CenterOfMass;
+            }
+            //checklookForward
+            if(lookForward){
+                attractionPoint = currentAgentDirection.normalized;
+                currentLookTarget = CurrentLookTarget.MyDirection;
             }
         }
     }
@@ -145,27 +172,29 @@ public class GazeController : MonoBehaviour
     #endif
 
     //call this in fixed update
-    private void UpdateNeckState(){
-        CheckNeckRotation(GetCurrentLookAt(), GetCurrentAgentDirection(), neckRotationLimit);
+    private IEnumerator UpdateNeckState(float updateTime){
+
+        while(true){
+            CheckNeckRotation(GetCurrentLookAt(), GetCurrentAgentDirection(), neckRotationLimit);
+            yield return new WaitForSeconds(updateTime);
+        }
     }
 
     private void CheckNeckRotation(Vector3 _currentLookAt, Vector3 myDirection, float _neckRotationLimit, float lookAtForwardDuration = 2.0f, float probability = 0.5f){
         float currentNeckRotation = Vector3.Angle(_currentLookAt.normalized, myDirection.normalized);
         if(UnityEngine.Random.Range(0.0f, 1.0f) < probability){
-            if(currentNeckRotation >= _neckRotationLimit && coroutineLooForwardIsFinished){
+            if(currentNeckRotation >= _neckRotationLimit && lookForward == false){
                 StartCoroutine(TemporalLookAtForward(lookAtForwardDuration));
             }
         }
     }
 
-    private bool coroutineLooForwardIsFinished = true;
+    private bool lookForward = false;
     private IEnumerator TemporalLookAtForward(float duration){
-        if(ifIndividual == false  && coroutineLooForwardIsFinished == true){
-            coroutineLooForwardIsFinished = false;
-            ifIndividual = true;
+        if(lookForward == false){
+            lookForward = true;
             yield return new WaitForSeconds(duration);
-            ifIndividual = false;
-            coroutineLooForwardIsFinished = true;
+            lookForward = false;
         }
         yield return null;
     }
@@ -178,35 +207,16 @@ public class GazeController : MonoBehaviour
     public Vector3 GetCurrentLookAt(){
         return currentLookAt;
     }
+
+    public Vector3 GetCurrentAgentDirection(){
+        return currentAgentDirection;
+    }
     
     private void AdjustEyeLevelPass(){
         Vector3 horizontalForward = new Vector3(t_Head.forward.x, 0, t_Head.forward.z).normalized;
         Quaternion horizontalRotation = Quaternion.LookRotation(horizontalForward, Vector3.up);
         t_Head.localRotation *= Quaternion.Inverse(t_Head.rotation) * horizontalRotation;
         //t_Neck.localRotation *= Quaternion.Inverse(t_Neck.rotation) * horizontalRotation;
-    }
-
-    public void SetCurrentCenterOfMass(Vector3 _currentCenterOfMass){
-        currentCenterOfMass = _currentCenterOfMass;
-    }
-    public void SetCurrentAvoidanceTarget(Vector3 _currentAvoidanceTarget){
-        currentAvoidanceTarget = _currentAvoidanceTarget;
-    }
-
-    public void SetCurrentAgentDirection(Vector3 _currentAgentDirection){
-        currentAgentDirection = _currentAgentDirection;
-    }
-
-    public void SetCollidedTarget(GameObject _collidedTarget){
-        collidedTarget = _collidedTarget;
-    }
-
-    public Vector3 GetCurrentAgentDirection(){
-        return currentAgentDirection;
-    }
-
-    public void IfIndividual(bool _ifIndividual){
-        ifIndividual = _ifIndividual;
     }
 
     private void LookAtAdjustmentPass(float angleLimit = 40.0f){

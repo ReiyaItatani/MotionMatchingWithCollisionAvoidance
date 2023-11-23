@@ -226,7 +226,7 @@ public class SocialBehaviour : MonoBehaviour
     #region Collide Response
     public void DeleteCollidedTarget()
     {
-        gazeController.SetCollidedTarget(null);
+        collidedTarget = null;
     }
 
     public void TryPlayAudio(float PlayAudioProbability)
@@ -245,8 +245,6 @@ public class SocialBehaviour : MonoBehaviour
         List<GameObject> groupAgents = parameterManager.GetAvatarCreatorBase().GetAgentsInCategory(parameterManager.GetSocialRelations());
         SocialRelations mySocialRelations = parameterManager.GetSocialRelations();
         bool isIndividual = groupAgents.Count <= 1 || mySocialRelations == SocialRelations.Individual;
-
-        IfIndividual(isIndividual);
 
         while (true)
         {
@@ -286,11 +284,6 @@ public class SocialBehaviour : MonoBehaviour
             Vector3 gazeAngleDirection = CalculateGazingDirectionToCOM(groupAgents, currentPosition, headDirection, gameObject, FieldOfView);
             SetCurrentCenterOfMass(gazeAngleDirection);
         }
-    }
-
-    public void IfIndividual(bool isIndividual)
-    {
-        gazeController.IfIndividual(isIndividual);
     }
 
     public Vector3 GetCurrentLookAt()
@@ -362,20 +355,42 @@ public class SocialBehaviour : MonoBehaviour
         return onSmartPhone;
     }
 
-    public void SetCollidedTarget(GameObject collidedTarget){
-        gazeController.SetCollidedTarget(collidedTarget);
+    GameObject collidedTarget;
+    Vector3 currentDirection;
+    Vector3 lookAtCenterOfMass;
+    Vector3 currentAvoidanceTarget;
+
+    public void SetCollidedTarget(GameObject _collidedTarget){
+        collidedTarget = _collidedTarget;
     }
-    public void SetCurrentDirection(Vector3 currentDirection){
-        gazeController.SetCurrentAgentDirection(currentDirection);
+    private void SetCurrentDirection(Vector3 _currentDirection){
+        currentDirection = _currentDirection;
     }
 
-    public void SetCurrentCenterOfMass(Vector3 lookAtCenterOfMass){
-        gazeController.SetCurrentCenterOfMass(lookAtCenterOfMass);
+    private void SetCurrentCenterOfMass(Vector3 _lookAtCenterOfMass){
+        lookAtCenterOfMass = _lookAtCenterOfMass;
     }
 
-    public void SetCurrentAvoidanceTarget(Vector3 currentAvoidanceTarget){
-        gazeController.SetCurrentAvoidanceTarget(currentAvoidanceTarget);
+    private void SetCurrentAvoidanceTarget(Vector3 _currentAvoidanceTarget){
+        currentAvoidanceTarget = _currentAvoidanceTarget;
     }
+
+    public GameObject GetCollidedTarget(){
+        return collidedTarget;
+    }
+    public Vector3 GetCurrentDirection(){
+        return currentDirection;
+    }
+
+    public Vector3 GetCurrentCenterOfMass(){
+        return lookAtCenterOfMass;
+    }
+
+    public Vector3 GetCurrentAvoidanceTarget(){
+        return currentAvoidanceTarget;
+    }
+
+
     #endregion
 }
 }
