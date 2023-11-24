@@ -56,6 +56,7 @@ public class PathController : MotionMatchingCharacterController
     private Vector3 avoidanceVector = Vector3.zero;//Direction of basic collision avoidance
     [HideInInspector]
     public float avoidanceWeight = 2.0f;//Weight for basic collision avoidance
+    [ReadOnly]
     public GameObject currentAvoidanceTarget;
     // --------------------------------------------------------------------------
     // To Goal Direction --------------------------------------------------------
@@ -73,7 +74,8 @@ public class PathController : MotionMatchingCharacterController
     // Unaligned Collision Avoidance -------------------------------------------
     [Header("Parameters For Unaligned Collision Avoidance"), HideInInspector]
     private Vector3 avoidNeighborsVector = Vector3.zero;//Direction for unaligned collision avoidance
-    private GameObject potentialAvoidanceTarget;
+    [ReadOnly]
+    public GameObject potentialAvoidanceTarget;
     [HideInInspector]
     public float avoidNeighborWeight = 2.0f;//Weight for unaligned collision avoidance
     private float minTimeToCollision =5.0f;
@@ -514,7 +516,7 @@ public class PathController : MotionMatchingCharacterController
     public Vector3 SteerToAvoidNeighbors (List<GameObject> others, float minTimeToCollision, float collisionDangerThreshold)
     {
         float steer = 0;
-        potentialAvoidanceTarget = null;
+        // potentialAvoidanceTarget = null;
         Vector3 myPositionAtNearestApproach = Vector3.zero;
         Vector3 otherPositionAtNearestApproach = Vector3.zero;
         potentialAvoidanceTarget = DecideUrgentAvoidanceTarget(others, minTimeToCollision, collisionDangerThreshold, out myPositionAtNearestApproach, out otherPositionAtNearestApproach);
@@ -1165,9 +1167,9 @@ public class PathController : MotionMatchingCharacterController
     public AvatarCreatorBase GetAvatarCreatorBase(){
         return avatarCreator;
     }
-    public GameObject GetCurrentAvoidanceTarget()
+    public GameObject GetPotentialAvoidanceTarget()
     {
-        return currentAvoidanceTarget;
+        return potentialAvoidanceTarget;
     }
     public Vector3 GetCurrentAvoidanceVector(){
         return avoidanceVector;

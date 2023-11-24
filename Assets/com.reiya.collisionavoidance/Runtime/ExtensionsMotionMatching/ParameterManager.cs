@@ -32,10 +32,10 @@ namespace CollisionAvoidance{
         return pathController.GetCurrentAvoidanceVector();
     }
 
-    public GameObject GetCurrentAvoidanceTarget(){
-        GameObject currentAvoidanceTarget = pathController.GetCurrentAvoidanceTarget();
-        if(currentAvoidanceTarget != null){
-            return pathController.GetCurrentAvoidanceTarget();
+    public GameObject GetPotentialAvoidanceTarget(){
+        GameObject potentialAvoidanceTarget = pathController.GetPotentialAvoidanceTarget();
+        if(potentialAvoidanceTarget != null){
+            return potentialAvoidanceTarget;
         }
         return null;
     }

@@ -79,7 +79,7 @@ public class GazeController : MonoBehaviour
         //LookAt
         LookAtAttractionPointUpdater();
         UpdateCurrentLookAtSave();
-        LookAtPass(currentLookAt, attractionPoint, 0.5f);
+        LookAtPass(currentLookAt, attractionPoint, Random.Range(0.3f, 0.5f));
         //LookAtAdjustmentPass
         LookAtAdjustmentPass(neckRotationLimit);
         //EyesMovement
@@ -124,7 +124,7 @@ public class GazeController : MonoBehaviour
     private void ParameterUpdater(){
         //Update Params
         currentCenterOfMass    = socialBehaviour.GetCurrentCenterOfMass();
-        currentAvoidanceTarget = socialBehaviour.GetCurrentAvoidanceTarget();
+        currentAvoidanceTarget = socialBehaviour.GetPotentialAvoidanceTarget();
         currentAgentDirection  = socialBehaviour.GetCurrentDirection();
         collidedTarget         = socialBehaviour.GetCollidedTarget();
     }

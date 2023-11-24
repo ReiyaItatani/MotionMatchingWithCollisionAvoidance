@@ -150,7 +150,7 @@ public class RightHandRotModifier : MonoBehaviour
 
     public void LateUpdate()
     {
-        if(socialBehaviour.onSmartPhone == false) return;
+        if(socialBehaviour.GetOnSmartPhone() == false) return;
         if(interpolation < 1){
             interpolation += 0.01f;
         }

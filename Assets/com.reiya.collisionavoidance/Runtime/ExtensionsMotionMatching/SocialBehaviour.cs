@@ -32,7 +32,7 @@ public enum UpperBodyAnimationState
 /// </summary>
 public class SocialBehaviour : MonoBehaviour
 {
-    private const float LookAtUpdateTime = 0.2f;
+    private const float LookAtUpdateTime = 1.0f;
     private const float AnimationStateUpdateMinTime = 10.0f;
     private const float AnimationStateUpdateMaxTime = 20.0f;
     private const float WalkAnimationProbability = 0.5f;
@@ -55,7 +55,7 @@ public class SocialBehaviour : MonoBehaviour
     public UpperBodyAnimationState currentAnimationState = UpperBodyAnimationState.Walk;
     public GameObject smartPhone;
     private Animator animator;
-    public bool onSmartPhone = true;
+    private bool onSmartPhone = true;
 
     private void Awake()
     {
@@ -244,13 +244,13 @@ public class SocialBehaviour : MonoBehaviour
     {
         List<GameObject> groupAgents = parameterManager.GetAvatarCreatorBase().GetAgentsInCategory(parameterManager.GetSocialRelations());
         SocialRelations mySocialRelations = parameterManager.GetSocialRelations();
-        bool isIndividual = groupAgents.Count <= 1 || mySocialRelations == SocialRelations.Individual;
+        bool _isIndividual = groupAgents.Count <= 1 || mySocialRelations == SocialRelations.Individual;
 
         while (true)
         {
-            UpdateDirectionAndAvoidance(mySocialRelations);
+            UpdateDirectionAndAvoidance(mySocialRelations, _isIndividual);
 
-            if (!isIndividual)
+            if (!_isIndividual)
             {
                 UpdateGroupAgentLookAt(groupAgents);
             }
@@ -259,19 +259,23 @@ public class SocialBehaviour : MonoBehaviour
         }
     }
 
-    private void UpdateDirectionAndAvoidance(SocialRelations mySocialRelations)
+    private void UpdateDirectionAndAvoidance(SocialRelations mySocialRelations, bool _isIndividual)
     {
         SetCurrentDirection(parameterManager.GetCurrentDirection());
-        GameObject currentAvoidanceTarget = parameterManager.GetCurrentAvoidanceTarget();
+        GameObject _potentialAvoidanceTarget = parameterManager.GetPotentialAvoidanceTarget();
 
-        if (currentAvoidanceTarget != null)
+        if (_potentialAvoidanceTarget != null)
         {
-            SocialRelations avoidanceTargetSocialRelations = currentAvoidanceTarget.GetComponent<IParameterManager>().GetSocialRelations();
-            SetCurrentAvoidanceTarget(avoidanceTargetSocialRelations != mySocialRelations ? currentAvoidanceTarget.GetComponent<IParameterManager>().GetCurrentPosition() : Vector3.zero);
+            SocialRelations avoidanceTargetSocialRelations = _potentialAvoidanceTarget.GetComponent<IParameterManager>().GetSocialRelations();
+            if(_isIndividual == true){
+                SetPotentialAvoidanceTarget(_potentialAvoidanceTarget.GetComponent<IParameterManager>().GetCurrentPosition());
+            }else{
+                SetPotentialAvoidanceTarget(avoidanceTargetSocialRelations != mySocialRelations ? _potentialAvoidanceTarget.GetComponent<IParameterManager>().GetCurrentPosition() : Vector3.zero);
+            }
         }
         else
         {
-            SetCurrentAvoidanceTarget(Vector3.zero);
+            SetPotentialAvoidanceTarget(Vector3.zero);
         }
     }
 
@@ -358,7 +362,7 @@ public class SocialBehaviour : MonoBehaviour
     GameObject collidedTarget;
     Vector3 currentDirection;
     Vector3 lookAtCenterOfMass;
-    Vector3 currentAvoidanceTarget;
+    Vector3 potentialAvoidanceTarget;
 
     public void SetCollidedTarget(GameObject _collidedTarget){
         collidedTarget = _collidedTarget;
@@ -371,8 +375,38 @@ public class SocialBehaviour : MonoBehaviour
         lookAtCenterOfMass = _lookAtCenterOfMass;
     }
 
-    private void SetCurrentAvoidanceTarget(Vector3 _currentAvoidanceTarget){
-        currentAvoidanceTarget = _currentAvoidanceTarget;
+    private void SetPotentialAvoidanceTarget(Vector3 _potentialAvoidanceTarget){
+        if (_potentialAvoidanceTarget != Vector3.zero){
+            float distance = Vector3.Distance(transform.position, _potentialAvoidanceTarget);
+
+            //TODO: this maxdistance should be considered with unalinged collision avoidance area
+            // Define the maximum distance (threshold)
+            float maxDistance = 10.0f; // Adjust this value based on game requirements
+
+            // Calculate the probability based on distance (linearly decreasing)
+            float probability = distance / maxDistance;
+
+            // Random.value returns a random number between 0 and 1
+            if (UnityEngine.Random.value < probability){
+                // Use _potentialAvoidanceTarget based on probability
+                potentialAvoidanceTarget = _potentialAvoidanceTarget;
+                //this is for adjusting duration of looking at potential avoidance target
+                //StartCoroutine(TemporalPotentialAvoidanceTarget(0.3f));
+            } else {
+                // Otherwise, set to Vector3.zero
+                potentialAvoidanceTarget = Vector3.zero;
+            }
+        } else {
+            potentialAvoidanceTarget = Vector3.zero;
+        }
+    }
+
+    private IEnumerator TemporalPotentialAvoidanceTarget(float duration){
+        if(duration > LookAtUpdateTime){
+            duration = LookAtUpdateTime;
+        }
+        yield return new WaitForSeconds(duration);
+        potentialAvoidanceTarget = Vector3.zero;
     }
 
     public GameObject GetCollidedTarget(){
@@ -386,8 +420,8 @@ public class SocialBehaviour : MonoBehaviour
         return lookAtCenterOfMass;
     }
 
-    public Vector3 GetCurrentAvoidanceTarget(){
-        return currentAvoidanceTarget;
+    public Vector3 GetPotentialAvoidanceTarget(){
+        return potentialAvoidanceTarget;
     }
 
 
