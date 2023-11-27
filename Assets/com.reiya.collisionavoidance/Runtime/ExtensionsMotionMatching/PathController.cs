@@ -202,9 +202,9 @@ public class PathController : MotionMatchingCharacterController
         direction = (      toGoalWeight    *            toGoalVector + 
                         avoidanceWeight    *         avoidanceVector + 
                     avoidNeighborWeight    *    avoidNeighborsVector + 
-                    groupForceWeight    *             groupForce +
-                    wallRepForceWeight    *           wallRepForce +
-            syntheticVisionForceWeight    *   syntheticVisionForce
+                    groupForceWeight       *              groupForce +
+                    wallRepForceWeight     *            wallRepForce +
+            syntheticVisionForceWeight     *    syntheticVisionForce
                     ).normalized;
         direction = new Vector3(direction.x, 0f, direction.z);
 
@@ -367,7 +367,7 @@ public class PathController : MotionMatchingCharacterController
             //To use FOV
             List<GameObject> othersInAvoidanceArea = collisionAvoidance.GetOthersInFOV();
             List<GameObject> othersOnPath          = collisionAvoidance.GetOthersInAvoidanceArea();
-            Vector3 myPositionAtNearestApproach = Vector3.zero;
+            Vector3 myPositionAtNearestApproach    = Vector3.zero;
             Vector3 otherPositionAtNearestApproach = Vector3.zero;
 
             //Update CurrentAvoidance Target

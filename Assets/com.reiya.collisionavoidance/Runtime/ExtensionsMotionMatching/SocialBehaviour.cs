@@ -268,9 +268,9 @@ public class SocialBehaviour : MonoBehaviour
         {
             SocialRelations avoidanceTargetSocialRelations = _potentialAvoidanceTarget.GetComponent<IParameterManager>().GetSocialRelations();
             if(_isIndividual == true){
-                SetPotentialAvoidanceTarget(_potentialAvoidanceTarget.GetComponent<IParameterManager>().GetCurrentPosition());
+                SetPotentialAvoidanceTarget(_potentialAvoidanceTarget.GetComponent<IParameterManager>().GetCurrentPosition(), _potentialAvoidanceTarget);
             }else{
-                SetPotentialAvoidanceTarget(avoidanceTargetSocialRelations != mySocialRelations ? _potentialAvoidanceTarget.GetComponent<IParameterManager>().GetCurrentPosition() : Vector3.zero);
+                SetPotentialAvoidanceTarget(avoidanceTargetSocialRelations != mySocialRelations ? _potentialAvoidanceTarget.GetComponent<IParameterManager>().GetCurrentPosition() : Vector3.zero, _potentialAvoidanceTarget);
             }
         }
         else
@@ -375,7 +375,7 @@ public class SocialBehaviour : MonoBehaviour
         lookAtCenterOfMass = _lookAtCenterOfMass;
     }
 
-    private void SetPotentialAvoidanceTarget(Vector3 _potentialAvoidanceTarget){
+    private void SetPotentialAvoidanceTarget(Vector3 _potentialAvoidanceTarget, GameObject avoidanceTargetObject = null){
         if (_potentialAvoidanceTarget != Vector3.zero){
             float distance = Vector3.Distance(transform.position, _potentialAvoidanceTarget);
 
@@ -391,7 +391,7 @@ public class SocialBehaviour : MonoBehaviour
                 // Use _potentialAvoidanceTarget based on probability
                 potentialAvoidanceTarget = _potentialAvoidanceTarget;
                 //this is for adjusting duration of looking at potential avoidance target
-                //StartCoroutine(TemporalPotentialAvoidanceTarget(0.3f));
+                StartCoroutine(TemporalPotentialAvoidanceTarget(0.5f, avoidanceTargetObject));
             } else {
                 // Otherwise, set to Vector3.zero
                 potentialAvoidanceTarget = Vector3.zero;
@@ -401,7 +401,8 @@ public class SocialBehaviour : MonoBehaviour
         }
     }
 
-    private IEnumerator TemporalPotentialAvoidanceTarget(float duration){
+    //TODO: potential avoidance target > getcurrentlookat→ 180° → potential avoidance target = Vector3.zero
+    private IEnumerator TemporalPotentialAvoidanceTarget(float duration, GameObject avoidanceTargetObject){
         if(duration > LookAtUpdateTime){
             duration = LookAtUpdateTime;
         }

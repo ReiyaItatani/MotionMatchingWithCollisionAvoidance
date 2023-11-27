@@ -1481,7 +1481,6 @@ MonoBehaviour:
   - {fileID: 8300000, guid: d866266b79ec89742baa20523b70fac5, type: 3}
   currentAnimationState: 0
   smartPhone: {fileID: 64249467}
-  onSmartPhone: 1
 --- !u!114 &5104321456628599521
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1561,7 +1560,6 @@ MonoBehaviour:
   sink_bend: 0
   head_bend: 0
   faceController: {fileID: 0}
-  currentLookTarget: 0
 --- !u!114 &3532266529986092590
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1957,7 +1955,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -2106,6 +2104,7 @@ MonoBehaviour:
   toGoalWeight: 1.7
   goalRadius: 0.5
   slowingRadius: 2
+  potentialAvoidanceTarget: {fileID: 0}
   avoidNeighborWeight: 1
   showAvoidanceForce: 0
   showUnalignedCollisionAvoidance: 0
