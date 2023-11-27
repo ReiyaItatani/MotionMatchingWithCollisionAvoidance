@@ -17,7 +17,6 @@ public class GazeController : MonoBehaviour
     private SkinnedMeshRenderer meshRenderer;
     private Animator animator;
     private Transform t_Neck;
-    private Transform t_Head;
 
     private SocialBehaviour socialBehaviour;
 
@@ -62,12 +61,10 @@ public class GazeController : MonoBehaviour
 
     private void GetBodyTransforms(Animator _animator){
         t_Neck = _animator.GetBoneTransform(HumanBodyBones.Neck);
-        t_Head = _animator.GetBoneTransform(HumanBodyBones.Head);
     }
     private void SetBodyTransforms(Animator _animator)
     {
         _animator.SetBoneLocalRotation(HumanBodyBones.Neck, t_Neck.localRotation);
-        _animator.SetBoneLocalRotation(HumanBodyBones.Head, t_Head.localRotation);
     }
 
     public void UpdateGaze()
@@ -75,11 +72,11 @@ public class GazeController : MonoBehaviour
         GetBodyTransforms(animator);
         ParameterUpdater();
 
-        AdjustEyeLevelPass();
+        AdjustVerticalEyeLevelPass();
         //LookAt
         LookAtAttractionPointUpdater();
         UpdateCurrentLookAtSave();
-        LookAtPass(currentLookAt, attractionPoint, Random.Range(0.3f, 0.5f));
+        HorizontalLookAtPass(currentLookAt, horizontalAttractionPoint, Random.Range(0.3f, 0.5f));
         //LookAtAdjustmentPass
         LookAtAdjustmentPass(neckRotationLimit);
         //EyesMovement
@@ -97,7 +94,7 @@ public class GazeController : MonoBehaviour
     [ReadOnly]
     public CurrentLookTarget currentLookTarget;
     private GameObject collidedTarget;
-    private Vector3 attractionPoint;
+    private Vector3 horizontalAttractionPoint;
     private Quaternion saveLookAtRot = Quaternion.identity;
     private Vector3 currentLookAt = Vector3.zero;
     private bool ifIndividual = false;
@@ -107,7 +104,7 @@ public class GazeController : MonoBehaviour
     private Vector3 currentAgentDirection = Vector3.zero;
 
 
-    private void LookAtPass(Vector3 currentLookAtDir, Vector3 targetLookAtDir, float rotationSpeed){
+    private void HorizontalLookAtPass(Vector3 currentLookAtDir, Vector3 targetLookAtDir, float rotationSpeed){
         Vector3 crossResult = Vector3.Cross(currentLookAtDir, targetLookAtDir);
         if (crossResult.y > 0)
         {
@@ -132,25 +129,25 @@ public class GazeController : MonoBehaviour
     private void LookAtAttractionPointUpdater(){
         if(collidedTarget != null){
             //when collide
-            attractionPoint = (collidedTarget.transform.position - this.transform.position).normalized;
+            horizontalAttractionPoint = (collidedTarget.transform.position - this.transform.position).normalized;
             currentLookTarget = CurrentLookTarget.CollidedTarget;
         }else if(collidedTarget == null && currentAvoidanceTarget != Vector3.zero){
-            attractionPoint = (currentAvoidanceTarget - this.transform.position).normalized;
+            horizontalAttractionPoint = (currentAvoidanceTarget - this.transform.position).normalized;
             currentLookTarget = CurrentLookTarget.CurerntAvoidancetarget;
         }else{
             //in normal situation
             if (ifIndividual) {
                 // if the agent is individual
-                attractionPoint = currentAgentDirection.normalized;
+                horizontalAttractionPoint = currentAgentDirection.normalized;
                 currentLookTarget = CurrentLookTarget.MyDirection;
             } else{
                 // if the agent is in a group
-                attractionPoint = currentCenterOfMass.normalized;
+                horizontalAttractionPoint = currentCenterOfMass.normalized;
                 currentLookTarget = CurrentLookTarget.CenterOfMass;
             }
             //checklookForward
             if(lookForward){
-                attractionPoint = currentAgentDirection.normalized;
+                horizontalAttractionPoint = currentAgentDirection.normalized;
                 currentLookTarget = CurrentLookTarget.MyDirection;
             }
         }
@@ -158,16 +155,21 @@ public class GazeController : MonoBehaviour
     #if UNITY_EDITOR
     void OnDrawGizmos()
     {
-        if (t_Head == null) return;
-
+        if(animator == null) return;
         Vector3 offset = new Vector3(0f, 0f, 0f);
-        Vector3 eyePosition = t_Head.transform.position + offset;
+        Vector3 eyePosition = animator.GetBoneTransform(HumanBodyBones.Head).transform.position + offset;
         Gizmos.color = Color.magenta;
-        Vector3 targetPosition = this.transform.position + attractionPoint;
+        Vector3 targetPosition = this.transform.position + horizontalAttractionPoint;
         Vector3 lineEndPoint = new Vector3(targetPosition.x, eyePosition.y, targetPosition.z);
         Gizmos.DrawLine(eyePosition, lineEndPoint);  
         float sphereSize = 0.01f; 
         Gizmos.DrawSphere(lineEndPoint, sphereSize);
+
+        Gizmos.color = Color.green;
+        Vector3 currentLookAt = this.transform.position + GetCurrentLookAt();
+        Vector3 currentLookAtEndPoint = new Vector3(currentLookAt.x, eyePosition.y, currentLookAt.z);
+        Gizmos.DrawLine(eyePosition, currentLookAtEndPoint);  
+        Gizmos.DrawSphere(currentLookAtEndPoint, sphereSize);
     }
     #endif
 
@@ -201,7 +203,7 @@ public class GazeController : MonoBehaviour
 
     private void UpdateCurrentLookAtSave(float angleLimit = 40.0f){
         saveLookAtRot = LimitRotation(saveLookAtRot, angleLimit);
-        currentLookAt = saveLookAtRot * t_Head.forward;
+        currentLookAt = saveLookAtRot * t_Neck.forward;
     }
 
     public Vector3 GetCurrentLookAt(){
@@ -212,16 +214,14 @@ public class GazeController : MonoBehaviour
         return currentAgentDirection;
     }
     
-    private void AdjustEyeLevelPass(){
-        Vector3 horizontalForward = new Vector3(t_Head.forward.x, 0, t_Head.forward.z).normalized;
+    private void AdjustVerticalEyeLevelPass(){
+        Vector3 horizontalForward = new Vector3(t_Neck.forward.x, 0, t_Neck.forward.z).normalized;
         Quaternion horizontalRotation = Quaternion.LookRotation(horizontalForward, Vector3.up);
-        t_Head.localRotation *= Quaternion.Inverse(t_Head.rotation) * horizontalRotation;
-        //t_Neck.localRotation *= Quaternion.Inverse(t_Neck.rotation) * horizontalRotation;
+        t_Neck.localRotation *= Quaternion.Inverse(t_Neck.rotation) * horizontalRotation;
     }
 
     private void LookAtAdjustmentPass(float angleLimit = 40.0f){
         t_Neck.localRotation = LimitRotation(t_Neck.localRotation, angleLimit);
-        t_Head.localRotation = LimitRotation(t_Head.localRotation, angleLimit);
     }
     public static Quaternion LimitRotation(Quaternion rotation, float angleLimit)
     {
@@ -255,7 +255,7 @@ public class GazeController : MonoBehaviour
 
     private void EyesMovementPass()
     {
-        CalculateBlendValueBasedOnDirection(GetCurrentLookAt(), attractionPoint);
+        CalculateBlendValueBasedOnDirection(GetCurrentLookAt(), horizontalAttractionPoint);
     }
 
     private void ResetEyesBlendShape()

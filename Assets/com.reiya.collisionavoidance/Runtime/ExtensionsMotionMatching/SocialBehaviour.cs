@@ -32,7 +32,7 @@ public enum UpperBodyAnimationState
 /// </summary>
 public class SocialBehaviour : MonoBehaviour
 {
-    private const float LookAtUpdateTime = 1.0f;
+    private const float LookAtUpdateTime = 1.5f;
     private const float AnimationStateUpdateMinTime = 10.0f;
     private const float AnimationStateUpdateMaxTime = 20.0f;
     private const float WalkAnimationProbability = 0.5f;
@@ -363,6 +363,7 @@ public class SocialBehaviour : MonoBehaviour
     Vector3 currentDirection;
     Vector3 lookAtCenterOfMass;
     Vector3 potentialAvoidanceTarget;
+    GameObject potentialAvoidanceObject;
 
     public void SetCollidedTarget(GameObject _collidedTarget){
         collidedTarget = _collidedTarget;
@@ -377,12 +378,11 @@ public class SocialBehaviour : MonoBehaviour
 
     private void SetPotentialAvoidanceTarget(Vector3 _potentialAvoidanceTarget, GameObject avoidanceTargetObject = null){
         if (_potentialAvoidanceTarget != Vector3.zero){
-            float distance = Vector3.Distance(transform.position, _potentialAvoidanceTarget);
 
+            float distance = Vector3.Distance(transform.position, _potentialAvoidanceTarget);
             //TODO: this maxdistance should be considered with unalinged collision avoidance area
             // Define the maximum distance (threshold)
-            float maxDistance = 10.0f; // Adjust this value based on game requirements
-
+            float maxDistance = 7.0f; // Adjust this value based on game requirements
             // Calculate the probability based on distance (linearly decreasing)
             float probability = distance / maxDistance;
 
@@ -390,25 +390,66 @@ public class SocialBehaviour : MonoBehaviour
             if (UnityEngine.Random.value < probability){
                 // Use _potentialAvoidanceTarget based on probability
                 potentialAvoidanceTarget = _potentialAvoidanceTarget;
+                potentialAvoidanceObject = avoidanceTargetObject;
                 //this is for adjusting duration of looking at potential avoidance target
-                StartCoroutine(TemporalPotentialAvoidanceTarget(0.5f, avoidanceTargetObject));
+                StartCoroutine(CheckMutualGaze(LookAtUpdateTime-0.1f, avoidanceTargetObject));
             } else {
                 // Otherwise, set to Vector3.zero
                 potentialAvoidanceTarget = Vector3.zero;
+                potentialAvoidanceObject = null;
             }
         } else {
             potentialAvoidanceTarget = Vector3.zero;
+            potentialAvoidanceObject = null;
         }
     }
 
     //TODO: potential avoidance target > getcurrentlookat→ 180° → potential avoidance target = Vector3.zero
-    private IEnumerator TemporalPotentialAvoidanceTarget(float duration, GameObject avoidanceTargetObject){
+    //implement mutual gaze
+    private IEnumerator CheckMutualGaze(float duration, GameObject avoidanceTargetObject){
         if(duration > LookAtUpdateTime){
             duration = LookAtUpdateTime;
         }
-        yield return new WaitForSeconds(duration);
-        potentialAvoidanceTarget = Vector3.zero;
+
+        float elapsedTime = 0f;
+
+        SocialBehaviour targetSocialBehaviour = avoidanceTargetObject.GetComponent<SocialBehaviour>();
+        IParameterManager targetParameterManager = avoidanceTargetObject.GetComponent<IParameterManager>();
+
+        while (duration > elapsedTime)
+        {
+            elapsedTime += Time.deltaTime;
+
+            if (targetSocialBehaviour != null && targetParameterManager != null)
+            {
+                Vector3 targetLookAt = targetSocialBehaviour.GetCurrentLookAt();
+                Vector3 myLookAt     = GetCurrentLookAt();
+
+                Vector3 targetPosition = targetParameterManager.GetCurrentPosition();
+                Vector3 myPosition     = parameterManager.GetCurrentPosition(); 
+
+                Vector3 myPositionToTarget = (targetPosition - myPosition).normalized;
+
+                // Normalize vectors (if they are not already normalized in their methods)
+                targetLookAt.Normalize();
+                myLookAt.Normalize();
+
+                // Calculate the dot products
+                float dotProductLookAt = Vector3.Dot(targetLookAt, myLookAt);
+                float dotProductPosition = Vector3.Dot(myPositionToTarget, myLookAt);
+
+                if (dotProductLookAt < -0.99 && dotProductPosition > 0.99)
+                {
+                    // This indicates mutual gaze
+                    potentialAvoidanceTarget = Vector3.zero;
+                    Debug.Log("Detect Mutual Gaze");
+                }
+            }
+
+            yield return new WaitForSeconds(Time.deltaTime);
+        }
     }
+
 
     public GameObject GetCollidedTarget(){
         return collidedTarget;
