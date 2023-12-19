@@ -46,11 +46,11 @@ public class CollisionAvoidanceMenuItems
         // Add the script component based on the scriptName
         if (scriptName == "AvatarCreatorCorridor")
         {
-            avatarCreator.AddComponent<AvatarCreatorCorridor>(); // 直接の型を使用
+            avatarCreator.AddComponent<AvatarCreatorCorridor>(); 
         }
         else if (scriptName == "AvatarCreator")
         {
-            avatarCreator.AddComponent<AvatarCreator>(); // 直接の型を使用
+            avatarCreator.AddComponent<AvatarCreator>(); 
         }
         else
         {

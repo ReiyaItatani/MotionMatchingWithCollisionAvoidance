@@ -259,6 +259,7 @@ public class SocialBehaviour : MonoBehaviour
         }
     }
 
+    //For individual
     private void UpdateDirectionAndAvoidance(SocialRelations mySocialRelations, bool _isIndividual)
     {
         SetCurrentDirection(parameterManager.GetCurrentDirection());
@@ -279,6 +280,7 @@ public class SocialBehaviour : MonoBehaviour
         }
     }
 
+    //For group
     private void UpdateGroupAgentLookAt(List<GameObject> groupAgents)
     {
         Vector3 headDirection = GetCurrentLookAt();
