@@ -153,24 +153,24 @@ public class GazeController : MonoBehaviour
         }
     }
     #if UNITY_EDITOR
-    void OnDrawGizmos()
-    {
-        if(animator == null) return;
-        Vector3 offset = new Vector3(0f, 0f, 0f);
-        Vector3 eyePosition = animator.GetBoneTransform(HumanBodyBones.Head).transform.position + offset;
-        Gizmos.color = Color.magenta;
-        Vector3 targetPosition = this.transform.position + horizontalAttractionPoint;
-        Vector3 lineEndPoint = new Vector3(targetPosition.x, eyePosition.y, targetPosition.z);
-        Gizmos.DrawLine(eyePosition, lineEndPoint);  
-        float sphereSize = 0.01f; 
-        Gizmos.DrawSphere(lineEndPoint, sphereSize);
+    // void OnDrawGizmos()
+    // {
+    //     if(animator == null) return;
+    //     Vector3 offset = new Vector3(0f, 0f, 0f);
+    //     Vector3 eyePosition = animator.GetBoneTransform(HumanBodyBones.Head).transform.position + offset;
+    //     Gizmos.color = Color.magenta;
+    //     Vector3 targetPosition = this.transform.position + horizontalAttractionPoint;
+    //     Vector3 lineEndPoint = new Vector3(targetPosition.x, eyePosition.y, targetPosition.z);
+    //     Gizmos.DrawLine(eyePosition, lineEndPoint);  
+    //     float sphereSize = 0.01f; 
+    //     Gizmos.DrawSphere(lineEndPoint, sphereSize);
 
-        Gizmos.color = Color.green;
-        Vector3 currentLookAt = this.transform.position + GetCurrentLookAt();
-        Vector3 currentLookAtEndPoint = new Vector3(currentLookAt.x, eyePosition.y, currentLookAt.z);
-        Gizmos.DrawLine(eyePosition, currentLookAtEndPoint);  
-        Gizmos.DrawSphere(currentLookAtEndPoint, sphereSize);
-    }
+    //     Gizmos.color = Color.green;
+    //     Vector3 currentLookAt = this.transform.position + GetCurrentLookAt();
+    //     Vector3 currentLookAtEndPoint = new Vector3(currentLookAt.x, eyePosition.y, currentLookAt.z);
+    //     Gizmos.DrawLine(eyePosition, currentLookAtEndPoint);  
+    //     Gizmos.DrawSphere(currentLookAtEndPoint, sphereSize);
+    // }
     #endif
 
     //call this in fixed update
