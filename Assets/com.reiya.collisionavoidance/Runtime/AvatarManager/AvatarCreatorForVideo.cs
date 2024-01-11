@@ -4,7 +4,8 @@ using MotionMatching;
 using System.Collections.Generic;
 
 namespace CollisionAvoidance{
-public class AvatarCreatorCorridor : AvatarCreatorBase
+
+public class AvatarCreatorForVideo : AvatarCreatorBase
 {
     [HideInInspector]
     public List<Vector3> pathVerticesEndToStart = new List<Vector3>();
@@ -18,6 +19,9 @@ public class AvatarCreatorCorridor : AvatarCreatorBase
     public GameObject wallParent;
 
     private bool avatarCreateAtStartPos = true;
+
+    [Range(0.5f, 2)]
+    public float initialAgentDistance = 1f;
 
     public override void InstantiateAvatars()
     {
@@ -73,98 +77,87 @@ public class AvatarCreatorCorridor : AvatarCreatorBase
                 }
             }
         }
-        
-        //Create Agents and Change Hierarchy
+
+        /************************Create Individual***********************/
+        //Init
+        GameObject randomAvatar = avatarPrefabs[UnityEngine.Random.Range(0, avatarPrefabs.Count)];
+        GameObject instance = Instantiate(randomAvatar, this.transform);
+        PathController pathController = instance.GetComponentInChildren<PathController>();
+        MotionMatchingController motionMatchingController = instance.GetComponentInChildren<MotionMatchingController>();
+        CollisionAvoidanceController collisionAvoidanceController = instance.GetComponentInChildren<CollisionAvoidanceController>();
+        ConversationalAgentFramework conversationalAgentFramework = instance.GetComponentInChildren<ConversationalAgentFramework>();
+        //Set as an individual
+        pathController.socialRelations = SocialRelations.Individual;
+        categoryCounts[SocialRelations.Individual]++;
+        instance.name = SocialRelations.Individual.ToString()+categoryCounts[SocialRelations.Individual].ToString();
+        instance.transform.parent = this.transform.Find(SocialRelations.Individual.ToString()).transform;
+        //Position at the start Pos
+        pathController.avatarCreator = this.GetComponent<AvatarCreatorBase>();
+        pathController.Path = pathVertices.ToArray();
+        //Move the agent to starting pos
+        motionMatchingController.transform.position = pathController.Path[0];
+        conversationalAgentFramework.transform.position = pathController.Path[0];
+        //Set Initial Speed
+        pathController.initialSpeed = UnityEngine.Random.Range(pathController.minSpeed, pathController.maxSpeed);
+        //Save The Agent
+        instantiatedAvatars.Add(instance);
+
+        /************************Create Group***********************/
+        if(spawnCount >= 4){
+            Debug.Log("In this avatarcreator, the number of spawned agents should be lower than 4.");
+            spawnCount = 3;
+        }
         for (int i = 0; i < spawnCount; i++)
         {
-            GameObject randomAvatar = avatarPrefabs[UnityEngine.Random.Range(0, avatarPrefabs.Count)];
-            GameObject instance = Instantiate(randomAvatar, this.transform);
-            PathController pathController = instance.GetComponentInChildren<PathController>();
-            MotionMatchingController motionMatchingController = instance.GetComponentInChildren<MotionMatchingController>();
-            CollisionAvoidanceController collisionAvoidanceController = instance.GetComponentInChildren<CollisionAvoidanceController>();
-            ConversationalAgentFramework conversationalAgentFramework = instance.GetComponentInChildren<ConversationalAgentFramework>();
-
-            //Random Social Relations Allocation 
-            SocialRelations[] allValues = (SocialRelations[])System.Enum.GetValues(typeof(SocialRelations));
-            SocialRelations randomRelation;
-            do
-            {
-                randomRelation = allValues[UnityEngine.Random.Range(0, allValues.Length)];
-                //change role based on spawn point
-                if(avatarCreateAtStartPos){
-                    if(randomRelation == SocialRelations.Couple){
-                        randomRelation = SocialRelations.Family;
-                    }else if(randomRelation == SocialRelations.Coworker){
-                        randomRelation = SocialRelations.Friend;
-                    }
-                }else{ 
-                    if(randomRelation == SocialRelations.Family){
-                        randomRelation = SocialRelations.Couple;
-                    }else if(randomRelation == SocialRelations.Friend){
-                        randomRelation = SocialRelations.Coworker;
-                    }
-                }
-            } while (!IsValidRelation(randomRelation, categoryCounts));
-
-            pathController.socialRelations = randomRelation;
-            categoryCounts[randomRelation]++;
-            
-            //Change object's name and parent object 
-            instance.name = randomRelation.ToString()+categoryCounts[randomRelation].ToString();
-            instance.transform.parent = this.transform.Find(randomRelation.ToString()).transform;
-            
-            //Init Path Controller Params
+            //Init
+            randomAvatar = avatarPrefabs[UnityEngine.Random.Range(0, avatarPrefabs.Count)];
+            instance = Instantiate(randomAvatar, this.transform);
+            pathController = instance.GetComponentInChildren<PathController>();
+            motionMatchingController = instance.GetComponentInChildren<MotionMatchingController>();
+            collisionAvoidanceController = instance.GetComponentInChildren<CollisionAvoidanceController>();
+            conversationalAgentFramework = instance.GetComponentInChildren<ConversationalAgentFramework>();
+            //Set as an individual
+            pathController.socialRelations = SocialRelations.Friend;
+            categoryCounts[SocialRelations.Friend]++;
+            instance.name = SocialRelations.Friend.ToString()+categoryCounts[SocialRelations.Friend].ToString();
+            instance.transform.parent = this.transform.Find(SocialRelations.Friend.ToString()).transform;
+            //Position at the start Pos
             pathController.avatarCreator = this.GetComponent<AvatarCreatorBase>();
-            if(pathController != null)
-            {
-                if(avatarCreateAtStartPos){
-                    pathController.Path = pathVertices.ToArray();
-                    avatarCreateAtStartPos = false;
-                }else{
-                    pathController.Path = pathVerticesEndToStart.ToArray();
-                    avatarCreateAtStartPos = true;
-                }   
+            pathController.Path = pathVerticesEndToStart.ToArray();
+            //Select Position
+            if(spawnCount == 2){
+                if(i == 0){
+                    pathController.Path[0] += new Vector3(0f, 0f, initialAgentDistance);
+                }if(i == 1){
+                    pathController.Path[0] += new Vector3(0f, 0f, -initialAgentDistance);
+                }
             }
-
-            //Path Noise
-            //pathController.Path[0] += GenerateRandomPointInCircle(startPointDeviation);
-            pathController.Path[0] += GenerateRandomPointInCircleBasedOnSocialRelations(wallToWallDist, randomRelation);
-            // pathController.Path[pathController.Path.Length-1] += GenerateRandomPointInCircle(radius);
-
+            if(spawnCount == 3){
+                if(i == 1){
+                    pathController.Path[0] += new Vector3(0f, 0f, initialAgentDistance);
+                }if(i == 2){
+                    pathController.Path[0] += new Vector3(0f, 0f, -initialAgentDistance);
+                }
+            }
             //Move the agent to starting pos
             motionMatchingController.transform.position = pathController.Path[0];
             conversationalAgentFramework.transform.position = pathController.Path[0];
-
-            //initial Speed
-            if(randomRelation == SocialRelations.Individual){
-                pathController.initialSpeed = UnityEngine.Random.Range(pathController.minSpeed, pathController.maxSpeed);
-            }else if(randomRelation == SocialRelations.Couple){
-                pathController.initialSpeed = coupleSpeed;
-            }else if(randomRelation == SocialRelations.Family){
-                pathController.initialSpeed = familySpeed;
-            }else if(randomRelation == SocialRelations.Friend){
-                pathController.initialSpeed = friendSpeed;
-            }else if(randomRelation == SocialRelations.Coworker){
-                pathController.initialSpeed = coworkerSpeed;
-            }
-
-            //set group collider and save pathmanager
-            if (randomRelation != SocialRelations.Individual)
+            //Set Initial Speed
+            pathController.initialSpeed = friendSpeed;
+            //Set group collider and Save pathmanager
+            GameObject relationGameObject = transform.Find(SocialRelations.Friend.ToString()).gameObject;
+            GameObject groupCollider = relationGameObject.transform.Find("GroupCollider").gameObject;
+            if (groupCollider != null)
             {
-                GameObject relationGameObject = transform.Find(randomRelation.ToString()).gameObject;
-                GameObject groupCollider = relationGameObject.transform.Find("GroupCollider").gameObject;
-
-                if (groupCollider != null)
-                {
-                    GroupParameterManager groupParameterManager = groupCollider.GetComponent<GroupParameterManager>();
-                    groupParameterManager.pathControllers.Add(pathController);
-                    collisionAvoidanceController.groupCollider = groupCollider.GetComponent<CapsuleCollider>();
-                }
+                GroupParameterManager groupParameterManager = groupCollider.GetComponent<GroupParameterManager>();
+                groupParameterManager.pathControllers.Add(pathController);
+                collisionAvoidanceController.groupCollider = groupCollider.GetComponent<CapsuleCollider>();
             }
             
-
+            //Save The Agent
             instantiatedAvatars.Add(instance);
         }
+
 
         //Destroy Group Collider and its manager if the number of agents is less than 1
         foreach (KeyValuePair<SocialRelations, int> entry in categoryCounts)
@@ -218,22 +211,6 @@ public class AvatarCreatorCorridor : AvatarCreatorBase
             }
         }
         return pathVerticesEndToStart;
-    }
-
-    public Vector3 GenerateRandomPointInCircleBasedOnSocialRelations(float r, SocialRelations relation)
-    {
-        int enumCount = System.Enum.GetValues(typeof(SocialRelations)).Length;
-        float segmentAngle = 360f / enumCount; 
-
-        float baseAngle = (int)relation * segmentAngle;
-        float angle = UnityEngine.Random.Range(baseAngle, baseAngle + segmentAngle) * Mathf.Deg2Rad;
-
-        float distance = Mathf.Sqrt(UnityEngine.Random.Range(0f, r * r));
-
-        float x = distance * Mathf.Cos(angle);
-        float z = distance * Mathf.Sin(angle);
-
-        return new Vector3(x, 0f, z);
     }
 
     void GenerateWall()
@@ -345,4 +322,5 @@ public class AvatarCreatorCorridor : AvatarCreatorBase
         }
     }
 }
+
 }

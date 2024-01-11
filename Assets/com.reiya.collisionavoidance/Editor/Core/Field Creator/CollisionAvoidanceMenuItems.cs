@@ -4,6 +4,18 @@ using UnityEditor;
 namespace CollisionAvoidance{
 public class CollisionAvoidanceMenuItems
 {
+    [MenuItem("CollisionAvoidance/Create Field/For Video")]
+    private static void CreateFieldForVideo()
+    {
+        AddTag("Agent");
+        AddTag("Group");
+        AddTag("Wall");
+        AddTag("Object");
+        GameObject avatarCreator = CreateAvatarCreator("AvatarCreatorForVideo");
+        SetPathEndpoints(avatarCreator, "AvatarCreatorForVideo");
+        Debug.Log("Field with wall and AvatarCreator with Path, StartPos, and EndPos created");
+    }
+
     [MenuItem("CollisionAvoidance/Create Field/With Wall")]
     private static void CreateFieldWithWall()
     {
@@ -51,6 +63,9 @@ public class CollisionAvoidanceMenuItems
         else if (scriptName == "AvatarCreator")
         {
             avatarCreator.AddComponent<AvatarCreator>(); 
+        }
+        else if (scriptName == "AvatarCreatorForVideo"){
+            avatarCreator.AddComponent<AvatarCreatorForVideo>(); 
         }
         else
         {

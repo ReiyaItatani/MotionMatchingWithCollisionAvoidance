@@ -42,7 +42,7 @@ namespace CollisionAvoidance{
         public bool showAgentSphere = false;
 
 
-        void Start(){
+        void Awake(){
             //Create Box Collider for Collision Avoidance Force
             basicAvoidanceArea                  = new GameObject("BasicCollisionAvoidanceArea");
             basicAvoidanceArea.transform.parent = this.transform;

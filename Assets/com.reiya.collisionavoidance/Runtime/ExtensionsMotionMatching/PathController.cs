@@ -1248,21 +1248,22 @@ public class PathController : MotionMatchingCharacterController
         //     Gizmos.DrawSphere(new Vector3(pos.x, heightOffset, pos.z), 0.1f);
         // }
         //Draw OnlyStartPos
-        Color gizmoColor;
-        if (GetSocialRelations() == SocialRelations.Couple){
-            gizmoColor = new Color(1.0f, 0.0f, 0.0f); // red
-        }else if (GetSocialRelations() == SocialRelations.Friend){
-            gizmoColor = new Color(0.0f, 1.0f, 0.0f); // green
-        }else if  (GetSocialRelations() == SocialRelations.Family){
-            gizmoColor = new Color(0.0f, 0.0f, 1.0f); // blue
-        }else if  (GetSocialRelations() == SocialRelations.Coworker){
-            gizmoColor = new Color(1.0f, 1.0f, 0.0f); // yellow
-        }else{
-            gizmoColor = new Color(1.0f, 1.0f, 1.0f); // white
-        }
-        Gizmos.color = gizmoColor;
-        Vector3 pos = GetWorldPosition(transform, Path[0]);
-        Gizmos.DrawSphere(new Vector3(pos.x, heightOffset, pos.z), 0.1f);
+
+        // Color gizmoColor;
+        // if (GetSocialRelations() == SocialRelations.Couple){
+        //     gizmoColor = new Color(1.0f, 0.0f, 0.0f); // red
+        // }else if (GetSocialRelations() == SocialRelations.Friend){
+        //     gizmoColor = new Color(0.0f, 1.0f, 0.0f); // green
+        // }else if  (GetSocialRelations() == SocialRelations.Family){
+        //     gizmoColor = new Color(0.0f, 0.0f, 1.0f); // blue
+        // }else if  (GetSocialRelations() == SocialRelations.Coworker){
+        //     gizmoColor = new Color(1.0f, 1.0f, 0.0f); // yellow
+        // }else{
+        //     gizmoColor = new Color(1.0f, 1.0f, 1.0f); // white
+        // }
+        // Gizmos.color = gizmoColor;
+        // Vector3 pos = GetWorldPosition(transform, Path[0]);
+        // Gizmos.DrawSphere(new Vector3(pos.x, heightOffset, pos.z), 0.1f);
         
         // Draw Path
         // Gizmos.color = new Color(0.5f, 0.0f, 0.0f, 1.0f);
@@ -1276,6 +1277,7 @@ public class PathController : MotionMatchingCharacterController
         // Vector3 lastPos = GetWorldPosition(transform, Path[Path.Length - 1]);
         // Vector3 firstPos = GetWorldPosition(transform, Path[0]);
         // GizmosExtensions.DrawLine(new Vector3(lastPos.x, heightOffset, lastPos.z), new Vector3(firstPos.x, heightOffset, firstPos.z), 6);
+        
         // Draw Velocity
         // for (int i = 0; i < Path.Length - 1; i++)
         // {

@@ -176,11 +176,13 @@ public class RightHandRotModifier : MonoBehaviour
                 {
                     // For the thumb, we might rotate around a different axis, e.g., z-axis
                     additionalRotation = Quaternion.Euler(new Vector3(initialRotations[i][j].x, initialRotations[i][j].y, initialRotations[i][j].z - bendAngles[bendIndex] * interpolate));
+                    //additionalRotation = Quaternion.Euler(new Vector3(initialRotations[i][j].x, initialRotations[i][j].y + bendAngles[bendIndex] * interpolate, initialRotations[i][j].z));
                 }
                 else
                 {
                     // For other fingers, rotate around x-axis
                     additionalRotation = Quaternion.Euler(new Vector3(initialRotations[i][j].x + bendAngles[bendIndex] * interpolate, initialRotations[i][j].y, initialRotations[i][j].z));
+                    //additionalRotation = Quaternion.Euler(new Vector3(initialRotations[i][j].x, initialRotations[i][j].y, initialRotations[i][j].z - bendAngles[bendIndex] * interpolate));
                 }
 
                 // Combine the original rotation with the new rotation

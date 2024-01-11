@@ -5,6 +5,8 @@ namespace CollisionAvoidance{
 
 public class GroupColliderManager : MonoBehaviour
 {
+    public bool OnGroupCollider = true;
+
     public SocialRelations socialRelations;
     public AvatarCreatorBase avatarCreator;
     public GameObject groupColliderGameObject;
@@ -42,7 +44,7 @@ public class GroupColliderManager : MonoBehaviour
                 maxDistance = distance;
             }
         }
-        if(maxDistance <= (agentsInCategory.Count)/2){
+        if(maxDistance <= (agentsInCategory.Count)/2 && OnGroupCollider){
             groupColliderGameObject.SetActive(true);
         }else{
             groupColliderGameObject.SetActive(false);

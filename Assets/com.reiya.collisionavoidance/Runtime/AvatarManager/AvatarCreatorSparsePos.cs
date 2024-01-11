@@ -4,7 +4,7 @@ using MotionMatching;
 using System.Collections.Generic;
 
 namespace CollisionAvoidance{
-public class AvatarCreatorCorridor : AvatarCreatorBase
+public class AvatarCreatorSparsePos : AvatarCreatorBase
 {
     [HideInInspector]
     public List<Vector3> pathVerticesEndToStart = new List<Vector3>();

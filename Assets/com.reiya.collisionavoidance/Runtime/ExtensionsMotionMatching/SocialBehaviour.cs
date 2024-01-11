@@ -78,8 +78,8 @@ public class SocialBehaviour : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine(UpdateCurrentLookAt(LookAtUpdateTime));
-        StartCoroutine(UpdateAnimationState());
+        //StartCoroutine(UpdateCurrentLookAt(LookAtUpdateTime));
+        //StartCoroutine(UpdateAnimationState());
     }
 
     #region Animation State Control

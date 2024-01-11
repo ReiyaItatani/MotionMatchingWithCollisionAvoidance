@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using MotionMatching;
 using System.Security.Cryptography;
+using UnityEditor;
+using System.IO;
 
 namespace CollisionAvoidance{
 // AgentManager is a class that manages various parameters and settings for agents in a simulation.
@@ -257,6 +259,37 @@ public class AgentManager : MonoBehaviour
 
     private void SetSocialBehaviourParams(SocialBehaviour socialBehaviour){
 
+    }
+
+
+    public void SaveToFile(string path)
+    {
+        string json = JsonUtility.ToJson(this, true);
+        File.WriteAllText(path, json);
+    }
+
+    public void LoadFromFile(string path)
+    {
+        string json = File.ReadAllText(path);
+        JsonUtility.FromJsonOverwrite(json, this);
+    }
+    
+    public void SaveSettings()
+    {
+        string path = EditorUtility.SaveFilePanel("Save Agent Settings", "", "AgentSettings", "json");
+        if (!string.IsNullOrEmpty(path))
+        {
+            SaveToFile(path);
+        }
+    }
+
+    public void LoadSettings()
+    {
+        string path = EditorUtility.OpenFilePanel("Load Agent Settings", "", "json");
+        if (!string.IsNullOrEmpty(path))
+        {
+            LoadFromFile(path);
+        }
     }
 
 }
