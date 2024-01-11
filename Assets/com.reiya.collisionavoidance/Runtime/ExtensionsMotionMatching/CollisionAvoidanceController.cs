@@ -41,7 +41,6 @@ namespace CollisionAvoidance{
         [HideInInspector]
         public bool showAgentSphere = false;
 
-
         void Awake(){
             //Create Box Collider for Collision Avoidance Force
             basicAvoidanceArea                  = new GameObject("BasicCollisionAvoidanceArea");
@@ -199,5 +198,30 @@ namespace CollisionAvoidance{
                 Draw.WireCylinder((Vector3)pathController.GetCurrentPosition(), Vector3.up, agentCollider.height, agentCollider.radius, gizmoColor);
             }
         }
+        // void OnDrawGizmos()
+        // {
+        //     if(!onGizmo) return;
+        //     if(basicAvoidanceArea==null)return;
+        //     Gizmos.color = Color.blue;
+
+        //     Vector3 position = basicAvoidanceArea.transform.position;
+        //     Quaternion rotation = basicAvoidanceArea.transform.rotation;
+        //     Vector3 size = avoidanceCollider.size;
+
+        //     Gizmos.matrix = Matrix4x4.TRS(position, rotation, Vector3.one);
+        //     Gizmos.DrawWireCube(Vector3.zero, size);
+
+        //     if(unalignedAvoidanceArea==null)return;
+        //     Gizmos.color = Color.red;
+
+        //     Vector3 position_unaligned = unalignedAvoidanceArea.transform.position;
+        //     Quaternion rotation_unaligned = unalignedAvoidanceArea.transform.rotation;
+        //     Vector3 size_unaligned = unalignedAvoidanceCollider.size;
+
+        //     Gizmos.matrix = Matrix4x4.TRS(position_unaligned, rotation_unaligned, Vector3.one);
+        //     Gizmos.DrawWireCube(Vector3.zero, size_unaligned);
+        // }
+
+
     }
 }

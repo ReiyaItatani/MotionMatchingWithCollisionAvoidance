@@ -107,6 +107,7 @@ public class AvatarCreatorForVideo : AvatarCreatorBase
             Debug.Log("In this avatarcreator, the number of spawned agents should be lower than 4.");
             spawnCount = 3;
         }
+        SocialRelations groupRelations = SocialRelations.Friend;
         for (int i = 0; i < spawnCount; i++)
         {
             //Init
@@ -116,11 +117,11 @@ public class AvatarCreatorForVideo : AvatarCreatorBase
             motionMatchingController = instance.GetComponentInChildren<MotionMatchingController>();
             collisionAvoidanceController = instance.GetComponentInChildren<CollisionAvoidanceController>();
             conversationalAgentFramework = instance.GetComponentInChildren<ConversationalAgentFramework>();
-            //Set as an individual
-            pathController.socialRelations = SocialRelations.Friend;
-            categoryCounts[SocialRelations.Friend]++;
-            instance.name = SocialRelations.Friend.ToString()+categoryCounts[SocialRelations.Friend].ToString();
-            instance.transform.parent = this.transform.Find(SocialRelations.Friend.ToString()).transform;
+            //Set Social Relations
+            pathController.socialRelations = groupRelations;
+            categoryCounts[groupRelations]++;
+            instance.name = groupRelations.ToString()+categoryCounts[groupRelations].ToString();
+            instance.transform.parent = this.transform.Find(groupRelations.ToString()).transform;
             //Position at the start Pos
             pathController.avatarCreator = this.GetComponent<AvatarCreatorBase>();
             pathController.Path = pathVerticesEndToStart.ToArray();
@@ -145,7 +146,7 @@ public class AvatarCreatorForVideo : AvatarCreatorBase
             //Set Initial Speed
             pathController.initialSpeed = friendSpeed;
             //Set group collider and Save pathmanager
-            GameObject relationGameObject = transform.Find(SocialRelations.Friend.ToString()).gameObject;
+            GameObject relationGameObject = transform.Find(groupRelations.ToString()).gameObject;
             GameObject groupCollider = relationGameObject.transform.Find("GroupCollider").gameObject;
             if (groupCollider != null)
             {

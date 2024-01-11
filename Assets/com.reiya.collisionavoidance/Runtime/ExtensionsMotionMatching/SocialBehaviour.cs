@@ -35,7 +35,8 @@ public class SocialBehaviour : MonoBehaviour
     private const float LookAtUpdateTime = 1.5f;
     private const float AnimationStateUpdateMinTime = 10.0f;
     private const float AnimationStateUpdateMaxTime = 20.0f;
-    private const float WalkAnimationProbability = 0.5f;
+    [Range(0,1)]
+    public float WalkAnimationProbability = 0.5f;
     private const float FieldOfView = 45f;
     
     [Header("Conversation")]
@@ -78,8 +79,8 @@ public class SocialBehaviour : MonoBehaviour
 
     private void Start()
     {
-        //StartCoroutine(UpdateCurrentLookAt(LookAtUpdateTime));
-        //StartCoroutine(UpdateAnimationState());
+        StartCoroutine(UpdateCurrentLookAt(LookAtUpdateTime));
+        StartCoroutine(UpdateAnimationState());
     }
 
     #region Animation State Control

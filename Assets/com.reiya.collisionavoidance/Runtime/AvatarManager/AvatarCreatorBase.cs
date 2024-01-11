@@ -178,14 +178,14 @@ public class AvatarCreatorBase : MonoBehaviour
     #if UNITY_EDITOR
         void OnDrawGizmos()
         {
-            if (pathVertices != null && pathVertices.Count > 0)
-            {
-                Gizmos.color = Color.red;
-                for (int i = 0; i < pathVertices.Count - 1; i++)
-                {
-                    Gizmos.DrawLine(pathVertices[i], pathVertices[i + 1]);
-                }
-            }
+            // if (pathVertices != null && pathVertices.Count > 0)
+            // {
+            //     Gizmos.color = Color.red;
+            //     for (int i = 0; i < pathVertices.Count - 1; i++)
+            //     {
+            //         Gizmos.DrawLine(pathVertices[i], pathVertices[i + 1]);
+            //     }
+            // }
         }
     #endif
 }
