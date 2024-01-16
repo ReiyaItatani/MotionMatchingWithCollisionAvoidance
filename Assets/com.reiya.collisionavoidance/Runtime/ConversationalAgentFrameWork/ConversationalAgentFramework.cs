@@ -8,6 +8,8 @@ using CollisionAvoidance;
 public class ConversationalAgentFramework : MonoBehaviour
 {
     private Animator Animator;
+    private MotionMatchingSkinnedMeshRenderer motionMatchingSkinnedMeshRenderer;
+
      private void Awake()
     {
         Animator = GetComponent<Animator>();
@@ -28,6 +30,10 @@ public class ConversationalAgentFramework : MonoBehaviour
 
         // SinkPassInit();
         FluctuatePassInit();
+
+        //Subscribe the event
+        motionMatchingSkinnedMeshRenderer = GetComponent<MotionMatchingSkinnedMeshRenderer>();
+        motionMatchingSkinnedMeshRenderer.OnUpdateOcean += UpdateOCEAN;
     }
     
     // Recursive method to find a GameObject with a SkinnedMeshRenderer component
@@ -56,7 +62,7 @@ public class ConversationalAgentFramework : MonoBehaviour
         return null;
     }
 
-    public void UpdateOCEAN(){
+    public void UpdateOCEAN(object sender, EventArgs e){
         // if (Map_OCEAN_to_LabanShape) OCEAN_to_LabanShape();
         if (Map_OCEAN_to_LabanEffort) OCEAN_to_LabanEffort();
         if (Map_OCEAN_to_Additional) OCEAN_to_Additional();

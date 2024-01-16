@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -20,6 +21,8 @@ public class GazeController : MonoBehaviour
 
     private SocialBehaviour socialBehaviour;
 
+    private MotionMatchingSkinnedMeshRenderer motionMatchingSkinnedMeshRenderer;
+
     private void Awake()
     {
         animator = GetComponent<Animator>();
@@ -39,6 +42,9 @@ public class GazeController : MonoBehaviour
         meshRenderer = body.GetComponentInChildren<SkinnedMeshRenderer>();
 
         StartCoroutine(UpdateNeckState(2.0f));
+        //Subscribe the event
+        motionMatchingSkinnedMeshRenderer = GetComponent<MotionMatchingSkinnedMeshRenderer>();
+        motionMatchingSkinnedMeshRenderer.OnUpdateGaze += UpdateGaze;
     }
 
     GameObject FindObjectWithSkinnedMeshRenderer(GameObject parent)
@@ -67,7 +73,7 @@ public class GazeController : MonoBehaviour
         _animator.SetBoneLocalRotation(HumanBodyBones.Neck, t_Neck.localRotation);
     }
 
-    public void UpdateGaze()
+    public void UpdateGaze(object sender, EventArgs e)
     {
         GetBodyTransforms(animator);
         ParameterUpdater();
@@ -76,7 +82,7 @@ public class GazeController : MonoBehaviour
         //LookAt
         LookAtAttractionPointUpdater();
         UpdateCurrentLookAtSave();
-        HorizontalLookAtPass(currentLookAt, horizontalAttractionPoint, Random.Range(0.3f, 0.5f));
+        HorizontalLookAtPass(currentLookAt, horizontalAttractionPoint, UnityEngine.Random.Range(0.3f, 0.5f));
         //LookAtAdjustmentPass
         LookAtAdjustmentPass(neckRotationLimit);
         //EyesMovement

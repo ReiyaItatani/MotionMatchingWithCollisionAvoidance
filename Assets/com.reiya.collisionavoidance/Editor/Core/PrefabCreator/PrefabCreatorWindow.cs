@@ -290,8 +290,6 @@ private void CreatePrefab(GameObject humanoid)
     CollisionAvoidance.MotionMatchingSkinnedMeshRenderer motionMatchingSkinnedMeshRenderer                              = humanoidInstance.AddComponent<CollisionAvoidance.MotionMatchingSkinnedMeshRenderer>();
                                                          motionMatchingSkinnedMeshRenderer.MotionMatching               = motionMatchingController;
                                                          motionMatchingSkinnedMeshRenderer.AvatarMask                   = avatarMask;
-                                                         motionMatchingSkinnedMeshRenderer.conversationalAgentFramework = conversationalAgentFramework;
-                                                         motionMatchingSkinnedMeshRenderer.gazeController               = gazeController;
                                                          motionMatchingSkinnedMeshRenderer.AvoidToesFloorPenetration    = true;
                                                          motionMatchingSkinnedMeshRenderer.ToesSoleOffset               = new Vector3(0, 0, -0.02f);
     //

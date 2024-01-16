@@ -58,12 +58,10 @@ namespace CollisionAvoidance
         private float3 PreviousHipsPosition;
         private float3 OffsetHipsPosition;
 
-        //ConversationalAgentFrameWork
-        public ConversationalAgentFramework conversationalAgentFramework;
-        
-        //UpdateGazeController
-        public GazeController gazeController;
-        
+        //EventHandler
+        public event EventHandler OnUpdateOcean;
+        public event EventHandler OnUpdateGaze;
+
         private void Awake()
         {
             Animator = GetComponent<Animator>();
@@ -298,12 +296,14 @@ namespace CollisionAvoidance
 
             // Update State
             UpdatePreviousInertialization();
-            if(conversationalAgentFramework != null){
-                conversationalAgentFramework.UpdateOCEAN();
-            }
-            if(gazeController != null){
-                gazeController.UpdateGaze();
-            }
+            OnUpdateOcean?.Invoke(this, EventArgs.Empty);
+            OnUpdateGaze?.Invoke(this, EventArgs.Empty);
+            // if(conversationalAgentFramework != null){
+            //     conversationalAgentFramework.UpdateOCEAN();
+            // }
+            // if(gazeController != null){
+            //     gazeController.UpdateGaze();
+            // }
         }
 
         private void UpdatePreviousInertialization()
