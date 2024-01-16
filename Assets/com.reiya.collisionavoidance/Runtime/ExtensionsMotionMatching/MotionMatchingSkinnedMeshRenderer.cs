@@ -8,6 +8,7 @@ using UnityEngine.Playables;
 using System.Linq;
 using System.Runtime.ExceptionServices;
 using MotionMatching;
+using UnityEngine.Events;
 
 namespace CollisionAvoidance
 {
@@ -59,8 +60,13 @@ namespace CollisionAvoidance
         private float3 OffsetHipsPosition;
 
         //EventHandler
-        public event EventHandler OnUpdateOcean;
+        //Just For Understanding eventhandler and delegate
+        public event EventDelegate OnUpdateOcean;
+        public delegate void EventDelegate();
+
         public event EventHandler OnUpdateGaze;
+
+        //public UnityEvent OnUpdateOcean;
 
         private void Awake()
         {
@@ -296,7 +302,7 @@ namespace CollisionAvoidance
 
             // Update State
             UpdatePreviousInertialization();
-            OnUpdateOcean?.Invoke(this, EventArgs.Empty);
+            OnUpdateOcean?.Invoke();
             OnUpdateGaze?.Invoke(this, EventArgs.Empty);
             // if(conversationalAgentFramework != null){
             //     conversationalAgentFramework.UpdateOCEAN();

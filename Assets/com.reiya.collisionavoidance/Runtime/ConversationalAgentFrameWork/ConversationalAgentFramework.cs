@@ -62,7 +62,7 @@ public class ConversationalAgentFramework : MonoBehaviour
         return null;
     }
 
-    public void UpdateOCEAN(object sender, EventArgs e){
+    public void UpdateOCEAN(){
         // if (Map_OCEAN_to_LabanShape) OCEAN_to_LabanShape();
         if (Map_OCEAN_to_LabanEffort) OCEAN_to_LabanEffort();
         if (Map_OCEAN_to_Additional) OCEAN_to_Additional();
