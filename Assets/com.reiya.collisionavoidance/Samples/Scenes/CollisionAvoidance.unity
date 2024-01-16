@@ -11872,7 +11872,7 @@ MonoBehaviour:
   toGoalWeight: 1.5
   avoidNeighborWeight: 0.5
   avoidanceWeight: 2.7
-  groupForceWeight: 0.4
+  groupForceWeight: 0.3
   wallRepForceWeight: 0.3
   syntheticVisionForceWeight: 0
   MaxDistanceMMAndCharacterController: 0.1

@@ -281,16 +281,45 @@ public class SocialBehaviour : MonoBehaviour
         }
     }
 
-    //For group
+    // UpdateGroupAgentLookAt: Updates the direction group agents are looking at.
+    // This includes making agents look at the talking agent in the group.
     private void UpdateGroupAgentLookAt(List<GameObject> groupAgents)
     {
+        // Get the current direction the agent is looking at
         Vector3 headDirection = GetCurrentLookAt();
+
+        // Only proceed if there is a valid head direction
         if (headDirection != Vector3.zero)
         {
+            // Get the current position of this agent
             Vector3 currentPosition = parameterManager.GetCurrentPosition();
-            Vector3 gazeAngleDirection = CalculateGazingDirectionToCOM(groupAgents, currentPosition, headDirection, gameObject, FieldOfView);
-            SetCurrentCenterOfMass(gazeAngleDirection);
+
+            // Check if any other agent in the group is talking
+            GameObject otherAgent = IsAnyAgentInAnimationState(groupAgents, UpperBodyAnimationState.Talk);
+
+            if (otherAgent != null)
+            {
+                // If another agent is talking, calculate and set the gaze direction towards them
+                Vector3 gazeDirectionToTalkingAgent = (otherAgent.GetComponent<ParameterManager>().GetCurrentPosition() - currentPosition).normalized;
+                SetCurrentCenterOfMass(gazeDirectionToTalkingAgent);
+            }
+            else
+            {
+                // If no agent is talking, calculate and set the gaze direction based on group's center of mass
+                Vector3 gazeAngleDirection = CalculateGazingDirectionToCOM(groupAgents, currentPosition, headDirection, gameObject, FieldOfView);
+                SetCurrentCenterOfMass(gazeAngleDirection);
+            }
         }
+    }
+
+
+    private GameObject IsAnyAgentInAnimationState(List<GameObject> groupAgents, UpperBodyAnimationState targetUpperBodyState){
+        foreach(GameObject agent in groupAgents){
+            if(agent.GetComponent<SocialBehaviour>().GetUpperBodyAnimationState() == targetUpperBodyState){
+                return agent;
+            }
+        }
+        return null;
     }
 
     public Vector3 GetCurrentLookAt()
