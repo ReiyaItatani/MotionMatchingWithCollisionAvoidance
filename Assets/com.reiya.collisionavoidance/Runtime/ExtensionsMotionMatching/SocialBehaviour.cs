@@ -113,16 +113,16 @@ public class SocialBehaviour : MonoBehaviour
     }
 
     #if UNITY_EDITOR
-    // void OnDrawGizmos()
-    // {
-    //     var style = new GUIStyle()
-    //     {
-    //         fontSize = 20,
-    //         normal = new GUIStyleState() { textColor = Color.black, background = Texture2D.whiteTexture }
-    //     };
-    //     Handles.Label(transform.position + Vector3.up * 2.3f, currentAnimationState.ToString(), style);
+    void OnDrawGizmos()
+    {
+        var style = new GUIStyle()
+        {
+            fontSize = 20,
+            normal = new GUIStyleState() { textColor = Color.black, background = Texture2D.whiteTexture }
+        };
+        Handles.Label(transform.position + Vector3.up * 2.3f, currentAnimationState.ToString(), style);
 
-    // }
+    }
     #endif
 
     private UpperBodyAnimationState DetermineAnimationState(List<GameObject> groupAgents)
@@ -139,6 +139,8 @@ public class SocialBehaviour : MonoBehaviour
 
     public void TriggerUnityAnimation(UpperBodyAnimationState animationState)
     {
+        //Update current animation state
+        currentAnimationState = animationState;
         motionMatchingRenderer.AvatarMask = initialAvatarMask;
 
         foreach (UpperBodyAnimationState state in Enum.GetValues(typeof(UpperBodyAnimationState)))
@@ -293,11 +295,11 @@ public class SocialBehaviour : MonoBehaviour
         {
             // Get the current position of this agent
             Vector3 currentPosition = parameterManager.GetCurrentPosition();
-
             // Check if any other agent in the group is talking
             GameObject otherAgent = IsAnyAgentInAnimationState(groupAgents, UpperBodyAnimationState.Talk);
 
-            if (otherAgent != null)
+            if (otherAgent != null &&
+            Vector3.Distance(currentPosition, otherAgent.GetComponent<ParameterManager>().GetCurrentPosition()) < groupAgents.Count / 2f)
             {
                 // If another agent is talking, calculate and set the gaze direction towards them
                 Vector3 gazeDirectionToTalkingAgent = (otherAgent.GetComponent<ParameterManager>().GetCurrentPosition() - currentPosition).normalized;
@@ -315,7 +317,7 @@ public class SocialBehaviour : MonoBehaviour
 
     private GameObject IsAnyAgentInAnimationState(List<GameObject> groupAgents, UpperBodyAnimationState targetUpperBodyState){
         foreach(GameObject agent in groupAgents){
-            if(agent.GetComponent<SocialBehaviour>().GetUpperBodyAnimationState() == targetUpperBodyState){
+            if(agent != gameObject && agent.GetComponent<SocialBehaviour>().GetUpperBodyAnimationState() == targetUpperBodyState){
                 return agent;
             }
         }

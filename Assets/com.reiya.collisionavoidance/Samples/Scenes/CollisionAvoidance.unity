@@ -2861,8 +2861,6 @@ MonoBehaviour:
   BlendHalfLife: 0.05
   AvoidToesFloorPenetration: 1
   ToesSoleOffset: {x: 0, y: 0, z: -0.02}
-  conversationalAgentFramework: {fileID: 353940802}
-  gazeController: {fileID: 353940799}
 --- !u!114 &353940804
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5041,8 +5039,6 @@ MonoBehaviour:
   BlendHalfLife: 0.05
   AvoidToesFloorPenetration: 1
   ToesSoleOffset: {x: 0, y: 0, z: -0.02}
-  conversationalAgentFramework: {fileID: 617160142}
-  gazeController: {fileID: 617160139}
 --- !u!114 &617160144
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9928,8 +9924,6 @@ MonoBehaviour:
   BlendHalfLife: 0.05
   AvoidToesFloorPenetration: 1
   ToesSoleOffset: {x: 0, y: 0, z: -0.02}
-  conversationalAgentFramework: {fileID: 1234428885}
-  gazeController: {fileID: 1234428882}
 --- !u!114 &1234428887
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12766,8 +12760,6 @@ MonoBehaviour:
   BlendHalfLife: 0.05
   AvoidToesFloorPenetration: 1
   ToesSoleOffset: {x: 0, y: 0, z: -0.02}
-  conversationalAgentFramework: {fileID: 1571518855}
-  gazeController: {fileID: 1571518852}
 --- !u!114 &1571518857
 MonoBehaviour:
   m_ObjectHideFlags: 0
