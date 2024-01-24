@@ -16,8 +16,8 @@ public class GizmoDrawer : MonoBehaviour
         Gizmos.DrawSphere(transform.position, gizmoRadius);
     }
 }
-#endif
 }
+#endif
 
 
 

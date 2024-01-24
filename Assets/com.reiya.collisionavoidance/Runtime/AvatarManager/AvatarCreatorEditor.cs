@@ -1,6 +1,7 @@
-using UnityEditor;
 using UnityEngine;
 
+#if UNITY_EDITOR
+using UnityEditor;
 namespace CollisionAvoidance{
 [CustomEditor(typeof(AvatarCreatorBase), true)]
 public class AvatarCreatorEditor : Editor
@@ -44,3 +45,4 @@ public class AvatarCreatorEditor : Editor
     }
 }
 }
+#endif

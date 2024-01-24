@@ -1,8 +1,12 @@
 using UnityEngine;
-using UnityEditor;
 using System.Linq;
 using MotionMatching;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
+#if UNITY_EDITOR
 namespace CollisionAvoidance{
 public class PlayerCreationWindow : EditorWindow
 {
@@ -177,3 +181,4 @@ public class PlayerCreationWindow : EditorWindow
     }
 }
 }
+#endif

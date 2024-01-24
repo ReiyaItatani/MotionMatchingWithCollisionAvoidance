@@ -1,6 +1,10 @@
 using UnityEngine;
-using UnityEditor;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
+#if UNITY_EDITOR
 namespace CollisionAvoidance{
 public class CollisionAvoidanceMenuItems
 {
@@ -146,3 +150,4 @@ public class CollisionAvoidanceMenuItems
     }
 }
 }
+#endif

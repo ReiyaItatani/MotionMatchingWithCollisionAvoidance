@@ -8,7 +8,6 @@ using Drawing;
 
 using MotionMatching;
 using TrajectoryFeature = MotionMatching.MotionMatchingData.TrajectoryFeature;
-using UnityEditor.PackageManager.Requests;
 
 namespace CollisionAvoidance{
 
@@ -162,7 +161,7 @@ public class PathController : MotionMatchingCharacterController
         StartCoroutine(UpdateToGoalVector(0.1f));
         StartCoroutine(UpdateAvoidanceVector(0.1f, 0.3f));
         StartCoroutine(UpdateAvoidNeighborsVector(0.1f, 0.3f));
-        StartCoroutine(UpdateGroupForce(0.2f, GetSocialRelations()));
+        StartCoroutine(UpdateGroupForce(0.1f, GetSocialRelations()));
         StartCoroutine(UpdateWallForce(0.2f, 0.5f));
         StartCoroutine(UpdateSpeed(avatarCreator.GetAgentsInCategory(GetSocialRelations()), collisionAvoidance.GetAgentGameObject()));
         StartCoroutine(UpdateAngularVelocityControl(0.2f));   

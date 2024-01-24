@@ -15,8 +15,8 @@ namespace CollisionAvoidance{
 [RequireComponent(typeof(CapsuleCollider))]
 public class AgentCollisionDetection : MonoBehaviour
 {
-    private const float minReactionTime = 3f;
-    private const float maxReactionTime = 7f;
+    private const float minReactionTime = 2f;
+    private const float maxReactionTime = 4f;
 
     [Header("Collision Handling Parameters")]
     private PathController pathController;

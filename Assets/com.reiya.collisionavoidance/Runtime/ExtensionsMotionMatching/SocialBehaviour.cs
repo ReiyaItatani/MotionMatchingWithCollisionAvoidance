@@ -36,7 +36,7 @@ public class SocialBehaviour : MonoBehaviour
     private const float AnimationStateUpdateMinTime = 10.0f;
     private const float AnimationStateUpdateMaxTime = 20.0f;
     [Range(0,1)]
-    public float WalkAnimationProbability = 0.5f;
+    private float WalkAnimationProbability = 0.5f;
     private const float FieldOfView = 45f;
     
     [Header("Conversation")]
@@ -113,16 +113,16 @@ public class SocialBehaviour : MonoBehaviour
     }
 
     #if UNITY_EDITOR
-    void OnDrawGizmos()
-    {
-        var style = new GUIStyle()
-        {
-            fontSize = 20,
-            normal = new GUIStyleState() { textColor = Color.black, background = Texture2D.whiteTexture }
-        };
-        Handles.Label(transform.position + Vector3.up * 2.3f, currentAnimationState.ToString(), style);
+    // void OnDrawGizmos()
+    // {
+    //     var style = new GUIStyle()
+    //     {
+    //         fontSize = 20,
+    //         normal = new GUIStyleState() { textColor = Color.black, background = Texture2D.whiteTexture }
+    //     };
+    //     Handles.Label(transform.position + Vector3.up * 2.3f, currentAnimationState.ToString(), style);
 
-    }
+    // }
     #endif
 
     private UpperBodyAnimationState DetermineAnimationState(List<GameObject> groupAgents)
