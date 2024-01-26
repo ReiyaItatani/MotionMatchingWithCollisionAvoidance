@@ -30,10 +30,19 @@ public class ConversationalAgentFramework : MonoBehaviour
 
         // SinkPassInit();
         FluctuatePassInit();
+    }
 
+    private void OnEnable()
+    {
         //Subscribe the event
         motionMatchingSkinnedMeshRenderer = GetComponent<MotionMatchingSkinnedMeshRenderer>();
         motionMatchingSkinnedMeshRenderer.OnUpdateOcean += UpdateOCEAN;
+    }
+
+    private void OnDisable()
+    {
+        //Un-Subscribe the event
+        motionMatchingSkinnedMeshRenderer.OnUpdateOcean -= UpdateOCEAN;
     }
     
     // Recursive method to find a GameObject with a SkinnedMeshRenderer component

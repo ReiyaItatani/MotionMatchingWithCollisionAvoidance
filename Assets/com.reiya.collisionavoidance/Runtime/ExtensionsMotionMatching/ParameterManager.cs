@@ -39,5 +39,9 @@ namespace CollisionAvoidance{
         }
         return null;
     }
+
+    public PathController GetPathController(){
+        return pathController;
+    }   
 }
 }

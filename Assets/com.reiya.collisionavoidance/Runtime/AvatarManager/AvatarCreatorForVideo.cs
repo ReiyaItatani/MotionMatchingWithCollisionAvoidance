@@ -20,8 +20,12 @@ public class AvatarCreatorForVideo : AvatarCreatorBase
 
     private bool avatarCreateAtStartPos = true;
 
+    [Header("Agent Position Parameters")]
     [Range(0.5f, 2)]
     public float initialAgentDistance = 1f;
+
+    [SerializeField]
+    private bool onInitialPosOffset = false ;
 
     public override void InstantiateAvatars()
     {
@@ -78,7 +82,9 @@ public class AvatarCreatorForVideo : AvatarCreatorBase
             }
         }
 
+        /****************************************************************/
         /************************Create Individual***********************/
+        /****************************************************************/
         //Init
         GameObject randomAvatar = avatarPrefabs[UnityEngine.Random.Range(0, avatarPrefabs.Count)];
         GameObject instance = Instantiate(randomAvatar, this.transform);
@@ -94,6 +100,7 @@ public class AvatarCreatorForVideo : AvatarCreatorBase
         //Position at the start Pos
         pathController.avatarCreator = this.GetComponent<AvatarCreatorBase>();
         pathController.Path = pathVertices.ToArray();
+        if(onInitialPosOffset) pathController.Path[0] += new Vector3(0f, 0f, initialAgentDistance);
         //Move the agent to starting pos
         motionMatchingController.transform.position = pathController.Path[0];
         conversationalAgentFramework.transform.position = pathController.Path[0];
@@ -102,7 +109,9 @@ public class AvatarCreatorForVideo : AvatarCreatorBase
         //Save The Agent
         instantiatedAvatars.Add(instance);
 
+        /***********************************************************/
         /************************Create Group***********************/
+        /***********************************************************/
         if(spawnCount >= 4){
             Debug.Log("In this avatarcreator, the number of spawned agents should be lower than 4.");
             spawnCount = 3;
@@ -126,17 +135,22 @@ public class AvatarCreatorForVideo : AvatarCreatorBase
             pathController.avatarCreator = this.GetComponent<AvatarCreatorBase>();
             pathController.Path = pathVerticesEndToStart.ToArray();
             //Select Position
+            if(spawnCount == 1 && onInitialPosOffset){
+                 pathController.Path[0] += new Vector3(0f, 0f, initialAgentDistance);
+            }
             if(spawnCount == 2){
                 if(i == 0){
                     pathController.Path[0] += new Vector3(0f, 0f, initialAgentDistance);
-                }if(i == 1){
+                }
+                if(i == 1){
                     pathController.Path[0] += new Vector3(0f, 0f, -initialAgentDistance);
                 }
             }
             if(spawnCount == 3){
                 if(i == 1){
                     pathController.Path[0] += new Vector3(0f, 0f, initialAgentDistance);
-                }if(i == 2){
+                }
+                if(i == 2){
                     pathController.Path[0] += new Vector3(0f, 0f, -initialAgentDistance);
                 }
             }

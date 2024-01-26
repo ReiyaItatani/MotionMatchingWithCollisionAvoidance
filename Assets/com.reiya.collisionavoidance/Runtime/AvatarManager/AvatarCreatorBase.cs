@@ -97,6 +97,20 @@ public class AvatarCreatorBase : MonoBehaviour
         return agentsList;
     }
 
+    // GetPathControllers: A method to retrieve PathController components from avatars.
+    public virtual List<PathController> GetPathControllers()
+    {
+        List<PathController> pathControllersList = new List<PathController>();
+        
+        foreach (GameObject avatar in instantiatedAvatars)
+        {
+            PathController pathController = avatar.GetComponentInChildren<PathController>();
+            pathControllersList.Add(pathController);
+        }
+        
+        return pathControllersList;
+    }
+
     // GetPathControllersInCategory: A method to retrieve PathController components from avatars in a specific social relation category.
     protected virtual List<PathController> GetPathControllersInCategory(SocialRelations socialRelations)
     {

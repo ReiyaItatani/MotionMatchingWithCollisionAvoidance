@@ -58,6 +58,9 @@ public class SocialBehaviour : MonoBehaviour
     private Animator animator;
     private bool onSmartPhone = true;
 
+    //For experiment
+    public bool onAnimationShift = true;
+
     private void Awake()
     {
         parameterManager             = GetComponent<ParameterManager>();
@@ -74,13 +77,17 @@ public class SocialBehaviour : MonoBehaviour
             SetSmartPhoneActiveBasedOnSocialRelations(smartPhone);
         }
 
+        parameterManager.GetPathController().OnMutualGaze += OnMutualGaze;
+
         FollowMotionMatching();
     }
 
     private void Start()
     {
         StartCoroutine(UpdateCurrentLookAt(LookAtUpdateTime));
-        StartCoroutine(UpdateAnimationState());
+        if(onAnimationShift){
+            StartCoroutine(UpdateAnimationState());
+        }
     }
 
     #region Animation State Control
@@ -113,16 +120,16 @@ public class SocialBehaviour : MonoBehaviour
     }
 
     #if UNITY_EDITOR
-    // void OnDrawGizmos()
-    // {
-    //     var style = new GUIStyle()
-    //     {
-    //         fontSize = 20,
-    //         normal = new GUIStyleState() { textColor = Color.black, background = Texture2D.whiteTexture }
-    //     };
-    //     Handles.Label(transform.position + Vector3.up * 2.3f, currentAnimationState.ToString(), style);
+    void OnDrawGizmos()
+    {
+        var style = new GUIStyle()
+        {
+            fontSize = 20,
+            normal = new GUIStyleState() { textColor = Color.black, background = Texture2D.whiteTexture }
+        };
+        Handles.Label(transform.position + Vector3.up * 2.3f, currentAnimationState.ToString(), style);
 
-    // }
+    }
     #endif
 
     private UpperBodyAnimationState DetermineAnimationState(List<GameObject> groupAgents)
@@ -139,16 +146,18 @@ public class SocialBehaviour : MonoBehaviour
 
     public void TriggerUnityAnimation(UpperBodyAnimationState animationState)
     {
-        //Update current animation state
-        currentAnimationState = animationState;
-        motionMatchingRenderer.AvatarMask = initialAvatarMask;
+        if(onAnimationShift){
+            //Update current animation state
+            currentAnimationState = animationState;
+            motionMatchingRenderer.AvatarMask = initialAvatarMask;
 
-        foreach (UpperBodyAnimationState state in Enum.GetValues(typeof(UpperBodyAnimationState)))
-        {
-            animator.SetBool(state.ToString(), state == animationState);
-        }
-        if(animationState == UpperBodyAnimationState.SmartPhone || animationState == UpperBodyAnimationState.Talk){
-            TryPlayAudio(1.0f);
+            foreach (UpperBodyAnimationState state in Enum.GetValues(typeof(UpperBodyAnimationState)))
+            {
+                animator.SetBool(state.ToString(), state == animationState);
+            }
+            if(animationState == UpperBodyAnimationState.SmartPhone || animationState == UpperBodyAnimationState.Talk){
+                TryPlayAudio(1.0f);
+            }
         }
     }
 
@@ -398,6 +407,7 @@ public class SocialBehaviour : MonoBehaviour
     Vector3 lookAtCenterOfMass;
     Vector3 potentialAvoidanceTarget;
     GameObject potentialAvoidanceObject;
+    GameObject avoidanceCoordinateTarget;
 
     public void SetCollidedTarget(GameObject _collidedTarget){
         collidedTarget = _collidedTarget;
@@ -484,6 +494,34 @@ public class SocialBehaviour : MonoBehaviour
         }
     }
 
+    private bool isMutualGazeRunning = false;
+
+    // Handle the mutual gaze event
+    private void OnMutualGaze(GameObject currentAvoidanceTarget){
+        // Skip the process if it's already running
+        if (isMutualGazeRunning) return;
+
+        // Set the flag indicating the process is running
+        isMutualGazeRunning = true;
+
+        avoidanceCoordinateTarget = currentAvoidanceTarget;
+
+        // Call ResetAvoidanceCoordinateTarget method after 1 second
+        Invoke("ResetAvoidanceCoordinateTarget", 2f);
+    }
+
+    // Reset the avoidance coordinate target
+    private void ResetAvoidanceCoordinateTarget(){
+        // Set avoidanceCoordinateTarget to null
+        avoidanceCoordinateTarget = null;
+
+        // Reset the flag indicating the process is running
+        isMutualGazeRunning = false;
+    }
+
+    public GameObject GetAvoidanceCoordinationTarget(){
+        return avoidanceCoordinateTarget;
+    }
 
     public GameObject GetCollidedTarget(){
         return collidedTarget;

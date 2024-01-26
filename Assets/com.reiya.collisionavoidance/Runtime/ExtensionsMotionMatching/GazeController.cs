@@ -13,7 +13,8 @@ public class GazeController : MonoBehaviour
         CollidedTarget,
         CurerntAvoidancetarget,
         MyDirection,
-        CenterOfMass
+        CenterOfMass,
+        CoordinationTarget
     }
     private SkinnedMeshRenderer meshRenderer;
     private Animator animator;
@@ -22,6 +23,9 @@ public class GazeController : MonoBehaviour
     private SocialBehaviour socialBehaviour;
 
     private MotionMatchingSkinnedMeshRenderer motionMatchingSkinnedMeshRenderer;
+
+    //For experiment
+    public bool onNeckRotation = true;
 
     private void Awake()
     {
@@ -42,9 +46,21 @@ public class GazeController : MonoBehaviour
         meshRenderer = body.GetComponentInChildren<SkinnedMeshRenderer>();
 
         StartCoroutine(UpdateNeckState(2.0f));
-        //Subscribe the event
+    }
+
+    private void OnEnable()
+    {
+        if(onNeckRotation){
+            //Subscribe the event
+            motionMatchingSkinnedMeshRenderer = GetComponent<MotionMatchingSkinnedMeshRenderer>();
+            motionMatchingSkinnedMeshRenderer.OnUpdateGaze += UpdateGaze;
+        }
+    }
+
+    private void OnDisable()
+    {
         motionMatchingSkinnedMeshRenderer = GetComponent<MotionMatchingSkinnedMeshRenderer>();
-        motionMatchingSkinnedMeshRenderer.OnUpdateGaze += UpdateGaze;
+        motionMatchingSkinnedMeshRenderer.OnUpdateGaze -= UpdateGaze;
     }
 
     GameObject FindObjectWithSkinnedMeshRenderer(GameObject parent)
@@ -108,6 +124,7 @@ public class GazeController : MonoBehaviour
     private Vector3 currentCenterOfMass = Vector3.zero;
     private Vector3 currentAvoidanceTarget = Vector3.zero;
     private Vector3 currentAgentDirection = Vector3.zero;
+    private GameObject avoidanceCoordinationTarget = null;
 
 
     private void HorizontalLookAtPass(Vector3 currentLookAtDir, Vector3 targetLookAtDir, float rotationSpeed){
@@ -126,10 +143,11 @@ public class GazeController : MonoBehaviour
 //Todo refine
     private void ParameterUpdater(){
         //Update Params
-        currentCenterOfMass    = socialBehaviour.GetCurrentCenterOfMass();
-        currentAvoidanceTarget = socialBehaviour.GetPotentialAvoidanceTarget();
-        currentAgentDirection  = socialBehaviour.GetCurrentDirection();
-        collidedTarget         = socialBehaviour.GetCollidedTarget();
+        currentCenterOfMass         = socialBehaviour.GetCurrentCenterOfMass();
+        currentAvoidanceTarget      = socialBehaviour.GetPotentialAvoidanceTarget();
+        currentAgentDirection       = socialBehaviour.GetCurrentDirection();
+        collidedTarget              = socialBehaviour.GetCollidedTarget();
+        avoidanceCoordinationTarget = socialBehaviour.GetAvoidanceCoordinationTarget();
     }
 
     private void LookAtAttractionPointUpdater(){
@@ -137,7 +155,10 @@ public class GazeController : MonoBehaviour
             //when collide
             horizontalAttractionPoint = (collidedTarget.transform.position - this.transform.position).normalized;
             currentLookTarget = CurrentLookTarget.CollidedTarget;
-        }else if(collidedTarget == null && currentAvoidanceTarget != Vector3.zero){
+        }else if(avoidanceCoordinationTarget != null){
+            horizontalAttractionPoint = (avoidanceCoordinationTarget.transform.position - this.transform.position).normalized;
+            currentLookTarget = CurrentLookTarget.CoordinationTarget;
+        }else if(currentAvoidanceTarget != Vector3.zero){
             horizontalAttractionPoint = (currentAvoidanceTarget - this.transform.position).normalized;
             currentLookTarget = CurrentLookTarget.CurerntAvoidancetarget;
         }else{

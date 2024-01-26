@@ -58,6 +58,10 @@ public class PathController : MotionMatchingCharacterController
     [ReadOnly]
     public GameObject currentAvoidanceTarget;
     // --------------------------------------------------------------------------
+    // Collision Response -------------------------------------------------------
+    public event EventDelegate OnMutualGaze;
+    public delegate void EventDelegate(GameObject targetAgent);
+    // --------------------------------------------------------------------------
     // To Goal Direction --------------------------------------------------------
     [Header("Parameters For Goal Direction")]
     private Vector3 currentGoal;
@@ -118,6 +122,9 @@ public class PathController : MotionMatchingCharacterController
     private Vector3 wallRepForce;
     [HideInInspector]
     public float wallRepForceWeight = 0.2f;
+    // --------------------------------------------------------------------------
+    // For experiment -----------------------------------------------------------
+    public bool onAvoidanceCoordination = true;
     
 
     private void Start()
@@ -222,7 +229,8 @@ public class PathController : MotionMatchingCharacterController
             if(onMoving){
                 if (dotProduct <= -angle){
                     //anti-parallel
-                    direction = CheckOppoentDir(myDir, myPos, otherDir, otherPos);
+                    bool isParallel = false;
+                    direction = CheckOppoentDir(myDir, myPos, otherDir, otherPos, out isParallel);
                     nextPosition = _currentPosition + direction * 0.1f * time;
                 }else{
                     //parallel
@@ -244,13 +252,15 @@ public class PathController : MotionMatchingCharacterController
         }
     }
 
-    private Vector3 CheckOppoentDir(Vector3 myDirection, Vector3 myPosition, Vector3 otherDirection, Vector3 otherPosition){
+    private Vector3 CheckOppoentDir(Vector3 myDirection, Vector3 myPosition, Vector3 otherDirection, Vector3 otherPosition, out bool isParallel){
         Vector3 offset = (otherPosition - myPosition).normalized;
         Vector3 right= Vector3.Cross(Vector3.up, offset).normalized;
         if(Vector3.Dot(right, myDirection)>0 && Vector3.Dot(right, otherDirection)>0 || Vector3.Dot(right, myDirection)<0 && Vector3.Dot(right, otherDirection)<0){
             //Potential to collide
+            isParallel = true;
             return GetReflectionVector(myDirection, offset);
         }
+        isParallel = false;
         return myDirection;
     }
 
@@ -390,8 +400,12 @@ public class PathController : MotionMatchingCharacterController
                 avoidanceVector = ComputeAvoidanceVector(currentAvoidanceTarget, currentDirection, currentPosition);
 
                 //Check opponent dir
-                if(avoidanceTargetAvoidanceVector != Vector3.zero && Vector3.Dot(currentDirection, avoidanceVector) < 0.5){
-                    avoidanceVector = CheckOppoentDir(avoidanceVector, currentPosition, avoidanceTargetAvoidanceVector ,avoidanceTargetPosition);
+                if(avoidanceTargetAvoidanceVector != Vector3.zero && Vector3.Dot(currentDirection, avoidanceVector) < 0.5 && onAvoidanceCoordination){
+                    bool isParallel = false;
+                    avoidanceVector = CheckOppoentDir(avoidanceVector, currentPosition, avoidanceTargetAvoidanceVector ,avoidanceTargetPosition, out isParallel);
+                    if(isParallel){
+                        OnMutualGaze?.Invoke(currentAvoidanceTarget);
+                    }
                 }
 
                 //gradually increase the avoidance force considering the distance 
