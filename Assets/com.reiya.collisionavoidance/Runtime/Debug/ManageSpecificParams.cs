@@ -16,7 +16,7 @@ namespace CollisionAvoidance{
 
 
         [SerializeField, ReadOnly]
-        private AvatarCreatorForVideo avatarCreatorBase;
+        private AvatarCreatorBase avatarCreatorBase;
         private List<GameObject> avatarPrefabs = new List<GameObject>();
         private List<PathController> pathControllers = new List<PathController>();
         private List<GazeController> gazeControllers = new List<GazeController>();
@@ -26,7 +26,7 @@ namespace CollisionAvoidance{
         // Start is called before the first frame update
         void Awake()
         {
-            avatarCreatorBase = GetComponent<AvatarCreatorForVideo>();
+            avatarCreatorBase = GetComponent<AvatarCreatorBase>();
             avatarPrefabs = avatarCreatorBase.GetAgents();
             foreach(GameObject avatarprefab in avatarPrefabs){
                 gazeControllers.Add(avatarprefab.GetComponent<GazeController>());

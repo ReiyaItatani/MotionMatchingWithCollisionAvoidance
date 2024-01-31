@@ -36,7 +36,7 @@ public class SocialBehaviour : MonoBehaviour
     private const float AnimationStateUpdateMinTime = 10.0f;
     private const float AnimationStateUpdateMaxTime = 20.0f;
     [Range(0,1)]
-    private float WalkAnimationProbability = 0.5f;
+    public float WalkAnimationProbability = 0.5f;
     private const float FieldOfView = 45f;
     
     [Header("Conversation")]
@@ -58,6 +58,9 @@ public class SocialBehaviour : MonoBehaviour
     private Animator animator;
     private bool onSmartPhone = true;
 
+    [Header("Collision")]
+    private AgentCollisionDetection agentCollisionDetection;
+
     //For experiment
     public bool onAnimationShift = true;
 
@@ -67,6 +70,8 @@ public class SocialBehaviour : MonoBehaviour
         animator                     = GetComponent<Animator>();
         motionMatchingRenderer       = GetComponent<CollisionAvoidance.MotionMatchingSkinnedMeshRenderer>();
         gazeController               = GetComponent<GazeController>();
+        agentCollisionDetection      = GetComponent<AgentCollisionDetection>();
+        agentCollisionDetection.OnEnterTrigger += HandleAgentCollision;
 
         if (motionMatchingRenderer != null)
         {
@@ -120,16 +125,16 @@ public class SocialBehaviour : MonoBehaviour
     }
 
     #if UNITY_EDITOR
-    void OnDrawGizmos()
-    {
-        var style = new GUIStyle()
-        {
-            fontSize = 20,
-            normal = new GUIStyleState() { textColor = Color.black, background = Texture2D.whiteTexture }
-        };
-        Handles.Label(transform.position + Vector3.up * 2.3f, currentAnimationState.ToString(), style);
+    // void OnDrawGizmos()
+    // {
+    //     var style = new GUIStyle()
+    //     {
+    //         fontSize = 20,
+    //         normal = new GUIStyleState() { textColor = Color.black, background = Texture2D.whiteTexture }
+    //     };
+    //     Handles.Label(transform.position + Vector3.up * 2.3f, currentAnimationState.ToString(), style);
 
-    }
+    // }
     #endif
 
     private UpperBodyAnimationState DetermineAnimationState(List<GameObject> groupAgents)
@@ -193,7 +198,7 @@ public class SocialBehaviour : MonoBehaviour
         Vector3 averagePos = CalculateAveragePosition(groupAgents);
         
         // Set the distance threshold to half the number of agents
-        float thresholdDistance = groupAgents.Count / 2f;
+        float thresholdDistance = groupAgents.Count / 2.5f;
 
         // Check if the calling object (self) is within the threshold distance from the center of mass
         if (Vector3.Distance(myself.transform.position, averagePos) > thresholdDistance)
@@ -236,11 +241,6 @@ public class SocialBehaviour : MonoBehaviour
     #endregion
 
     #region Collide Response
-    public void DeleteCollidedTarget()
-    {
-        collidedTarget = null;
-    }
-
     public void TryPlayAudio(float PlayAudioProbability)
     {
         if (audioSource != null && audioClips.Length > 0 && UnityEngine.Random.value < PlayAudioProbability)
@@ -248,6 +248,19 @@ public class SocialBehaviour : MonoBehaviour
             audioSource.clip = audioClips[UnityEngine.Random.Range(0, audioClips.Length)];
             audioSource.Play();
         }
+    }
+    
+    private void HandleAgentCollision(Collider other){
+        StartCoroutine(ReactionToCollision(3.0f, other.gameObject));
+    }
+
+    public IEnumerator ReactionToCollision(float talkDuration, GameObject collidedAgent)
+    {
+        collidedTarget = collidedAgent;
+        TriggerUnityAnimation(UpperBodyAnimationState.Talk);
+        yield return new WaitForSeconds(talkDuration / 2.0f);
+        FollowMotionMatching();
+        collidedTarget = null;
     }
     #endregion
 
@@ -409,9 +422,6 @@ public class SocialBehaviour : MonoBehaviour
     GameObject potentialAvoidanceObject;
     GameObject avoidanceCoordinateTarget;
 
-    public void SetCollidedTarget(GameObject _collidedTarget){
-        collidedTarget = _collidedTarget;
-    }
     private void SetCurrentDirection(Vector3 _currentDirection){
         currentDirection = _currentDirection;
     }
@@ -486,7 +496,7 @@ public class SocialBehaviour : MonoBehaviour
                 {
                     // This indicates mutual gaze
                     potentialAvoidanceTarget = Vector3.zero;
-                    Debug.Log("Detect Mutual Gaze");
+                    //Debug.Log("Detect Mutual Gaze");
                 }
             }
 

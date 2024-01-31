@@ -15,17 +15,17 @@ namespace CollisionAvoidance{
 
 
         [Header("Basic Collision Avoidance")]
-        public Vector3 avoidanceColliderSize = new Vector3(1.5f, 1.5f, 2.0f); 
+        public Vector3 avoidanceColliderSize = new Vector3(1.5f, 1.5f, 1.5f); 
         private GameObject basicAvoidanceArea;
         private UpdateAvoidanceTarget updateAvoidanceTarget;
         private BoxCollider avoidanceCollider;
 
 
-        [Header("Unaligned Collision Avoidance")]
-        public Vector3 unalignedAvoidanceColliderSize = new Vector3(4.5f, 1.5f, 6.0f); 
-        private GameObject unalignedAvoidanceArea;
-        private UpdateUnalignedAvoidanceTarget updateUnalignedAvoidanceTarget;
-        private BoxCollider unalignedAvoidanceCollider;
+        // [Header("Anticipated Collision Avoidance")]
+        // public Vector3 anticipatedAvoidanceColliderSize = new Vector3(4.5f, 1.5f, 3.9f); 
+        // private GameObject anticipatedAvoidanceArea;
+        // private UpdateAnticipatedAvoidanceTarget updateAnticipatedAvoidanceTarget;
+        // private BoxCollider anticipatedAvoidanceCollider;
 
         [Header("Basic Collision Avoidance Semi Circle Area")]
         public GameObject FOVMeshPrefab;
@@ -51,14 +51,14 @@ namespace CollisionAvoidance{
             avoidanceCollider.size              = avoidanceColliderSize;
             avoidanceCollider.isTrigger         = true;
 
-            //Create Box Collider for Unaligned Collision Avoidance Force
-            unalignedAvoidanceArea                  = new GameObject("UnalignedCollisionAvoidanceArea");
-            unalignedAvoidanceArea.transform.parent = this.transform;
-            updateUnalignedAvoidanceTarget          = unalignedAvoidanceArea.AddComponent<UpdateUnalignedAvoidanceTarget>();
-            updateUnalignedAvoidanceTarget.InitParameter(agentCollider, groupCollider);
-            unalignedAvoidanceCollider              = unalignedAvoidanceArea.AddComponent<BoxCollider>();
-            unalignedAvoidanceCollider.size         = unalignedAvoidanceColliderSize;
-            unalignedAvoidanceCollider.isTrigger    = true;
+            //Create Box Collider for Anticipated Collision Avoidance Force
+            // anticipatedAvoidanceArea                  = new GameObject("AnticipatedCollisionAvoidanceArea");
+            // anticipatedAvoidanceArea.transform.parent = this.transform;
+            // updateAnticipatedAvoidanceTarget          = anticipatedAvoidanceArea.AddComponent<UpdateAnticipatedAvoidanceTarget>();
+            // updateAnticipatedAvoidanceTarget.InitParameter(agentCollider, groupCollider);
+            // anticipatedAvoidanceCollider              = anticipatedAvoidanceArea.AddComponent<BoxCollider>();
+            // anticipatedAvoidanceCollider.size         = anticipatedAvoidanceColliderSize;
+            // anticipatedAvoidanceCollider.isTrigger    = true;
 
             //Create FOV for Collision Avoidance Force
             basicAvoidanceSemiCircleArea                  = Instantiate(FOVMeshPrefab, this.transform.position, this.transform.rotation);
@@ -81,11 +81,10 @@ namespace CollisionAvoidance{
                 agentCollisionDetection = agentCollider.gameObject.AddComponent<AgentCollisionDetection>();
                 Debug.Log("AgentCollisionDetection script added");
             }
-            agentCollisionDetection.InitParameter(pathController, agentCollider);
 
             //Update AvoidanceArea
             StartCoroutine(UpdateBasicAvoidanceAreaPos(agentCollider.height/2));
-            StartCoroutine(UpdateUnalignedAvoidanceAreaPos(agentCollider.height/2));
+            // StartCoroutine(UpdateAnticipatedAvoidanceAreaPos(agentCollider.height/2));
             StartCoroutine(UpdateBasicAvoidanceSemiCircleAreaPos(agentCollider.height/2, agentCollider.radius));
         }
 
@@ -119,16 +118,16 @@ namespace CollisionAvoidance{
             }
         }
 
-        private IEnumerator UpdateUnalignedAvoidanceAreaPos(float AgentHeight){
-            while(true){
-                if(pathController.GetCurrentDirection() == Vector3.zero) yield return null;
-                Vector3 Center = (Vector3)pathController.GetCurrentPosition() + pathController.GetCurrentDirection().normalized * unalignedAvoidanceCollider.size.z/2;
-                unalignedAvoidanceArea.transform.position = new Vector3(Center.x, AgentHeight, Center.z);
-                Quaternion targetRotation = Quaternion.LookRotation(pathController.GetCurrentDirection().normalized);
-                unalignedAvoidanceArea.transform.rotation = targetRotation;
-                yield return null;
-            }
-        }
+        // private IEnumerator UpdateAnticipatedAvoidanceAreaPos(float AgentHeight){
+        //     while(true){
+        //         if(pathController.GetCurrentDirection() == Vector3.zero) yield return null;
+        //         Vector3 Center = (Vector3)pathController.GetCurrentPosition() + pathController.GetCurrentDirection().normalized * anticipatedAvoidanceCollider.size.z/2;
+        //         anticipatedAvoidanceArea.transform.position = new Vector3(Center.x, AgentHeight, Center.z);
+        //         Quaternion targetRotation = Quaternion.LookRotation(pathController.GetCurrentDirection().normalized);
+        //         anticipatedAvoidanceArea.transform.rotation = targetRotation;
+        //         yield return null;
+        //     }
+        // }
 
         private IEnumerator UpdateBasicAvoidanceSemiCircleAreaPos(float AgentHeight, float AgentRadius){
             while(true){
@@ -147,9 +146,9 @@ namespace CollisionAvoidance{
         }
 
 
-        public List<GameObject> GetOthersInUnalignedAvoidanceArea(){
-            return updateUnalignedAvoidanceTarget.GetOthersInUnalignedAvoidanceArea();
-        }
+        // public List<GameObject> GetOthersInAnticipatedAvoidanceArea(){
+        //     return updateAnticipatedAvoidanceTarget.GetOthersInAnticipatedAvoidanceArea();
+        // }
 
         public List<GameObject> GetOthersInAvoidanceArea(){
             return updateAvoidanceTarget.GetOthersInAvoidanceArea();
@@ -179,6 +178,10 @@ namespace CollisionAvoidance{
 
         public UpperBodyAnimationState GetUpperBodyAnimationState(){
             return socialBehaviour.GetUpperBodyAnimationState();
+        }
+
+        public AgentCollisionDetection GetAgentCollisionDetection(){
+            return agentCollisionDetection;
         }
 
         private void DrawInfo(){
@@ -211,15 +214,15 @@ namespace CollisionAvoidance{
         //     Gizmos.matrix = Matrix4x4.TRS(position, rotation, Vector3.one);
         //     Gizmos.DrawWireCube(Vector3.zero, size);
 
-        //     if(unalignedAvoidanceArea==null)return;
+        //     if(anticipatedAvoidanceArea==null)return;
         //     Gizmos.color = Color.red;
 
-        //     Vector3 position_unaligned = unalignedAvoidanceArea.transform.position;
-        //     Quaternion rotation_unaligned = unalignedAvoidanceArea.transform.rotation;
-        //     Vector3 size_unaligned = unalignedAvoidanceCollider.size;
+        //     Vector3 position_anticipated = anticipatedAvoidanceArea.transform.position;
+        //     Quaternion rotation_anticipated = anticipatedAvoidanceArea.transform.rotation;
+        //     Vector3 size_anticipated = anticipatedAvoidanceCollider.size;
 
-        //     Gizmos.matrix = Matrix4x4.TRS(position_unaligned, rotation_unaligned, Vector3.one);
-        //     Gizmos.DrawWireCube(Vector3.zero, size_unaligned);
+        //     Gizmos.matrix = Matrix4x4.TRS(position_anticipated, rotation_anticipated, Vector3.one);
+        //     Gizmos.DrawWireCube(Vector3.zero, size_anticipated);
         // }
 
 

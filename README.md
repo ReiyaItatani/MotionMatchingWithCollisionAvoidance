@@ -18,7 +18,7 @@ The movement of each agent within our system is influenced by a combination of d
 
 - **Goal-Seeking Force**: Steers the agent towards a designated target or destination.
 - **Collision Avoidance Force**: Implements sophisticated avoidance algorithms to prevent imminent collisions. For more details, see the [Collision Avoidance Force](#collision-avoidance-logic) section.
-- **Unaligned Collision Avoidance Force**: Derived from Reynolds' influential work [Reynolds, 1987], this vector anticipates and steers agents away from potential collisions. For more details, see the [Unaligned Collision Avoidance Force](#unaligned-collision-avoidance) section.
+- **Anticipated Collision Avoidance Force**: Derived from Reynolds' influential work [Reynolds, 1987], this vector anticipates and steers agents away from potential collisions. For more details, see the [Anticipated Collision Avoidance Force](#anticipated-collision-avoidance) section.
 - **Group Dynamics Force**: Shapes natural group movements as characterized by Moussaid et al. [Moussaid et al., 2010], influencing agents to move cohesively. For more details, see the [Group Dynamics Force](#force-from-group) section.
 - **Wall Repulsion Force**: Produces a repelling vector that maintains a safe buffer between agents and wall surfaces, in line with Nuria HiDAC's principles [Pelechano et al., 2007].
 
@@ -33,7 +33,7 @@ Where:
 - **D** represents the Direction Vector, which is the resultant vector guiding the agent's movement.
 - w<sub>g</sub> is the weight assigned to the Goal-Seeking Force **G**.
 - w<sub>c</sub> is the weight assigned to the Collision Avoidance Force **C**.
-- w<sub>u</sub> is the weight assigned to the Unaligned Collision Avoidance Force **U**.
+- w<sub>u</sub> is the weight assigned to the Anticipated Collision Avoidance Force **U**.
 - w<sub>f</sub> is the weight assigned to the Group Dynamics Force **F**.
 - w<sub>w</sub> is the weight assigned to the Wall Repulsion Force **W**.
 
@@ -46,7 +46,7 @@ Each weight w<sub>x</sub> modulates the influence of its corresponding force, al
 - **Group Dynamics**: The avoidance force is proportional to the group size, calculated as `radius + 1f` for the avoidance vector.
 - **Distance-Based Scaling**: The force is dynamically adjusted based on the distance to other agents.
 
-### Unaligned Collision Avoidance
+### Anticipated Collision Avoidance
 
 - **Time to Collision**: This system continuously calculates the time until a potential collision for each agent within a Box Collider's bounds.
 - **Priority Targeting**: When multiple agents are present, the one with the shortest time to collision is prioritized.

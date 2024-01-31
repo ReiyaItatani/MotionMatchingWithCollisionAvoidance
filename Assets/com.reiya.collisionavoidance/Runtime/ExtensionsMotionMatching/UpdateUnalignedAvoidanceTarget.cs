@@ -4,15 +4,15 @@ using UnityEngine;
 using MotionMatching;
 
 namespace CollisionAvoidance{
-public class UpdateUnalignedAvoidanceTarget : MonoBehaviour
+public class UpdateAnticipatedAvoidanceTarget : MonoBehaviour
 {
     private CapsuleCollider myAgentCollider;
     private CapsuleCollider myGroupCollider;
     [ReadOnly]
-    public List<GameObject> othersInUnalignedAvoidanceArea = new List<GameObject>();
+    public List<GameObject> othersInAnticipatedAvoidanceArea = new List<GameObject>();
 
     void Update(){
-        UnalignedAvoidanceTargetActiveChecker();
+        AnticipatedAvoidanceTargetActiveChecker();
     }
 
     void OnTriggerStay(Collider other)
@@ -20,9 +20,9 @@ public class UpdateUnalignedAvoidanceTarget : MonoBehaviour
         if(!other.Equals(myAgentCollider) && other.gameObject.CompareTag("Agent") || 
            !other.Equals(myGroupCollider) && other.gameObject.CompareTag("Group"))
         {
-            if (!othersInUnalignedAvoidanceArea.Contains(other.gameObject))
+            if (!othersInAnticipatedAvoidanceArea.Contains(other.gameObject))
             {
-                othersInUnalignedAvoidanceArea.Add(other.gameObject);
+                othersInAnticipatedAvoidanceArea.Add(other.gameObject);
             }
         }   
     }
@@ -31,19 +31,19 @@ public class UpdateUnalignedAvoidanceTarget : MonoBehaviour
     {
         if(!other.Equals(myAgentCollider) && other.gameObject.CompareTag("Agent") || 
            !other.Equals(myGroupCollider) && other.gameObject.CompareTag("Group")){
-            if (othersInUnalignedAvoidanceArea.Contains(other.gameObject))
+            if (othersInAnticipatedAvoidanceArea.Contains(other.gameObject))
             {
-                othersInUnalignedAvoidanceArea.Remove(other.gameObject);
+                othersInAnticipatedAvoidanceArea.Remove(other.gameObject);
             }
         }
     }
 
-    public List<GameObject> GetOthersInUnalignedAvoidanceArea(){
-        return othersInUnalignedAvoidanceArea;
+    public List<GameObject> GetOthersInAnticipatedAvoidanceArea(){
+        return othersInAnticipatedAvoidanceArea;
     }
 
-    private void UnalignedAvoidanceTargetActiveChecker(){
-        othersInUnalignedAvoidanceArea.RemoveAll(gameObject => !gameObject.activeInHierarchy);
+    private void AnticipatedAvoidanceTargetActiveChecker(){
+        othersInAnticipatedAvoidanceArea.RemoveAll(gameObject => !gameObject.activeInHierarchy);
     }
     
     public void InitParameter(CapsuleCollider _myAgentCollider, CapsuleCollider _myGroupCollider){

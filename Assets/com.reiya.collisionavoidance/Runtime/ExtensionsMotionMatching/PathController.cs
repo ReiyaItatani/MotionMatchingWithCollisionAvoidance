@@ -74,13 +74,13 @@ public class PathController : MotionMatchingCharacterController
     [HideInInspector]
     public float slowingRadius = 2.0f;
     // --------------------------------------------------------------------------
-    // Unaligned Collision Avoidance -------------------------------------------
-    [Header("Parameters For Unaligned Collision Avoidance"), HideInInspector]
-    private Vector3 avoidNeighborsVector = Vector3.zero;//Direction for unaligned collision avoidance
+    // Anticipated Collision Avoidance -------------------------------------------
+    [Header("Parameters For Anticipated Collision Avoidance"), HideInInspector]
+    private Vector3 avoidNeighborsVector = Vector3.zero;//Direction for Anticipated collision avoidance
     [ReadOnly]
     public GameObject potentialAvoidanceTarget;
     [HideInInspector]
-    public float avoidNeighborWeight = 2.0f;//Weight for unaligned collision avoidance
+    public float avoidNeighborWeight = 2.0f;//Weight for Anticipated collision avoidance
     private float minTimeToCollision =5.0f;
     private float collisionDangerThreshold = 4.0f;
     // --------------------------------------------------------------------------
@@ -95,7 +95,7 @@ public class PathController : MotionMatchingCharacterController
     [HideInInspector]
     public bool showAvoidanceForce = false;
     [HideInInspector]
-    public bool showUnalignedCollisionAvoidance = false;
+    public bool showAnticipatedCollisionAvoidance = false;
     [HideInInspector]
     public bool showGoalDirection = false;
     [HideInInspector]
@@ -136,7 +136,11 @@ public class PathController : MotionMatchingCharacterController
             minSpeed = initialSpeed;
         }
         CurrentPosition = Path[0];
-        currentGoal = Path[currentGoalIndex];            
+        currentGoal = Path[currentGoalIndex];       
+
+        //Init
+        AgentCollisionDetection agentCollisionDetection = collisionAvoidance.GetAgentCollisionDetection();
+        agentCollisionDetection.OnEnterTrigger += HandleAgentCollision;     
 
         // Get the feature indices
         TrajectoryPosFeatureIndex = -1;
@@ -173,7 +177,7 @@ public class PathController : MotionMatchingCharacterController
         StartCoroutine(UpdateSpeed(avatarCreator.GetAgentsInCategory(GetSocialRelations()), collisionAvoidance.GetAgentGameObject()));
         StartCoroutine(UpdateAngularVelocityControl(0.2f));   
             
-        //If you wanna consider all of the other agents for unaligned collision avoidance use below
+        //If you wanna consider all of the other agents for anticipated collision avoidance use below
         //StartCoroutine(UpdateAvoidNeighborsVector(avatarCreator.GetAgents(), 0.1f, 0.3f));
     }
 
@@ -250,6 +254,24 @@ public class PathController : MotionMatchingCharacterController
         }else{
             nextPosition = _currentPosition + direction * currentSpeed * time;
         }
+    }
+
+    //when the agent collide with the agent in front of it, it will take a step back
+    private void HandleAgentCollision(Collider other){
+        if(onCollide == false){
+            collidedAgent = other.gameObject;
+            StartCoroutine(ReactionToCollision(3.0f, other.gameObject));
+        }
+    }
+
+    public IEnumerator ReactionToCollision(float time, GameObject collidedAgent)
+    {
+        onCollide = true;
+        yield return new WaitForSeconds(time / 2.0f);
+        onMoving = true;
+        yield return new WaitForSeconds(time / 2.0f);
+        onCollide = false;
+        onMoving = false;
     }
 
     private Vector3 CheckOppoentDir(Vector3 myDirection, Vector3 myPosition, Vector3 otherDirection, Vector3 otherPosition, out bool isParallel){
@@ -505,16 +527,16 @@ public class PathController : MotionMatchingCharacterController
     #endregion
 
     /***********************************************************************************************************
-    * Unaligned Collision Avoidance[Reynolds 1987]:
+    * Anticipated Collision Avoidance[Reynolds 1987]:
     * This section of the code handles scenarios where objects might collide in the future(prediction).
     ************************************************************************************************************/
-    #region UNALIGNED COLLISION AVOIDANCE
+    #region ANTICIPATED COLLISION AVOIDANCE
     public IEnumerator UpdateAvoidNeighborsVector(float updateTime, float transitionTime){
         while(true){
             if(currentAvoidanceTarget != null){
                 avoidNeighborsVector = Vector3.zero;
             }else{
-                List<GameObject> Agents = collisionAvoidance.GetOthersInUnalignedAvoidanceArea();
+                List<GameObject> Agents = collisionAvoidance.GetOthersInFOV();
                 if(Agents == null) yield return null;
                 Vector3 newAvoidNeighborsVector = SteerToAvoidNeighbors(Agents, minTimeToCollision, collisionDangerThreshold);
                 if(potentialAvoidanceTarget != null){
@@ -630,7 +652,7 @@ public class PathController : MotionMatchingCharacterController
     private float minTimeToInteraction;
     private IEnumerator UpdateAngularVelocityControl(float updateTime){
         while(true){
-            //List<GameObject> others = collisionAvoidance.GetOthersInUnalignedAvoidanceArea();
+            //List<GameObject> others = collisionAvoidance.GetOthersInAnticipatedAvoidanceArea();
             List<GameObject> others = avatarCreator.GetAgents();
             Vector3 myPosition      = GetCurrentPosition();
             Vector3 myDirection     = GetCurrentDirection();
@@ -1187,18 +1209,6 @@ public class PathController : MotionMatchingCharacterController
     public Vector3 GetCurrentAvoidanceVector(){
         return avoidanceVector;
     }
-
-    public void SetCollidedAgent(GameObject _collidedAgent){
-        collidedAgent = _collidedAgent;
-    }
-    
-    public void SetOnCollide(bool _onCollide){
-        onCollide = _onCollide;
-    }
-
-    public void SetOnMoving(bool _onMoving){
-        onMoving = _onMoving;
-    }
     #endregion
 
     /******************************************************************************************************************************
@@ -1224,7 +1234,7 @@ public class PathController : MotionMatchingCharacterController
             Draw.ArrowheadArc((Vector3)GetCurrentPosition(), toGoalVector, 0.55f, gizmoColor);
         }
 
-        if(showUnalignedCollisionAvoidance){
+        if(showAnticipatedCollisionAvoidance){
             gizmoColor = Color.green;
             Draw.ArrowheadArc((Vector3)GetCurrentPosition(), avoidNeighborsVector, 0.55f, gizmoColor);
         }
@@ -1251,7 +1261,7 @@ public class PathController : MotionMatchingCharacterController
 
         if (Path == null) return;
 
-        const float heightOffset = 0.01f;
+        //const float heightOffset = 0.01f;
 
         // Draw KeyPoints
         // Gizmos.color = Color.blue;
@@ -1307,24 +1317,24 @@ public class PathController : MotionMatchingCharacterController
         // Vector3 end2 = new Vector3(firstPos2.x, heightOffset, firstPos2.z);
         // GizmosExtensions.DrawArrow(start2, start2 + (end2 - start2).normalized * currentSpeed, thickness: 3);
 
-        // Draw Current Position And Direction
-        if (!Application.isPlaying) return;
-        Gizmos.color = new Color(1.0f, 0.3f, 0.1f, 1.0f);
-        Vector3 currentPos = (Vector3)GetCurrentPosition() + Vector3.up * heightOffset * 2;
-        Gizmos.DrawSphere(currentPos, 0.1f);
-        GizmosExtensions.DrawLine(currentPos, currentPos + (Quaternion)GetCurrentRotation() * Vector3.forward, 12);
-        // Draw Prediction
-        if (PredictedPositions == null || PredictedPositions.Length != NumberPredictionPos ||
-            PredictedDirections == null || PredictedDirections.Length != NumberPredictionRot) return;
-        Gizmos.color = new Color(0.6f, 0.3f, 0.8f, 1.0f);
-        for (int i = 0; i < NumberPredictionPos; i++)
-        {
-            Vector3 predictedPosf2 = GetWorldPredictedPos(i);
-            Vector3 predictedPos = new Vector3(predictedPosf2.x, heightOffset * 2, predictedPosf2.z);
-            Gizmos.DrawSphere(predictedPos, 0.1f);
-            Vector3 dirf2 = GetWorldPredictedDir(i);
-            GizmosExtensions.DrawLine(predictedPos, predictedPos + new Vector3(dirf2.x, 0.0f, dirf2.z) * 0.5f, 12);
-        }
+        // // Draw Current Position And Direction
+        // if (!Application.isPlaying) return;
+        // Gizmos.color = new Color(1.0f, 0.3f, 0.1f, 1.0f);
+        // Vector3 currentPos = (Vector3)GetCurrentPosition() + Vector3.up * heightOffset * 2;
+        // Gizmos.DrawSphere(currentPos, 0.1f);
+        // GizmosExtensions.DrawLine(currentPos, currentPos + (Quaternion)GetCurrentRotation() * Vector3.forward, 12);
+        // // Draw Prediction
+        // if (PredictedPositions == null || PredictedPositions.Length != NumberPredictionPos ||
+        //     PredictedDirections == null || PredictedDirections.Length != NumberPredictionRot) return;
+        // Gizmos.color = new Color(0.6f, 0.3f, 0.8f, 1.0f);
+        // for (int i = 0; i < NumberPredictionPos; i++)
+        // {
+        //     Vector3 predictedPosf2 = GetWorldPredictedPos(i);
+        //     Vector3 predictedPos = new Vector3(predictedPosf2.x, heightOffset * 2, predictedPosf2.z);
+        //     Gizmos.DrawSphere(predictedPos, 0.1f);
+        //     Vector3 dirf2 = GetWorldPredictedDir(i);
+        //     GizmosExtensions.DrawLine(predictedPos, predictedPos + new Vector3(dirf2.x, 0.0f, dirf2.z) * 0.5f, 12);
+        // }
     }
     #endif
     #endregion

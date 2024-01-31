@@ -788,7 +788,7 @@ MonoBehaviour:
   potentialAvoidanceTarget: {fileID: 0}
   avoidNeighborWeight: 1
   showAvoidanceForce: 0
-  showUnalignedCollisionAvoidance: 0
+  showAnticipatedCollisionAvoidance: 0
   showGoalDirection: 0
   showCurrentDirection: 0
   showGroupForce: 0
@@ -798,6 +798,7 @@ MonoBehaviour:
   groupForceWeight: 0.5
   collisionAvoidance: {fileID: 1645053309859565950}
   wallRepForceWeight: 1
+  onAvoidanceCoordination: 1
   syntheticVisionForceWeight: 1
 --- !u!1 &1651260024583920120
 GameObject:
@@ -1785,6 +1786,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fc975652ab7bcd4cacb9377e5592b74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  WalkAnimationProbability: 0.5
   audioSource: {fileID: 1645053309791444789}
   audioClips:
   - {fileID: 8300000, guid: 6104dd54d297b2746a235c08aae5ad55, type: 3}
@@ -1792,6 +1794,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: d866266b79ec89742baa20523b70fac5, type: 3}
   currentAnimationState: 0
   smartPhone: {fileID: 1047484617}
+  onAnimationShift: 1
 --- !u!114 &1645053309859565945
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1825,8 +1828,6 @@ MonoBehaviour:
   BlendHalfLife: 0.05
   AvoidToesFloorPenetration: 1
   ToesSoleOffset: {x: 0, y: 0, z: -0.02}
-  conversationalAgentFramework: {fileID: 5519285857725688365}
-  gazeController: {fileID: 6255814452086964723}
 --- !u!114 &5519285857725688365
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1912,6 +1913,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f522863ec97480744a67732aa2b71ff7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  onNeckRotation: 1
   currentLookTarget: 0
 --- !u!1 &5346502774511655591
 GameObject:
@@ -2735,8 +2737,8 @@ MonoBehaviour:
   pathController: {fileID: 1645053309857374882}
   agentCollider: {fileID: 7504229677721942931}
   groupCollider: {fileID: 0}
-  avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
-  unalignedAvoidanceColliderSize: {x: 4.5, y: 1.5, z: 6}
+  avoidanceColliderSize: {x: 1.5, y: 1.5, z: 1.5}
+  anticipatedAvoidanceColliderSize: {x: 4.5, y: 1.5, z: 6}
   FOVMeshPrefab: {fileID: 4215951433680714984, guid: 67d1ea03b9f7a07428c663c49ab761a1,
     type: 3}
   socialBehaviour: {fileID: 1645053309859565944}

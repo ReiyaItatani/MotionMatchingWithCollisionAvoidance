@@ -9,10 +9,7 @@ namespace CollisionAvoidance{
 // AgentManager is a class that manages various parameters and settings for agents in a simulation.
 public class AgentManager : MonoBehaviour
 {
-    // Basic Collision Avoidance Parameters: Parameters that define how agents avoid collisions.
-    [Header("Basic Collision Avoidance Parameters")]
-    [Tooltip("Size of the avoidance collider.")]
-    public Vector3 avoidanceColliderSize = new Vector3(1.5f, 1.5f, 2.0f);
+    [Header("Goal Parameters")]
     [Tooltip("Radius to consider as the goal.")]
     [Range(0.1f, 5.0f)]
     public float goalRadius = 2.0f;
@@ -20,13 +17,9 @@ public class AgentManager : MonoBehaviour
     [Range(0.1f, 5.0f)]
     public float slowingRadius = 3.0f;
 
-    // Parameters For Unaligned Collision Avoidance: Parameters that define how agents avoid collisions when they are not aligned.
-    [Header("Parameters For Unaligned Collision Avoidance")]
-    [Tooltip("Size of the unaligned avoidance collider.")]
-    public Vector3 unalignedAvoidanceColliderSize = new Vector3(4.5f, 1.5f, 6.0f); 
-
     // Weights for various forces influencing agent movement.
     [Space]
+    [Header("Weights")]
     [Tooltip("Weight for moving towards the goal.")]
     [Range(0.0f, 5.0f)]
     public float toGoalWeight = 1.5f;
@@ -47,6 +40,7 @@ public class AgentManager : MonoBehaviour
     public float syntheticVisionForceWeight = 0.0f;
 
     // Parameters related to the adjustment of the position of the SimulationBone and SimulationObject.
+    [Header("Motion Matching Parameters")]
     [Space]
     [Range(0.0f, 2.0f), Tooltip("Max distance between SimulationBone and SimulationObject")] 
     public float MaxDistanceMMAndCharacterController = 0.1f;
@@ -64,7 +58,7 @@ public class AgentManager : MonoBehaviour
     [Header("Controll Gizmos Parameters")]
     public bool showAgentSphere = false;
     public bool ShowAvoidanceForce = false;
-    public bool ShowUnalignedCollisionAvoidance = false;
+    public bool ShowAnticipatedCollisionAvoidance = false;
     public bool ShowGoalDirection = false;
     public bool ShowCurrentDirection = false;
     public bool ShowGroupForce = false;
@@ -218,7 +212,7 @@ public class AgentManager : MonoBehaviour
         pathController.PosMaximumAdjustmentRatio           = PosMaximumAdjustmentRatio;
 
         pathController.showAvoidanceForce              = ShowAvoidanceForce;
-        pathController.showUnalignedCollisionAvoidance = ShowUnalignedCollisionAvoidance;
+        pathController.showAnticipatedCollisionAvoidance = ShowAnticipatedCollisionAvoidance;
         pathController.showGoalDirection               = ShowGoalDirection;
         pathController.showCurrentDirection            = ShowCurrentDirection;
         pathController.showGroupForce                  = ShowGroupForce;
@@ -236,8 +230,6 @@ public class AgentManager : MonoBehaviour
     }
 
     private void SetCollisionAvoidanceControllerParams(CollisionAvoidanceController collisionAvoidanceController){
-        collisionAvoidanceController.avoidanceColliderSize          = avoidanceColliderSize;
-        collisionAvoidanceController.unalignedAvoidanceColliderSize = unalignedAvoidanceColliderSize;
         collisionAvoidanceController.agentCollider.radius           = CapsuleColliderRadius;
         collisionAvoidanceController.showAgentSphere                = showAgentSphere;
     }

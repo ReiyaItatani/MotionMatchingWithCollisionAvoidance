@@ -2989,13 +2989,13 @@ namespace Drawing {
 								// Very pretty way of reading the TextData struct right after the command label and optional Color32
 								var data = *((TextData*)((byte*)reader.Ptr + reader.Offset + size) - 1);
 								// Add the size of the embedded string in the buffer
-								// TODO: Unaligned memory access performance penalties??
+								// TODO: Analigned memory access performance penalties??
 								size += data.numCharacters * UnsafeUtility.SizeOf<System.UInt16>();
 							} else if ((cmd & (Command)0xFF) == Command.Text3D) {
 								// Very pretty way of reading the TextData struct right after the command label and optional Color32
 								var data = *((TextData3D*)((byte*)reader.Ptr + reader.Offset + size) - 1);
 								// Add the size of the embedded string in the buffer
-								// TODO: Unaligned memory access performance penalties??
+								// TODO: Anticipated memory access performance penalties??
 								size += data.numCharacters * UnsafeUtility.SizeOf<System.UInt16>();
 							}
 

@@ -50,11 +50,9 @@ public class GazeController : MonoBehaviour
 
     private void OnEnable()
     {
-        if(onNeckRotation){
             //Subscribe the event
             motionMatchingSkinnedMeshRenderer = GetComponent<MotionMatchingSkinnedMeshRenderer>();
             motionMatchingSkinnedMeshRenderer.OnUpdateGaze += UpdateGaze;
-        }
     }
 
     private void OnDisable()
@@ -96,7 +94,9 @@ public class GazeController : MonoBehaviour
 
         AdjustVerticalEyeLevelPass();
         //LookAt
-        LookAtAttractionPointUpdater();
+        if(onNeckRotation){
+            LookAtAttractionPointUpdater();
+        }
         UpdateCurrentLookAtSave();
         HorizontalLookAtPass(currentLookAt, horizontalAttractionPoint, UnityEngine.Random.Range(0.3f, 0.5f));
         //LookAtAdjustmentPass
