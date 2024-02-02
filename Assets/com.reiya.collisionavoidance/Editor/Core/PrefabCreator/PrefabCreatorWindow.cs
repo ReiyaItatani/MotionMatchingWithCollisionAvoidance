@@ -284,8 +284,7 @@ private void CreatePrefab(GameObject humanoid)
                     socialBehaviour.audioSource = audioSource;
                     socialBehaviour.audioClips  = audioClips;
     //
-    AgentCollisionDetection agentCollisionDetection                 = humanoidInstance.AddComponent<AgentCollisionDetection>();
-                            agentCollisionDetection.socialBehaviour = socialBehaviour;
+    AgentCollisionDetection agentCollisionDetection  = humanoidInstance.AddComponent<AgentCollisionDetection>();
     //
     ConversationalAgentFramework conversationalAgentFramework = humanoidInstance.AddComponent<ConversationalAgentFramework>();
     //

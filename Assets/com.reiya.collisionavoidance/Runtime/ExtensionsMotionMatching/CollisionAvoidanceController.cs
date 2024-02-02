@@ -133,7 +133,7 @@ namespace CollisionAvoidance{
             while(true){
                 if(pathController.GetCurrentDirection() == Vector3.zero) yield return null;
                 Vector3   currentPosition = (Vector3)pathController.GetCurrentPosition();
-                Vector3   lookAtDirection = agentCollisionDetection.GetCurrentLookAt().normalized;
+                Vector3   lookAtDirection = socialBehaviour.GetCurrentLookAt().normalized;
                 Vector3   newPosition     = currentPosition + lookAtDirection * AgentRadius;
                 Quaternion targetRotation = Quaternion.LookRotation(lookAtDirection);
 

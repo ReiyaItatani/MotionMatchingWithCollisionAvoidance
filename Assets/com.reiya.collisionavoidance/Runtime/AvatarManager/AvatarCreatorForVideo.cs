@@ -18,8 +18,6 @@ public class AvatarCreatorForVideo : AvatarCreatorBase
     [HideInInspector]
     public GameObject wallParent;
 
-    private bool avatarCreateAtStartPos = true;
-
     [Header("Agent Position Parameters")]
     [Range(0.5f, 2)]
     public float initialAgentDistance = 1f;

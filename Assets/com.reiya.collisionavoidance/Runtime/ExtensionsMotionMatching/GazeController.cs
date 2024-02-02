@@ -98,7 +98,7 @@ public class GazeController : MonoBehaviour
             LookAtAttractionPointUpdater();
         }
         UpdateCurrentLookAtSave();
-        HorizontalLookAtPass(currentLookAt, horizontalAttractionPoint, UnityEngine.Random.Range(0.3f, 0.5f));
+        HorizontalLookAtPass(currentLookAt, horizontalAttractionPoint, UnityEngine.Random.Range(0.3f, 1.0f));
         //LookAtAdjustmentPass
         LookAtAdjustmentPass(neckRotationLimit);
         //EyesMovement

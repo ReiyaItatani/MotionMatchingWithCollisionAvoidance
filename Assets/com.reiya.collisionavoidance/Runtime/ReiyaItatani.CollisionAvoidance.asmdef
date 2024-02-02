@@ -1,10 +1,20 @@
 {
     "name": "ReiyaItatani.CollisionAvoidance",
+    "rootNamespace": "",
     "references": [
         "JLPM.MotionMatching",
         "Unity.Mathematics",
         "Unity.InputSystem",
-        "ALINE"
+        "ALINE",
+        "Unity.Collections"
     ],
-    "allowUnsafeCode": true
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

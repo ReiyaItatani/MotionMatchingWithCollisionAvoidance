@@ -33,8 +33,8 @@ public enum UpperBodyAnimationState
 public class SocialBehaviour : MonoBehaviour
 {
     private const float LookAtUpdateTime = 1.5f;
-    private const float AnimationStateUpdateMinTime = 10.0f;
-    private const float AnimationStateUpdateMaxTime = 20.0f;
+    private const float AnimationStateUpdateMinTime = 5.0f;
+    private const float AnimationStateUpdateMaxTime = 10.0f;
     [Range(0,1)]
     public float WalkAnimationProbability = 0.5f;
     private const float FieldOfView = 45f;
@@ -161,7 +161,7 @@ public class SocialBehaviour : MonoBehaviour
                 animator.SetBool(state.ToString(), state == animationState);
             }
             if(animationState == UpperBodyAnimationState.SmartPhone || animationState == UpperBodyAnimationState.Talk){
-                TryPlayAudio(1.0f);
+                TryPlayAudio(0.0f);
             }
         }
     }
@@ -198,7 +198,9 @@ public class SocialBehaviour : MonoBehaviour
         Vector3 averagePos = CalculateAveragePosition(groupAgents);
         
         // Set the distance threshold to half the number of agents
-        float thresholdDistance = groupAgents.Count / 2.5f;
+        float agentRadius = 0.3f;
+        float safetyDistance = 0.1f;
+        float thresholdDistance =agentRadius * groupAgents.Count + safetyDistance;
 
         // Check if the calling object (self) is within the threshold distance from the center of mass
         if (Vector3.Distance(myself.transform.position, averagePos) > thresholdDistance)
@@ -251,17 +253,37 @@ public class SocialBehaviour : MonoBehaviour
     }
     
     private void HandleAgentCollision(Collider other){
-        StartCoroutine(ReactionToCollision(3.0f, other.gameObject));
+        if(collidedTarget != null) return;
+
+        SocialRelations  mySocialRelations          = parameterManager.GetSocialRelations();
+        ParameterManager otherAgentParameterManager = other.GetComponent<ParameterManager>();
+        SocialRelations  otherAgentSocialRelations  = otherAgentParameterManager.GetSocialRelations();
+        float probability = UnityEngine.Random.value;
+
+        if(mySocialRelations == SocialRelations.Individual || mySocialRelations != otherAgentSocialRelations && probability < 0.05f){
+            //if the collided agent is not in the same group, then react to collision
+            StartCoroutine(ReactionToCollisionGazeAndAnim(2.0f, other.gameObject));
+        }else{
+            StartCoroutine(ReactionToCollisionGaze(2.0f, other.gameObject));
+        }
     }
 
-    public IEnumerator ReactionToCollision(float talkDuration, GameObject collidedAgent)
+    public IEnumerator ReactionToCollisionGazeAndAnim(float talkDuration, GameObject collidedAgent)
     {
         collidedTarget = collidedAgent;
         TriggerUnityAnimation(UpperBodyAnimationState.Talk);
-        yield return new WaitForSeconds(talkDuration / 2.0f);
+        yield return new WaitForSeconds(talkDuration);
         FollowMotionMatching();
         collidedTarget = null;
     }
+
+    public IEnumerator ReactionToCollisionGaze(float gazeDuration, GameObject collidedAgent)
+    {
+        collidedTarget = collidedAgent;
+        yield return new WaitForSeconds(gazeDuration);
+        collidedTarget = null;
+    }
+
     #endregion
 
     #region Update Look At

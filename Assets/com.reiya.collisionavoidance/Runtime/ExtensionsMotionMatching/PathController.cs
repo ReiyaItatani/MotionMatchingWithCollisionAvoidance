@@ -34,9 +34,9 @@ public class PathController : MotionMatchingCharacterController
     [Range (0.0f, 1.0f), HideInInspector]
     public float initialSpeed = 0.7f; //Initial speed of the agent
     [HideInInspector]
-    public float minSpeed = 0.5f; //Minimum speed of the agent
+    public float minSpeed = 0.3f; //Minimum speed of the agent
     [HideInInspector]
-    public float maxSpeed = 1.0f; //Maximum speed of the agent
+    public float maxSpeed = 0.8f; //Maximum speed of the agent
     // --------------------------------------------------------------------------
     // To Mange Agents -----------------------------------------------------------------
     public AvatarCreatorBase avatarCreator; //Manager for all of the agents
@@ -133,7 +133,8 @@ public class PathController : MotionMatchingCharacterController
         currentSpeed = initialSpeed;
         if (initialSpeed < minSpeed)
         {
-            minSpeed = initialSpeed;
+            initialSpeed = minSpeed;
+            // minSpeed = initialSpeed;
         }
         CurrentPosition = Path[0];
         currentGoal = Path[currentGoalIndex];       
@@ -258,18 +259,35 @@ public class PathController : MotionMatchingCharacterController
 
     //when the agent collide with the agent in front of it, it will take a step back
     private void HandleAgentCollision(Collider other){
+        //Check the social realtionship between the collided agent and the agent
+        SocialRelations  mySocialRelations          = GetSocialRelations();
+        ParameterManager otherAgentParameterManager = other.GetComponent<ParameterManager>();
+        SocialRelations  otherAgentSocialRelations  = otherAgentParameterManager.GetSocialRelations();
+
         if(onCollide == false){
             collidedAgent = other.gameObject;
-            StartCoroutine(ReactionToCollision(3.0f, other.gameObject));
+            if(mySocialRelations != SocialRelations.Individual && mySocialRelations == otherAgentSocialRelations){
+                //If the collided agent is in the same group
+                float distance = Vector3.Distance(GetCurrentPosition(), otherAgentParameterManager.GetCurrentPosition());
+                if(distance < 0.4f){
+                    Debug.Log("Too Close");
+                    //If the collided agent is too close
+                    StartCoroutine(ReactionToCollision(0.5f, 0.0f));
+                }
+                //StartCoroutine(ReactionToCollision(0.5f, 0.0f));
+            }else{
+                //If the collided agent is not in the same group
+                StartCoroutine(ReactionToCollision(1.0f, 1.0f));
+            }
         }
     }
 
-    public IEnumerator ReactionToCollision(float time, GameObject collidedAgent)
+    public IEnumerator ReactionToCollision(float stepBackDuration, float goDifferentDuration)
     {
         onCollide = true;
-        yield return new WaitForSeconds(time / 2.0f);
+        yield return new WaitForSeconds(stepBackDuration);
         onMoving = true;
-        yield return new WaitForSeconds(time / 2.0f);
+        yield return new WaitForSeconds(goDifferentDuration);
         onCollide = false;
         onMoving = false;
     }
@@ -477,7 +495,7 @@ public class PathController : MotionMatchingCharacterController
         if(Target.CompareTag("Group")){
             Target.GetComponent<CapsuleCollider>();
             float radius = Target.GetComponent<CapsuleCollider>().radius;
-            return radius + 1f;
+            return radius + 2f;
         }else if(Target.CompareTag("Agent")){
             return 1f;
         }
@@ -829,7 +847,7 @@ public class PathController : MotionMatchingCharacterController
     ********************************************************************************************************************************/
     #region GROUP FORCE
     //private float socialInteractionWeight = 1.0f;
-    private float cohesionWeight = 0.7f;
+    private float cohesionWeight = 2.0f;
     private float repulsionForceWeight = 1.5f;
     private float alignmentForceWeight = 1.5f;
 
@@ -891,7 +909,9 @@ public class PathController : MotionMatchingCharacterController
 
     private Vector3 CalculateCohesionForce(List<GameObject> groupAgents, float cohesionWeight, GameObject myself, Vector3 currentPos){
         //float threshold = (groupAgents.Count-1)/2;
-        float threshold = (groupAgents.Count)/2;
+        //float threshold = (groupAgents.Count)/2;
+        float safetyDistance = 0.05f;
+        float threshold = groupAgents.Count * 0.3f + safetyDistance;
         Vector3 centerOfMass = CalculateCenterOfMass(groupAgents, myself);
         float dist = Vector3.Distance(currentPos, centerOfMass);
         float judgeWithinThreshold = 0;
@@ -911,7 +931,7 @@ public class PathController : MotionMatchingCharacterController
             Vector3 toOtherDir = agent.transform.position - currentPos;
             float dist = Vector3.Distance(currentPos, agent.transform.position);
             float threshold = 0;
-            float safetyDistance = agentRadius;
+            float safetyDistance = 0.05f;
             if(dist < 2*agentRadius + safetyDistance){
                 threshold = 1.0f / dist;
             }
@@ -927,26 +947,25 @@ public class PathController : MotionMatchingCharacterController
 
         foreach (GameObject go in groupAgents)
         {
-            // if (go != myself)
-            // {
-            //     Vector3 otherDirection = go.GetComponent<IParameterManager>().GetCurrentDirection();
-            //     steering += otherDirection;
-            //     neighborsCount++;
-            // }else{
-            //     currentDirection = go.GetComponent<IParameterManager>().GetCurrentDirection();
-            // }
-            float alignmentAngle  = 0.7f;
-            if (InBoidNeighborhood(go, myself, agentRadius * 3, agentRadius * 6, alignmentAngle, currentDirection))
+            if (go != myself)
             {
                 Vector3 otherDirection = go.GetComponent<IParameterManager>().GetCurrentDirection();
                 steering += otherDirection;
                 neighborsCount++;
             }
+            // float alignmentAngle  = 0.7f;
+            // if (InBoidNeighborhood(go, myself, agentRadius * 3, agentRadius * 6, alignmentAngle, currentDirection))
+            // {
+            //     Vector3 otherDirection = go.GetComponent<IParameterManager>().GetCurrentDirection();
+            //     steering += otherDirection;
+            //     neighborsCount++;
+            // }
         }
 
         if (neighborsCount > 0)
         {
-            steering = ((steering / neighborsCount) - currentDirection).normalized;
+            //steering =  ((steering / neighborsCount) - currentDirection).normalized;
+            steering = steering * alignmentForceWeight;
         }
 
         return steering * alignmentForceWeight;
@@ -1059,7 +1078,7 @@ public class PathController : MotionMatchingCharacterController
     * It ensures that the object maintains an appropriate speed, possibly in response to environmental factors, obstacles, or other objects.
     ********************************************************************************************************************************/
     #region SPEED ADJUSTMENT 
-    private IEnumerator UpdateSpeed(List<GameObject> groupAgents, GameObject myself, float updateTime = 0.5f, float speedChangeRate = 0.05f){
+    private IEnumerator UpdateSpeed(List<GameObject> groupAgents, GameObject myself, float updateTime = 0.1f, float speedChangeRate = 0.05f){
         if(groupAgents.Count == 1 || GetSocialRelations() == SocialRelations.Individual){
             StartCoroutine(DecreaseSpeedBaseOnUpperBodyAnimation(updateTime));
             yield return null;
@@ -1072,12 +1091,20 @@ public class PathController : MotionMatchingCharacterController
         }
         averageSpeed /= groupAgents.Count;
 
+        averageSpeed = averageSpeed - 0.1f*groupAgents.Count;
+        if(averageSpeed<minSpeed){
+            averageSpeed = minSpeed;
+        }
+
         while(true){
             Vector3 centerOfMass = CalculateCenterOfMass(groupAgents, myself);
             Vector3 directionToCenterOfMass = (centerOfMass - (Vector3)GetCurrentPosition()).normalized;
             Vector3 myForward = GetCurrentDirection();
             float distFromMeToCenterOfMass = Vector3.Distance(GetCurrentPosition(), centerOfMass);
-            float speedChangeDist = groupAgents.Count/2;
+
+            //0.3f is the radius of the agent
+            float safetyDistance = 0.05f;
+            float speedChangeDist = groupAgents.Count * 0.3f + safetyDistance;
 
             if(distFromMeToCenterOfMass > speedChangeDist){
                 float dotProduct = Vector3.Dot(myForward, directionToCenterOfMass);

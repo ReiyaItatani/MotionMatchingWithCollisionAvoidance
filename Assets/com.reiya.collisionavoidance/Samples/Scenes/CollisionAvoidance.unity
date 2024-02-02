@@ -1124,7 +1124,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 6104dd54d297b2746a235c08aae5ad55, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -4828,7 +4828,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 6104dd54d297b2746a235c08aae5ad55, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -5166,7 +5166,6 @@ MonoBehaviour:
   agentCollider: {fileID: 453826841}
   groupCollider: {fileID: 1824057833}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
-  anticipatedAvoidanceColliderSize: {x: 4.5, y: 1.5, z: 6}
   FOVMeshPrefab: {fileID: 4215951433680714984, guid: 67d1ea03b9f7a07428c663c49ab761a1,
     type: 3}
   socialBehaviour: {fileID: 453826840}
@@ -5505,6 +5504,37 @@ Transform:
   - {fileID: 982230147}
   m_Father: {fileID: 1261581883}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &264756970
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 264756971}
+  m_Layer: 0
+  m_Name: ----------------------------
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &264756971
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 264756970}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 5.347879, y: 0.020158818, z: -2.382546}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &266162271
 GameObject:
@@ -6014,9 +6044,9 @@ MonoBehaviour:
   goalRadius: 2
   slowingRadius: 3
   toGoalWeight: 1.5
-  avoidNeighborWeight: 0.4
-  avoidanceWeight: 2.3
-  groupForceWeight: 0.4
+  avoidNeighborWeight: 0.7
+  avoidanceWeight: 2.5
+  groupForceWeight: 0.3
   wallRepForceWeight: 0
   syntheticVisionForceWeight: 0
   MaxDistanceMMAndCharacterController: 0.1
@@ -6067,7 +6097,7 @@ Transform:
   - {fileID: 1503214683}
   - {fileID: 291522935}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &280312569
 MonoBehaviour:
@@ -6960,7 +6990,6 @@ MonoBehaviour:
   agentCollider: {fileID: 2118942397}
   groupCollider: {fileID: 777651002}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
-  anticipatedAvoidanceColliderSize: {x: 4.5, y: 1.5, z: 6}
   FOVMeshPrefab: {fileID: 4215951433680714984, guid: 67d1ea03b9f7a07428c663c49ab761a1,
     type: 3}
   socialBehaviour: {fileID: 2118942396}
@@ -7869,6 +7898,37 @@ Transform:
   m_Father: {fileID: 1724053367}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &373340195
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 373340196}
+  m_Layer: 0
+  m_Name: ----------------------------
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &373340196
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 373340195}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 5.347879, y: 0.020158818, z: -2.382546}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &376291467
 GameObject:
   m_ObjectHideFlags: 0
@@ -8611,7 +8671,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0faf669923ade934b9002377206d49d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  socialBehaviour: {fileID: 417364061}
 --- !u!114 &417364061
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9371,7 +9430,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0faf669923ade934b9002377206d49d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  socialBehaviour: {fileID: 453826840}
 --- !u!114 &453826832
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11180,7 +11238,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0faf669923ade934b9002377206d49d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  socialBehaviour: {fileID: 529398864}
 --- !u!114 &529398864
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11769,6 +11826,37 @@ Transform:
   - {fileID: 1351256152}
   m_Father: {fileID: 678821288}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &541555957
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 541555958}
+  m_Layer: 0
+  m_Name: ---------------------------
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &541555958
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 541555957}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 5.347879, y: 0.020158818, z: -2.382546}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &542321080
 GameObject:
@@ -12776,7 +12864,6 @@ MonoBehaviour:
   agentCollider: {fileID: 529398866}
   groupCollider: {fileID: 1824057833}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
-  anticipatedAvoidanceColliderSize: {x: 4.5, y: 1.5, z: 6}
   FOVMeshPrefab: {fileID: 4215951433680714984, guid: 67d1ea03b9f7a07428c663c49ab761a1,
     type: 3}
   socialBehaviour: {fileID: 529398864}
@@ -14335,7 +14422,6 @@ MonoBehaviour:
   agentCollider: {fileID: 2147159484}
   groupCollider: {fileID: 777651002}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
-  anticipatedAvoidanceColliderSize: {x: 4.5, y: 1.5, z: 6}
   FOVMeshPrefab: {fileID: 4215951433680714984, guid: 67d1ea03b9f7a07428c663c49ab761a1,
     type: 3}
   socialBehaviour: {fileID: 2147159483}
@@ -15622,7 +15708,6 @@ MonoBehaviour:
   agentCollider: {fileID: 2114029163}
   groupCollider: {fileID: 0}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 1.5}
-  anticipatedAvoidanceColliderSize: {x: 4.5, y: 1.5, z: 6}
   FOVMeshPrefab: {fileID: 4215951433680714984, guid: 67d1ea03b9f7a07428c663c49ab761a1,
     type: 3}
   socialBehaviour: {fileID: 2114029161}
@@ -16876,7 +16961,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 6104dd54d297b2746a235c08aae5ad55, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -21001,7 +21086,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0faf669923ade934b9002377206d49d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  socialBehaviour: {fileID: 985544940}
 --- !u!114 &985544932
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22547,7 +22631,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 6104dd54d297b2746a235c08aae5ad55, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -23461,13 +23545,13 @@ GameObject:
   - component: {fileID: 1101552029}
   - component: {fileID: 1101552032}
   - component: {fileID: 1101552028}
-  - component: {fileID: 1101552031}
   - component: {fileID: 1101552022}
   - component: {fileID: 1101552027}
+  - component: {fileID: 1101552031}
+  - component: {fileID: 1101552023}
   - component: {fileID: 1101552026}
   - component: {fileID: 1101552025}
   - component: {fileID: 1101552024}
-  - component: {fileID: 1101552023}
   m_Layer: 0
   m_Name: male16@T-Pose
   m_TagString: Agent
@@ -23487,7 +23571,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0faf669923ade934b9002377206d49d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  socialBehaviour: {fileID: 1101552031}
 --- !u!114 &1101552023
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23794,6 +23877,134 @@ Transform:
   m_Father: {fileID: 1825242688}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1115294193
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1115294194}
+  - component: {fileID: 1115294195}
+  m_Layer: 0
+  m_Name: Sound
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1115294194
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1115294193}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 5.347879, y: 0.020158818, z: -2.382546}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &1115294195
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1115294193}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 5101dc99cefa3014ead7e6759fe0c7c9, type: 3}
+  m_PlayOnAwake: 1
+  m_Volume: 0.25
+  m_Pitch: 1
+  Loop: 1
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &1119319643
 GameObject:
   m_ObjectHideFlags: 0
@@ -24301,7 +24512,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 6104dd54d297b2746a235c08aae5ad55, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -24796,7 +25007,6 @@ MonoBehaviour:
   agentCollider: {fileID: 1335487589}
   groupCollider: {fileID: 1819853353}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 1.5}
-  anticipatedAvoidanceColliderSize: {x: 4.5, y: 1.5, z: 6}
   FOVMeshPrefab: {fileID: 4215951433680714984, guid: 67d1ea03b9f7a07428c663c49ab761a1,
     type: 3}
   socialBehaviour: {fileID: 1335487587}
@@ -26022,7 +26232,7 @@ GameObject:
   - component: {fileID: 1228093499}
   - component: {fileID: 1228093498}
   m_Layer: 0
-  m_Name: Plane
+  m_Name: Ground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -26062,7 +26272,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 7baee1c9dd2f91f45b8617b74df93cb4, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -26105,7 +26315,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1230219912
 GameObject:
@@ -27734,7 +27944,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0faf669923ade934b9002377206d49d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  socialBehaviour: {fileID: 1335487587}
 --- !u!114 &1335487587
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29171,7 +29380,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0faf669923ade934b9002377206d49d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  socialBehaviour: {fileID: 1406637164}
 --- !u!114 &1406637164
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29911,7 +30119,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0faf669923ade934b9002377206d49d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  socialBehaviour: {fileID: 1433280062}
 --- !u!114 &1433280062
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30371,7 +30578,6 @@ MonoBehaviour:
   agentCollider: {fileID: 1101552032}
   groupCollider: {fileID: 708821827}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
-  anticipatedAvoidanceColliderSize: {x: 4.5, y: 1.5, z: 6}
   FOVMeshPrefab: {fileID: 4215951433680714984, guid: 67d1ea03b9f7a07428c663c49ab761a1,
     type: 3}
   socialBehaviour: {fileID: 1101552031}
@@ -30678,7 +30884,7 @@ Transform:
   - {fileID: 2038097937}
   - {fileID: 549591145}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1457441605
 MonoBehaviour:
@@ -31318,7 +31524,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 6104dd54d297b2746a235c08aae5ad55, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -32754,7 +32960,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 849d1cdee74dea54ba96ffc7aa22f6d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  runTimeSpeed: 0.75
+  runTimeSpeed: 1
 --- !u!4 &1553590892
 Transform:
   m_ObjectHideFlags: 0
@@ -32768,7 +32974,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1558896246
 GameObject:
@@ -34090,7 +34296,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 6104dd54d297b2746a235c08aae5ad55, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -35020,7 +35226,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
 --- !u!114 &1708602616
 MonoBehaviour:
@@ -35296,7 +35502,6 @@ MonoBehaviour:
   agentCollider: {fileID: 1856870206}
   groupCollider: {fileID: 0}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
-  anticipatedAvoidanceColliderSize: {x: 4.5, y: 1.5, z: 6}
   FOVMeshPrefab: {fileID: 4215951433680714984, guid: 67d1ea03b9f7a07428c663c49ab761a1,
     type: 3}
   socialBehaviour: {fileID: 1856870204}
@@ -37292,7 +37497,6 @@ MonoBehaviour:
   agentCollider: {fileID: 985544941}
   groupCollider: {fileID: 1819853353}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 1.5}
-  anticipatedAvoidanceColliderSize: {x: 4.5, y: 1.5, z: 6}
   FOVMeshPrefab: {fileID: 4215951433680714984, guid: 67d1ea03b9f7a07428c663c49ab761a1,
     type: 3}
   socialBehaviour: {fileID: 985544940}
@@ -37406,7 +37610,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 6104dd54d297b2746a235c08aae5ad55, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -38435,7 +38639,6 @@ MonoBehaviour:
   agentCollider: {fileID: 1433280064}
   groupCollider: {fileID: 0}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
-  anticipatedAvoidanceColliderSize: {x: 4.5, y: 1.5, z: 6}
   FOVMeshPrefab: {fileID: 4215951433680714984, guid: 67d1ea03b9f7a07428c663c49ab761a1,
     type: 3}
   socialBehaviour: {fileID: 1433280062}
@@ -38780,7 +38983,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0faf669923ade934b9002377206d49d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  socialBehaviour: {fileID: 1856870204}
 --- !u!114 &1856870204
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -40626,7 +40828,6 @@ MonoBehaviour:
   agentCollider: {fileID: 1406637166}
   groupCollider: {fileID: 777651002}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
-  anticipatedAvoidanceColliderSize: {x: 4.5, y: 1.5, z: 6}
   FOVMeshPrefab: {fileID: 4215951433680714984, guid: 67d1ea03b9f7a07428c663c49ab761a1,
     type: 3}
   socialBehaviour: {fileID: 1406637164}
@@ -41527,7 +41728,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 6104dd54d297b2746a235c08aae5ad55, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -41676,7 +41877,6 @@ MonoBehaviour:
   agentCollider: {fileID: 2067316536}
   groupCollider: {fileID: 708821827}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
-  anticipatedAvoidanceColliderSize: {x: 4.5, y: 1.5, z: 6}
   FOVMeshPrefab: {fileID: 4215951433680714984, guid: 67d1ea03b9f7a07428c663c49ab761a1,
     type: 3}
   socialBehaviour: {fileID: 2067316534}
@@ -43227,7 +43427,7 @@ Transform:
   - {fileID: 2041850831}
   - {fileID: 1512726792}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2067316526
 GameObject:
@@ -43393,7 +43593,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0faf669923ade934b9002377206d49d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  socialBehaviour: {fileID: 2067316534}
 --- !u!114 &2067316534
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -44402,7 +44601,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0faf669923ade934b9002377206d49d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  socialBehaviour: {fileID: 2114029161}
 --- !u!114 &2114029161
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -44559,7 +44757,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0faf669923ade934b9002377206d49d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  socialBehaviour: {fileID: 2118942396}
 --- !u!114 &2118942387
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -44897,7 +45094,6 @@ MonoBehaviour:
   agentCollider: {fileID: 417364063}
   groupCollider: {fileID: 0}
   avoidanceColliderSize: {x: 1.5, y: 1.5, z: 2}
-  anticipatedAvoidanceColliderSize: {x: 4.5, y: 1.5, z: 6}
   FOVMeshPrefab: {fileID: 4215951433680714984, guid: 67d1ea03b9f7a07428c663c49ab761a1,
     type: 3}
   socialBehaviour: {fileID: 417364061}
@@ -45457,7 +45653,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 6104dd54d297b2746a235c08aae5ad55, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -45706,7 +45902,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0faf669923ade934b9002377206d49d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  socialBehaviour: {fileID: 2147159483}
 --- !u!114 &2147159475
 MonoBehaviour:
   m_ObjectHideFlags: 0
