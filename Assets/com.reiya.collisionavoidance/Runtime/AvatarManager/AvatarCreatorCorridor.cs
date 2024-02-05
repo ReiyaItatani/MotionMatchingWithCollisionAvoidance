@@ -161,6 +161,18 @@ public class AvatarCreatorCorridor : AvatarCreatorBase
                     collisionAvoidanceController.groupCollider = groupCollider.GetComponent<CapsuleCollider>();
                 }
             }
+
+            //set group manager to pathmanager
+            if (randomRelation != SocialRelations.Individual)
+            {
+                GameObject relationGameObject   = transform.Find(randomRelation.ToString()).gameObject;
+                GameObject groupColliderManagerObj = relationGameObject.transform.Find("GroupColliderManager").gameObject;
+                if (groupColliderManagerObj != null)
+                {
+                    GroupColliderManager groupColliderManager = groupColliderManagerObj.GetComponent<GroupColliderManager>();
+                    pathController.groupColliderManager = groupColliderManager;
+                }
+            }
             
 
             instantiatedAvatars.Add(instance);

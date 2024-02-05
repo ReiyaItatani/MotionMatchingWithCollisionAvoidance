@@ -43,5 +43,9 @@ namespace CollisionAvoidance{
     public PathController GetPathController(){
         return pathController;
     }   
-}
+
+    public CollisionAvoidanceController GetCollisionAvoidanceController(){
+        return pathController.GetCollisionAvoidanceController();
+    }
+    }
 }

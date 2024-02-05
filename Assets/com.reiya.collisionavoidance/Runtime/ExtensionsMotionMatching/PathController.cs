@@ -118,10 +118,13 @@ public class PathController : MotionMatchingCharacterController
     // Collision Avoidance Controller --------------------------------------------
     public CollisionAvoidanceController collisionAvoidance;
     // --------------------------------------------------------------------------
-    // Repulsion Force From Wall -----------------------------------------------------
+    // Repulsion Force From Wall ------------------------------------------------
     private Vector3 wallRepForce;
     [HideInInspector]
     public float wallRepForceWeight = 0.2f;
+    // --------------------------------------------------------------------------
+    // Group Collider Manager For Group Behaviour--------------------------------
+    public GroupColliderManager groupColliderManager;   
     // --------------------------------------------------------------------------
     // For experiment -----------------------------------------------------------
     public bool onAvoidanceCoordination = true;
@@ -555,6 +558,12 @@ public class PathController : MotionMatchingCharacterController
                 avoidNeighborsVector = Vector3.zero;
             }else{
                 List<GameObject> Agents = collisionAvoidance.GetOthersInFOV();
+
+                //if the agent is in a group and in certain distance, shared FOV happens
+                if(groupColliderManager!=null && groupColliderManager.GetOnGroupCollider()){
+                    Agents = groupColliderManager.GetAgentsInSharedFOV();
+                }
+
                 if(Agents == null) yield return null;
                 Vector3 newAvoidNeighborsVector = SteerToAvoidNeighbors(Agents, minTimeToCollision, collisionDangerThreshold);
                 if(potentialAvoidanceTarget != null){
@@ -1235,6 +1244,9 @@ public class PathController : MotionMatchingCharacterController
     }
     public Vector3 GetCurrentAvoidanceVector(){
         return avoidanceVector;
+    }
+    public CollisionAvoidanceController GetCollisionAvoidanceController(){
+        return collisionAvoidance;
     }
     #endregion
 

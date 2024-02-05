@@ -6055,7 +6055,7 @@ MonoBehaviour:
   CapsuleColliderRadius: 0.3
   showAgentSphere: 0
   ShowAvoidanceForce: 0
-  ShowAnticipatedCollisionAvoidance: 0
+  ShowAnticipatedCollisionAvoidance: 1
   ShowGoalDirection: 0
   ShowCurrentDirection: 0
   ShowGroupForce: 0
@@ -12047,6 +12047,7 @@ MonoBehaviour:
   groupForceWeight: 0.5
   collisionAvoidance: {fileID: 1980487729}
   wallRepForceWeight: 1
+  groupColliderManager: {fileID: 963632056}
   onAvoidanceCoordination: 0
   syntheticVisionForceWeight: 1
 --- !u!4 &544770488
@@ -15467,6 +15468,7 @@ MonoBehaviour:
   groupForceWeight: 0.5
   collisionAvoidance: {fileID: 2123472250}
   wallRepForceWeight: 1
+  groupColliderManager: {fileID: 0}
   onAvoidanceCoordination: 0
   syntheticVisionForceWeight: 1
 --- !u!4 &727580228
@@ -16209,6 +16211,7 @@ MonoBehaviour:
   groupForceWeight: 0.5
   collisionAvoidance: {fileID: 670453049}
   wallRepForceWeight: 1
+  groupColliderManager: {fileID: 1500272594}
   onAvoidanceCoordination: 0
   syntheticVisionForceWeight: 1
 --- !u!4 &755627718
@@ -18519,6 +18522,7 @@ MonoBehaviour:
   groupForceWeight: 0.5
   collisionAvoidance: {fileID: 1162070464}
   wallRepForceWeight: 1
+  groupColliderManager: {fileID: 0}
   onAvoidanceCoordination: 1
   syntheticVisionForceWeight: 1
 --- !u!4 &868591607
@@ -20270,6 +20274,7 @@ MonoBehaviour:
   socialRelations: 0
   avatarCreator: {fileID: 280312566}
   groupColliderGameObject: {fileID: 708821826}
+  onGroupCollider: 0
 --- !u!1 &965605895
 GameObject:
   m_ObjectHideFlags: 0
@@ -20361,6 +20366,7 @@ MonoBehaviour:
   groupForceWeight: 0.5
   collisionAvoidance: {fileID: 1807984229}
   wallRepForceWeight: 1
+  groupColliderManager: {fileID: 0}
   onAvoidanceCoordination: 1
   syntheticVisionForceWeight: 1
 --- !u!4 &968358804
@@ -22015,6 +22021,7 @@ MonoBehaviour:
   socialRelations: 1
   avatarCreator: {fileID: 1457441602}
   groupColliderGameObject: {fileID: 1819853352}
+  onGroupCollider: 0
 --- !u!1 &1033102291
 GameObject:
   m_ObjectHideFlags: 0
@@ -22489,6 +22496,7 @@ MonoBehaviour:
   groupForceWeight: 0.5
   collisionAvoidance: {fileID: 1445991102}
   wallRepForceWeight: 1
+  groupColliderManager: {fileID: 963632056}
   onAvoidanceCoordination: 0
   syntheticVisionForceWeight: 1
 --- !u!4 &1054178863
@@ -22934,6 +22942,7 @@ MonoBehaviour:
   groupForceWeight: 0.5
   collisionAvoidance: {fileID: 739159526}
   wallRepForceWeight: 1
+  groupColliderManager: {fileID: 0}
   onAvoidanceCoordination: 1
   syntheticVisionForceWeight: 1
 --- !u!4 &1063567435
@@ -25507,6 +25516,7 @@ MonoBehaviour:
   groupForceWeight: 0.5
   collisionAvoidance: {fileID: 249046250}
   wallRepForceWeight: 1
+  groupColliderManager: {fileID: 1705603479}
   onAvoidanceCoordination: 0
   syntheticVisionForceWeight: 1
 --- !u!4 &1185399319
@@ -26439,6 +26449,7 @@ MonoBehaviour:
   groupForceWeight: 0.5
   collisionAvoidance: {fileID: 320251337}
   wallRepForceWeight: 1
+  groupColliderManager: {fileID: 1500272594}
   onAvoidanceCoordination: 0
   syntheticVisionForceWeight: 1
 --- !u!4 &1239009984
@@ -30327,6 +30338,7 @@ MonoBehaviour:
   groupForceWeight: 0.5
   collisionAvoidance: {fileID: 1938329869}
   wallRepForceWeight: 1
+  groupColliderManager: {fileID: 1500272594}
   onAvoidanceCoordination: 0
   syntheticVisionForceWeight: 1
 --- !u!4 &1435914834
@@ -31719,6 +31731,7 @@ MonoBehaviour:
   socialRelations: 1
   avatarCreator: {fileID: 280312566}
   groupColliderGameObject: {fileID: 777651001}
+  onGroupCollider: 0
 --- !u!1 &1500735501
 GameObject:
   m_ObjectHideFlags: 0
@@ -35133,6 +35146,7 @@ MonoBehaviour:
   socialRelations: 3
   avatarCreator: {fileID: 280312566}
   groupColliderGameObject: {fileID: 1824057832}
+  onGroupCollider: 0
 --- !u!1 &1708602613
 GameObject:
   m_ObjectHideFlags: 0
@@ -36586,6 +36600,7 @@ MonoBehaviour:
   groupForceWeight: 0.5
   collisionAvoidance: {fileID: 1837051135}
   wallRepForceWeight: 1
+  groupColliderManager: {fileID: 0}
   onAvoidanceCoordination: 0
   syntheticVisionForceWeight: 1
 --- !u!4 &1767234868
@@ -38589,6 +38604,7 @@ MonoBehaviour:
   groupForceWeight: 0.5
   collisionAvoidance: {fileID: 576226987}
   wallRepForceWeight: 1
+  groupColliderManager: {fileID: 1705603479}
   onAvoidanceCoordination: 0
   syntheticVisionForceWeight: 1
 --- !u!4 &1835532646
@@ -39680,6 +39696,7 @@ MonoBehaviour:
   groupForceWeight: 0.5
   collisionAvoidance: {fileID: 1722552098}
   wallRepForceWeight: 1
+  groupColliderManager: {fileID: 0}
   onAvoidanceCoordination: 0
   syntheticVisionForceWeight: 1
 --- !u!4 &1895273189
