@@ -277,7 +277,6 @@ public class PathController : MotionMatchingCharacterController
                     //If the collided agent is too close
                     StartCoroutine(ReactionToCollision(0.5f, 0.0f));
                 }
-                //StartCoroutine(ReactionToCollision(0.5f, 0.0f));
             }else{
                 //If the collided agent is not in the same group
                 StartCoroutine(ReactionToCollision(1.0f, 1.0f));
@@ -424,7 +423,10 @@ public class PathController : MotionMatchingCharacterController
 
             //Update CurrentAvoidance Target
             if(othersInAvoidanceArea != null){
-                currentAvoidanceTarget = DecideUrgentAvoidanceTarget(othersInAvoidanceArea, minTimeToCollision, collisionDangerThreshold, out myPositionAtNearestApproach, out otherPositionAtNearestApproach);  
+                currentAvoidanceTarget = DecideUrgentAvoidanceTarget(GetCurrentDirection(), GetCurrentPosition(), GetCurrentSpeed(), 
+                                                                     othersInAvoidanceArea, 
+                                                                     minTimeToCollision, collisionDangerThreshold, 
+                                                                     out myPositionAtNearestApproach, out otherPositionAtNearestApproach);  
                 //Check if the CurrentAvoidance Target is on the path way
                 if(!othersOnPath.Contains(currentAvoidanceTarget)){
                     //if the CurrentAvoidance Target is not on the path way
@@ -445,7 +447,8 @@ public class PathController : MotionMatchingCharacterController
                 //Check opponent dir
                 if(avoidanceTargetAvoidanceVector != Vector3.zero && Vector3.Dot(currentDirection, avoidanceVector) < 0.5 && onAvoidanceCoordination){
                     bool isParallel = false;
-                    avoidanceVector = CheckOppoentDir(avoidanceVector, currentPosition, avoidanceTargetAvoidanceVector ,avoidanceTargetPosition, out isParallel);
+                    avoidanceVector = CheckOppoentDir(avoidanceVector, currentPosition, avoidanceTargetAvoidanceVector ,avoidanceTargetPosition, 
+                                                      out isParallel);
                     if(isParallel){
                         OnMutualGaze?.Invoke(currentAvoidanceTarget);
                     }
@@ -453,9 +456,9 @@ public class PathController : MotionMatchingCharacterController
 
                 //gradually increase the avoidance force considering the distance 
                 Vector3 colliderSize = collisionAvoidance.GetAvoidanceColliderSize();
-                float agentRadius = collisionAvoidance.GetAgentCollider().radius;
+                float   agentRadius  = collisionAvoidance.GetAgentCollider().radius;
                 avoidanceVector = avoidanceVector*(1.0f-Vector3.Distance(avoidanceTargetPosition, 
-                                                                        currentPosition)/(Mathf.Sqrt(colliderSize.x/2*colliderSize.x/2+colliderSize.z*colliderSize.z)+agentRadius*2));
+                                                                         currentPosition)/(Mathf.Sqrt(colliderSize.x/2*colliderSize.x/2+colliderSize.z*colliderSize.z)+agentRadius*2));
 
                 //Group or Individual
                 avoidanceVector *= TagChecker(currentAvoidanceTarget);
@@ -505,7 +508,7 @@ public class PathController : MotionMatchingCharacterController
         return 1f;
     }
 
-    private GameObject DecideUrgentAvoidanceTarget(List<GameObject> others, float minTimeToCollision, float collisionDangerThreshold, out Vector3 myPositionAtNearestApproach, out Vector3 otherPositionAtNearestApproach){
+    private GameObject DecideUrgentAvoidanceTarget(Vector3 myDirection, Vector3 myPosition, float mySpeed, List<GameObject> others, float minTimeToCollision, float collisionDangerThreshold, out Vector3 myPositionAtNearestApproach, out Vector3 otherPositionAtNearestApproach){
         GameObject _currentAvoidanceTarget = null;
         myPositionAtNearestApproach = Vector3.zero;
         otherPositionAtNearestApproach = Vector3.zero;
@@ -515,27 +518,21 @@ public class PathController : MotionMatchingCharacterController
                 continue;
             }
             IParameterManager otherParameterManager = other.GetComponent<IParameterManager>();
+            Vector3 otherDirection = otherParameterManager.GetCurrentDirection();
+            Vector3 otherPosition  = otherParameterManager.GetCurrentPosition();
+            float   otherSpeed     = otherParameterManager.GetCurrentSpeed();
 
             // predicted time until nearest approach of "this" and "other"
-            float time = PredictNearestApproachTime (GetCurrentDirection(), 
-                                                    GetCurrentPosition(), 
-                                                    GetCurrentSpeed(), 
-                                                    otherParameterManager.GetCurrentDirection(), 
-                                                    otherParameterManager.GetCurrentPosition(), 
-                                                    otherParameterManager.GetCurrentSpeed());
+            float time = PredictNearestApproachTime (myDirection, myPosition, mySpeed, 
+                                                     otherDirection, otherPosition, otherSpeed);
             //Debug.Log("time:"+time);
             if ((time >= 0) && (time < minTimeToCollision)){
                 //Debug.Log("Distance:"+computeNearestApproachPositions (time, CurrentPosition, CurrentDirection, CurrentSpeed, otherParameterManager.GetRawCurrentPosition(), otherParameterManager.GetCurrentDirection(), otherParameterManager.GetCurrentSpeed()));
                 if (ComputeNearestApproachPositions (time, 
-                                                    GetCurrentPosition(), 
-                                                    GetCurrentDirection(), 
-                                                    GetCurrentSpeed(), 
-                                                    otherParameterManager.GetCurrentPosition(), 
-                                                    otherParameterManager.GetCurrentDirection(), 
-                                                    otherParameterManager.GetCurrentSpeed(), 
-                                                    out myPositionAtNearestApproach, 
-                                                    out otherPositionAtNearestApproach) 
-                                                    < collisionDangerThreshold)
+                                                     myPosition, myDirection, mySpeed, 
+                                                     otherPosition, otherDirection, otherSpeed, 
+                                                     out myPositionAtNearestApproach, out otherPositionAtNearestApproach) 
+                                                     < collisionDangerThreshold)
                 {
                     minTimeToCollision = time;
                     _currentAvoidanceTarget = other;
@@ -557,15 +554,35 @@ public class PathController : MotionMatchingCharacterController
             if(currentAvoidanceTarget != null){
                 avoidNeighborsVector = Vector3.zero;
             }else{
-                List<GameObject> Agents = collisionAvoidance.GetOthersInFOV();
 
-                //if the agent is in a group and in certain distance, shared FOV happens
+                //Get Agents//
+                List<GameObject> Agents = new List<GameObject>();
                 if(groupColliderManager!=null && groupColliderManager.GetOnGroupCollider()){
+                    //if the agent is in a group and in certain distance, shared FOV happens
                     Agents = groupColliderManager.GetAgentsInSharedFOV();
+                }else{
+                    //if the agent is "not" in a group
+                    Agents = collisionAvoidance.GetOthersInFOV();
+                }
+                if(Agents == null) yield return null;
+
+                //Calculate Anticipated Collision Avoidance Force//
+                Vector3 newAvoidNeighborsVector;
+                if(groupColliderManager!=null && groupColliderManager.GetOnGroupCollider()){
+                    //if the agent is in a group and in certain distance
+                    Vector3 groupCurrentDirection = groupColliderManager.GetGroupParameterManager().GetCurrentDirection();
+                    Vector3 groupCurrentPosition  = groupColliderManager.GetGroupParameterManager().GetCurrentPosition();
+                    float   groupCurrentSpeed     = groupColliderManager.GetGroupParameterManager().GetCurrentSpeed();
+
+                    newAvoidNeighborsVector       = SteerToAvoidNeighbors(groupCurrentDirection, groupCurrentPosition, groupCurrentSpeed,
+                                                                          Agents, minTimeToCollision, collisionDangerThreshold);
+                }else{
+                    //If the agent is "not" in a group
+                    newAvoidNeighborsVector       = SteerToAvoidNeighbors(GetCurrentDirection(), GetCurrentPosition(), GetCurrentSpeed(), Agents, 
+                                                                          minTimeToCollision, collisionDangerThreshold);
                 }
 
-                if(Agents == null) yield return null;
-                Vector3 newAvoidNeighborsVector = SteerToAvoidNeighbors(Agents, minTimeToCollision, collisionDangerThreshold);
+                //Check if the agent is a part of a group, then the agent will have more strong force to avoid collision//
                 if(potentialAvoidanceTarget != null){
                     newAvoidNeighborsVector *= TagChecker(potentialAvoidanceTarget);
                 }
@@ -575,25 +592,28 @@ public class PathController : MotionMatchingCharacterController
         }
     }
 
-    public Vector3 SteerToAvoidNeighbors (List<GameObject> others, float minTimeToCollision, float collisionDangerThreshold)
+    public Vector3 SteerToAvoidNeighbors (Vector3 myDirection, Vector3 myPosition, float mySpeed, List<GameObject> others, float minTimeToCollision, float collisionDangerThreshold)
     {
         float steer = 0;
         // potentialAvoidanceTarget = null;
-        Vector3 myPositionAtNearestApproach = Vector3.zero;
+        Vector3 myPositionAtNearestApproach    = Vector3.zero;
         Vector3 otherPositionAtNearestApproach = Vector3.zero;
-        potentialAvoidanceTarget = DecideUrgentAvoidanceTarget(others, minTimeToCollision, collisionDangerThreshold, out myPositionAtNearestApproach, out otherPositionAtNearestApproach);
+        potentialAvoidanceTarget = DecideUrgentAvoidanceTarget(myDirection, myPosition, mySpeed, 
+                                                               others, 
+                                                               minTimeToCollision, collisionDangerThreshold, 
+                                                               out myPositionAtNearestApproach, out otherPositionAtNearestApproach);
 
         if(potentialAvoidanceTarget != null){
             // parallel: +1, perpendicular: 0, anti-parallel: -1
-            float parallelness = Vector3.Dot(GetCurrentDirection(), potentialAvoidanceTarget.GetComponent<IParameterManager>().GetCurrentDirection());
+            float parallelness = Vector3.Dot(myDirection, potentialAvoidanceTarget.GetComponent<IParameterManager>().GetCurrentDirection());
             float angle = 0.707f;
 
             if (parallelness < -angle)
             {
                 // anti-parallel "head on" paths:
                 // steer away from future threat position
-                Vector3 offset = otherPositionAtNearestApproach - (Vector3)GetCurrentPosition();
-                Vector3 rightVector = Vector3.Cross(GetCurrentDirection(), Vector3.up);
+                Vector3 offset = otherPositionAtNearestApproach - myPosition;
+                Vector3 rightVector = Vector3.Cross(myDirection, Vector3.up);
 
                 float sideDot = Vector3.Dot(offset, rightVector);
                 //If there is the predicted potential collision agent on your right side:SideDot>0, steer should be -1(left side)
@@ -604,8 +624,8 @@ public class PathController : MotionMatchingCharacterController
                 if (parallelness > angle)
                 {
                     // parallel paths: steer away from threat
-                    Vector3 offset = potentialAvoidanceTarget.GetComponent<IParameterManager>().GetCurrentPosition() - (Vector3)GetCurrentPosition();
-                    Vector3 rightVector = Vector3.Cross(GetCurrentDirection(), Vector3.up);
+                    Vector3 offset = potentialAvoidanceTarget.GetComponent<IParameterManager>().GetCurrentPosition() - myPosition;
+                    Vector3 rightVector = Vector3.Cross(myDirection, Vector3.up);
 
                     float sideDot = Vector3.Dot(offset, rightVector);
                     steer = (sideDot > 0) ? -1.0f : 1.0f;
@@ -615,14 +635,14 @@ public class PathController : MotionMatchingCharacterController
                     // perpendicular paths: steer behind threat
                     // (only the slower of the two does this)
                     if(potentialAvoidanceTarget.GetComponent<IParameterManager>().GetCurrentSpeed() <= GetCurrentSpeed()){
-                        Vector3 rightVector = Vector3.Cross(GetCurrentDirection(), Vector3.up);
+                        Vector3 rightVector = Vector3.Cross(myDirection, Vector3.up);
                         float sideDot = Vector3.Dot(rightVector, potentialAvoidanceTarget.GetComponent<IParameterManager>().GetCurrentDirection());
                         steer = (sideDot > 0) ? -1.0f : 1.0f;
                     }
                 }
             }
         }
-        return Vector3.Cross(GetCurrentDirection(), Vector3.up) * steer;
+        return Vector3.Cross(myDirection, Vector3.up) * steer;
     }
 
     private float PredictNearestApproachTime (Vector3 myDirection, Vector3 myPosition, float mySpeed, Vector3 otherDirection, Vector3 otherPosition, float otherSpeed)

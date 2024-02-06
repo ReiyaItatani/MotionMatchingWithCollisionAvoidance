@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Collections;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace CollisionAvoidance{
 
@@ -13,6 +14,7 @@ public class GroupColliderManager : MonoBehaviour
     public AvatarCreatorBase avatarCreator;
     public GameObject groupColliderGameObject;
     private CapsuleCollider groupCollider;
+    private GroupParameterManager groupParameterManager;
     private List<CollisionAvoidanceController> collisionAvoidanceControllers = new List<CollisionAvoidanceController>();
     private HashSet<GameObject> agentsInFOV = new HashSet<GameObject>();
     [ReadOnly]
@@ -29,7 +31,9 @@ public class GroupColliderManager : MonoBehaviour
             collisionAvoidanceControllers.Add(agent.GetComponent<ParameterManager>().GetCollisionAvoidanceController());
         }
         StartCoroutine(UpdateAgentsInGroupFOV(0.1f));
-        groupCollider = groupColliderGameObject.GetComponent<CapsuleCollider>();
+
+        groupCollider         = groupColliderGameObject.GetComponent<CapsuleCollider>();
+        groupParameterManager = groupColliderGameObject.GetComponent<GroupParameterManager>();
     }
 
     void Update()
@@ -76,6 +80,10 @@ public class GroupColliderManager : MonoBehaviour
 
     public List<GameObject> GetAgentsInSharedFOV(){
         return agentsInFOV.ToList();
+    }
+
+    public GroupParameterManager GetGroupParameterManager(){
+        return groupParameterManager;
     }
 
     private IEnumerator UpdateAgentsInGroupFOV(float updateTime){

@@ -9279,7 +9279,7 @@ MonoBehaviour:
   goalRadius: 2
   slowingRadius: 3
   toGoalWeight: 1.5
-  avoidNeighborWeight: 0.7
+  avoidNeighborWeight: 0.5
   avoidanceWeight: 2.5
   groupForceWeight: 0.3
   wallRepForceWeight: 0
