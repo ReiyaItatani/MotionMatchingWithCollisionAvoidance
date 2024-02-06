@@ -9186,7 +9186,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &280312566
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9289,7 +9289,7 @@ MonoBehaviour:
   PosMaximumAdjustmentRatio: 0.1
   CapsuleColliderRadius: 0.3
   showAgentSphere: 0
-  ShowAvoidanceForce: 1
+  ShowAvoidanceForce: 0
   ShowAnticipatedCollisionAvoidance: 1
   ShowGoalDirection: 0
   ShowCurrentDirection: 0
@@ -76474,7 +76474,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2064597320
 Transform:
   m_ObjectHideFlags: 0
