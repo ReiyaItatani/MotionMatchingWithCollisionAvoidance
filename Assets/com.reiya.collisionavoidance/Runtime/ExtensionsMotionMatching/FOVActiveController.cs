@@ -2,68 +2,94 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace CollisionAvoidance{
+namespace CollisionAvoidance {
 
-public enum FOVDegree {
-    Normal = 180, //180
-    PeripheralFOV = 120, //120
-    FieldOf3dVision = 60, //60
-    Focus = 30 //30
-}
-
-public class FOVActiveController : MonoBehaviour {
-    public FOVDegree currentFOV = FOVDegree.PeripheralFOV;
-    private CollisionAvoidanceController collisionAvoidance;
-
-    private void Start() {
-        UpdateFOV();
+    // Enum to define different states of Field of View (FOV)
+    public enum FOVDegree {
+        Normal = 180,
+        PeripheralFOV = 120,
+        FieldOf3dVision = 60,
+        Focus = 30
     }
 
-    private void OnValidate() {
-        SetFOV(currentFOV);
-    }
+    public class FOVActiveController : MonoBehaviour {
+        // Current state of FOV
+        public FOVDegree currentFOV = FOVDegree.PeripheralFOV;
+        // Reference to CollisionAvoidanceController
+        private CollisionAvoidanceController collisionAvoidance;
 
-    void Update(){
-        if(collisionAvoidance == null) return;
-        UpperBodyAnimationState upperBodyAnimationState = collisionAvoidance.GetUpperBodyAnimationState();
-        if(upperBodyAnimationState == UpperBodyAnimationState.Walk){
-            SetFOV(FOVDegree.PeripheralFOV);
-        }else if(upperBodyAnimationState == UpperBodyAnimationState.Talk){
-            SetFOV(FOVDegree.FieldOf3dVision);
-        }else if(upperBodyAnimationState == UpperBodyAnimationState.SmartPhone){
-            SetFOV(FOVDegree.Focus);
+        // Called on the frame when the script is enabled
+        private void Start() {
+            ActivateFOV();
         }
-    }
 
-    private void UpdateFOV() {
-        foreach (Transform child in transform) {
-            int fovValue;
-            if (int.TryParse(child.name, out fovValue)) {
-                child.gameObject.SetActive(fovValue == (int)currentFOV);
-            }
+        // Called when the script is loaded or a value is changed in the Inspector
+        private void OnValidate() {
+            ApplyFOV(currentFOV);
         }
-    }
 
-    public void SetFOV(FOVDegree newFOV) {
-        currentFOV = newFOV;
-        UpdateFOV();
-    }
+        // Called once per frame
+        void Update() {
+            if (collisionAvoidance == null) return;
 
-    public GameObject GetActiveChildObject()
-    {
-        foreach (Transform childTransform in gameObject.transform)
-        {
-            if (childTransform.gameObject.activeSelf)
-            {
-                return childTransform.gameObject;
+            // Get the current state of the upper body animation
+            UpperBodyAnimationState upperBodyAnimationState = collisionAvoidance.GetUpperBodyAnimationState();
+
+            // Set FOV based on the current upper body animation state
+            switch (upperBodyAnimationState) {
+                case UpperBodyAnimationState.Walk:
+                    ApplyFOV(FOVDegree.PeripheralFOV);
+                    break;
+                case UpperBodyAnimationState.Talk:
+                    ApplyFOV(FOVDegree.FieldOf3dVision);
+                    break;
+                case UpperBodyAnimationState.SmartPhone:
+                    ApplyFOV(FOVDegree.Focus);
+                    break;
             }
         }
 
-        return null;
-    }
+        // Activate the child GameObject that matches the current FOV
+        private void ActivateFOV() {
+            foreach (Transform child in transform) {
+                // Try to parse the child's name as an integer to get the FOV value.
+                if (int.TryParse(child.name, out int fovValue)) {
+                    // Determine if this child should be active based on the currentFOV.
+                    bool isActive = fovValue == (int)currentFOV;
 
-    public void InitParameter(CollisionAvoidanceController _collisionAvoidance){
-        collisionAvoidance = _collisionAvoidance;
-    } 
-}
+                    // If the child is not going to be active, clear its othersInAvoidanceArea list.
+                    if (!isActive) {
+                        UpdateAvoidanceTarget avoidanceTarget = child.gameObject.GetComponent<UpdateAvoidanceTarget>();
+                        if (avoidanceTarget != null) {
+                            avoidanceTarget.othersInAvoidanceArea.Clear();
+                        }
+                    }
+
+                    // Set the active state of the child GameObject.
+                    child.gameObject.SetActive(isActive);
+                }
+            }
+        }
+
+        // Set the new FOV and update the active child GameObject
+        public void ApplyFOV(FOVDegree newFOV) {
+            currentFOV = newFOV;
+            ActivateFOV();
+        }
+
+        // Get the currently active child GameObject
+        public GameObject GetActiveChildObject() {
+            foreach (Transform childTransform in transform) {
+                if (childTransform.gameObject.activeSelf) {
+                    return childTransform.gameObject;
+                }
+            }
+            return null;
+        }
+
+        // Initialize the CollisionAvoidanceController parameter
+        public void InitParameter(CollisionAvoidanceController _collisionAvoidance) {
+            collisionAvoidance = _collisionAvoidance;
+        }
+    }
 }

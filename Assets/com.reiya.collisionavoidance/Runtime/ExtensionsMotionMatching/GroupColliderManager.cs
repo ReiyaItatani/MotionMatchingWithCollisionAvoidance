@@ -12,8 +12,10 @@ public class GroupColliderManager : MonoBehaviour
     public SocialRelations socialRelations;
     public AvatarCreatorBase avatarCreator;
     public GameObject groupColliderGameObject;
+    private CapsuleCollider groupCollider;
     private List<CollisionAvoidanceController> collisionAvoidanceControllers = new List<CollisionAvoidanceController>();
     private HashSet<GameObject> agentsInFOV = new HashSet<GameObject>();
+    [ReadOnly]
     public List<GameObject> debug = new List<GameObject>();
 
     public bool onGroupCollider = false;
@@ -27,6 +29,7 @@ public class GroupColliderManager : MonoBehaviour
             collisionAvoidanceControllers.Add(agent.GetComponent<ParameterManager>().GetCollisionAvoidanceController());
         }
         StartCoroutine(UpdateAgentsInGroupFOV(0.1f));
+        groupCollider = groupColliderGameObject.GetComponent<CapsuleCollider>();
     }
 
     void Update()
@@ -56,10 +59,12 @@ public class GroupColliderManager : MonoBehaviour
             }
         }
         if(maxDistance <= (agentsInCategory.Count)/2 && OnGroupCollider){
-            groupColliderGameObject.SetActive(true);
+            groupCollider.enabled = true;
+            //groupColliderGameObject.SetActive(true);
             onGroupCollider = true;
         }else{
-            groupColliderGameObject.SetActive(false);
+            groupCollider.enabled = false;
+            //groupColliderGameObject.SetActive(false);
             onGroupCollider = false;
             agentsInFOV.Clear();
         }
@@ -79,6 +84,8 @@ public class GroupColliderManager : MonoBehaviour
             foreach(CollisionAvoidanceController collisionAvoidanceController in collisionAvoidanceControllers){
                 agentsInFOV.UnionWith(collisionAvoidanceController.GetOthersInFOV());
             }
+            //remove agents in same category
+            agentsInFOV.ExceptWith(agentsInCategory); 
             debug = agentsInFOV.ToList();
             yield return new WaitForSeconds(updateTime);
         }

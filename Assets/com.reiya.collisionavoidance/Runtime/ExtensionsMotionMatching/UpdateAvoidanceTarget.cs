@@ -44,9 +44,22 @@ public class UpdateAvoidanceTarget : MonoBehaviour
         return othersInAvoidanceArea;
     }
 
-    //Group Colldier wil be inactive so in that case this will help 
+    // Checks each GameObject in othersInAvoidanceArea to determine if it should be removed.
     private void AvoidanceTargetActiveChecker(){
-        othersInAvoidanceArea.RemoveAll(gameObject => !gameObject.activeInHierarchy);
+        // Remove GameObject from the list if it's not active in the hierarchy,
+        // or if its CapsuleCollider is not enabled.
+        othersInAvoidanceArea.RemoveAll(gameObject =>
+            !gameObject.activeInHierarchy || !IsCapsuleColliderActive(gameObject)
+        );
+    }
+
+    // Determines if the CapsuleCollider component of the given GameObject is active and enabled.
+    private bool IsCapsuleColliderActive(GameObject obj) {
+        // Retrieve the CapsuleCollider component from the GameObject.
+        CapsuleCollider capsuleCollider = obj.GetComponent<CapsuleCollider>();
+
+        // Return true if MeshCollider is not null and is enabled, otherwise return false.
+        return capsuleCollider != null && capsuleCollider.enabled;
     }
 
     public void InitParameter(CapsuleCollider _myAgentCollider, CapsuleCollider _myGroupCollider){

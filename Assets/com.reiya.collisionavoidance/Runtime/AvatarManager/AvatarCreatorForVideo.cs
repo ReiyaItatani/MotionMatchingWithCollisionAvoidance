@@ -166,10 +166,23 @@ public class AvatarCreatorForVideo : AvatarCreatorBase
                 groupParameterManager.pathControllers.Add(pathController);
                 collisionAvoidanceController.groupCollider = groupCollider.GetComponent<CapsuleCollider>();
             }
+
+            //set group manager to pathmanager
+            if (groupRelations != SocialRelations.Individual)
+            {
+                GameObject groupRelationsGameObject   = transform.Find(groupRelations.ToString()).gameObject;
+                GameObject groupColliderManagerObj = groupRelationsGameObject.transform.Find("GroupColliderManager").gameObject;
+                if (groupColliderManagerObj != null)
+                {
+                    GroupColliderManager groupColliderManager = groupColliderManagerObj.GetComponent<GroupColliderManager>();
+                    pathController.groupColliderManager = groupColliderManager;
+                }
+            }
             
             //Save The Agent
             instantiatedAvatars.Add(instance);
         }
+        
 
 
         //Destroy Group Collider and its manager if the number of agents is less than 1
