@@ -256,7 +256,7 @@ public class SocialBehaviour : MonoBehaviour
         if(collidedTarget != null) return;
 
         SocialRelations  mySocialRelations          = parameterManager.GetSocialRelations();
-        ParameterManager otherAgentParameterManager = other.GetComponent<ParameterManager>();
+        IParameterManager otherAgentParameterManager = other.GetComponent<IParameterManager>();
         SocialRelations  otherAgentSocialRelations  = otherAgentParameterManager.GetSocialRelations();
         float probability = UnityEngine.Random.value;
 

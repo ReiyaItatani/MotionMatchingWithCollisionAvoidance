@@ -264,7 +264,7 @@ public class PathController : MotionMatchingCharacterController
     private void HandleAgentCollision(Collider other){
         //Check the social realtionship between the collided agent and the agent
         SocialRelations  mySocialRelations          = GetSocialRelations();
-        ParameterManager otherAgentParameterManager = other.GetComponent<ParameterManager>();
+        IParameterManager otherAgentParameterManager = other.GetComponent<IParameterManager>();
         SocialRelations  otherAgentSocialRelations  = otherAgentParameterManager.GetSocialRelations();
 
         if(onCollide == false){
