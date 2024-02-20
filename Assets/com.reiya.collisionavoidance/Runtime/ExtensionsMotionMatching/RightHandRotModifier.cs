@@ -175,13 +175,17 @@ public class RightHandRotModifier : MonoBehaviour
                 if (i == 0) // Check if it's the thumb
                 {
                     // For the thumb, we might rotate around a different axis, e.g., z-axis
+                    //For Rocket Box
                     additionalRotation = Quaternion.Euler(new Vector3(initialRotations[i][j].x, initialRotations[i][j].y, initialRotations[i][j].z - bendAngles[bendIndex] * interpolate));
+                    //For Mixamo Character
                     //additionalRotation = Quaternion.Euler(new Vector3(initialRotations[i][j].x, initialRotations[i][j].y + bendAngles[bendIndex] * interpolate, initialRotations[i][j].z));
                 }
                 else
                 {
                     // For other fingers, rotate around x-axis
+                    //For Rocket Box
                     additionalRotation = Quaternion.Euler(new Vector3(initialRotations[i][j].x + bendAngles[bendIndex] * interpolate, initialRotations[i][j].y, initialRotations[i][j].z));
+                    //ForMixamo Character
                     //additionalRotation = Quaternion.Euler(new Vector3(initialRotations[i][j].x, initialRotations[i][j].y, initialRotations[i][j].z - bendAngles[bendIndex] * interpolate));
                 }
 
