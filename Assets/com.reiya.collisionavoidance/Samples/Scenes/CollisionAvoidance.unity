@@ -344,6 +344,7 @@ MonoBehaviour:
   wallRepForceWeight: 1
   groupColliderManager: {fileID: 0}
   onAvoidanceCoordination: 1
+  test: 1
   syntheticVisionForceWeight: 1
 --- !u!4 &10191608
 Transform:
@@ -9281,7 +9282,7 @@ MonoBehaviour:
   toGoalWeight: 1.5
   avoidNeighborWeight: 0.5
   avoidanceWeight: 2.5
-  groupForceWeight: 0.3
+  groupForceWeight: 0.5
   wallRepForceWeight: 0
   syntheticVisionForceWeight: 0
   MaxDistanceMMAndCharacterController: 0.1
@@ -9290,7 +9291,7 @@ MonoBehaviour:
   CapsuleColliderRadius: 0.3
   showAgentSphere: 0
   ShowAvoidanceForce: 0
-  ShowAnticipatedCollisionAvoidance: 1
+  ShowAnticipatedCollisionAvoidance: 0
   ShowGoalDirection: 0
   ShowCurrentDirection: 0
   ShowGroupForce: 0
@@ -16178,6 +16179,7 @@ MonoBehaviour:
   wallRepForceWeight: 1
   groupColliderManager: {fileID: 2098290355}
   onAvoidanceCoordination: 1
+  test: 1
   syntheticVisionForceWeight: 1
 --- !u!4 &459265275
 Transform:
@@ -20317,6 +20319,7 @@ MonoBehaviour:
   wallRepForceWeight: 1
   groupColliderManager: {fileID: 963632056}
   onAvoidanceCoordination: 0
+  test: 0
   syntheticVisionForceWeight: 1
 --- !u!4 &544770488
 Transform:
@@ -24227,6 +24230,7 @@ MonoBehaviour:
   wallRepForceWeight: 1
   groupColliderManager: {fileID: 1043730196}
   onAvoidanceCoordination: 1
+  test: 1
   syntheticVisionForceWeight: 1
 --- !u!4 &645677332
 Transform:
@@ -27119,6 +27123,7 @@ MonoBehaviour:
   wallRepForceWeight: 1
   groupColliderManager: {fileID: 0}
   onAvoidanceCoordination: 0
+  test: 1
   syntheticVisionForceWeight: 1
 --- !u!4 &727580228
 Transform:
@@ -28241,6 +28246,7 @@ MonoBehaviour:
   wallRepForceWeight: 1
   groupColliderManager: {fileID: 1500272594}
   onAvoidanceCoordination: 0
+  test: 0
   syntheticVisionForceWeight: 1
 --- !u!4 &755627718
 Transform:
@@ -35541,6 +35547,7 @@ MonoBehaviour:
   wallRepForceWeight: 1
   groupColliderManager: {fileID: 920366765}
   onAvoidanceCoordination: 1
+  test: 1
   syntheticVisionForceWeight: 1
 --- !u!4 &958981160
 Transform:
@@ -39306,6 +39313,7 @@ MonoBehaviour:
   wallRepForceWeight: 1
   groupColliderManager: {fileID: 963632056}
   onAvoidanceCoordination: 0
+  test: 0
   syntheticVisionForceWeight: 1
 --- !u!4 &1054178863
 Transform:
@@ -41536,6 +41544,7 @@ MonoBehaviour:
   wallRepForceWeight: 1
   groupColliderManager: {fileID: 0}
   onAvoidanceCoordination: 1
+  test: 1
   syntheticVisionForceWeight: 1
 --- !u!4 &1104233703
 Transform:
@@ -42461,6 +42470,7 @@ MonoBehaviour:
   wallRepForceWeight: 1
   groupColliderManager: {fileID: 879817048}
   onAvoidanceCoordination: 1
+  test: 1
   syntheticVisionForceWeight: 1
 --- !u!4 &1131973613
 Transform:
@@ -44529,6 +44539,7 @@ MonoBehaviour:
   wallRepForceWeight: 1
   groupColliderManager: {fileID: 1705603479}
   onAvoidanceCoordination: 0
+  test: 0
   syntheticVisionForceWeight: 1
 --- !u!4 &1185399319
 Transform:
@@ -45752,6 +45763,7 @@ MonoBehaviour:
   wallRepForceWeight: 1
   groupColliderManager: {fileID: 879817048}
   onAvoidanceCoordination: 1
+  test: 1
   syntheticVisionForceWeight: 1
 --- !u!4 &1226493061
 Transform:
@@ -45991,6 +46003,7 @@ MonoBehaviour:
   wallRepForceWeight: 1
   groupColliderManager: {fileID: 1500272594}
   onAvoidanceCoordination: 0
+  test: 0
   syntheticVisionForceWeight: 1
 --- !u!4 &1239009984
 Transform:
@@ -54365,6 +54378,7 @@ MonoBehaviour:
   wallRepForceWeight: 1
   groupColliderManager: {fileID: 1500272594}
   onAvoidanceCoordination: 0
+  test: 0
   syntheticVisionForceWeight: 1
 --- !u!4 &1435914834
 Transform:
@@ -54760,6 +54774,7 @@ MonoBehaviour:
   wallRepForceWeight: 1
   groupColliderManager: {fileID: 1043730196}
   onAvoidanceCoordination: 1
+  test: 1
   syntheticVisionForceWeight: 1
 --- !u!4 &1446738777
 Transform:
@@ -55954,6 +55969,7 @@ MonoBehaviour:
   wallRepForceWeight: 1
   groupColliderManager: {fileID: 920366765}
   onAvoidanceCoordination: 1
+  test: 1
   syntheticVisionForceWeight: 1
 --- !u!4 &1474811216
 Transform:
@@ -61515,6 +61531,7 @@ MonoBehaviour:
   wallRepForceWeight: 1
   groupColliderManager: {fileID: 879817048}
   onAvoidanceCoordination: 1
+  test: 1
   syntheticVisionForceWeight: 1
 --- !u!4 &1613316663
 Transform:
@@ -64393,6 +64410,7 @@ MonoBehaviour:
   wallRepForceWeight: 1
   groupColliderManager: {fileID: 1043730196}
   onAvoidanceCoordination: 1
+  test: 1
   syntheticVisionForceWeight: 1
 --- !u!4 &1720905488
 Transform:
@@ -65829,6 +65847,7 @@ MonoBehaviour:
   wallRepForceWeight: 1
   groupColliderManager: {fileID: 0}
   onAvoidanceCoordination: 0
+  test: 1
   syntheticVisionForceWeight: 1
 --- !u!4 &1767234868
 Transform:
@@ -67840,6 +67859,7 @@ MonoBehaviour:
   wallRepForceWeight: 1
   groupColliderManager: {fileID: 2098290355}
   onAvoidanceCoordination: 1
+  test: 1
   syntheticVisionForceWeight: 1
 --- !u!4 &1813709227
 Transform:
@@ -68833,6 +68853,7 @@ MonoBehaviour:
   wallRepForceWeight: 1
   groupColliderManager: {fileID: 1705603479}
   onAvoidanceCoordination: 0
+  test: 0
   syntheticVisionForceWeight: 1
 --- !u!4 &1835532646
 Transform:
@@ -70412,6 +70433,7 @@ MonoBehaviour:
   wallRepForceWeight: 1
   groupColliderManager: {fileID: 0}
   onAvoidanceCoordination: 0
+  test: 1
   syntheticVisionForceWeight: 1
 --- !u!4 &1895273189
 Transform:
@@ -75636,6 +75658,7 @@ MonoBehaviour:
   wallRepForceWeight: 1
   groupColliderManager: {fileID: 0}
   onAvoidanceCoordination: 1
+  test: 1
   syntheticVisionForceWeight: 1
 --- !u!4 &2047555173
 Transform:
@@ -76443,6 +76466,7 @@ MonoBehaviour:
   wallRepForceWeight: 1
   groupColliderManager: {fileID: 1043730196}
   onAvoidanceCoordination: 1
+  test: 1
   syntheticVisionForceWeight: 1
 --- !u!4 &2064476733
 Transform:

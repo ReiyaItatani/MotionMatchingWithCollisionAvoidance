@@ -20,7 +20,7 @@ public class GroupColliderManager : MonoBehaviour
     [ReadOnly]
     public List<GameObject> debug = new List<GameObject>();
 
-    public bool onGroupCollider = false;
+    private bool onGroupCollider = false;
 
     private List<GameObject> agentsInCategory = new List<GameObject>();
 
