@@ -25,6 +25,7 @@ public class ConversationalAgentFramework : MonoBehaviour
         GameObject body = FindObjectWithSkinnedMeshRenderer(gameObject);
         // GameObject body = GetChildGameObject(gameObject, "Body");
         faceController = body.AddComponent<FaceScript>();
+        //faceController = body.AddComponent<FaceScriptForAvatarSDK>();
         faceController.meshRenderer = body.GetComponentInChildren<SkinnedMeshRenderer>();
         faceController.InitShapeKeys();
 
@@ -200,6 +201,8 @@ public class ConversationalAgentFramework : MonoBehaviour
     // float d_upperArm, d_lowerArm, d_hand;
 
     [HideInInspector] public FaceScript faceController;
+    //For avatar that is using blendshape of avatarsdk
+    //[HideInInspector] public FaceScriptForAvatarSDK faceController;
 
     static public GameObject GetChildGameObject(GameObject fromGameObject, string withName)
     {
