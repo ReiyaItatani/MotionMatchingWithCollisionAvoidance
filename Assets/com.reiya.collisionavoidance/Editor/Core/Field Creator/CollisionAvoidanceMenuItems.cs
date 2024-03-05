@@ -16,7 +16,7 @@ public class CollisionAvoidanceMenuItems
         AddTag("Wall");
         AddTag("Object");
         GameObject avatarCreator = CreateAvatarCreator("AvatarCreatorForVideo");
-        SetPathEndpoints(avatarCreator, "AvatarCreatorForVideo");
+        SetPathEndpoints(avatarCreator, "AvatarCreatorForVideo", new Vector3(15,0,0), new Vector3(-15,0,0));
         Debug.Log("Field with wall and AvatarCreator with Path, StartPos, and EndPos created");
     }
 
@@ -28,7 +28,7 @@ public class CollisionAvoidanceMenuItems
         AddTag("Wall");
         AddTag("Object");
         GameObject avatarCreator = CreateAvatarCreator("AvatarCreatorCorridor");
-        SetPathEndpoints(avatarCreator, "AvatarCreatorCorridor");
+        SetPathEndpoints(avatarCreator, "AvatarCreatorCorridor", new Vector3(15,0,0), new Vector3(-15,0,0));
         Debug.Log("Field with wall and AvatarCreator with Path, StartPos, and EndPos created");
     }
 
@@ -40,7 +40,21 @@ public class CollisionAvoidanceMenuItems
         AddTag("Wall");
         AddTag("Object");
         GameObject avatarCreator = CreateAvatarCreator("AvatarCreator");
-        SetPathEndpoints(avatarCreator, "AvatarCreator");
+        SetPathEndpoints(avatarCreator, "AvatarCreator", new Vector3(15,0,0), new Vector3(-15,0,0));
+        Debug.Log("Field without wall and AvatarCreator with Path, StartPos, and EndPos created");
+    }
+
+    [MenuItem("CollisionAvoidance/Create Field/Cross Road")]
+    private static void CreateFieldCrossRoad()
+    {
+        AddTag("Agent");
+        AddTag("Group");
+        AddTag("Wall");
+        AddTag("Object");
+        GameObject avatarCreator1 = CreateAvatarCreator("AvatarCreatorCrossRoad");
+        SetPathEndpoints(avatarCreator1, "AvatarCreatorCrossRoad", new Vector3(15,0,0), new Vector3(-15,0,0));
+        GameObject avatarCreator2 = CreateAvatarCreator("AvatarCreatorCrossRoad");
+        SetPathEndpoints(avatarCreator2, "AvatarCreatorCrossRoad", new Vector3(0,0,15), new Vector3(0,0,-15));
         Debug.Log("Field without wall and AvatarCreator with Path, StartPos, and EndPos created");
     }
 
@@ -68,6 +82,10 @@ public class CollisionAvoidanceMenuItems
         {
             avatarCreator.AddComponent<AvatarCreator>(); 
         }
+        else if (scriptName == "AvatarCreatorCrossRoad")
+        {
+            avatarCreator.AddComponent<AvatarCreatorCrossRoad>(); 
+        }
         else if (scriptName == "AvatarCreatorForVideo"){
             avatarCreator.AddComponent<AvatarCreatorForVideo>(); 
         }
@@ -79,11 +97,11 @@ public class CollisionAvoidanceMenuItems
         return avatarCreator;
     }
 
-    private static void SetPathEndpoints(GameObject avatarCreator, string scriptName)
+    private static void SetPathEndpoints(GameObject avatarCreator, string scriptName, Vector3 startPosition, Vector3 endPosition)
     {
         GameObject path = CreateChildGameObject(avatarCreator, "Path");
-        GameObject startPos = CreateChildGameObject(path, "StartPos", new Vector3(15, 0, 0));
-        GameObject endPos = CreateChildGameObject(path, "EndPos", new Vector3(-15, 0, 0));
+        GameObject startPos = CreateChildGameObject(path, "StartPos", startPosition);
+        GameObject endPos = CreateChildGameObject(path, "EndPos", endPosition);
         
         AttachGizmoDrawer(startPos);
         AttachGizmoDrawer(endPos);

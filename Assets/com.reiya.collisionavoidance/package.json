@@ -1,6 +1,6 @@
 {
     "name": "com.reiya.collisionavoidance",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "displayName": "Collision Avoidance",
     "description": "Motion Matching with Collision Avoidance implementation for Unity",
     "unity": "2020.1",
