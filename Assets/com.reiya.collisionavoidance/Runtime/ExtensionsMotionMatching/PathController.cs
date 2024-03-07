@@ -69,6 +69,11 @@ public class PathController : MotionMatchingCharacterController
     [HideInInspector]
     public float toGoalWeight = 2.0f;//Weight for goal direction
     private int currentGoalIndex = 1;//Current goal index num
+    public int CurrentGoalIndex 
+    { 
+        get { return currentGoalIndex; } 
+        set { currentGoalIndex = value; } 
+    }
     [HideInInspector]
     public float goalRadius = 0.5f;
     [HideInInspector]
