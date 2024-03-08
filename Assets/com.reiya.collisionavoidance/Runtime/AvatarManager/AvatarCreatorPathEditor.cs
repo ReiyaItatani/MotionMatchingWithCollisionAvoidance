@@ -1,13 +1,15 @@
-using UnityEditor;
 using UnityEngine;
+using UnityEditor;
+#if UNITY_EDITOR
 using CollisionAvoidance;
+using System.Linq;
 
-[CustomEditor(typeof(AgentCreatorPath))]
+[CustomEditor(typeof(AvatarCreatorPath))]
 public class AvatarCreatorPathEditor : Editor
 {
     void OnSceneGUI()
     {
-        AgentCreatorPath path = (AgentCreatorPath)target;
+        AvatarCreatorPath path = (AvatarCreatorPath)target;
 
         for (int i = 0; i < path.agentPath.Count; i++)
         {
@@ -24,7 +26,50 @@ public class AvatarCreatorPathEditor : Editor
     {
         DrawDefaultInspector(); 
 
-        AvatarCreatorBase script = (AvatarCreatorBase)target;
+        CollisionAvoidance.AvatarCreatorPath script = (CollisionAvoidance.AvatarCreatorPath)target;
+
+        // Button to add "Individual" as the first item if the list is empty, then add other relations respecting the limit of 5 and avoiding duplicates
+        if (GUILayout.Button("Add Social Relation"))
+        {
+            // Ensure the list has less than 5 items
+            if (script.socialRelations.Count < 5)
+            {
+                // If the list is empty, add "Individual" first
+                if (script.socialRelations.Count == 0)
+                {
+                    script.socialRelations.Add(CollisionAvoidance.SocialRelations.Individual);
+                    EditorUtility.SetDirty(target); // Mark the object as dirty to ensure changes are saved
+                }
+                else
+                {
+                    // Get all enum values except "Individual" because it should be added first and only once
+                    var values = System.Enum.GetValues(typeof(CollisionAvoidance.SocialRelations))
+                        .Cast<CollisionAvoidance.SocialRelations>()
+                        .Where(val => val != CollisionAvoidance.SocialRelations.Individual);
+                    
+                    // Find the first value not already in the list
+                    var notAdded = values.Except(script.socialRelations).FirstOrDefault();
+
+                    // If there is a value not already added, add it to the list
+                    if (!script.socialRelations.Contains(notAdded))
+                    {
+                        script.socialRelations.Add(notAdded);
+                        EditorUtility.SetDirty(target); // Mark the object as dirty to ensure changes are saved
+                    }
+                }
+            }
+            else
+            {
+                Debug.LogWarning("Cannot add more than 5 social relations.");
+            }
+        }
+
+        // Button to clear the social relations list
+        if (GUILayout.Button("Clear Social Relations"))
+        {
+            script.socialRelations.Clear();
+            EditorUtility.SetDirty(target); // Mark the object as dirty to ensure changes are saved
+        }
 
         GUILayout.BeginVertical("box");
 
@@ -43,3 +88,4 @@ public class AvatarCreatorPathEditor : Editor
         GUILayout.EndVertical();
     }
 }
+#endif

@@ -17,7 +17,7 @@ public class CollisionAvoidanceMenuItems
         AddTag("Object");
         GameObject avatarCreator = CreateAvatarCreator("AvatarCreatorForVideo");
         SetPathEndpoints(avatarCreator, "AvatarCreatorForVideo", new Vector3(15,0,0), new Vector3(-15,0,0));
-        Debug.Log("Field with wall and AvatarCreator with Path, StartPos, and EndPos created");
+        Debug.Log("AvatarCreator with Path, StartPos, and EndPos created");
     }
 
     [MenuItem("CollisionAvoidance/Create Field/With Wall")]
@@ -55,7 +55,18 @@ public class CollisionAvoidanceMenuItems
         SetPathEndpoints(avatarCreator1, "AvatarCreatorCrossRoad", new Vector3(15,0,0), new Vector3(-15,0,0));
         GameObject avatarCreator2 = CreateAvatarCreator("AvatarCreatorCrossRoad");
         SetPathEndpoints(avatarCreator2, "AvatarCreatorCrossRoad", new Vector3(0,0,15), new Vector3(0,0,-15));
-        Debug.Log("Field without wall and AvatarCreator with Path, StartPos, and EndPos created");
+        Debug.Log("Two AvatarCreator with Path, StartPos, and EndPos created");
+    }
+
+    [MenuItem("CollisionAvoidance/Create Field/Path")]
+    private static void CreateFieldPath()
+    {
+        AddTag("Agent");
+        AddTag("Group");
+        AddTag("Wall");
+        AddTag("Object");
+        GameObject avatarCreator = CreateAvatarCreator("AvatarCreatorPath");
+        Debug.Log("AvatarCreator created");
     }
 
     // Creates the AvatarCreator game object and checks for the presence of the OVRLipSync script in the scene.
@@ -89,11 +100,14 @@ public class CollisionAvoidanceMenuItems
         else if (scriptName == "AvatarCreatorForVideo"){
             avatarCreator.AddComponent<AvatarCreatorForVideo>(); 
         }
+        else if (scriptName == "AvatarCreatorPath")
+        {
+            avatarCreator.AddComponent<AvatarCreatorPath>(); 
+        }
         else
         {
             Debug.LogError($"Script '{scriptName}' not found. Make sure it exists and is compiled.");
         }
-
         return avatarCreator;
     }
 

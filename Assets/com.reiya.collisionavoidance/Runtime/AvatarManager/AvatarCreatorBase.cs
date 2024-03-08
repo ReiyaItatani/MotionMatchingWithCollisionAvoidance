@@ -8,11 +8,11 @@ namespace CollisionAvoidance{
 // Enum to define social relations. This will be used later to categorize relationships between characters.
 public enum SocialRelations
 {
+    Individual,
     Couple,
     Friend,
     Family,
-    Coworker,
-    Individual
+    Coworker
 }
 
 // AvatarCreatorBase is a base class for creating and managing avatars.

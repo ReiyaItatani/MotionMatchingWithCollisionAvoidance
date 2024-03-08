@@ -68,7 +68,8 @@ public class PathController : MotionMatchingCharacterController
     private Vector3 toGoalVector = Vector3.zero;//Direction to goal
     [HideInInspector]
     public float toGoalWeight = 2.0f;//Weight for goal direction
-    private int currentGoalIndex = 1;//Current goal index num
+    [ReadOnly]
+    public int currentGoalIndex = 1;//Current goal index num
     public int CurrentGoalIndex 
     { 
         get { return currentGoalIndex; } 
@@ -144,8 +145,9 @@ public class PathController : MotionMatchingCharacterController
             initialSpeed = minSpeed;
             // minSpeed = initialSpeed;
         }
-        CurrentPosition = Path[0];
-        currentGoal = Path[currentGoalIndex];       
+        int currentPositionIndex = currentGoalIndex - 1;
+        CurrentPosition = Path[currentPositionIndex];
+        currentGoal = Path[currentGoalIndex];        
 
         //Init
         AgentCollisionDetection agentCollisionDetection = collisionAvoidance.GetAgentCollisionDetection();
@@ -1221,12 +1223,12 @@ public class PathController : MotionMatchingCharacterController
 
     public override float3 GetWorldInitPosition()
     {
-        return Path[0] + this.transform.position;
+        return Path[currentGoalIndex-1] + this.transform.position;
     }
     public override float3 GetWorldInitDirection()
     {
         // float2 dir = Path.Length > 0 ? Path[1].Position - Path[0].Position : new float2(0, 1);
-        Vector3 dir = Path.Length > 0 ? Path[1] - Path[0] : new Vector3(0, 0, 1);
+        Vector3 dir = Path.Length > 0 ? Path[currentGoalIndex] - Path[currentGoalIndex-1] : new Vector3(0, 0, 1);
         return dir.normalized;
     }
 
