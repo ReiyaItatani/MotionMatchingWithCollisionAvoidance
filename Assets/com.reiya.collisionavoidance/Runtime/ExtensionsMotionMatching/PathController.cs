@@ -1327,7 +1327,7 @@ public class PathController : MotionMatchingCharacterController
 
         if (Path == null) return;
 
-        //const float heightOffset = 0.01f;
+        const float heightOffset = 0.01f;
 
         // Draw KeyPoints
         // Gizmos.color = Color.blue;
@@ -1362,7 +1362,7 @@ public class PathController : MotionMatchingCharacterController
         //     Vector3 nextPos = GetWorldPosition(transform, Path[i+1]);
         //     GizmosExtensions.DrawLine(new Vector3(pos.x, heightOffset, pos.z), new Vector3(nextPos.x, heightOffset, nextPos.z), 6);
         // }
-        // Last Line
+        // //Last Line
         // Vector3 lastPos = GetWorldPosition(transform, Path[Path.Length - 1]);
         // Vector3 firstPos = GetWorldPosition(transform, Path[0]);
         // GizmosExtensions.DrawLine(new Vector3(lastPos.x, heightOffset, lastPos.z), new Vector3(firstPos.x, heightOffset, firstPos.z), 6);
@@ -1383,24 +1383,24 @@ public class PathController : MotionMatchingCharacterController
         // Vector3 end2 = new Vector3(firstPos2.x, heightOffset, firstPos2.z);
         // GizmosExtensions.DrawArrow(start2, start2 + (end2 - start2).normalized * currentSpeed, thickness: 3);
 
-        // // Draw Current Position And Direction
-        // if (!Application.isPlaying) return;
-        // Gizmos.color = new Color(1.0f, 0.3f, 0.1f, 1.0f);
-        // Vector3 currentPos = (Vector3)GetCurrentPosition() + Vector3.up * heightOffset * 2;
-        // Gizmos.DrawSphere(currentPos, 0.1f);
-        // GizmosExtensions.DrawLine(currentPos, currentPos + (Quaternion)GetCurrentRotation() * Vector3.forward, 12);
-        // // Draw Prediction
-        // if (PredictedPositions == null || PredictedPositions.Length != NumberPredictionPos ||
-        //     PredictedDirections == null || PredictedDirections.Length != NumberPredictionRot) return;
-        // Gizmos.color = new Color(0.6f, 0.3f, 0.8f, 1.0f);
-        // for (int i = 0; i < NumberPredictionPos; i++)
-        // {
-        //     Vector3 predictedPosf2 = GetWorldPredictedPos(i);
-        //     Vector3 predictedPos = new Vector3(predictedPosf2.x, heightOffset * 2, predictedPosf2.z);
-        //     Gizmos.DrawSphere(predictedPos, 0.1f);
-        //     Vector3 dirf2 = GetWorldPredictedDir(i);
-        //     GizmosExtensions.DrawLine(predictedPos, predictedPos + new Vector3(dirf2.x, 0.0f, dirf2.z) * 0.5f, 12);
-        // }
+        // Draw Current Position And Direction
+        if (!Application.isPlaying) return;
+        Gizmos.color = new Color(1.0f, 0.3f, 0.1f, 1.0f);
+        Vector3 currentPos = (Vector3)GetCurrentPosition() + Vector3.up * heightOffset * 2;
+        Gizmos.DrawSphere(currentPos, 0.1f);
+        GizmosExtensions.DrawLine(currentPos, currentPos + (Quaternion)GetCurrentRotation() * Vector3.forward, 12);
+        // Draw Prediction
+        if (PredictedPositions == null || PredictedPositions.Length != NumberPredictionPos ||
+            PredictedDirections == null || PredictedDirections.Length != NumberPredictionRot) return;
+        Gizmos.color = new Color(0.6f, 0.3f, 0.8f, 1.0f);
+        for (int i = 0; i < NumberPredictionPos; i++)
+        {
+            Vector3 predictedPosf2 = GetWorldPredictedPos(i);
+            Vector3 predictedPos = new Vector3(predictedPosf2.x, heightOffset * 2, predictedPosf2.z);
+            Gizmos.DrawSphere(predictedPos, 0.1f);
+            Vector3 dirf2 = GetWorldPredictedDir(i);
+            GizmosExtensions.DrawLine(predictedPos, predictedPos + new Vector3(dirf2.x, 0.0f, dirf2.z) * 0.5f, 12);
+        }
     }
     #endif
     #endregion

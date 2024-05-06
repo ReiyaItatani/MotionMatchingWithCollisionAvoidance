@@ -170,23 +170,27 @@ public class RightHandRotModifier : MonoBehaviour
                     continue;
                 }
 
-                Quaternion additionalRotation;
+                Quaternion additionalRotation = Quaternion.identity;
 
                 if (i == 0) // Check if it's the thumb
                 {
                     // For the thumb, we might rotate around a different axis, e.g., z-axis
                     //For Rocket Box
+                #if MicrosoftRocketBox
                     additionalRotation = Quaternion.Euler(new Vector3(initialRotations[i][j].x, initialRotations[i][j].y, initialRotations[i][j].z - bendAngles[bendIndex] * interpolate));
-                    //For Mixamo Character
-                    //additionalRotation = Quaternion.Euler(new Vector3(initialRotations[i][j].x, initialRotations[i][j].y + bendAngles[bendIndex] * interpolate, initialRotations[i][j].z));
+                #elif AvatarSDK
+                    additionalRotation = Quaternion.Euler(new Vector3(initialRotations[i][j].x, initialRotations[i][j].y + bendAngles[bendIndex] * interpolate, initialRotations[i][j].z));
+                #endif
                 }
                 else
                 {
                     // For other fingers, rotate around x-axis
                     //For Rocket Box
+                #if MicrosoftRocketBox
                     additionalRotation = Quaternion.Euler(new Vector3(initialRotations[i][j].x + bendAngles[bendIndex] * interpolate, initialRotations[i][j].y, initialRotations[i][j].z));
-                    //ForMixamo Character
-                    //additionalRotation = Quaternion.Euler(new Vector3(initialRotations[i][j].x, initialRotations[i][j].y, initialRotations[i][j].z - bendAngles[bendIndex] * interpolate));
+                #elif AvatarSDK
+                    additionalRotation = Quaternion.Euler(new Vector3(initialRotations[i][j].x, initialRotations[i][j].y, initialRotations[i][j].z - bendAngles[bendIndex] * interpolate));
+                #endif
                 }
 
                 // Combine the original rotation with the new rotation
