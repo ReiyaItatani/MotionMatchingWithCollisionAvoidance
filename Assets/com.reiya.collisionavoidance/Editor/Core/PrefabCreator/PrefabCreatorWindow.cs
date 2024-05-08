@@ -49,7 +49,7 @@ public class PrefabCreatorWindow : EditorWindow
         EditorGUILayout.Space(); // Adds spacing between fields for clarity
 
         // Field for FOV Mesh Prefab
-        FOVMeshPrefab = (GameObject)EditorGUILayout.ObjectField("FOV Mesh Prefab", FOVMeshPrefab, typeof(GameObject), false);
+        FOVMeshPrefab = (GameObject)EditorGUILayout.ObjectField("FOV Mesh", FOVMeshPrefab, typeof(GameObject), false);
         EditorGUILayout.Space(); // Adds spacing between fields for clarity
 
         // Field for Animator Controller
@@ -115,7 +115,7 @@ public class PrefabCreatorWindow : EditorWindow
     private void DrawDragAndDropArea()
     {
         // Section title for drag and drop functionality
-        GUILayout.Label("Prefab Creation", EditorStyles.boldLabel);
+        GUILayout.Label("Create Avatar for Collision Avoidance!", EditorStyles.boldLabel);
         EditorGUILayout.Space(); // Adds a little space for better readability
 
         // Instructions for users

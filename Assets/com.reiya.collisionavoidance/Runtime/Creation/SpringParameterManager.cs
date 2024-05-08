@@ -9,7 +9,7 @@ public class SpringParameterManager : MonoBehaviour, IParameterManager
 {
     public CollisionAvoidance.SpringCharacterController springCharacterController;
     
-        public Vector3 GetCurrentDirection(){
+    public Vector3 GetCurrentDirection(){
         return springCharacterController.GetCurrentDirection();
     }
 
