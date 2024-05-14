@@ -20,8 +20,8 @@ public class PathController : MotionMatchingCharacterController
     //To get current position of the agent you have to use GetCurrentPosition()
     private Vector3 CurrentPosition;
     private Vector3 CurrentDirection;
-    private Vector3[] PredictedPositions;
-    private Vector3[] PredictedDirections;
+    protected Vector3[] PredictedPositions;
+    protected Vector3[] PredictedDirections;
     [HideInInspector, Range(0.0f, 2.0f), Tooltip("Max distance between SimulationBone and SimulationObject")] 
     public float MaxDistanceMMAndCharacterController = 0.1f; // Max distance between SimulationBone and SimulationObject
     [HideInInspector, Range(0.0f, 2.0f), Tooltip("Time needed to move half of the distance between SimulationBone and SimulationObject")] 
