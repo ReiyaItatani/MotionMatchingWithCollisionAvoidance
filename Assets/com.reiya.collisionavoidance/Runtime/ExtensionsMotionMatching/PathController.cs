@@ -18,8 +18,8 @@ public class PathController : MotionMatchingCharacterController
     public Vector3[] Path;
     //Warning:current position is not the current position of the agent itself when the parent transform is not (0.0f, 0.0f, 0.0f);
     //To get current position of the agent you have to use GetCurrentPosition()
-    private Vector3 CurrentPosition;
-    private Vector3 CurrentDirection;
+    protected Vector3 CurrentPosition;
+    protected Vector3 CurrentDirection;
     protected Vector3[] PredictedPositions;
     protected Vector3[] PredictedDirections;
     [HideInInspector, Range(0.0f, 2.0f), Tooltip("Max distance between SimulationBone and SimulationObject")] 
@@ -30,7 +30,7 @@ public class PathController : MotionMatchingCharacterController
     public float PosMaximumAdjustmentRatio = 0.1f; // Ratio between the adjustment and the character's velocity to clamp the adjustment
     // Speed Of Agents -----------------------------------------------------------------
     [Header("Speed")]
-    private float currentSpeed = 1.0f; //Current speed of the agent
+    protected float currentSpeed = 1.0f; //Current speed of the agent
     [Range (0.0f, 1.0f), HideInInspector]
     public float initialSpeed = 0.7f; //Initial speed of the agent
     [HideInInspector]
@@ -43,16 +43,16 @@ public class PathController : MotionMatchingCharacterController
     // --------------------------------------------------------------------------
     // Features -----------------------------------------------------------------
     [Header("Features For Motion Matching")]
-    private int TrajectoryPosFeatureIndex;
-    private int TrajectoryRotFeatureIndex;
-    private int[] TrajectoryPosPredictionFrames;
-    private int[] TrajectoryRotPredictionFrames;
-    private int NumberPredictionPos { get { return TrajectoryPosPredictionFrames.Length; } }
-    private int NumberPredictionRot { get { return TrajectoryRotPredictionFrames.Length; } }
+    protected int TrajectoryPosFeatureIndex;
+    protected int TrajectoryRotFeatureIndex;
+    protected int[] TrajectoryPosPredictionFrames;
+    protected int[] TrajectoryRotPredictionFrames;
+    protected int NumberPredictionPos { get { return TrajectoryPosPredictionFrames.Length; } }
+    protected int NumberPredictionRot { get { return TrajectoryRotPredictionFrames.Length; } }
     // --------------------------------------------------------------------------
     // Collision Avoidance Force ------------------------------------------------
     [Header("Parameters For Basic Collision Avoidance"), HideInInspector]
-    private Vector3 avoidanceVector = Vector3.zero;//Direction of basic collision avoidance
+    protected Vector3 avoidanceVector = Vector3.zero;//Direction of basic collision avoidance
     [HideInInspector]
     public float avoidanceWeight = 2.0f;//Weight for basic collision avoidance
     [ReadOnly]
@@ -64,8 +64,8 @@ public class PathController : MotionMatchingCharacterController
     // --------------------------------------------------------------------------
     // To Goal Direction --------------------------------------------------------
     [Header("Parameters For Goal Direction")]
-    private Vector3 currentGoal;
-    private Vector3 toGoalVector = Vector3.zero;//Direction to goal
+    protected Vector3 currentGoal;
+    protected Vector3 toGoalVector = Vector3.zero;//Direction to goal
     [HideInInspector]
     public float toGoalWeight = 2.0f;//Weight for goal direction
     [ReadOnly]
@@ -82,19 +82,19 @@ public class PathController : MotionMatchingCharacterController
     // --------------------------------------------------------------------------
     // Anticipated Collision Avoidance -------------------------------------------
     [Header("Parameters For Anticipated Collision Avoidance"), HideInInspector]
-    private Vector3 avoidNeighborsVector = Vector3.zero;//Direction for Anticipated collision avoidance
+    protected Vector3 avoidNeighborsVector = Vector3.zero;//Direction for Anticipated collision avoidance
     [ReadOnly]
     public GameObject potentialAvoidanceTarget;
     [HideInInspector]
     public float avoidNeighborWeight = 2.0f;//Weight for Anticipated collision avoidance
-    private float minTimeToCollision =5.0f;
-    private float collisionDangerThreshold = 4.0f;
+    protected float minTimeToCollision =5.0f;
+    protected float collisionDangerThreshold = 4.0f;
     // --------------------------------------------------------------------------
     // When Collide each other -----------------------------------------------------
     [Header("Social Behaviour, Non-verbal Communication")]
-    private bool onCollide = false;
-    private bool onMoving = false;
-    private GameObject collidedAgent;
+    protected bool onCollide = false;
+    protected bool onMoving = false;
+    protected GameObject collidedAgent;
     // --------------------------------------------------------------------------
     // Gizmo Parameters -------------------------------------------------------------
     [Header("Controll Gizmos")]
@@ -115,7 +115,7 @@ public class PathController : MotionMatchingCharacterController
     // --------------------------------------------------------------------------
     // Force From Group --------------------------------------------------------
     [Header("Group Force, Group Category")]
-    private Vector3 groupForce = Vector3.zero;
+    protected Vector3 groupForce = Vector3.zero;
     [ReadOnly]
     public SocialRelations socialRelations;
     [HideInInspector]
@@ -125,7 +125,7 @@ public class PathController : MotionMatchingCharacterController
     public CollisionAvoidanceController collisionAvoidance;
     // --------------------------------------------------------------------------
     // Repulsion Force From Wall ------------------------------------------------
-    private Vector3 wallRepForce;
+    protected Vector3 wallRepForce;
     [HideInInspector]
     public float wallRepForceWeight = 0.2f;
     // --------------------------------------------------------------------------
@@ -136,7 +136,7 @@ public class PathController : MotionMatchingCharacterController
     public bool onAvoidanceCoordination = true;
     
 
-    private void Start()
+    protected void Start()
     {
         //Init
         currentSpeed = initialSpeed;
@@ -179,7 +179,7 @@ public class PathController : MotionMatchingCharacterController
         UpdateCollisionAvoidance();
     }
 
-    private void UpdateCollisionAvoidance(){
+    protected void UpdateCollisionAvoidance(){
         StartCoroutine(UpdateToGoalVector(0.1f));
         StartCoroutine(UpdateAvoidanceVector(0.1f, 0.3f));
         StartCoroutine(UpdateAvoidNeighborsVector(0.1f, 0.3f));
@@ -213,7 +213,7 @@ public class PathController : MotionMatchingCharacterController
         DrawInfo();
     }
 
-    private void SimulatePath(float time, Vector3 _currentPosition, out Vector3 nextPosition, out Vector3 direction)
+    protected void SimulatePath(float time, Vector3 _currentPosition, out Vector3 nextPosition, out Vector3 direction)
     {
         //Gradually decrease speed
         float distanceToGoal = Vector3.Distance(_currentPosition, currentGoal);
@@ -268,7 +268,7 @@ public class PathController : MotionMatchingCharacterController
     }
 
     //when the agent collide with the agent in front of it, it will take a step back
-    private void HandleAgentCollision(Collider other){
+    protected void HandleAgentCollision(Collider other){
         //Check the social realtionship between the collided agent and the agent
         SocialRelations  mySocialRelations          = GetSocialRelations();
         IParameterManager otherAgentParameterManager = other.GetComponent<IParameterManager>();
@@ -301,7 +301,7 @@ public class PathController : MotionMatchingCharacterController
         onMoving = false;
     }
 
-    private Vector3 CheckOppoentDir(Vector3 myDirection, Vector3 myPosition, Vector3 otherDirection, Vector3 otherPosition, out bool isParallel){
+    protected Vector3 CheckOppoentDir(Vector3 myDirection, Vector3 myPosition, Vector3 otherDirection, Vector3 otherPosition, out bool isParallel){
         Vector3 offset = (otherPosition - myPosition).normalized;
         Vector3 right= Vector3.Cross(Vector3.up, offset).normalized;
         if(Vector3.Dot(right, myDirection)>0 && Vector3.Dot(right, otherDirection)>0 || Vector3.Dot(right, myDirection)<0 && Vector3.Dot(right, otherDirection)<0){
@@ -322,7 +322,7 @@ public class PathController : MotionMatchingCharacterController
         return q;
     }
     
-    private void AdjustCharacterPosition()
+    protected void AdjustCharacterPosition()
     {
         float3 characterController = GetCurrentPosition();
         float3 motionMatching = MotionMatching.transform.position;
@@ -340,7 +340,7 @@ public class PathController : MotionMatchingCharacterController
         MotionMatching.SetPosAdjustment(adjustmentPosition);
     }
 
-    private void ClampSimulationBone()
+    protected void ClampSimulationBone()
     {
         // Clamp Position
         float3 characterController = GetCurrentPosition();
@@ -359,22 +359,22 @@ public class PathController : MotionMatchingCharacterController
     * It ensures that the object is always oriented or moving towards its intended goal or target.
     ***********************************************************************************************/
     #region TO GOAL FORCE
-    private IEnumerator UpdateToGoalVector(float updateTime){
+    protected IEnumerator UpdateToGoalVector(float updateTime){
         while(true){
             toGoalVector = (GetCurrentGoal() - (Vector3)GetCurrentPosition()).normalized;
             yield return new WaitForSeconds(updateTime);
         }
     }
 
-    private void CheckForGoalProximity(Vector3 _currentPosition, Vector3 _currentGoal, float _goalRadius)
+    protected void CheckForGoalProximity(Vector3 _currentPosition, Vector3 _currentGoal, float _goalRadius)
     {
         float distanceToGoal = Vector3.Distance(_currentPosition, _currentGoal);
         if (distanceToGoal < _goalRadius) SelectRandomGoal();
     }
 
-    private bool isIncreasing = true;
+    protected bool isIncreasing = true;
 
-    private void SelectRandomGoal(){
+    protected void SelectRandomGoal(){
 
         if(isIncreasing)
         {
@@ -397,7 +397,7 @@ public class PathController : MotionMatchingCharacterController
         StartCoroutine(SpeedChanger(3.0f, GetCurrentSpeed(), initialSpeed));
     }
 
-    private IEnumerator SpeedChanger(float duration, float _currentSpeed, float targetSpeed){
+    protected IEnumerator SpeedChanger(float duration, float _currentSpeed, float targetSpeed){
         float elapsedTime = 0.0f;
         while(elapsedTime < duration){
             elapsedTime += Time.deltaTime;
@@ -416,7 +416,7 @@ public class PathController : MotionMatchingCharacterController
     * It provides basic mechanisms to detect potential collisions and take preventive actions.
     ***********************************************************************************************/
     #region BASIC COLLISION AVOIDANCE FORCE
-    private IEnumerator UpdateAvoidanceVector(float updateTime, float transitionTime)
+    protected IEnumerator UpdateAvoidanceVector(float updateTime, float transitionTime)
     {
         float elapsedTime = 0.0f;
         while(true){
@@ -487,7 +487,7 @@ public class PathController : MotionMatchingCharacterController
         }
     }
 
-    private Vector3 ComputeAvoidanceVector(GameObject avoidanceTarget, Vector3 _currentDirection, Vector3 _currentPosition)
+    protected Vector3 ComputeAvoidanceVector(GameObject avoidanceTarget, Vector3 _currentDirection, Vector3 _currentPosition)
     {
         Vector3 directionToAvoidanceTarget = (avoidanceTarget.transform.position - _currentPosition).normalized;
         Vector3 upVector;
@@ -504,7 +504,7 @@ public class PathController : MotionMatchingCharacterController
         return Vector3.Cross(upVector, directionToAvoidanceTarget).normalized;
     }
 
-    private float TagChecker(GameObject Target){
+    protected float TagChecker(GameObject Target){
         if(Target.CompareTag("Group")){
             Target.GetComponent<CapsuleCollider>();
             float radius = Target.GetComponent<CapsuleCollider>().radius;
@@ -515,7 +515,7 @@ public class PathController : MotionMatchingCharacterController
         return 1f;
     }
 
-    private GameObject DecideUrgentAvoidanceTarget(Vector3 myDirection, Vector3 myPosition, float mySpeed, List<GameObject> others, float minTimeToCollision, float collisionDangerThreshold, out Vector3 myPositionAtNearestApproach, out Vector3 otherPositionAtNearestApproach){
+    protected GameObject DecideUrgentAvoidanceTarget(Vector3 myDirection, Vector3 myPosition, float mySpeed, List<GameObject> others, float minTimeToCollision, float collisionDangerThreshold, out Vector3 myPositionAtNearestApproach, out Vector3 otherPositionAtNearestApproach){
         GameObject _currentAvoidanceTarget = null;
         myPositionAtNearestApproach = Vector3.zero;
         otherPositionAtNearestApproach = Vector3.zero;
@@ -652,7 +652,7 @@ public class PathController : MotionMatchingCharacterController
         return Vector3.Cross(myDirection, Vector3.up) * steer;
     }
 
-    private float PredictNearestApproachTime (Vector3 myDirection, Vector3 myPosition, float mySpeed, Vector3 otherDirection, Vector3 otherPosition, float otherSpeed)
+    protected float PredictNearestApproachTime (Vector3 myDirection, Vector3 myPosition, float mySpeed, Vector3 otherDirection, Vector3 otherPosition, float otherSpeed)
     {
         Vector3 relVelocity = otherDirection*otherSpeed - myDirection*mySpeed;
         float      relSpeed = relVelocity.magnitude;
@@ -665,7 +665,7 @@ public class PathController : MotionMatchingCharacterController
         return projection / relSpeed;
     }
 
-    private float ComputeNearestApproachPositions (float time, Vector3 myPosition, Vector3 myDirection, float mySpeed, Vector3 otherPosition, Vector3 otherDirection, float otherSpeed, out Vector3 myPositionAtNearestApproach, out Vector3 otherPositionAtNearestApproach)
+    protected float ComputeNearestApproachPositions (float time, Vector3 myPosition, Vector3 myDirection, float mySpeed, Vector3 otherPosition, Vector3 otherDirection, float otherSpeed, out Vector3 myPositionAtNearestApproach, out Vector3 otherPositionAtNearestApproach)
     {
         Vector3    myTravel = myDirection * mySpeed * time;
         Vector3     myFinal =  myPosition +    myTravel;
@@ -679,7 +679,7 @@ public class PathController : MotionMatchingCharacterController
         return Vector3.Distance(myFinal, otherFinal);
     }
 
-    private IEnumerator AvoidNeighborsVectorGradualTransition(float duration, Vector3 initialVector, Vector3 targetVector){
+    protected IEnumerator AvoidNeighborsVectorGradualTransition(float duration, Vector3 initialVector, Vector3 targetVector){
         float elapsedTime = 0.0f;
         Vector3 initialavoidNeighborsVector = initialVector;
         while(elapsedTime < duration){
@@ -700,11 +700,11 @@ public class PathController : MotionMatchingCharacterController
     ***********************************************************************************************/
     #region Synthetic-Vision Based Steering
 
-    private Vector3 syntheticVisionForce;
+    protected Vector3 syntheticVisionForce;
     [HideInInspector]
     public float syntheticVisionForceWeight = 1.0f;
-    private float minTimeToInteraction;
-    private IEnumerator UpdateAngularVelocityControl(float updateTime){
+    protected float minTimeToInteraction;
+    protected IEnumerator UpdateAngularVelocityControl(float updateTime){
         while(true){
             //List<GameObject> others = collisionAvoidance.GetOthersInAnticipatedAvoidanceArea();
             List<GameObject> others = avatarCreator.GetAgents();
@@ -725,7 +725,7 @@ public class PathController : MotionMatchingCharacterController
         }
     }
 
-    private float UpdateSpeed(List<GameObject> others, float _currentSpeed, float minTimeToInteraction, float ttiThr = 1f){
+    protected float UpdateSpeed(List<GameObject> others, float _currentSpeed, float minTimeToInteraction, float ttiThr = 1f){
         if(others == null){
             return _currentSpeed;
         }else{
@@ -736,7 +736,7 @@ public class PathController : MotionMatchingCharacterController
         return _currentSpeed;
     }
 
-    private float CalculateAngularVelocities(List<GameObject> others, Vector3 myPosition, Vector3 myDirection,Vector3 myGoal, out float minTimeToInteraction){
+    protected float CalculateAngularVelocities(List<GameObject> others, Vector3 myPosition, Vector3 myDirection,Vector3 myGoal, out float minTimeToInteraction){
         float rightTurn = float.MaxValue;
         float leftTurn = float.MinValue;
         minTimeToInteraction = float.MaxValue; 
@@ -818,7 +818,7 @@ public class PathController : MotionMatchingCharacterController
         return myAngularVelocity;
     }
 
-    private float CalculateBearingAngle(Vector3 basePosition, Vector3 baseDirection, Vector3 otherPosition)
+    protected float CalculateBearingAngle(Vector3 basePosition, Vector3 baseDirection, Vector3 otherPosition)
     {
         Vector3 directionToOther = otherPosition - basePosition;
         float angleInDegrees = Vector3.SignedAngle(baseDirection, directionToOther, Vector3.up);
@@ -826,7 +826,7 @@ public class PathController : MotionMatchingCharacterController
     }
 
 
-    private float CalculateBearingAngleThreshold(float angularVelocity, float timeToInteraction, float a = 1.0f, float b = 1.1f, float c = 0.7f){
+    protected float CalculateBearingAngleThreshold(float angularVelocity, float timeToInteraction, float a = 1.0f, float b = 1.1f, float c = 0.7f){
         float bearingAngleThreshold = 0f;
         if(angularVelocity < 0){
             bearingAngleThreshold= a - b * Mathf.Pow(timeToInteraction, -c);
@@ -836,7 +836,7 @@ public class PathController : MotionMatchingCharacterController
         return bearingAngleThreshold;
     }
 
-    private Vector3 ProjectVector(Vector3 vector, Vector3 direction)
+    protected Vector3 ProjectVector(Vector3 vector, Vector3 direction)
     {
         float dotProduct = Vector3.Dot(vector, direction);
         return direction * dotProduct;
@@ -882,12 +882,12 @@ public class PathController : MotionMatchingCharacterController
     * It takes into account the interactions and influences of multiple objects within a group to determine the overall force or direction.
     ********************************************************************************************************************************/
     #region GROUP FORCE
-    //private float socialInteractionWeight = 1.0f;
-    private float cohesionWeight = 2.0f;
-    private float repulsionForceWeight = 1.5f;
-    private float alignmentForceWeight = 1.5f;
+    //protected float socialInteractionWeight = 1.0f;
+    protected float cohesionWeight = 2.0f;
+    protected float repulsionForceWeight = 1.5f;
+    protected float alignmentForceWeight = 1.5f;
 
-    private IEnumerator UpdateGroupForce(float updateTime, SocialRelations _socialRelations){
+    protected IEnumerator UpdateGroupForce(float updateTime, SocialRelations _socialRelations){
         List<GameObject> groupAgents = avatarCreator.GetAgentsInCategory(_socialRelations);
 
         CapsuleCollider  agentCollider = collisionAvoidance.GetAgentCollider();
@@ -922,7 +922,7 @@ public class PathController : MotionMatchingCharacterController
         }
     }
 
-    private float CalculateGazingAngle(List<GameObject> groupAgents, Vector3 currentPos, Vector3 currentDir, float angleLimit, GameObject myself)
+    protected float CalculateGazingAngle(List<GameObject> groupAgents, Vector3 currentPos, Vector3 currentDir, float angleLimit, GameObject myself)
     {
         Vector3            centerOfMass = CalculateCenterOfMass(groupAgents, myself);
         Vector3 directionToCenterOfMass = centerOfMass - currentPos;
@@ -938,12 +938,12 @@ public class PathController : MotionMatchingCharacterController
         return neckRotationAngle;
     }
 
-    private Vector3 CalculateAdjustPosForce(float socialInteractionWeight, float headRot, Vector3 currentDir){
+    protected Vector3 CalculateAdjustPosForce(float socialInteractionWeight, float headRot, Vector3 currentDir){
         float adjustment = 0.05f;
         return -socialInteractionWeight * headRot * currentDir *adjustment;
     }
 
-    private Vector3 CalculateCohesionForce(List<GameObject> groupAgents, float cohesionWeight, GameObject myself, Vector3 currentPos){
+    protected Vector3 CalculateCohesionForce(List<GameObject> groupAgents, float cohesionWeight, GameObject myself, Vector3 currentPos){
         //float threshold = (groupAgents.Count-1)/2;
         //float threshold = (groupAgents.Count)/2;
         float safetyDistance = 0.05f;
@@ -959,7 +959,7 @@ public class PathController : MotionMatchingCharacterController
         return judgeWithinThreshold*cohesionWeight*toCenterOfMassDir;
     }
 
-    private Vector3 CalculateRepulsionForce(List<GameObject> groupAgents, float repulsionForceWeight, GameObject myself, Vector3 currentPos, float agentRadius){
+    protected Vector3 CalculateRepulsionForce(List<GameObject> groupAgents, float repulsionForceWeight, GameObject myself, Vector3 currentPos, float agentRadius){
         Vector3 repulsionForceDir = Vector3.zero;
         foreach(GameObject agent in groupAgents){
             //skip myselfVector3.Cross
@@ -1034,7 +1034,7 @@ public class PathController : MotionMatchingCharacterController
         }
     }
 
-    private Vector3 CalculateCenterOfMass(List<GameObject> groupAgents, GameObject myself)
+    protected Vector3 CalculateCenterOfMass(List<GameObject> groupAgents, GameObject myself)
     {
         if (groupAgents == null || groupAgents.Count == 0)
         {
@@ -1061,7 +1061,7 @@ public class PathController : MotionMatchingCharacterController
         return sumOfPositions / count;
     }
 
-    private IEnumerator GroupForceGradualTransition(float duration, Vector3 initialVector, Vector3 targetVector){
+    protected IEnumerator GroupForceGradualTransition(float duration, Vector3 initialVector, Vector3 targetVector){
         float elapsedTime = 0.0f;
         Vector3 initialGroupForce = initialVector;
         while(elapsedTime < duration){
@@ -1094,7 +1094,7 @@ public class PathController : MotionMatchingCharacterController
         }
     }
 
-    private IEnumerator WallForceGradualTransition(float duration, Vector3 initialVector, Vector3 targetVector){
+    protected IEnumerator WallForceGradualTransition(float duration, Vector3 initialVector, Vector3 targetVector){
         float elapsedTime = 0.0f;
         Vector3 initialWallForce = initialVector;
         while(elapsedTime < duration){
@@ -1114,7 +1114,7 @@ public class PathController : MotionMatchingCharacterController
     * It ensures that the object maintains an appropriate speed, possibly in response to environmental factors, obstacles, or other objects.
     ********************************************************************************************************************************/
     #region SPEED ADJUSTMENT 
-    private IEnumerator UpdateSpeed(List<GameObject> groupAgents, GameObject myself, float updateTime = 0.1f, float speedChangeRate = 0.05f){
+    protected IEnumerator UpdateSpeed(List<GameObject> groupAgents, GameObject myself, float updateTime = 0.1f, float speedChangeRate = 0.05f){
         if(groupAgents.Count == 1 || GetSocialRelations() == SocialRelations.Individual){
             StartCoroutine(DecreaseSpeedBaseOnUpperBodyAnimation(updateTime));
             yield return null;
@@ -1170,7 +1170,7 @@ public class PathController : MotionMatchingCharacterController
         }
     }
 
-    private IEnumerator DecreaseSpeedBaseOnUpperBodyAnimation(float updateTime){
+    protected IEnumerator DecreaseSpeedBaseOnUpperBodyAnimation(float updateTime){
         float initialSpeed = GetCurrentSpeed();
         while(true){
             if(collisionAvoidance.GetUpperBodyAnimationState() == UpperBodyAnimationState.SmartPhone){
@@ -1212,11 +1212,11 @@ public class PathController : MotionMatchingCharacterController
         }
     }
 
-    private Vector3 GetWorldPredictedPos(int index)
+    protected Vector3 GetWorldPredictedPos(int index)
     {
         return PredictedPositions[index] + transform.position;
     }
-    private Vector3 GetWorldPredictedDir(int index)
+    protected Vector3 GetWorldPredictedDir(int index)
     {
         return PredictedDirections[index];
     }
@@ -1283,7 +1283,7 @@ public class PathController : MotionMatchingCharacterController
     * It contains methods and logic to draw gizmos, shapes, and other visual aids that help in understanding and debugging the scene or object behaviors.
     ******************************************************************************************************************************/
     #region GIZMOS AND DRAW
-    private void DrawInfo(){
+    protected void DrawInfo(){
         Color gizmoColor;
         if(showAvoidanceForce){
             gizmoColor = Color.blue;
@@ -1322,7 +1322,7 @@ public class PathController : MotionMatchingCharacterController
     }
 
     #if UNITY_EDITOR
-    private void OnDrawGizmos()
+    protected void OnDrawGizmos()
     {
 
         if (Path == null) return;
