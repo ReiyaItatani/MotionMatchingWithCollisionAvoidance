@@ -444,6 +444,8 @@ public class SocialBehaviour : MonoBehaviour
     GameObject potentialAvoidanceObject;
     GameObject avoidanceCoordinateTarget;
 
+    public List<GameObject> CustomFocalPoints = new List<GameObject>();
+
     private void SetCurrentDirection(Vector3 _currentDirection){
         currentDirection = _currentDirection;
     }
@@ -549,6 +551,37 @@ public class SocialBehaviour : MonoBehaviour
 
         // Reset the flag indicating the process is running
         isMutualGazeRunning = false;
+    }
+
+    public GameObject GetCustomFocalPoint()
+    {
+        if (!parameterManager.GetOnInSlowingArea())
+        {
+            Debug.Log("Not in slowing area");
+            return null;
+        }
+
+        if (CustomFocalPoints.Count == 0)
+        {
+            Debug.Log("No custom focal points");
+            return null;
+        }
+
+        GameObject minDistanceFocalPoint = CustomFocalPoints[0];
+        float minDistance = Vector3.Distance(parameterManager.GetCurrentPosition(), minDistanceFocalPoint.transform.position);
+
+        foreach (GameObject focalPoint in CustomFocalPoints)
+        {
+            float distance = Vector3.Distance(parameterManager.GetCurrentPosition(), focalPoint.transform.position);
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                minDistanceFocalPoint = focalPoint;
+            }
+        }
+
+        return minDistanceFocalPoint;
+
     }
 
     public GameObject GetAvoidanceCoordinationTarget(){
