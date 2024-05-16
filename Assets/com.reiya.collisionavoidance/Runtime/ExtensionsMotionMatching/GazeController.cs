@@ -14,7 +14,8 @@ public class GazeController : MonoBehaviour
         CurerntAvoidancetarget,
         MyDirection,
         CenterOfMass,
-        CoordinationTarget
+        CoordinationTarget,
+        CustomFocalPoint
     }
     private SkinnedMeshRenderer meshRenderer;
     private Animator animator;
@@ -128,6 +129,7 @@ public class GazeController : MonoBehaviour
     private Vector3 currentAvoidanceTarget = Vector3.zero;
     private Vector3 currentAgentDirection = Vector3.zero;
     private GameObject avoidanceCoordinationTarget = null;
+    private GameObject customFocalPoint = null;
 
 
     private void HorizontalLookAtPass(Vector3 currentLookAtDir, Vector3 targetLookAtDir, float rotationSpeed){
@@ -143,7 +145,7 @@ public class GazeController : MonoBehaviour
         t_Neck.localRotation *= saveLookAtRot;
     }
 
-//Todo refine
+    //Custom Focal Point is for making agents look at a specific point(when they are in slowing radius area)
     private void ParameterUpdater(){
         //Update Params
         currentCenterOfMass         = socialBehaviour.GetCurrentCenterOfMass();
@@ -151,6 +153,7 @@ public class GazeController : MonoBehaviour
         currentAgentDirection       = socialBehaviour.GetCurrentDirection();
         collidedTarget              = socialBehaviour.GetCollidedTarget();
         avoidanceCoordinationTarget = socialBehaviour.GetAvoidanceCoordinationTarget();
+        customFocalPoint            = socialBehaviour.GetCustomFocalPoint();
     }
 
     private void LookAtAttractionPointUpdater(){
@@ -164,6 +167,9 @@ public class GazeController : MonoBehaviour
         }else if(currentAvoidanceTarget != Vector3.zero){
             horizontalAttractionPoint = (currentAvoidanceTarget - this.transform.position).normalized;
             currentLookTarget = CurrentLookTarget.CurerntAvoidancetarget;
+        }else if(customFocalPoint != null){
+            horizontalAttractionPoint = (customFocalPoint.transform.position - this.transform.position).normalized;
+            currentLookTarget = CurrentLookTarget.CustomFocalPoint;
         }else{
             //in normal situation
             if (ifIndividual) {
@@ -185,21 +191,21 @@ public class GazeController : MonoBehaviour
     #if UNITY_EDITOR
     void OnDrawGizmos()
     {
-        // if(animator == null) return;
-        // Vector3 offset = new Vector3(0f, 0f, 0f);
-        // Vector3 eyePosition = animator.GetBoneTransform(HumanBodyBones.Head).transform.position + offset;
-        // Gizmos.color = Color.magenta;
-        // Vector3 targetPosition = this.transform.position + horizontalAttractionPoint;
-        // Vector3 lineEndPoint = new Vector3(targetPosition.x, eyePosition.y, targetPosition.z);
-        // Gizmos.DrawLine(eyePosition, lineEndPoint);  
-        // float sphereSize = 0.01f; 
-        // Gizmos.DrawSphere(lineEndPoint, sphereSize);
+        if(animator == null) return;
+        Vector3 offset = new Vector3(0f, 0f, 0f);
+        Vector3 eyePosition = animator.GetBoneTransform(HumanBodyBones.Head).transform.position + offset;
+        Gizmos.color = Color.magenta;
+        Vector3 targetPosition = this.transform.position + horizontalAttractionPoint;
+        Vector3 lineEndPoint = new Vector3(targetPosition.x, eyePosition.y, targetPosition.z);
+        Gizmos.DrawLine(eyePosition, lineEndPoint);  
+        float sphereSize = 0.01f; 
+        Gizmos.DrawSphere(lineEndPoint, sphereSize);
 
-        // Gizmos.color = Color.green;
-        // Vector3 currentLookAt = this.transform.position + GetCurrentLookAt();
-        // Vector3 currentLookAtEndPoint = new Vector3(currentLookAt.x, eyePosition.y, currentLookAt.z);
-        // Gizmos.DrawLine(eyePosition, currentLookAtEndPoint);  
-        // Gizmos.DrawSphere(currentLookAtEndPoint, sphereSize);
+        Gizmos.color = Color.green;
+        Vector3 currentLookAt = this.transform.position + GetCurrentLookAt();
+        Vector3 currentLookAtEndPoint = new Vector3(currentLookAt.x, eyePosition.y, currentLookAt.z);
+        Gizmos.DrawLine(eyePosition, currentLookAtEndPoint);  
+        Gizmos.DrawSphere(currentLookAtEndPoint, sphereSize);
     }
     #endif
 

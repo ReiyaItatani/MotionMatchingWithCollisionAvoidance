@@ -47,5 +47,9 @@ namespace CollisionAvoidance{
     public CollisionAvoidanceController GetCollisionAvoidanceController(){
         return pathController.GetCollisionAvoidanceController();
     }
+
+    public bool GetOnInSlowingArea(){
+        return pathController.GetOnInSlowingArea();
+    }
     }
 }

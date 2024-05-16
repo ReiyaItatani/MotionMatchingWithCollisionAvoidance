@@ -103,7 +103,9 @@ public class AvatarCreatorForVideo : AvatarCreatorBase
         motionMatchingController.transform.position = pathController.Path[0];
         conversationalAgentFramework.transform.position = pathController.Path[0];
         //Set Initial Speed
-        pathController.initialSpeed = UnityEngine.Random.Range(pathController.minSpeed, pathController.maxSpeed);
+        pathController.initialSpeed = UnityEngine.Random.Range(minSpeed, maxSpeed);
+        pathController.minSpeed = minSpeed;
+        pathController.maxSpeed = maxSpeed;
         //Save The Agent
         instantiatedAvatars.Add(instance);
 
@@ -157,6 +159,8 @@ public class AvatarCreatorForVideo : AvatarCreatorBase
             conversationalAgentFramework.transform.position = pathController.Path[0];
             //Set Initial Speed
             pathController.initialSpeed = friendSpeed;
+            pathController.minSpeed = minSpeed;
+            pathController.maxSpeed = maxSpeed;
             //Set group collider and Save pathmanager
             GameObject relationGameObject = transform.Find(groupRelations.ToString()).gameObject;
             GameObject groupCollider = relationGameObject.transform.Find("GroupCollider").gameObject;

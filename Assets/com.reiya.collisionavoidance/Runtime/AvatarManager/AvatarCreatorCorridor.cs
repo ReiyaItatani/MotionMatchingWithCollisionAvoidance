@@ -137,7 +137,7 @@ public class AvatarCreatorCorridor : AvatarCreatorBase
 
             //initial Speed
             if(randomRelation == SocialRelations.Individual){
-                pathController.initialSpeed = UnityEngine.Random.Range(pathController.minSpeed, pathController.maxSpeed);
+                pathController.initialSpeed = UnityEngine.Random.Range(minSpeed, maxSpeed);
             }else if(randomRelation == SocialRelations.Couple){
                 pathController.initialSpeed = coupleSpeed;
             }else if(randomRelation == SocialRelations.Family){
@@ -147,6 +147,10 @@ public class AvatarCreatorCorridor : AvatarCreatorBase
             }else if(randomRelation == SocialRelations.Coworker){
                 pathController.initialSpeed = coworkerSpeed;
             }
+
+            pathController.maxSpeed = maxSpeed;
+            pathController.minSpeed = minSpeed;
+
 
             //set group collider and save pathmanager
             if (randomRelation != SocialRelations.Individual)

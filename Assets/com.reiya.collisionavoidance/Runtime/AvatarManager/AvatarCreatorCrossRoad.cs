@@ -209,6 +209,8 @@ public class AvatarCreatorCrossRoad : AvatarCreatorBase
         conversationalAgentFramework.transform.position = pathController.Path[0];
         //Set Initial Speed
         pathController.initialSpeed = crowdSpeed;
+        pathController.maxSpeed = maxSpeed;
+        pathController.minSpeed = minSpeed;
         //Set group collider and Save pathmanager
         if (socialRelations != SocialRelations.Individual)
         {

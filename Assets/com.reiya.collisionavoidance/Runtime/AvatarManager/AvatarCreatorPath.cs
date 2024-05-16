@@ -196,6 +196,9 @@ public class AvatarCreatorPath : AvatarCreatorBase
         conversationalAgentFramework.transform.position = pathController.Path[goalIndex - 1];
         //Set Initial Speed
         pathController.initialSpeed = crowdSpeed;
+        pathController.maxSpeed = maxSpeed;
+        pathController.minSpeed = minSpeed;
+
         //Set group collider and Save pathmanager
         if (socialRelations != SocialRelations.Individual)
         {
@@ -265,6 +268,7 @@ public class AvatarCreatorPath : AvatarCreatorBase
             if (i < agentPath.Count - 1)
             {
                 Gizmos.DrawLine(transform.position + agentPath[i], transform.position + agentPath[i + 1]);
+                Gizmos.DrawSphere(transform.position + agentPath[i], 0.1f);
             }
         }
     }

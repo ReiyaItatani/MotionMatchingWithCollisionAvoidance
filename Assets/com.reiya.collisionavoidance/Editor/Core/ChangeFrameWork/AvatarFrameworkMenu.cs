@@ -13,7 +13,7 @@ namespace CollisionAvoidance
         public const string SettingPrefKey = "CollisionAvoidance_TargetFramework";
 
         // DEFINE SYMBOLS
-        private const string DefineRocketBox = "RocketBoxAvatar";
+        private const string DefineRocketBox = "MicrosoftRocketBox";
         private const string DefineAvatarSDK = "AvatarSDK";
 
         // EDITOR PREFS -------------------------------------------------------------

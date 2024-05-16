@@ -781,7 +781,7 @@ PlayerSettings:
   webGLDecompressionFallback: 0
   webGLPowerPreference: 2
   scriptingDefineSymbols:
-    Standalone: RocketBoxAvatar
+    Standalone: MicrosoftRocketBox
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend: {}

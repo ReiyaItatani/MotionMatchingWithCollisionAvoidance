@@ -29,7 +29,7 @@ public class AvatarCreatorBase : MonoBehaviour
     public int spawnCount = 1;  
 
     public float maxSpeed = 0.8f;
-    public float minSpeed = 0.5f;
+    public float minSpeed = 0.1f;
 
     // pathVertices: A list to store vertices of the path that avatars will move along.
     [HideInInspector]

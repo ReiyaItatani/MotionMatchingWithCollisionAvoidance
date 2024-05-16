@@ -8,6 +8,7 @@ using Drawing;
 
 using MotionMatching;
 using TrajectoryFeature = MotionMatching.MotionMatchingData.TrajectoryFeature;
+using UnityEngine.Events;
 
 namespace CollisionAvoidance{
 
@@ -30,13 +31,13 @@ public class PathController : MotionMatchingCharacterController
     public float PosMaximumAdjustmentRatio = 0.1f; // Ratio between the adjustment and the character's velocity to clamp the adjustment
     // Speed Of Agents -----------------------------------------------------------------
     [Header("Speed")]
-    protected float currentSpeed = 1.0f; //Current speed of the agent
-    [Range (0.0f, 1.0f), HideInInspector]
+    public float currentSpeed = 1.0f; //Current speed of the agent
+    [Range (0.0f, 1.0f)]
     public float initialSpeed = 0.7f; //Initial speed of the agent
-    [HideInInspector]
-    public float minSpeed = 0.3f; //Minimum speed of the agent
-    [HideInInspector]
-    public float maxSpeed = 0.8f; //Maximum speed of the agent
+    public float minSpeed = 0.0f; //Minimum speed of the agent
+    public float maxSpeed = 1.0f; //Maximum speed of the agent
+    private UnityAction OnGoalReached; //the event when the agent reaches the goal
+    public bool onInSlowingArea = false; //the event when the agent is in the slowing radius
     // --------------------------------------------------------------------------
     // To Mange Agents -----------------------------------------------------------------
     public AvatarCreatorBase avatarCreator; //Manager for all of the agents
@@ -75,9 +76,7 @@ public class PathController : MotionMatchingCharacterController
         get { return currentGoalIndex; } 
         set { currentGoalIndex = value; } 
     }
-    [HideInInspector]
     public float goalRadius = 0.5f;
-    [HideInInspector]
     public float slowingRadius = 2.0f;
     // --------------------------------------------------------------------------
     // Anticipated Collision Avoidance -------------------------------------------
@@ -180,13 +179,19 @@ public class PathController : MotionMatchingCharacterController
     }
 
     protected void UpdateCollisionAvoidance(){
+        //Update the forces
         StartCoroutine(UpdateToGoalVector(0.1f));
         StartCoroutine(UpdateAvoidanceVector(0.1f, 0.3f));
         StartCoroutine(UpdateAvoidNeighborsVector(0.1f, 0.3f));
         StartCoroutine(UpdateGroupForce(0.1f, GetSocialRelations()));
         StartCoroutine(UpdateWallForce(0.2f, 0.5f));
+        //StartCoroutine(UpdateAngularVelocityControl(0.2f));   
+
+        //Update the speed of the agent based on the distance to the goal
         StartCoroutine(UpdateSpeed(avatarCreator.GetAgentsInCategory(GetSocialRelations()), collisionAvoidance.GetAgentGameObject()));
-        StartCoroutine(UpdateAngularVelocityControl(0.2f));   
+        StartCoroutine(UpdateSpeedBasedOnGoalDist(0.1f));
+
+        StartCoroutine(CheckForGoalReached(0.1f));
             
         //If you wanna consider all of the other agents for anticipated collision avoidance use below
         //StartCoroutine(UpdateAvoidNeighborsVector(avatarCreator.GetAgents(), 0.1f, 0.3f));
@@ -200,10 +205,10 @@ public class PathController : MotionMatchingCharacterController
             SimulatePath(DatabaseDeltaTime * TrajectoryPosPredictionFrames[i], CurrentPosition, out PredictedPositions[i], out PredictedDirections[i]);
         }
         
+        UpdateGoalTarget(CurrentPosition, currentGoal);
+
         //Update Current Position and Direction
         SimulatePath(Time.deltaTime, CurrentPosition, out CurrentPosition, out CurrentDirection);
-
-        CheckForGoalProximity(CurrentPosition, currentGoal, goalRadius);
 
         //Prevent agents from intersection
         AdjustCharacterPosition();
@@ -216,8 +221,8 @@ public class PathController : MotionMatchingCharacterController
     protected void SimulatePath(float time, Vector3 _currentPosition, out Vector3 nextPosition, out Vector3 direction)
     {
         //Gradually decrease speed
-        float distanceToGoal = Vector3.Distance(_currentPosition, currentGoal);
-        currentSpeed = distanceToGoal < slowingRadius ? Mathf.Lerp(minSpeed, currentSpeed, distanceToGoal / slowingRadius) : currentSpeed;
+        // float distanceToGoal = Vector3.Distance(_currentPosition, currentGoal);
+        // currentSpeed = distanceToGoal < slowingRadius ? Mathf.Lerp(minSpeed, currentSpeed, distanceToGoal / slowingRadius) : currentSpeed;
 
         //Move Agent
         direction = (      toGoalWeight    *            toGoalVector + 
@@ -280,7 +285,6 @@ public class PathController : MotionMatchingCharacterController
                 //If the collided agent is in the same group
                 float distance = Vector3.Distance(GetCurrentPosition(), otherAgentParameterManager.GetCurrentPosition());
                 if(distance < 0.4f){
-                    Debug.Log("Too Close");
                     //If the collided agent is too close
                     StartCoroutine(ReactionToCollision(0.5f, 0.0f));
                 }
@@ -366,10 +370,12 @@ public class PathController : MotionMatchingCharacterController
         }
     }
 
-    protected void CheckForGoalProximity(Vector3 _currentPosition, Vector3 _currentGoal, float _goalRadius)
+    protected void UpdateGoalTarget(Vector3 _currentPosition, Vector3 _currentGoal)
     {
         float distanceToGoal = Vector3.Distance(_currentPosition, _currentGoal);
-        if (distanceToGoal < _goalRadius) SelectRandomGoal();
+        if(distanceToGoal < goalRadius) {
+            SelectRandomGoal();
+        }
     }
 
     protected bool isIncreasing = true;
@@ -394,19 +400,7 @@ public class PathController : MotionMatchingCharacterController
         if(currentGoalIndex < 0) currentGoalIndex = -currentGoalIndex;
 
         currentGoal = Path[currentGoalIndex];
-        StartCoroutine(SpeedChanger(3.0f, GetCurrentSpeed(), initialSpeed));
-    }
-
-    protected IEnumerator SpeedChanger(float duration, float _currentSpeed, float targetSpeed){
-        float elapsedTime = 0.0f;
-        while(elapsedTime < duration){
-            elapsedTime += Time.deltaTime;
-            currentSpeed = Mathf.Lerp(_currentSpeed, targetSpeed, elapsedTime/duration);
-            yield return new WaitForSeconds(Time.deltaTime);
-        }
-        currentSpeed = targetSpeed;
-
-        yield return null;
+        OnGoalReached?.Invoke();
     }
     #endregion
 
@@ -1181,6 +1175,49 @@ public class PathController : MotionMatchingCharacterController
             yield return new WaitForSeconds(updateTime);
         }
     }
+
+    protected IEnumerator UpdateSpeedBasedOnGoalDist(float updateTime){
+        OnGoalReached += () =>
+        {
+            float duration = 2.0f;
+            StartCoroutine(SpeedChanger(duration, currentSpeed, initialSpeed));
+        };
+        while(true){
+            float distanceToGoal = Vector3.Distance(GetCurrentPosition(), GetCurrentGoal());
+            if(distanceToGoal < slowingRadius) currentSpeed = Mathf.Lerp(minSpeed, currentSpeed, distanceToGoal / slowingRadius);
+            
+            yield return new WaitForSeconds(updateTime);
+        }
+    }
+
+    protected IEnumerator SpeedChanger(float duration, float _currentSpeed, float targetSpeed){
+        float elapsedTime = 0.0f;
+        while(elapsedTime < duration){
+            elapsedTime += Time.deltaTime;
+            currentSpeed = Mathf.Lerp(_currentSpeed, targetSpeed, elapsedTime/duration);
+            yield return new WaitForSeconds(Time.deltaTime);
+        }
+        currentSpeed = targetSpeed;
+
+        yield return null;
+    }
+    #endregion
+    
+    /********************************************************************************************************************************
+    * Update Attractions
+    ********************************************************************************************************************************/
+    #region OTHER
+    private IEnumerator CheckForGoalReached(float updateTime){
+        while(true){
+            float distanceToGoal = Vector3.Distance(GetCurrentPosition(), GetCurrentGoal());
+            if(distanceToGoal < slowingRadius){
+                onInSlowingArea = true;
+            }else{
+                onInSlowingArea = false;
+            }
+            yield return new WaitForSeconds(updateTime);
+        }
+    }
     #endregion
     
     /********************************************************************************************************************************
@@ -1275,6 +1312,9 @@ public class PathController : MotionMatchingCharacterController
     public CollisionAvoidanceController GetCollisionAvoidanceController(){
         return collisionAvoidance;
     }
+    public bool GetOnInSlowingArea(){
+        return onInSlowingArea;
+    }
     #endregion
 
     /******************************************************************************************************************************
@@ -1319,6 +1359,15 @@ public class PathController : MotionMatchingCharacterController
             gizmoColor = Color.magenta;
             Draw.ArrowheadArc((Vector3)GetCurrentPosition(), syntheticVisionForce, 0.55f, gizmoColor);
         }
+        // const float heightOffset = 0.01f;
+        //Draw slowingRadius, goalRadius
+        // for (int i = 0; i < Path.Length; i++)
+        // {
+        //     Vector3 pos = GetWorldPosition(transform, Path[i]);
+        //     Draw.Circle(new Vector3(pos.x, heightOffset, pos.z), Vector3.up ,slowingRadius);
+        //     Draw.Circle(new Vector3(pos.x, heightOffset, pos.z), Vector3.up, goalRadius);
+        //     Draw.SolidCircle(new Vector3(pos.x, heightOffset, pos.z), Vector3.up, 0.1f);
+        // }
     }
 
     #if UNITY_EDITOR
