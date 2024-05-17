@@ -523,7 +523,7 @@ public class PathController : MotionMatchingCharacterController
             Vector3 otherPosition  = otherParameterManager.GetCurrentPosition();
             float   otherSpeed     = otherParameterManager.GetCurrentSpeed();
 
-            // predicted time until nearest approach of "this" and "other"
+            // predicted time until nearest approach of "me" and "other"
             float time = PredictNearestApproachTime (myDirection, myPosition, mySpeed, 
                                                      otherDirection, otherPosition, otherSpeed);
             //Debug.Log("time:"+time);
