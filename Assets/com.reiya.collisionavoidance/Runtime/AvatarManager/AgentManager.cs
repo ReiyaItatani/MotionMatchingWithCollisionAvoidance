@@ -2,7 +2,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using MotionMatching;
 using System.Security.Cryptography;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using System.IO;
 
 namespace CollisionAvoidance{
@@ -253,7 +255,7 @@ public class AgentManager : MonoBehaviour
 
     }
 
-
+#if UNITY_EDITOR
     public void SaveToFile(string path)
     {
         string json = JsonUtility.ToJson(this, true);
@@ -283,6 +285,7 @@ public class AgentManager : MonoBehaviour
             LoadFromFile(path);
         }
     }
+#endif
 
 }
 }

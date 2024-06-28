@@ -1,4 +1,6 @@
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 
 namespace CollisionAvoidance{
@@ -9,11 +11,13 @@ public static class EditorUtil
     private const string MicrosoftRocketBox = "MicrosoftRocketBox";
     private const string AvatarSDK = "AvatarSDK";
 
+#if UNITY_EDITOR
     public static TargetFramework GetTargetFramework()
     {
         return StringToTargetFramework(EditorPrefs.GetString(AvatarFrameworkMenu.SettingPrefKey));
     }
-    
+#endif    
+
     public static TargetFramework StringToTargetFramework(string targetFramework)
     {
         switch (targetFramework)

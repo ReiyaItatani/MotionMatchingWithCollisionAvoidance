@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 
 namespace CollisionAvoidance
 {
@@ -17,13 +19,16 @@ namespace CollisionAvoidance
         private const string DefineAvatarSDK = "AvatarSDK";
 
         // EDITOR PREFS -------------------------------------------------------------
+#if UNITY_EDITOR
         private static TargetFramework TargetFramework
         {
             get => EditorUtil.StringToTargetFramework(EditorPrefs.GetString(SettingPrefKey));
             set => EditorPrefs.SetString(SettingPrefKey, EditorUtil.TargetFrameworkToString(value));
         }
+#endif
 
-            // MENU FUNCTIONS -------------------------------------------------------------
+        // MENU FUNCTIONS -------------------------------------------------------------
+#if UNITY_EDITOR
         [MenuItem(RocketBoxSettingPath)]
         private static void SetOculus()
         {
@@ -52,8 +57,9 @@ namespace CollisionAvoidance
             Menu.SetChecked(AvatarSDKSettingPath, TargetFramework == TargetFramework.AvatarSDK);
             return true;
         }
-        
+#endif
         // OTHER FUNCTIONS -------------------------------------------------------------
+#if UNITY_EDITOR
         private static void SetupDefines()
         {
             var targetGroup = EditorUserBuildSettings.selectedBuildTargetGroup;
@@ -70,6 +76,7 @@ namespace CollisionAvoidance
                 PlayerSettings.SetScriptingDefineSymbolsForGroup(targetGroup, new[] { DefineAvatarSDK });
             }
         }
+#endif
     }
 
         public enum TargetFramework

@@ -1,7 +1,11 @@
 using UnityEngine;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 
 namespace CollisionAvoidance{
+
+#if UNITY_EDITOR
 [CustomEditor(typeof(AgentManager))]
 public class AgentManagerEditor : Editor
 {
@@ -22,4 +26,5 @@ public class AgentManagerEditor : Editor
         }
     }
 }
+#endif
 }

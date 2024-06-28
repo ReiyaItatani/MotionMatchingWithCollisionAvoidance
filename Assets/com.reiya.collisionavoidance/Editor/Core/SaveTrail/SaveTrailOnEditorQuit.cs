@@ -1,10 +1,11 @@
 #if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 
 namespace CollisionAvoidance{
 
-
+#if UNITY_EDITOR
 [InitializeOnLoad]
 public class SaveTrailOnPlayModeExit
 {
@@ -27,8 +28,8 @@ public class SaveTrailOnPlayModeExit
         {
             trailRenderer.SavePointsToCSV();
         }
+ 
     }
 }
 #endif
-
 }
