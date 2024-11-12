@@ -39,8 +39,8 @@ public class CollisionAvoidanceMenuItems
         AddTag("Group");
         AddTag("Wall");
         AddTag("Object");
-        GameObject avatarCreator = CreateAvatarCreator("AvatarCreator");
-        SetPathEndpoints(avatarCreator, "AvatarCreator", new Vector3(15,0,0), new Vector3(-15,0,0));
+        GameObject avatarCreator = CreateAvatarCreator("AvatarCreatorBasic");
+        SetPathEndpoints(avatarCreator, "AvatarCreatorBasic", new Vector3(15,0,0), new Vector3(-15,0,0));
         Debug.Log("Field without wall and AvatarCreator with Path, StartPos, and EndPos created");
     }
 
@@ -89,9 +89,9 @@ public class CollisionAvoidanceMenuItems
         {
             avatarCreator.AddComponent<AvatarCreatorCorridor>(); 
         }
-        else if (scriptName == "AvatarCreator")
+        else if (scriptName == "AvatarCreatorBasic")
         {
-            avatarCreator.AddComponent<AvatarCreator>(); 
+            avatarCreator.AddComponent<AvatarCreatorBasic>(); 
         }
         else if (scriptName == "AvatarCreatorCrossRoad")
         {

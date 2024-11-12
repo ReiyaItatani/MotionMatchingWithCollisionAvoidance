@@ -318,7 +318,7 @@ namespace CollisionAvoidance
                 // Draw Current Position & Velocity
                 Gizmos.color = new Color(1.0f, 0.3f, 0.1f, 1.0f);
                 Gizmos.DrawSphere(transformPos, radius);
-                GizmosExtensions.DrawLine(transformPos, transformPos + ((Quaternion)GetCurrentRotation() * Vector3.forward) * vectorReduction, 3);
+                //GizmosExtensions.DrawLine(transformPos, transformPos + ((Quaternion)GetCurrentRotation() * Vector3.forward) * vectorReduction, 3);
             }
 
             if (PredictedPosition == null || PredictedRotations == null) return;

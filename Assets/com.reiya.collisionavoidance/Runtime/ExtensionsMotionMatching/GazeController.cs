@@ -17,18 +17,18 @@ public class GazeController : MonoBehaviour
         CoordinationTarget,
         CustomFocalPoint
     }
-    private SkinnedMeshRenderer meshRenderer;
-    private Animator animator;
-    private Transform t_Neck;
+    protected SkinnedMeshRenderer meshRenderer;
+    protected Animator animator;
+    protected Transform t_Neck;
 
-    private SocialBehaviour socialBehaviour;
+    protected SocialBehaviour socialBehaviour;
 
-    private MotionMatchingSkinnedMeshRenderer motionMatchingSkinnedMeshRenderer;
+    protected MotionMatchingSkinnedMeshRenderer motionMatchingSkinnedMeshRenderer;
 
     //For experiment
     public bool onNeckRotation = true;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         animator = GetComponent<Animator>();
         GetBodyTransforms(animator);
@@ -41,7 +41,7 @@ public class GazeController : MonoBehaviour
         ifIndividual = groupAgents.Count <= 1 || mySocialRelations == SocialRelations.Individual;
     }
 
-    void Start()
+    protected virtual void Start()
     {
         GameObject body = FindObjectWithSkinnedMeshRenderer(gameObject);
         meshRenderer = body.GetComponentInChildren<SkinnedMeshRenderer>();
@@ -49,14 +49,14 @@ public class GazeController : MonoBehaviour
         StartCoroutine(UpdateNeckState(2.0f));
     }
 
-    private void OnEnable()
+    protected virtual void OnEnable()
     {
             //Subscribe the event
             motionMatchingSkinnedMeshRenderer = GetComponent<MotionMatchingSkinnedMeshRenderer>();
             motionMatchingSkinnedMeshRenderer.OnUpdateGaze += UpdateGaze;
     }
 
-    private void OnDisable()
+    protected virtual void OnDisable()
     {
         motionMatchingSkinnedMeshRenderer = GetComponent<MotionMatchingSkinnedMeshRenderer>();
         motionMatchingSkinnedMeshRenderer.OnUpdateGaze -= UpdateGaze;
@@ -80,15 +80,15 @@ public class GazeController : MonoBehaviour
         return null;
     }
 
-    private void GetBodyTransforms(Animator _animator){
+    protected virtual void GetBodyTransforms(Animator _animator){
         t_Neck = _animator.GetBoneTransform(HumanBodyBones.Neck);
     }
-    private void SetBodyTransforms(Animator _animator)
+    protected virtual void SetBodyTransforms(Animator _animator)
     {
         _animator.SetBoneLocalRotation(HumanBodyBones.Neck, t_Neck.localRotation);
     }
 
-    public void UpdateGaze(object sender, EventArgs e)
+    public virtual void UpdateGaze(object sender, EventArgs e)
     {
         GetBodyTransforms(animator);
         ParameterUpdater();
@@ -119,20 +119,20 @@ public class GazeController : MonoBehaviour
     [Header("Look At Params")]
     [ReadOnly]
     public CurrentLookTarget currentLookTarget;
-    private GameObject collidedTarget;
-    private Vector3 horizontalAttractionPoint;
-    private Quaternion saveLookAtRot = Quaternion.identity;
-    private Vector3 currentLookAt = Vector3.zero;
-    private bool ifIndividual = false;
-    private float neckRotationLimit = 40.0f;
-    private Vector3 currentCenterOfMass = Vector3.zero;
-    private Vector3 currentAvoidanceTarget = Vector3.zero;
-    private Vector3 currentAgentDirection = Vector3.zero;
-    private GameObject avoidanceCoordinationTarget = null;
-    private GameObject customFocalPoint = null;
+    protected GameObject collidedTarget;
+    protected Vector3 horizontalAttractionPoint;
+    protected Quaternion saveLookAtRot = Quaternion.identity;
+    protected Vector3 currentLookAt = Vector3.zero;
+    protected bool ifIndividual = false;
+    protected float neckRotationLimit = 40.0f;
+    protected Vector3 currentCenterOfMass = Vector3.zero;
+    protected Vector3 currentAvoidanceTarget = Vector3.zero;
+    protected Vector3 currentAgentDirection = Vector3.zero;
+    protected GameObject avoidanceCoordinationTarget = null;
+    protected GameObject customFocalPoint = null;
 
 
-    private void HorizontalLookAtPass(Vector3 currentLookAtDir, Vector3 targetLookAtDir, float rotationSpeed){
+    protected virtual void HorizontalLookAtPass(Vector3 currentLookAtDir, Vector3 targetLookAtDir, float rotationSpeed){
         Vector3 crossResult = Vector3.Cross(currentLookAtDir, targetLookAtDir);
         if (crossResult.y > 0)
         {
@@ -146,7 +146,7 @@ public class GazeController : MonoBehaviour
     }
 
     //Custom Focal Point is for making agents look at a specific point(when they are in slowing radius area)
-    private void ParameterUpdater(){
+    protected virtual void ParameterUpdater(){
         //Update Params
         currentCenterOfMass         = socialBehaviour.GetCurrentCenterOfMass();
         currentAvoidanceTarget      = socialBehaviour.GetPotentialAvoidanceTarget();
@@ -156,7 +156,7 @@ public class GazeController : MonoBehaviour
         customFocalPoint            = socialBehaviour.GetCustomFocalPoint();
     }
 
-    private void LookAtAttractionPointUpdater(){
+    protected virtual void LookAtAttractionPointUpdater(){
         if(collidedTarget != null){
             //when collide
             horizontalAttractionPoint = (collidedTarget.transform.position - this.transform.position).normalized;
@@ -198,7 +198,7 @@ public class GazeController : MonoBehaviour
         Vector3 targetPosition = this.transform.position + horizontalAttractionPoint;
         Vector3 lineEndPoint = new Vector3(targetPosition.x, eyePosition.y, targetPosition.z);
         Gizmos.DrawLine(eyePosition, lineEndPoint);  
-        float sphereSize = 0.01f; 
+        float sphereSize = 0.02f; 
         Gizmos.DrawSphere(lineEndPoint, sphereSize);
 
         Gizmos.color = Color.green;
@@ -210,7 +210,7 @@ public class GazeController : MonoBehaviour
     #endif
 
     //call this in fixed update
-    private IEnumerator UpdateNeckState(float updateTime){
+    protected virtual IEnumerator UpdateNeckState(float updateTime){
 
         while(true){
             CheckNeckRotation(GetCurrentLookAt(), GetCurrentAgentDirection(), neckRotationLimit);
@@ -218,7 +218,7 @@ public class GazeController : MonoBehaviour
         }
     }
 
-    private void CheckNeckRotation(Vector3 _currentLookAt, Vector3 myDirection, float _neckRotationLimit, float lookAtForwardDuration = 2.0f, float probability = 0.5f){
+    protected virtual void CheckNeckRotation(Vector3 _currentLookAt, Vector3 myDirection, float _neckRotationLimit, float lookAtForwardDuration = 2.0f, float probability = 0.5f){
         float currentNeckRotation = Vector3.Angle(_currentLookAt.normalized, myDirection.normalized);
         if(UnityEngine.Random.Range(0.0f, 1.0f) < probability){
             if(currentNeckRotation >= _neckRotationLimit && lookForward == false){
@@ -227,8 +227,8 @@ public class GazeController : MonoBehaviour
         }
     }
 
-    private bool lookForward = false;
-    private IEnumerator TemporalLookAtForward(float duration){
+    protected bool lookForward = false;
+    protected virtual IEnumerator TemporalLookAtForward(float duration){
         if(lookForward == false){
             lookForward = true;
             yield return new WaitForSeconds(duration);
@@ -237,7 +237,7 @@ public class GazeController : MonoBehaviour
         yield return null;
     }
 
-    private void UpdateCurrentLookAtSave(float angleLimit = 40.0f){
+    protected virtual void UpdateCurrentLookAtSave(float angleLimit = 40.0f){
         saveLookAtRot = LimitRotation(saveLookAtRot, angleLimit);
         currentLookAt = saveLookAtRot * t_Neck.forward;
     }
@@ -250,13 +250,13 @@ public class GazeController : MonoBehaviour
         return currentAgentDirection;
     }
     
-    private void AdjustVerticalEyeLevelPass(){
+    protected virtual void AdjustVerticalEyeLevelPass(){
         Vector3 horizontalForward = new Vector3(t_Neck.forward.x, 0, t_Neck.forward.z).normalized;
         Quaternion horizontalRotation = Quaternion.LookRotation(horizontalForward, Vector3.up);
         t_Neck.localRotation *= Quaternion.Inverse(t_Neck.rotation) * horizontalRotation;
     }
 
-    private void LookAtAdjustmentPass(float angleLimit = 40.0f){
+    protected virtual void LookAtAdjustmentPass(float angleLimit = 40.0f){
         t_Neck.localRotation = LimitRotation(t_Neck.localRotation, angleLimit);
     }
     public static Quaternion LimitRotation(Quaternion rotation, float angleLimit)
@@ -270,7 +270,7 @@ public class GazeController : MonoBehaviour
         return Quaternion.Euler(eulerRotation);
     }
 
-    private static float ClampAngle(float angle, float limit)
+    protected static float ClampAngle(float angle, float limit)
     {
         if (angle > 180f) angle -= 360f;
 
@@ -285,16 +285,16 @@ public class GazeController : MonoBehaviour
     * 
     * * */
 
-    private int lookRight_Eyes = 112;
-    private int lookLeft_Eyes = 111;
-    private float blendValue;
+    protected int lookRight_Eyes = 112;
+    protected int lookLeft_Eyes = 111;
+    protected float blendValue;
 
-    private void EyesMovementPass()
+    protected virtual void EyesMovementPass()
     {
         CalculateBlendValueBasedOnDirection(GetCurrentLookAt(), horizontalAttractionPoint);
     }
 
-    private void ResetEyesBlendShape()
+    protected virtual void ResetEyesBlendShape()
     {
         if (meshRenderer.GetBlendShapeWeight(lookRight_Eyes) > 0)
         {
@@ -306,7 +306,7 @@ public class GazeController : MonoBehaviour
         }
     }
 
-    private void CalculateBlendValueBasedOnDirection(Vector3 currentDirection, Vector3 targetDirection)
+    protected virtual void CalculateBlendValueBasedOnDirection(Vector3 currentDirection, Vector3 targetDirection)
     {
         float angle = Vector3.Angle(currentDirection, targetDirection);
         float sign = Mathf.Sign(Vector3.Cross(currentDirection, targetDirection).y);
@@ -326,12 +326,12 @@ public class GazeController : MonoBehaviour
         }
     }
 
-    private void SetEyesBlendShape(int blendShapeIndex, float value)
+    protected virtual void SetEyesBlendShape(int blendShapeIndex, float value)
     {
         meshRenderer.SetBlendShapeWeight(blendShapeIndex, value);
     }
 
-    private IEnumerator EyesWeightChanger(float originalWeight, float targetWeight, float duration)
+    protected virtual IEnumerator EyesWeightChanger(float originalWeight, float targetWeight, float duration)
     {
         float elapsedTime = 0;
         float initialWeight = originalWeight;
